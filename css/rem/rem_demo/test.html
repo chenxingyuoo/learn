@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"/>
+    <link rel="stylesheet" href="./app.css">
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+
+        .input-container {
+            position: relative;
+        }
+
+        .form-box {
+            position: absolute;
+            top: 4rem !important;
+            margin-left: 0.96rem !important;
+        }
+
+        .wh-container {
+            height: 100%;
+            width: 100%;
+            background-size: 100% 100%;
+            background-repeat: no-repeat;
+            position: relative;
+        }
+        .form-box .input-box {
+            margin-bottom: 0.5rem;
+        }
+        .form-box .input-box input {
+            background-color: transparent;
+            width: 8rem;
+            font-size: .63rem;
+        }
+
+        
+
+        .form-box .input-box select {
+            box-sizing: border-box;
+            background-color: transparent!important;
+            -moz-appearance: none;
+            appearance: none;
+            -webkit-appearance: none;
+            width: 8.5rem;
+            border-radius: 0;
+        }
+        .form-box .input-box input {
+            font-size: 0.26rem;
+            border-radius: 2px !important;
+            /*padding: 0 !important;*/
+            padding: 0 0.2rem; 
+            width: 100%;
+            /*width: 3.0719973785622368rem;*/
+        }
+
+        .form-box .input-box .uuu {
+            width: 3.6rem;
+            /*padding: 0 .2rem;*/
+            height: 0.52rem !important;
+            line-height: 0.52rem !important;
+            display: flex;
+            display: -webkit-flex;
+        }
+
+        .form-box .input-box select {
+            height: 100%;
+            width: 100%;
+            border-radius: 2px !important;
+        }
+
+        .form-box .input-box .p-label {
+            width: 0.8rem;
+            height: 0.52rem !important;
+            line-height: 0.52rem !important;
+            font-size: 0.26rem;
+            margin-right: 0.24rem !important;
+             float: left;
+            color: #78fdf0;
+            
+        }
+
+        .form-box .input-box input, .form-box .input-box select {
+            border: 1px solid #44a29a;
+            outline: none;
+            padding: 0 .2rem;
+            color: #fff;
+        }
+    </style>
+    <script>
+        function adapt(designWidth, rem2px) {
+            var div = document.createElement('div');
+            var head = document.querySelector('head');
+            var winHeight = window.innerHeight;
+            var winWidth = window.innerWidth;
+            div.style.width = '1rem';
+            div.style.display = "none";
+            head.appendChild(div);
+            var defaultFontSize = parseFloat(window.getComputedStyle(div, null).getPropertyValue('width'));
+            div.remove();
+            // document.documentElement.style.fontSize = window.innerWidth / designWidth * rem2px / defaultFontSize * 100 + '%';
+            var style = document.createElement('style');
+            var portrait = "@media screen and (min-width: " + winWidth + "px) {html{font-size:" + ((winWidth / (designWidth / rem2px) / defaultFontSize) * 100) + "%;}}";
+            var landscape = "@media screen and (min-width: " + winHeight + "px) {html{font-size:" + ((winHeight / (designWidth / rem2px) / defaultFontSize) * 100) + "%;}}"
+            style.innerHTML = portrait + landscape;
+            head.appendChild(style);
+            return defaultFontSize
+        }
+        var defaultFontSize = adapt(640, 100);
+        console.log(defaultFontSize);
+
+        //        var h = document.getElementsByTagName('html')[0];
+        //        var beforeRootFontSize = window.getComputedStyle(h, null).getPropertyValue('font-size');
+        //        var afterRootFontSize = window.getComputedStyle(h, null).getPropertyValue('font-size');
+
+    </script>
+</head>
+
+<body>
+
+<div class="input-container wh-container" style="    background-image: url(./img/inputdoc-bg.jpg);">
+    <div class="form-box">
+        <div class="input-box" style="display: flex;">
+            <p class="p-label" style="height: 1.3rem;line-height: 1.3rem">姓名</p>
+            <div class="uuu"><input type="text" id="userName" placeholder="必填" v-model="form.name"></div>
+
+            <!-- <p class="p-input">
+             </p>-->
+        </div>
+        <div class="input-box">
+            <p class="p-label"><label for="userName">微信号</label></p>
+
+            <div class="uuu"><input type="text" id="weChatNum" placeholder="必填" v-model="form.wechat"></div>
+            <!--<p class="p-input"><input type="text" id="weChatNum" placeholder="必填" v-model="form.wechat"></p>-->
+        </div>
+        <div class="input-box">
+            <p class="p-label"><label for="userName">公司</label></p>
+            <div class="uuu"><input type="text" id="company" placeholder="必填" v-model="form.company"></div>
+
+            <!--<p class="p-input"></p>-->
+        </div>
+        <div class="input-box" style="margin-bottom: 0">
+            <p class="p-label"><label for="jobType">职位</label></p>
+            <div class="uuu">
+                <select v-model="form.job">
+                    <option v-for="(item,index) in options">
+                        {{item.value}}
+                    </option>
+                </select>
+            </div>
+
+        </div>
+
+
+    </div>
+    <div class="btn-box next-btn" v-on:click="postData">
+        下一页
+    </div>
+
+</div>
+
+<script>
+    document.querySelector('body').style['height'] = window.innerHeight + 'px';
+</script>
+
+</body>
+</html>
