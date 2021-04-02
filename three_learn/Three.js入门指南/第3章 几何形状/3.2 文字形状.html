@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+
+<script src="../three.js"></script>
+<script>
+  window.onload = init;
+
+  function init() {
+    //渲染器
+    var renderer = new THREE.WebGLRenderer();
+    renderer.setSize(400, 300);
+    renderer.setClearColor(0x000000);
+    document.getElementsByTagName('body')[0].appendChild(renderer.domElement);
+
+    //场景
+    var scene = new THREE.Scene();
+
+    // camera
+    var camera = new THREE.OrthographicCamera(-2.5, 2.5, 1.875, -1.875, 0.1, 100);
+    camera.position.set(5, 5, 20);
+    camera.lookAt(new THREE.Vector3(1, 0, 0));
+    scene.add(camera);
+
+
+    drawAxes(scene);
+
+    var material = new THREE.MeshBasicMaterial({
+      color: 0xffff00,
+      wireframe: true
+    });
+
+    var loader = new THREE.FontLoader();
+    loader.load('../helvetiker_regular.typeface.json', function(font) {
+      var mesh = new THREE.Mesh(new THREE.TextGeometry('Hello', {
+        font: font,
+        size: 1,
+        height: 1
+      }), material);
+      scene.add(mesh);
+
+      // render
+      renderer.render(scene, camera);
+    });
+
+
+    function drawAxes(scene) {
+      // x-axis
+      var xGeo = new THREE.Geometry();
+      xGeo.vertices.push(new THREE.Vector3(0, 0, 0));
+      xGeo.vertices.push(new THREE.Vector3(1, 0, 0));
+      var xMat = new THREE.LineBasicMaterial({
+        color: 0xff0000
+      });
+      var xAxis = new THREE.Line(xGeo, xMat);
+      scene.add(xAxis);
+
+      // y-axis
+      var yGeo = new THREE.Geometry();
+      yGeo.vertices.push(new THREE.Vector3(0, 0, 0));
+      yGeo.vertices.push(new THREE.Vector3(0, 1, 0));
+      var yMat = new THREE.LineBasicMaterial({
+        color: 0x00ff00
+      });
+      var yAxis = new THREE.Line(yGeo, yMat);
+      scene.add(yAxis);
+
+      // z-axis
+      var zGeo = new THREE.Geometry();
+      zGeo.vertices.push(new THREE.Vector3(0, 0, 0));
+      zGeo.vertices.push(new THREE.Vector3(0, 0, 1));
+      var zMat = new THREE.LineBasicMaterial({
+        color: 0x00ccff
+      });
+      var zAxis = new THREE.Line(zGeo, zMat);
+      scene.add(zAxis);
+    }
+
+  }
+</script>
+</body>
+</html>

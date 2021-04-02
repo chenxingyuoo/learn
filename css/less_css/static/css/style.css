@@ -1,0 +1,146 @@
+/* Mixin */
+div {
+  margin-bottom: 20px;
+}
+/* Implementation */
+#somediv {
+  -webkit-border-radius: 20px;
+  -moz-border-radius: 20px;
+  border-radius: 20px;
+  height: 50px;
+  width: 100px;
+  background: yellowgreen;
+}
+/* Mixin */
+/* Implementation */
+#somediv1 {
+  -webkit-border-radius: 20px 20px 0px 0px;
+  -moz-border-radius: 20px 20px 0px 0px;
+  border-radius: 20px 20px 0px 0px;
+  height: 50px;
+  width: 100px;
+  background: yellowgreen;
+}
+/* Mixin */
+/* Implementation */
+#somediv3 {
+  -webkit-box-shadow: 5px 5px 6px rgba(0, 0, 0, 0.3);
+  -moz-box-shadow: 5px 5px 6px rgba(0, 0, 0, 0.3);
+  box-shadow: 5px 5px 6px rgba(0, 0, 0, 0.3);
+  height: 50px;
+  width: 100px;
+  background: greenyellow;
+}
+/* Mixin */
+/* Implementation */
+#somediv4 {
+  -webkit-transition: all 0.5s ease-in;
+  -moz-transition: all 0.5s ease-in;
+  -o-transition: all 0.5s ease-in;
+  -ms-transition: all 0.5s ease-in;
+  transition: all 0.5s ease-in;
+  height: 50px;
+  width: 100px;
+  background: yellow;
+}
+#somediv4:hover {
+  opacity: 0;
+}
+/* Mixin */
+/* Implementation */
+#somediv5 {
+  -webkit-transform: rotate(5deg) scale(0.5) skew(1deg) translate(0px);
+  -moz-transform: rotate(5deg) scale(0.5) skew(1deg) translate(0px);
+  -o-transform: rotate(5deg) scale(0.5) skew(1deg) translate(0px);
+  -ms-transform: rotate(5deg) scale(0.5) skew(1deg) translate(0px);
+  transform: rotate(5deg) scale(0.5) skew(1deg) translate(0px);
+  height: 50px;
+  width: 100px;
+  background: yellow;
+}
+/* Mixin */
+/* Implementation */
+#somediv6 {
+  background-color: #663333;
+  background-image: -webkit-linear-gradient(left, #663333, #333333);
+  background-image: -moz-linear-gradient(left, #663333, #333333);
+  background-image: -o-linear-gradient(left, #663333, #333333);
+  background-image: -ms-linear-gradient(left, #663333, #333333);
+  background-image: linear-gradient(left, #663333, #333333);
+  height: 50px;
+  width: 100px;
+}
+/* Mixin */
+/* Implementation */
+#somediv7 {
+  background-color: #BADA55;
+  background-image: -webkit-linear-gradient(top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.2));
+  background-image: -moz-linear-gradient(top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.2));
+  background-image: -o-linear-gradient(top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.2));
+  background-image: -ms-linear-gradient(top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.2));
+  background-image: linear-gradient(top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.2));
+  height: 50px;
+  width: 100px;
+}
+/* Mixin */
+/* Implementation */
+#somediv8 {
+  -webkit-box-reflect: below 0px -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(20%, transparent), to(rgba(255, 255, 255, 0.2)));
+  height: 50px;
+  width: 100px;
+  background: #BADA55;
+}
+/* Mixin */
+/* Implementation */
+#somediv9 .one {
+  background-color: #663333;
+  width: 100px;
+  height: 200px;
+}
+#somediv9 .two {
+  background-color: #336666;
+  width: 100px;
+  height: 200px;
+}
+#somediv9 .three {
+  background-color: #2b5555;
+  width: 100px;
+  height: 200px;
+}
+#somediv9 .four {
+  background-color: #994d4d;
+  width: 100px;
+  height: 200px;
+}
+#somediv9 .five {
+  background-color: #bb7777;
+  width: 100px;
+  height: 200px;
+}
+/* Mixin */
+/* Implementation */
+#somediv10 .one {
+  background-color: #663333;
+  width: 100px;
+  height: 200px;
+}
+#somediv10 .two {
+  background-color: #884a44;
+  width: 100px;
+  height: 200px;
+}
+#somediv10 .three {
+  background-color: #aa6355;
+  width: 100px;
+  height: 200px;
+}
+#somediv10 .four {
+  background-color: #442225;
+  width: 100px;
+  height: 200px;
+}
+#somediv10 .five {
+  background-color: #221114;
+  width: 100px;
+  height: 200px;
+}

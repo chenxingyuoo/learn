@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        *{margin: 0;padding: 0;}
+        ._borderWrap{
+            width: 180px;
+            height: 150px;
+            position: absolute;
+            left: 23%;
+            top: 25%;
+        }
+        ._border{
+            line-height: 145px;
+            text-align: center;
+            font-size: 40px;
+            font-weight: bolder;
+            -webkit-text-fill-color: transparent;
+            background-image:  -webkit-linear-gradient(left,#129835,#ece648 25%,#129835 50%,#F9E92B 75%,rgb(40, 150, 38));
+            background-size: 200%,100%;
+            -webkit-background-clip: text;
+            -webkit-animation: word 5s linear infinite ;
+        }
+        @keyframes word {
+            0%{background-position: 0 0}
+            100%{background-position: -100% 0}
+        }
+
+        .masked{
+          background:url(../image/paint.png);
+          -webkit-text-fill-color:transparent;
+          -webkit-background-clip:text;
+          -webkit-animation-name:masked-animation;
+          -webkit-animation-duration:40s;
+          -webkit-animation-iteration-count:infinite;
+          -webkit-animation-timing-function:linear;
+          color:#fff;
+          }
+          h4 {
+            margin: 0;
+            font-size: 120px;
+            text-align: center;
+          }
+          @-webkit-keyframes masked-animation {
+              0% {background-position:left bottom;}
+              100% {background-position:right bottom;}
+          }
+
+    </style>
+</head>
+<body>
+    <div class="_borderWrap">
+        <div class="_border">你的名字</div>
+    </div>
+       
+     <div class="masked">
+         <h4>这是一段可选文字</h4>
+     </div>
+</body>
+</html>

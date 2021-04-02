@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+    <title>touch_move</title>
+    <style>
+        #id{
+            background-color: yellowgreen;
+            width: 100px;
+            height: 100px;
+            position: absolute;
+        }
+    </style>
+</head>
+<body >
+<div id="id"></div>
+
+<script>
+    var obj = document.getElementById('id');
+    obj.addEventListener('touchmove', function(event) {
+        // If there's exactly one finger inside this element
+        if (event.targetTouches.length == 1) {
+            var touch = event.targetTouches[0];
+            // Place element where the finger is
+            obj.style.left = touch.pageX + 'px';
+            obj.style.top = touch.pageY + 'px';
+        }
+    }, false);
+</script>
+</body>
+</html>

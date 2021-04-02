@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>表单提交的几个方法</title>
+	<meta charset="utf-8">
+</head>
+<body>
+
+<form name=”form” method=”post” action=”#"> 
+<input type=”submit” name=”submit” value=”提交"> 
+</form> 
+
+<form name=”form” method=”post” action=”# "> 
+<input type=”image” name=”submit” src=”btnSubmit.jpg”> 
+</form> 
+
+<form name=”form” method=”post” action=”#”> 
+<a href=”javascript:form.submit();”>提交</a> 
+</form> 
+
+<form name=”form” method=”post” action=”#”> 
+<div onclick=”javascript:form.submit();”> 
+<span>提交</span> 
+</div> 
+</form> 
+
+
+但是，如果一个表单里有需要有多个提交按钮怎么办呢？ 
+比如一个表单里的提交按钮所指向的处理页面不同，这样由于表单在定义的时候就已经确定下表单数据的处理页面，所以单纯地在表单里放多个提交按钮是没有办法达到目的的。这就需要javascript。 
+首先定义一个函数： 
+
+<script language=javascript> 
+function query(){ 
+form.action=”query.php”; 
+form.submit();} 
+function update(){ 
+form.action=”update.php”; 
+form.submit();} 
+</script> 
+
+<form name=”form” method=”post” action=”#”> 
+<input type=”button” name=”query” onclick=”query();” value=”查询”> 
+<input type=”button” name=”update” onclick=”update();” value=”更新”> 
+</form> 
+</body>
+</html>

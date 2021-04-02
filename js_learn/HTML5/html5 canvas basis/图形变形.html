@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>图形变形</title>
+</head>
+
+<body>
+<canvas id="canvas" width="800" height="600"></canvas>
+
+<!--
+1、平移context.translate(x,y)
+
+x:坐标原点向x轴方向平移x
+
+y:坐标原点向y轴方向平移y
+
+2、缩放context.scale(x,y)
+
+x:x坐标轴按x比例缩放
+
+y:y坐标轴按y比例缩放
+
+3、旋转context.rotate(angle)
+
+angle:坐标轴旋转x角度（角度变化模型和画圆的模型一样）
+
+-->
+
+
+<script>
+
+    document.body.onload = draw5('canvas');
+
+    function draw5(id) {
+        var canvas = document.getElementById(id);
+        if (canvas == null)
+            return false;
+
+
+        var context = canvas.getContext("2d");
+        context.save(); //保存了当前context的状态
+        context.fillStyle = "#EEEEFF";
+        context.fillRect(0, 0, 400, 300);
+
+        context.fillStyle = "rgba(255,0,0,0.1)";
+        //平移 缩放 旋转  1 2 3
+        context.translate(100, 100);
+        context.scale(0.5, 0.5);
+        context.rotate(Math.PI / 4);
+        context.fillRect(0, 0, 100, 100);
+
+
+        context.restore(); //恢复到刚刚保存的状态,保存恢复只能使用一次
+        context.save(); //保存了当前context的状态
+        context.fillStyle = "rgba(255,0,0,0.2)";
+        //平移 旋转 缩放 1 3 2
+        context.translate(200, 100);
+        context.rotate(Math.PI / 4);
+        context.scale(0.5, 0.5);
+        context.fillRect(0, 0, 100, 100);
+
+        context.restore(); //恢复到刚刚保存的状态
+        context.save(); //保存了当前context的状态
+        context.fillStyle = "rgba(255,0,0,0.3)";
+        //缩放 平移 旋转 2 1 3
+        context.scale(0.5, 0.5);
+        context.translate(100, 100);
+        context.rotate(Math.PI / 4);
+        context.fillRect(0, 0, 100, 100);
+
+        context.restore(); //恢复到刚刚保存的状态
+        context.save(); //保存了当前context的状态
+        context.fillStyle = "rgba(255,0,0,0.4)";
+        //缩放 旋转 平移  2 3  1
+        context.scale(0.5, 0.5);
+        context.rotate(Math.PI / 4);
+        context.translate(100, 100);
+        context.fillRect(0, 0, 100, 100);
+
+        context.restore(); //恢复到刚刚保存的状态
+        context.save(); //保存了当前context的状态
+        context.fillStyle = "rgba(255,0,0,0.5)";
+        //旋转 平移 缩放  3 1 2
+        context.rotate(Math.PI / 4);
+        context.translate(100, 100);
+        context.scale(0.5, 0.5);
+        context.fillRect(0, 0, 100, 100);
+
+        context.restore(); //恢复到刚刚保存的状态
+        context.save(); //保存了当前context的状态
+        context.fillStyle = "rgba(255,0,0,1)";
+        //旋转 缩放 平移   3 2 1
+        context.rotate(Math.PI / 4);
+        context.scale(0.5, 0.5);
+        context.translate(100, 100);
+        context.fillRect(0, 0, 100, 100);
+
+        //实验表明应该移动的是坐标轴
+        //实验表明缩放的是坐标轴比例
+        //实验表明旋转的是坐标轴
+        //综合上述，因此平移 缩放 旋转 三者的顺序不同都将画出不同的结果
+    }
+
+</script>
+</body>
+</html>

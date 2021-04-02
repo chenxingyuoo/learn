@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<div id="imgcontainer"></div>
+<script>
+
+    window.onload = function (){
+        var url = "./test_pic/o2.jpg";
+        var xhr = new XMLHttpRequest();
+        xhr.open("post", url,'upload');
+        xhr.responseType = "blob";
+
+        xhr.onprogress=function(e){
+            var postion = e.loaded || e.position;
+            var total = e.total;
+            xhr.pex = total <= 0  ? 100: Math.round(postion / total*100);
+        };
+
+        xhr.onload = function () {
+            if (this.status == 200) {
+                var blob = this.response;
+                var img = document.createElement("img");
+                img.onload = function (e) {
+                    window.URL.revokeObjectURL(img.src);
+                };
+                console.log(xhr.pex)
+                img.src = window.URL.createObjectURL(blob);
+                document.getElementById('imgcontainer').appendChild(img);
+            }
+        };
+        xhr.send();
+    }
+
+</script>
+</body>
+</html>

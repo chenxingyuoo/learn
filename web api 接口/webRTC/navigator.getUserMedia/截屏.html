@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>截屏</title>
+  <style>
+    video{
+      -webkit-transform: scale(-1, 1);
+      transform: scale(-1, 1);
+    }
+  </style>
+</head>
+
+<body>
+
+<video autoplay></video>
+<img src="">
+<canvas style="display:none;" width="640" height="360"></canvas>
+
+<script>
+
+  var video = document.querySelector('video');
+  var canvas = document.querySelector('canvas');
+  var ctx = canvas.getContext('2d');
+  var localMediaStream = null;
+
+  function snapshot() {
+    console.log('mylog', localMediaStream);
+    if (localMediaStream) {
+      ctx.drawImage(video, 0, 0);
+      // "image/webp" works in Chrome.
+      // Other browsers will fall back to image/png.
+      document.querySelector('img').src = canvas.toDataURL('image/webp');
+    }
+  }
+
+  var errorCallback = function (e) {
+    console.log('Reeeejected!', e);
+  };
+
+
+  setInterval(() => {
+    snapshot()
+  }, 1000)
+
+  // video.addEventListener('click', snapshot, false);
+
+  var hdConstraints = {
+    video: {
+      mandatory: {
+        maxWidth: 640,
+        maxHeight: 360
+      }
+    }
+  };
+
+  // Not showing vendor prefixes or code that works cross-browser.
+  // navigator.getUserMedia(hdConstraints, function(stream) {
+  //     video.src = window.URL.createObjectURL(stream);
+  //     localMediaStream = stream;
+  // }, errorCallback);
+  // 获取媒体方法（新方法）
+  // 使用新方法打开摄像头
+
+  if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+    navigator.getUserMedia(hdConstraints, function (stream) {
+      video.src = window.URL.createObjectURL(stream);
+      localMediaStream = stream;
+    }, errorCallback);
+  }
+  // 使用旧方法打开摄像头
+  else if (navigator.getMedia) {
+    navigator.getMedia({
+      video: true
+    }, function (stream) {
+
+      video.src = (window.URL || window.webkitURL).createObjectURL(stream);
+
+      localMediaStream = stream;
+
+    }, function (err) {
+      console.log(err);
+    });
+  }
+
+
+</script>
+
+</body>
+</html>

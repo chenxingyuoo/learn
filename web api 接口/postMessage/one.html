@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>postMessage</title>
+</head>
+
+<body>
+
+<script>
+
+
+//弹出一个新窗口
+var domain = 'http://127.0.0.1:8081';
+var myPopup = window.open(domain 
+            + '/target.html','myWindow');
+
+//周期性的发送消息
+setInterval(function(){
+    var message = 'Hello!  The time is: ' + (new Date().getTime());
+    console.log('blog.local:  sending message:  ' + message);
+        //send the message and target URI
+    myPopup.postMessage(message,domain);
+},6000);
+
+</script>
+
+</body>
+</html>

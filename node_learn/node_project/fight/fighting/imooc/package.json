@@ -1,0 +1,38 @@
+{
+  "name": "imooc",
+  "version": "1.0.1",
+  "description": "imooc movie",
+  "main": "app.js",
+  "dependencies": {
+    "body-parser": "^1.14.2",
+    "connect-mongo": "^1.2.1",
+    "cookie-parser": "^1.4.3",
+    "express": "^4.13.3",
+    "express-session": "^1.14.0",
+    "jade": "^1.11.0",
+    "logger": "0.0.1",
+    "moment": "^2.11.0",
+    "mongoose": "^4.3.4",
+    "morgan": "^1.7.0",
+    "npm": "^2.14.12",
+    "underscore": "^1.8.3"
+  },
+  "devDependencies": {
+    "bcrypt": "^0.8.7",
+    "grunt-concurrent": "^2.3.0",
+    "grunt-contrib-less": "^1.3.0",
+    "grunt-contrib-nodemon": "^0.5.2",
+    "grunt-contrib-uglify": "^1.0.1",
+    "grunt-contrib-watch": "^1.0.0",
+    "grunt-nodemon": "^0.4.2"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "imooc",
+    "movie"
+  ],
+  "author": "cxy 2731173104@qq.com",
+  "license": "ISC"
+}

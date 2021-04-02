@@ -1,0 +1,6 @@
+hash: 09a0aaba81748ced6c9b2c36b45e9b1c76e36deb262ffe0dc6742341f44aeb2b
+updated: 2018-04-11T17:17:40.086262299+08:00
+imports:
+- name: github.com/mattn/go-adodb
+  version: 8a75490faf6ae99c92e96d210caeebdba7c93522
+testImports: []

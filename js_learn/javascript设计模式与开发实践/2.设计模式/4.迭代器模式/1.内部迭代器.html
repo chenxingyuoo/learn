@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+
+<script>
+
+    var each = function each(arr , callback){
+        for (var i = 0, len = arr.length; i < len; i++) {
+            callback.call(arr[i], i, arr[i])
+        }
+    };
+
+    //如现在有个需求，要判断2个数组里面的元素是否完全相等，
+    // 如果不改写 each 函数本身的代码，我们能够入手的地方只剩下each的回调函数了，代码如下
+
+    var compare = function (ary1, ary2) {
+        if (ary1.length !== ary2.length) {
+            throw new Error('ary1 ary2  不相等');
+        }
+        each(ary1, function (i, n) {
+            if (n !== ary2[i]) {
+                throw new Error('ary1 ary2   不相等');
+            }
+        });
+        alert('ary1 ary2  相等');
+    };
+    compare([1, 2, 3], [1, 2, 4]); // throw new Error ( 'ary1 ary2 不相等' );
+</script>
+
+</body>
+</html>

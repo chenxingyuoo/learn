@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+
+<body>
+
+<script src="js/socket.io.js"></script>
+<script>
+    // 创建Socket.IO实例，建立连接
+    var socket= new io.Socket('localhost',{
+        port: 8080
+    });
+    socket.connect();
+
+    // 添加一个连接监听器
+    socket.on('connect',function() {
+        console.log('Client has connected to the server!');
+    });
+
+    // 添加一个连接监听器
+    socket.on('message',function(data) {
+        console.log('Received a message from the server!',data);
+    });
+
+    // 添加一个关闭连接的监听器
+    socket.on('disconnect',function() {
+        console.log('The client has disconnected!');
+    });
+
+    // 通过Socket发送一条消息到服务器
+    function sendMessageToServer(message) {
+        socket.send(message);
+    }
+
+    /*Socket.IO简化了WebSocket API，统一了返回运输的API。传输包括：
+    WebSocket
+    Flash Socket
+    AJAX long-polling
+    AJAX multipart streaming
+    IFrame
+    JSONP polling
+
+    你还可以设置任意的Socket.IO构造器的第二个选项，选项包括：
+
+    port - 待连接的端口
+    transports - 一个数组，包含不同的传输类型
+    transportOptions - 传输的参数使用的对象，带附加属性
+
+    Socket.IO还提供了由本地WebSocket API提供的普通连接、断开连接、消息事件。Socket还提供了封装每个事件类型的方法。*/
+</script>
+</body>
+</html>

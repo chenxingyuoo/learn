@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>分布应用</title>
+</head>
+
+<body>
+<script>
+
+    var op = {
+        '+' : function (a, b) {
+            return a + b
+        },
+        '-' : function (a, b) {
+            return a - b
+        },
+        '==' : function (a, b) {
+            return a == b
+        },
+        '===' : function (a, b) {
+            return a === b
+        },
+        '!' : function (a) {
+            return !a
+        },
+        '*' : function (a, b) {
+            return a * b
+        },
+        '/' : function (a, b) {
+            return a / b
+        }
+    };
+
+
+    //2.高阶函数
+    function foreach(array, action){
+        for (var i = 0; i < array.length; i++) {
+            //action 可以是声明函数 ， 也可以是匿名函数 ， 括号里面就是传的实参
+            action(array[i]);
+        }
+    }
+
+    //4.映射数组
+    function map(func, array){
+        var result = [];
+        foreach(array, function (element) {
+            result.push(func(element));
+        });
+        return result;
+    }
+
+    //分布应用
+    function partail(func){
+        //这个是 partail 函数接收的 arguments
+        var knowArgs = arguments;
+        return function () {
+            var realArgs = [];
+            for (var i = 1 ; i < knowArgs.length; i++) {
+                 realArgs.push(knowArgs[i]);
+            }
+            //这个arguments 是内部函数 ， 也就是这个匿名函数
+            for (var i = 0; i < arguments.length; i++) {
+                realArgs.push(arguments[i]);
+            }
+            return func.apply(null, realArgs)
+        }
+    }
+
+    console.log(map(partail(op['+'], 1), [0, 2, 3, 6, 8])) //[1,3,4,7,9]
+
+
+    //计算一个 ‘数字数组的数组’ 的每一个平方值
+    function square(x){
+        return x * x;
+    }
+
+    console.log(map(partail(map,square), [[100],[1, 2], [5]])); //[[1000] , [1,4], [25]]
+
+
+
+    //刚开始的sum函数
+    var number = [0,1,2,3,4,5];
+    function sum(number){
+        var total = 0;
+        foreach(number, function (num) {
+            total += num
+        });
+        return total;
+    }
+
+    console.log(sum(number));  //15
+
+
+    //中期的sum函数
+
+    //3. 归纳函数
+    function reduces(combine, base, array){
+        foreach(array, function (element) {
+            base = combine(base, element);
+        });
+        return base;
+    }
+
+    function sums(number){
+        return reduces(op['+'], 0, number)
+    }
+    console.log(sums(number));  //15
+
+
+    //现在可以这样写sum函数  ?
+    var sumss = partail(reduces,  op['+'], 0 , number);
+    console.log(sumss()); // 15
+
+
+
+    //函数组合
+
+    // not 操作符将结果取反
+    function negate(func){
+        return function () {
+            return !func.apply(null, arguments);
+        }
+    }
+
+
+    //调用函数 B 得出的值 ， 传给函数 A ， 速度会慢点
+    function compose(f1, f2){
+        return function () {
+            return f1( f2.apply(null, arguments));
+        }
+    }
+
+    var isNotNaN = compose(op['!'], isNaN);
+    console.log(isNotNaN(5)); //true
+
+    //两个函数的组合
+    var compose = function(f, g) {
+        return function(x) {
+            return f(g(x));
+        };
+    };
+
+
+    var add1 = x => x + 1;
+    var mul5 = x => x * 5;
+
+    compose(mul5, add1)(2); //15
+
+</script>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>bind or apply</title>
+</head>
+
+<body>
+<script>
+    function f(y){ return this.x + y}
+    var o = {x:1}
+    var g = f.bind(o);  // this 指向 o 对象 ， x就是1
+    console.log(g(2))  //调用g()  2 是y
+
+
+
+    //
+    function fns(b , c , d){
+        return this.a * (b+c+d);
+    }
+
+    //返回一个函数 , 通过调用它来调用o中的方法f(),传递它所有的实参
+    function bind(fns , obj){
+        if(fns.bind){
+            return fns.bind(obj);   //this 指向对象 obj this.a = 5
+        }else{
+            return function () {
+                fns.apply(obj, arguments)  //this 指向对象 obj this.a = 5
+            }
+        }
+    }
+
+    var obj = {a : 5};
+    var _bind = bind(fns,obj);  //调用函数
+    console.log(_bind(2,3,5));  //5 * 10 = 50
+
+
+
+   //
+    var sum = function (x,y) {
+        return x + y ;
+    }
+    var succ = sum.bind(null , 1); //this指向null ， 第一个参数绑定到1
+    succ(2) ;  //x实参绑定到1 ，传进2作为实参y   -> 3
+
+
+
+    //
+    function fn(y,z){ return this.x + y + z}
+    var gs = fn.bind({x:1},2); //绑定this 指定这个对象 , y绑定到2
+    gs(3);  //z绑定到3  -> 6
+
+
+
+
+
+    //
+    //把bind清空测试
+    Function.prototype.bind = null ;
+    function fs(y,z,a,b,c){ return this.x + y + z + a + b + c}
+
+    //ECMA3版本的bind方法
+    if(!Function.prototype.bind) {
+        Function.prototype.bind = function (o /*,arg*/) {
+            //将this和arguments的值保存到变量，以便在后面嵌套的时候用
+            var self = this, boundArgs = arguments;
+            //bindfang方法返回的是一个函数
+            return function () {
+                //创建一个实参列表，将传入bind的第二个以及后续的实参都传入这个函数
+                var args = [], i;
+                for (i = 1; i < boundArgs.length; i++) {
+                    args.push(boundArgs[i])
+                }
+                for (i = 0; i < arguments.length; i++) {
+                    args.push(arguments[i])
+                }
+
+                //现在将self作为o的方法来调用
+                return self.apply(o, args)
+
+            }
+
+        }
+    }
+
+    var s = fs.bind({x:5},1,2,3,4); //绑定this 和 yzab
+    console.log(s(5))  //传入实参c
+
+
+</script>
+</body>
+</html>

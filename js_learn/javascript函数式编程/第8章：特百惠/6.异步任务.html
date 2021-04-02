@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+
+<script>
+    // 回调（callback）是通往地狱的狭窄的螺旋阶梯。它们是埃舍尔（译者注：荷兰版画艺术家）设计的控制流。
+    // 看到一个个嵌套的回调挤在大小括号搭成的架子上，让人不由自主地联想到地牢里的灵薄狱（还能再低点么！）
+    // （译者注：灵薄狱即 limbo，基督教中地狱边缘之意）。光是想到这样的回调就让我幽闭恐怖症发作了。
+    // 不过别担心，处理异步代码，我们有一种更好的方式，它的名字以“F”开头。
+
+    //这种方式的内部机制过于复杂，复杂得哪怕我唾沫横飞也很难讲清楚。
+    // 所以我们就直接用 Quildreen Motta 的 Folktale 里的 Data.Task （之前是 Data.Future）。来见证一些例子吧：
+
+    // Node readfile example:
+    //=======================
+
+    var fs = require('fs');
+
+    //  readFile :: String -> Task(Error, JSON)
+    var readFile = function(filename) {
+        return new Task(function(reject, result) {
+            fs.readFile(filename, 'utf-8', function(err, data) {
+                err ? reject(err) : result(data);
+            });
+        });
+    };
+
+    readFile("metamorphosis").map(split('\n')).map(head);
+    // Task("One morning, as Gregor Samsa was waking up from anxious dreams, he discovered that
+    // in bed he had been changed into a monstrous verminous bug.")
+
+
+    // jQuery getJSON example:
+    //========================
+
+    //  getJSON :: String -> {} -> Task(Error, JSON)
+    var getJSON = curry(function(url, params) {
+        return new Task(function(reject, result) {
+            $.getJSON(url, params, result).fail(reject);
+        });
+    });
+
+    getJSON('/video', {id: 10}).map(_.prop('title'));
+    // Task("Family Matters ep 15")
+
+    // 传入普通的实际值也没问题
+    Task.of(3).map(function(three){ return three + 1 });
+    // Task(4)
+
+
+    //例子中的 reject 和 result 函数分别是失败和成功的回调。
+    // 正如你看到的，我们只是简单地调用 Task 的 map 函数，就能操作将来的值，好像这个值就在那儿似的。
+    // 到现在 map 对你来说应该不稀奇了。
+
+    //如果熟悉 promise 的话，你该能认出来 map 就是 then，Task 就是一个 promise。如果不熟悉你也不必气馁，反正我们也不会用它，因为它并不纯；但刚才的类比还是成立的。
+
+    //与 IO 类似，Task 在我们给它绿灯之前是不会运行的。事实上，正因为它要等我们的命令，
+    // IO 实际就被纳入到了 Task 名下，代表所有的异步操作——readFile 和 getJSON 并不需要一个额外的 IO 容器来变纯。
+    // 更重要的是，当我们调用它的 map 的时候，Task 工作的方式与 IO 几无差别：都是把对未来的操作的指示放在一个时间胶囊里，就像家务列表（chore chart）那样——真是一种精密的拖延术。
+
+    //我们必须调用 fork 方法才能运行 Task，这种机制与 unsafePerformIO 类似。
+    // 但也有不同，不同之处就像 fork 这个名称表明的那样，它会 fork 一个子进程运行它接收到的参数代码，其他部分的执行不受影响，主线程也不会阻塞。
+    // 当然这种效果也可以用其他一些技术比如线程实现，但这里的这种方法工作起来就像是一个普通的异步调用，而且 event loop 能够不受影响地继续运转。
+    // 我们来看一下 fork：
+
+
+    // Pure application
+    //=====================
+    // blogTemplate :: String
+
+    //  blogPage :: Posts -> HTML
+    var blogPage = Handlebars.compile(blogTemplate);
+
+    //  renderPage :: Posts -> HTML
+    var renderPage = compose(blogPage, sortBy('date'));
+
+    //  blog :: Params -> Task(Error, HTML)
+    var blog = compose(map(renderPage), getJSON('/posts'));
+
+
+    // Impure calling code
+    //=====================
+    blog({}).fork(
+            function(error){ $("#error").html(error.message); },
+            function(page){ $("#main").html(page); }
+    );
+
+    $('#spinner').show();
+
+
+    // 调用 fork 之后，Task 就赶紧跑去找一些文章，渲染到页面上。与此同时，我们在页面上展示一个 spinner，因为 fork 不会等收到响应了才执行它后面的代码。
+    // 最后，我们要么把文章展示在页面上，要么就显示一个出错信息，视 getJSON 请求是否成功而定。
+
+    // 花点时间思考下这里的控制流为何是线性的。我们只需要从下读到上，从右读到左就能理解代码，即便这段程序实际上会在执行过程中到处跳来跳去。
+    // 这种方式使得阅读和理解应用程序的代码比那种要在各种回调和错误处理代码块之间跳跃的方式容易得多。
+
+    // 天哪，你看到了么，Task 居然也包含了 Either！没办法，为了能处理将来可能出现的错误，它必须得这么做，因为普通的控制流在异步的世界里不适用。
+    // 这自然是好事一桩，因为它天然地提供了充分的“纯”错误处理。
+
+    // Postgres.connect :: Url -> IO DbConnection
+    // runQuery :: DbConnection -> ResultSet
+    // readFile :: String -> Task Error String
+
+    // Pure application
+    //=====================
+
+    //  dbUrl :: Config -> Either Error Url
+    var dbUrl = function(c) {
+        return (c.uname && c.pass && c.host && c.db)
+                ? Right.of("db:pg://"+c.uname+":"+c.pass+"@"+c.host+"5432/"+c.db)
+                : Left.of(Error("Invalid config!"));
+    }
+
+    //  connectDb :: Config -> Either Error (IO DbConnection)
+    var connectDb = compose(map(Postgres.connect), dbUrl);
+
+    //  getConfig :: Filename -> Task Error (Either Error (IO DbConnection))
+    var getConfig = compose(map(compose(connectDB, JSON.parse)), readFile);
+
+
+    // Impure calling code
+    //=====================
+    getConfig("db.json").fork(
+            logErr("couldn't read file"), either(console.log, map(runQuery))
+    );
+
+    //这个例子中，我们在 readFile 成功的那个代码分支里利用了 Either 和 IO。
+    // Task 处理异步读取文件这一操作当中的不“纯”性，但是验证 config 的合法性以及连接数据库则分别使用了 Either 和 IO。所以你看，我们依然在同步地跟所有事物打交道。
+
+    //例子我还可以再举一些，但是就到此为止吧。这些概念就像 map 一样简单。
+
+    //实际当中，你很有可能在一个工作流中跑好几个异步任务，但我们还没有完整学习容器的 api 来应对这种情况。
+    // 不必担心，我们很快就会去学习 monad 之类的概念。不过，在那之前，我们得先检查下所有这些背后的数学知识。
+
+
+</script>
+
+</body>
+</html>

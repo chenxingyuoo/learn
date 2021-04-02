@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>绘制线段</title>
+</head>
+
+<body>
+
+<canvas id="canvas" width="800" height="600"></canvas>
+
+<!--x:x坐标
+
+y:y坐标
+
+每次画线都从moveTo的点到lineTo的点，
+
+如果没有moveTo那么第一次lineTo的效果和moveTo一样，
+
+每次lineTo后如果没有moveTo，那么下次lineTo的开始点为前一次lineTo的结束点-->
+
+<script>
+    document.body.onload = draw8('canvas');
+
+    function draw8(id) {
+        var canvas = document.getElementById(id);
+        if (canvas == null)
+            return false;
+        var context = canvas.getContext("2d");
+        //context.beginPath();
+        context.strokeStyle = "rgb(250,0,0)";
+        context.fillStyle = "rgb(250,0,0)";
+        //实验证明第一次lineTo的时候和moveTo功能一样
+        context.lineTo(100, 100);
+        //之后的lineTo会以上次lineTo的节点为开始
+        context.lineTo(200, 200);
+        context.lineTo(200, 100);
+        context.moveTo(200, 50);
+        context.lineTo(100,50);
+        context.stroke();
+    }
+
+</script>
+
+</body>
+</html>

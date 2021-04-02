@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>长按事件</title>
+</head>
+
+<body>
+<div style="width:100%;">
+    <div id="touchArea" style="width:90%; height:200px; background-color:#CCC;font-size:100px">长按我</div>
+</div>
+
+<script src="../jquery-2.2.1.js"></script>
+<script>
+    var timeOutEvent=0;
+    $(function(){
+        $("#touchArea").on({
+            touchstart: function(e){
+                timeOutEvent = setTimeout("longPress()",500);
+                e.preventDefault();
+            },
+            touchmove: function(){
+                clearTimeout(timeOutEvent);
+                timeOutEvent = 0;
+            },
+            touchend: function(){
+                clearTimeout(timeOutEvent);
+                if(timeOutEvent!=0){
+                    alert("你这是点击，不是长按");
+                }
+                return false;
+            }
+        })
+    });
+
+
+    function longPress(){
+        timeOutEvent = 0;
+        alert("长按事件触发发");
+    }
+
+</script>
+</body>
+</html>

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>JavaScript语言精粹</title>
+</head>
+<body>
+
+<script>
+
+    function add(a,b){
+        return a + b;
+    }
+
+    //调用函数的四种模式
+
+    //方法调用模式
+    var my = {
+        value : 0,
+        increment : function(int){
+            this.value += (typeof int == 'number' ? int : 1 );
+        }
+    }
+
+    my.increment();  // 1
+    my.increment(3);  //3
+
+
+    //函数调用模式
+    var myObject = {value : 3};
+    myObject.double = function(){
+        var that = this;
+        var helper = function(){
+            that.value = add(that.value, that.value);
+        }
+        helper();
+    }
+
+    myObject.double();
+    console.log(myObject.value);  //6
+
+
+    //构造函数调用模式
+    function Quo(string){
+        this.status = string;
+    }
+
+    Quo.prototype.get_status = function () {
+        return this.status;
+    }
+
+  /*  var getStutsa = new Quo('chen');
+    console.log(getStutsa); //chen
+*/
+
+    //apply调用模式
+    var statusObject = {
+        status : 'A-OK'
+    }
+
+    //this 指向 statusObject 对象
+    var status = Quo.prototype.get_status.apply(statusObject);
+    console.log(status);  // A-OK
+
+
+
+
+    //异常处理
+    var add = function(a, b){
+        if(typeof a !== 'number' || typeof b !== 'number'){
+            throw{
+                name : 'TypeError',
+                msg : 'add needs number'
+            }
+        }
+        return a + b;
+    }
+
+    var try_it = function () {
+        try{
+            add();
+        }catch(e){
+            console.log(e.name + ':' + e.msg);  // TypeError:add needs number
+        }
+    }
+    try_it();
+
+
+    //扩充类型功能
+
+    //我们可以通过给Function.prototype增加方法来使得该方法对所有函数可用
+    Function.prototype.method = function (name, func) {
+        this.prototype[name] = func;
+        return this;
+    }
+
+
+    //提取数字中的整形 ， 给Number添加一个方法
+    Number.method('integer', function () {
+        return Math[this < 0 ? 'ceil' : 'floor'](this);
+    })
+
+    console.log((-10 / 3).integer());  // -3
+
+    //移除字符串首尾空白的字符。
+    String.method('trim',function(){
+        return this.replace(/^\s+| \s+$/g,'');
+    })
+
+
+    //保险起见 ， 确定没有改方法时才定义
+    Function.prototype.method = function (name, func) {
+        if(!this.prototype[name]){
+            this.prototype[name] = func;
+            return this;
+        }
+    }
+
+
+    //递归
+
+    //递归是一种强大的编程技术。它把一个问题分解为一组相似的子问题，每一个都用一个寻常解去解决。一般来说，一个递归调用自身去解决它的子问题。
+
+
+    //汉诺塔递归算法
+    var hanoi = function (disc, pos1, pos2, pos3) {
+        if(disc > 0){
+
+            hanoi(disc - 1, pos1, pos3, pos2);
+            console.log('Move disc ' + disc + 'from ' + pos1 + ' to ' + pos3);
+            hanoi(disc - 1, pos2, pos1, pos3);
+        }
+    }
+    
+    console.log(hanoi(3,'pos1', 'pos2' , 'pos3'))
+//    Move disc 1from Src to Dst
+//    Move disc 2from Src to Aux
+//    Move disc 1from Dst to Aux
+//    Move disc 3from Src to Dst
+//    Move disc 1from Aux to Src
+//    Move disc 2from Aux to Dst
+//    Move disc 1from Src to Dst
+
+
+    //尾递归
+    var factorial = function (i, a){
+        a = a || 1;
+        if(i < 2){
+            return a;
+        }
+        return factorial(i - 1, a * i);
+    }
+
+
+
+</script>
+</body>
+</html>

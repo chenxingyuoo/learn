@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .box{
+            width: 300px;
+            height: 250px;
+            position: absolute;
+            top:20px;
+            left: 20px;
+            cursor: move;
+        }
+        .wh-100{
+            width: 100%;
+            height: 100%;
+        }
+
+        .btn-box{
+            position: absolute;
+            z-index: 10;
+            top:20px;
+            left: 20px;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="box">
+    <img class="wh-100" src="./img/T.jpg" alt="">
+</div>
+
+<div class="btn-box">
+    <button id="revoked">撤销</button>
+    <button id="anti-revocation">反撤销</button>
+    <button id="replay">重播</button>
+    <button id="anti-replay">反重播</button>
+</div>
+
+
+<script src="dist/main.js"></script>
+
+</body>
+</html>

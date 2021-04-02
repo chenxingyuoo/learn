@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+    <style>
+        device{
+            height: 100px;
+            width: 100%;
+            background-color: #ddd;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+<device type="media" onchange="update(this.data)"></device>
+<video autoplay></video>
+<script>
+    function update(stream) {
+        document.querySelector('video').src = stream.url;
+    }
+</script>
+
+</body>
+</html>

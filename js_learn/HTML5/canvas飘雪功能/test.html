@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+
+<canvas id="my-canvas" height="600" width="400"></canvas>
+
+<script>
+    window.onload = function (){
+        setTimeout(function(){
+            var c = document.getElementById("my-canvas");
+            var ctx = c.getContext("2d");
+            var img = new Image();
+            img.src = './img/eg_tulip.jpg';
+
+
+            img.onload = function(){
+                ctx.drawImage(img,10,10,490,382);
+                //以Canvas画布上的坐标(10,10)为起始点，绘制图像
+
+            };
+
+        },1000);
+    };
+</script>
+
+</body>
+</html>

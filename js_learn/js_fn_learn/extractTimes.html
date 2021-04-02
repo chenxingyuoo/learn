@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+
+<body>
+<script>
+    var Timestamp = 1458974676;
+    var newDate = new Date();
+    newDate.setTime(Timestamp * 1000);
+
+    var s = newDate.toLocaleString();
+    var times = s.replace(/年|月|\//g, "-").replace(/日/g, " ").replace(/上午|下午|晚上/g,'') + ' '
+    console.log(s.replace(/年|月|\//g, "-").replace(/日/g, " ").replace(/上午|下午|晚上/g,''));
+    //console.log(s.substring(0,4),s.substring(5,4))
+    //console.log(s.slice(0));
+   // console.log(a.indexOf('-'))
+    //console.log(a.indexOf('-',5))
+
+    function extractTime(time, start_str , end_str , str_position , end_position){
+        var start = time.indexOf(start_str ,  time.indexOf(start_str) + str_position) + (start_str.length);
+        var end = time.indexOf(end_str, start + end_position);
+        var t =  time.slice(start, end);
+        return t < 10 ? '0' + t : t;
+    }
+
+    console.log(extractTime(times, '-', ' ' , 1 , 1))
+    console.log(times.substring(0,4) + '-' + extractTime(times, '-', '-' , 0 ,0))
+    console.log(times.substring(0,4) + '-' + extractTime(times, '-', '-' , 0 ,0) + '-' + extractTime(times, '-', ' ' , 1 , 1) + ' ' + extractTime(times, ' ', ':' , 0 ,0) + ':' + extractTime(times, ':', ':' , 0 ,0) + ':' +  extractTime(times, ':', ' ' , 1 ,0));
+</script>
+</body>
+</html>

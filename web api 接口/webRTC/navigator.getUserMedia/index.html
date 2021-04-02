@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        video{
+            -webkit-transform: scale(-1, 1);
+            transform: scale(-1, 1);
+        }
+    </style>
+</head>
+
+<body>
+
+<video autoplay></video>
+
+<script>
+
+    //简单的检查navigator.getUserMedia
+
+    function hasGetUserMedia() {
+        debugger;
+        return !!(navigator.getUserMedia || navigator.webkitGetUserMedia ||
+        navigator.mozGetUserMedia || navigator.msGetUserMedia);
+    }
+
+    if (hasGetUserMedia()) {
+        // Good to go!
+    } else {
+        alert('getUserMedia() is not supported in your browser');
+    }
+    var errorCallback = function(e) {
+        console.log('Reeeejected!', e);
+    };
+
+
+    navigator.getUserMedia  = navigator.getUserMedia ||
+            navigator.webkitGetUserMedia ||
+            navigator.mozGetUserMedia ||
+            navigator.msGetUserMedia;
+
+    var video = document.querySelector('video');
+
+    if (navigator.getUserMedia) {
+        navigator.getUserMedia({audio: true, video: true}, function(stream) {
+            video.src = window.URL.createObjectURL(stream);
+        }, errorCallback);
+    } else {
+        video.src = 'somevideo.webm'; // fallback.
+    }
+
+
+</script>
+</body>
+</html>

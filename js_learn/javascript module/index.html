@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>javascript 框架</title>
+</head>
+
+<body>
+<script>
+
+
+    //1.1 模块的定义
+
+    //本来我们打算自己当上帝的，现在只好改行先当个工商局长。你想开店吗？先来注册，不然封杀你！于是良民们纷纷来注册。店名叫什么，从哪进货，卖什么的，一一登记在案，为了方便下面的讨论，我们连进货的过程都让工商局管理起来。
+
+    //店名，指的就是这里的模块名，从哪里进货，代表它依赖什么其他模块，卖什么，表示它对外提供一些什么特性。
+
+    //好了，考虑到我们的这个注册管理机构是个全局作用域，我们还得把它挂在window上作为属性，然后再用一个function隔离出来，要不然，别人也定义一个同名的，就把我们覆盖掉了。
+
+    /*(function() {
+        window.thin = {
+            define: function(name, dependencies, factory) {
+                //register a module
+            }
+        };
+    })();*/
+
+
+    //在这个module方法内部，应当怎么去实现呢？我们的module应当有一个地方存储，但存储是要在工商局内部的，不是随便什么人都可以看到的，所以，这个存储结构也放在工商局同样的作用域里。
+
+    //用什么结构去存储呢？工商局备案的时候，店名不能跟已有的重复，所以我们发现这是用map的很好场景，考虑到JavaScript语言层面没有map，我们弄个Object来存。
+
+    /*(function() {
+        var moduleMap = {};
+        window.thin = {
+            define: function(name, dependencies, factory) {
+                //注册模块 ， 如果 moduleMap 里面没有的话。
+                if(!moduleMap[name]){
+                    var module = {
+                        name: name,
+                        dependencies: dependencies,
+                        factory: factory
+                    }
+
+                    moduleMap[name] = module;
+                }
+
+                return moduleMap[name];
+            }
+        };
+    })();*/
+
+    //现在，模块的存储结构就搞好了。
+
+
+    //1.2 模块的使用
+
+
+
+    //存的部分搞好了，我们来看看怎么取。现在来了一个商家，卖木器的，他需要从一个卖钉子的那边进货，卖钉子的已经来注册过了，现在要让这个木器厂能买到钉子。现在的问题是，两个商家处于不同的作用域，也就是说，它们互相不可见，那通过什么方式，我们才能让他们产生调用关系呢？
+
+    //个人解决不了的问题还是得靠政府，有困难要坚决克服，没有困难就制造困难来克服。现在困难有了，该克服了。商家说，我能不能给你我的进货名单，你帮我查一下它们在哪家店，然后告诉我？这么简单的要求当然一口答应下来，但是采用什么方式传递给你呢？这可犯难了。
+
+    //我们参考AngularJS框架，写了一个类似的代码：
+
+
+    /*thin.define("A", [], function() {
+        //module A
+    });
+
+    thin.define("B", ["A"], function(A) {
+        //module B
+        var a = new A();
+    });*/
+
+    //看这段代码特别在哪里呢？模块A的定义，毫无特别之处，主要看模块B。它在依赖关系里写了一个字符串的A，然后在工厂方法的形参写了一个真真切切的A类型。嗯？这个有些奇怪啊，你的A类型要怎么传递过来呢？其实是很简单的，因为我们声明了依赖项的数组，所以可以从依赖项，挨个得到对应的工厂方法，然后创建实例，传进来。
+
+
+    (function() {
+        var moduleMap = {};
+
+        var noop = function () {
+        };
+
+
+        window.thin = {
+            define: function(name, dependencies, factory) {
+
+                //注册模块 ， 如果 moduleMap 里面没有的话。
+                if(!moduleMap[name]){
+                    var module = {
+                        name: name,
+                        dependencies: dependencies,
+                        factory: factory
+                    }
+
+                    moduleMap[name] = module;
+                }
+
+                return moduleMap[name];
+            },
+
+
+            use: function(name) {
+
+                var module = moduleMap[name];
+
+                if (!module.entity) {
+                    var args = [];
+
+                    for (var i=0; i<module.dependencies.length; i++) {
+                        if (moduleMap[module.dependencies[i]].entity) {
+                            args.push(moduleMap[module.dependencies[i]].entity);
+                        }
+                        else {
+                            //递归获取依赖项 ，然后当作参数，用这个模块的工厂方法来实例化了一下
+                            //递归完之后 ， 将返回的结过push 进 args
+                             args.push(this.use(module.dependencies[i]));
+                        }
+                    }
+
+                    //使用每个依赖项递归此函数，执行的时候， 因为依赖项本身是没有其他依赖项（也就是工厂方法），所有就会在 module.entity 中保存起来此依赖项（工厂方法 或者说 模块）
+                    module.entity = module.factory.apply(null, args);
+                }
+
+                return module.entity;
+            }
+        };
+    })();
+
+    //我们可以看到，这里面递归获取了依赖项，然后当作参数，用这个模块的工厂方法来实例化了一下。这里我们多做了一个判断，如果模块工厂已经执行过，就缓存在entity属性上，不需要每次都创建。以此类推，假如一个模块有多个依赖项，也可以用类似的方式写，毫无压力：
+
+    //创建模块B ， 他的依赖项 A ,B C  //可以从依赖项，挨个得到对应的工厂方法，然后创建实例，传进来。
+    /*thin.define("D", ["A", "B", "C"], function(A, B, C) {
+        //module D
+        var a = new A();
+        var b = new B();
+        var c = new C();
+    });*/
+
+
+    //注意了，D模块的工厂，实参的名称未必就要是跟依赖项一致，比如，以后我们代码较多，可以给依赖项和模块名称加命名空间，可能变成这样：
+    /*thin.define("foo.D", ["foo.A", "foo.B", "foo.C"], function(A, B, C) {
+        //module D
+        var a = new A();
+        var b = new B();
+        var c = new C();
+    });*/
+
+
+    //这段代码仍然可以正常运行。我们来做另外一个测试，改变形参的顺序：
+
+    thin.define("A", [], function() {
+        return "a";
+    });
+
+    thin.define("B", [], function() {
+        return "b";
+    });
+
+    thin.define("C", [], function() {
+        return "c";
+    });
+
+    thin.define("D", ["A", "B", "C"], function(B, A, C) {
+        return B + A + C;
+    });
+
+    var D = thin.use("D");
+    console.log(D) // abc
+
+    //试试看，我们的D打出什么结果呢？结果是"abc"，所以说，模块工厂的实参只跟依赖项的定义有关，跟形参的顺序无关。我们看到，在AngularJS里面，并非如此，实参的顺序是跟形参一致的，这是怎么做到的呢？
+
+
+    //我们先离开代码，思考这么一个问题：如何得知函数的形参名数组？对，我们是可以用func.length得到形参个数，但无法得到每个形参的变量名，那怎么办呢？
+
+    //AngularJS使用了一种比较极端的办法，分析了函数的字面量。众所周知，在JavaScript中，任何对象都隐含了toString方法，对于一个函数来说，它的toString就是自己的实现代码，包含函数签名和注释。下面我贴一下AngularJS里面的这部分代码：
+
+    var FN_ARGS = /^function\s*[^\(]*\(\s*([^\)]*)\)/m;
+    var FN_ARG_SPLIT = /,/;
+    var FN_ARG = /^\s*(_?)(\S+?)\1\s*$/;
+    var STRIP_COMMENTS = /((\/\/.*$)|(\/\*[\s\S]*?\*\/))/mg;
+
+    /*function annotate(fn) {
+     var $inject,
+     fnText,
+     argDecl,
+     last;
+
+     if (typeof fn == 'function') {
+     if (!($inject = fn.$inject)) {
+     $inject = [];
+     fnText = fn.toString().replace(STRIP_COMMENTS, '');
+     argDecl = fnText.match(FN_ARGS);
+     foreach(argDecl[1].split(FN_ARG_SPLIT), function(arg){
+     arg.replace(FN_ARG, function(all, underscore, name){
+     $inject.push(name);
+     });
+     });
+     fn.$inject = $inject;
+     }
+     } else if (isArray(fn)) {
+     last = fn.length - 1;
+     assertArgFn(fn[last], 'fn');
+     $inject = fn.slice(0, last);
+     } else {
+     assertArgFn(fn, 'fn', true);
+     }
+     return $inject;
+     }*/
+
+
+    //可以看到，这个代码也不长，重点是类型为function的那段，首先去除了注释，然后获取了形参列表字符串，这段正则能获取到两个结果，第一个是全函数的实现，第二个才是真正的形参列表，取第二个出来split，就得到了形参的字符串列表了，然后按照这个顺序再去加载依赖模块，就可以让形参列表不对应于依赖项数组了。
+
+
+    //测试一下
+    function bus(bus, _as ,$o,obj){}
+
+    var fnText = bus.toString().replace(STRIP_COMMENTS, '');
+    var argDecl = fnText.match(FN_ARGS);
+    console.log(fnText);  //function bus(bus, _as ,$o,obj){}
+    console.log(argDecl); //["function bus(bus, _as ,$o,obj)", "bus, _as ,$o,obj", index: 0, input: "function bus(bus, _as ,$o,obj){}"]
+
+
+    function foreach(array, action) {
+        //执行 step 函数的步骤 4 , 这里action是bind函数返回的分布函数 ，  依次 执行 array 每一个数组元素 ， 返回一个数组
+        for (var i = 0; i < array.length; i++) {
+
+            //action 可以是声明函数 ， 也可以是匿名函数 ， 括号里面就是传的实参
+            action(array[i]);  // 依次 执行函数 ，  array为 每一个数组元素 ， 返回一个数组
+
+        }
+
+    }
+
+    var $inject = [];
+    foreach(argDecl[1].split(FN_ARG_SPLIT), function(arg){
+
+        arg.replace(FN_ARG, function(all, underscore, name){
+            $inject.push(name);
+        });
+    });
+
+    console.log($inject); //["bus", "_as", "$o", "obj"]
+
+
+
+
+
+
+    //1.3 模块的加载
+
+    //到目前为止，我们可以把多个模块都定义在一个文件中，然后手动引入这个js文件，但是如果一个页面要引用很多个模块，引入工作就变得比较麻烦，比如说，单页应用程序（SPA）一般比较复杂，往往包含数以万计行数的js代码，这些代码至少分布在几十个甚至成百上千的模块中，如果我们也在主界面就加载它们，载入时间会非常难以接受。但我们可以这样看：主界面加载的时候，并不是用到了所有这些功能，能否先加载那些必须的，而把剩下的放在需要用的时候再去加载？
+
+    //算了，我们还是用最简单的方式了，就是动态创建script标签，然后设置src，添加到document.head里，然后监听它们的完成事件，做后续操作。真的很简单，因为我们的框架不需要考虑那么多种情况，不需要AMD，不需要require那么麻烦，用这框架的人必须按照这里的原则写。
+
+
+    //界面把所依赖的js文件路径放在数组里，然后挨个创建script标签，src设置为路径，添加到head中，监听它们的完成事件。在这个完成时间里，我们要做这么一些事情：在fileMap里记录当前js文件的路径，防止以后重复加载，检查列表中所有文件，看看是否全部加载完了，如果全加载好了，就执行回调。
+
+
+    (function() {
+        //保存模块
+        var moduleMap = {};
+        //保存js文件路径
+        var fileMap = {};
+
+
+        var thin = {
+
+            define: function(name, dependencies, factory) {
+
+                //注册模块 ， 如果 moduleMap 里面没有的话。
+                if(!moduleMap[name]){
+                    var module = {
+                        name: name,
+                        dependencies: dependencies,
+                        factory: factory
+                    }
+
+                    moduleMap[name] = module;
+                }
+
+                return moduleMap[name];
+            },
+
+
+            use: function(name) {
+
+                var module = moduleMap[name];
+
+                if (!module.entity) {
+                    var args = [];
+                    //遍历依赖项
+                    for (var i=0; i<module.dependencies.length; i++) {
+                        if (moduleMap[module.dependencies[i]].entity) {
+                            args.push(moduleMap[module.dependencies[i]].entity);
+                        }
+                        else {
+                            //递归获取依赖项 ，然后当作参数，用这个模块的工厂方法来实例化了一下
+                            //递归完之后 ， 将返回的结过push 进 args
+                            args.push(this.use(module.dependencies[i]));
+                        }
+                    }
+
+                    //使用每个依赖项递归此函数，执行的时候， 因为依赖项本身是没有其他依赖项（也就是工厂方法），所有就会在 module.entity 中保存起来此依赖项（工厂方法 或者说 模块）
+                    module.entity = module.factory.apply(null, args);
+                }
+
+                return module.entity;
+            },
+
+            require: function (pathArr, callback) {
+
+                for (var i = 0; i < pathArr.length; i++) {
+                    var path = pathArr[i];
+
+                    if (!fileMap[path]) {
+                        var head = document.getElementsByTagName('body')[0];
+                        var node = document.createElement('script');
+                        node.type = 'text/javascript';
+                        node.async = 'true';
+                        node.src = path + '.js';
+                        node.onload = function () {
+                            fileMap[path] = true;
+                            head.removeChild(node);
+                            checkAllFiles();
+                        };
+                        head.appendChild(node);
+                    }
+                }
+
+                function checkAllFiles() {
+                    var allLoaded = true;
+                    for (var i = 0; i < pathArr.length; i++) {
+                        if (!fileMap[pathArr[i]]) {
+                            allLoaded = false;
+                            break;
+                        }
+                    }
+
+                    //所有文件加载完毕才执行回调函数
+                    if (allLoaded) {
+                        callback ? callback() : '';
+                    }
+                }
+            }
+        };
+
+        window.thin = thin;
+    })();
+
+
+
+    thin.define("constant.PI", [], function() {
+        return 3.14159;
+    });
+
+    thin.define("shape.Circle", ["constant.PI"], function(pi) {
+        var Circle = function(r) {
+            this.r = r;
+        };
+
+        Circle.prototype = {
+            area : function() {
+                return pi * this.r * this.r;
+            }
+        }
+
+        return Circle;
+    });
+
+
+    thin.define("shape.Rectangle", [], function() {
+        var Rectangle = function(l, w) {
+            this.l = l;
+            this.w = w;
+        };
+
+        Rectangle.prototype = {
+            area: function() {
+                return this.l * this.w;
+            }
+        };
+
+        return Rectangle;
+    });
+
+
+
+    thin.define("shape.Circle", ["constant.PI"], function(pi) {
+        var Circle = function(r) {
+            this.r = r;
+        };
+
+        Circle.prototype = {
+            area : function() {
+                return pi * this.r * this.r;
+            }
+        }
+
+        return Circle;
+    });
+
+
+    thin.define("ShapeTypes", ["shape.Circle", "shape.Rectangle"], function(Circle, Rectangle) {
+        return {
+            CIRCLE: Circle,
+            RECTANGLE: Rectangle
+        };
+    });
+
+    thin.define("ShapeFactory", ["ShapeTypes"], function(ShapeTypes) {
+        return {
+            getShape: function(type) {
+                var shape;
+
+                switch (type) {
+                    case "CIRCLE": {
+                        shape = new ShapeTypes[type](arguments[1]);
+                        break;
+                    }
+                    case "RECTANGLE":  {
+                        shape = new ShapeTypes[type](arguments[1], arguments[2]);
+                        break;
+                    }
+                }
+
+                return shape;
+            }
+        };
+    });
+
+
+    //在这个例子里定义了四个模块，每个模块只需要定义自己所直接依赖的模块，其他的可以不必定义。
+    var ShapeFactory = thin.use("ShapeFactory");
+    console.log(ShapeFactory.getShape("CIRCLE", 5).area());   //78.53975
+    console.log(ShapeFactory.getShape("RECTANGLE", 3, 4).area());  //12
+
+    //执行循序
+    // 1执行 thin.use("ShapeFactory");
+    // 2  遍历 ShapeFactory 模块的依赖项 ， ShapeFactory 的依赖项 ShapeTypes 递归 thin.use()函数
+    // 3  执行thin.use('ShapeTypes') ，遍历 ShapeTypes 模块的依赖项 (2个)  ，  ShapeTypes 的依赖项 shape.Circle（ShapeTypes的第一个依赖项） 递归 thin.use()函数 。 然后执行thin.use('shape.Circle') ，遍历 shape.Circle 模块的依赖项 （1个） ， shape.Circle的依赖项 constant.PI 递归thin.use()函数 。  再到 shape.Rectangle（ShapeTypes的第二个依赖项） 递归 thin.use()函数；
+
+    //就这样一直依赖下去 ，一个依赖着一个
+
+
+
+</script>
+</body>
+</html>

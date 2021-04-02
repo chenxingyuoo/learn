@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Object.preventExtensions 函数 </title>
+</head>
+
+<body>
+<script>
+    //阻止向对象添加新属性。
+    // Create an object that has two properties.
+    var obj = { pasta: "spaghetti", length: 10 };
+
+    // Make the object non-extensible.
+    Object.preventExtensions(obj);
+    document.write(Object.isExtensible(obj));
+    document.write("<br/>");
+
+    // Try to add a new property, and then verify that it is not added.
+    obj.newProp = 50;
+    document.write(obj.newProp);
+
+    // Output:
+    // false
+    // undefined
+
+</script>
+</body>
+</html>

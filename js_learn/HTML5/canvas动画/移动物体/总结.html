@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>总结</title>
+</head>
+
+<pre>
+    //得到球体坐标
+Ball.prototype.getBounds = function(){
+    return {
+        x: this.x - this.radius,
+        y: this.y - this.radius,
+        width: this.radius*2,
+        height: this.radius*2
+    };
+}
+//捕获物体
+utils.containsPoint = function(rect, x, y){
+    return !(x < rect.x || x > rect.x + rect.width ||
+    y < rect.y || y > rect.y + rect.height);
+        }
+
+        //物体的移动拖拽
+        canvas.addEventListener("mousedown", function(event){
+        if(utils.containsPoint(ball.getBounds(), mouse.x, mouse.y)){
+        ...
+        canvas.addEventListener('mouseup', onMouseUp ,false);
+        canvas.addEventListener('mousemove', onMouseMove, false);
+        }
+        }, false);
+
+
+        //理解物体的抛扔的概念
+        vx = ball.x - oldX;
+        vy = ball.y - oldY
+</pre>
+
+<body>
+
+</body>
+</html>

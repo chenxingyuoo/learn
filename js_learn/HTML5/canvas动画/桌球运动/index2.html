@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>桌球运动2</title>
+</head>
+<body>
+<canvas id="canvas" width="500" height="500" style="background:#000">
+    <p>your browser not support canvas</p>
+</canvas>
+<script src="../js/utils.js"></script>
+<script src="../js/ball.js"></script>
+<script>
+    window.onload = function () {
+        var canvas = document.querySelector('canvas'),
+                context = canvas.getContext('2d'),
+                ball0 = new Ball(),
+                ball1 = new Ball(20, "red");
+
+        //球0
+        ball0.mass = 3;                  //质量为2
+        ball0.x = 50;
+        ball0.y = canvas.height / 2;
+        ball0.vx = 1;
+
+        //球1
+        ball1.mass = 1;                    //质量为1
+        ball1.x = 400;
+        ball1.y = canvas.height / 2;
+        ball1.vx = -3;                    //速度为反向，大小为1
+
+
+        function ballCollsion(ball0, ball1) {
+            //第一部分
+            var dx = ball1.x - ball0.x,
+                    dy = ball1.y - ball0.y,
+                    dist = Math.sqrt(dx * dx + dy * dy); //用于距离的碰撞检测
+
+            if (dist < ball0.radius + ball1.radius) { //如果发生碰撞
+                //计算物体间的夹角，并得出坐标旋转所需要的sin,cos值
+                var angle = Math.atan2(dy, dx),
+                        sin = Math.sin(angle),
+                        cos = Math.cos(angle),
+                        //ball0旋转后的坐标
+                        x0 = 0,
+                        y0 = 0,
+                        //ball1旋转后的坐标
+                        x1 = dx * cos + dy * sin,
+                        y1 = dy * cos - dx * sin,
+                        //ball0 旋转后的速度
+                        vx0 = ball0.vx * cos + ball0.vy * sin,
+                        vy0 = ball0.vy * cos - ball0.vx * sin,
+                        //ball1 旋转后的速度
+                        vx1 = ball1.vx * cos + ball1.vy * sin,
+                        vy1 = ball1.vy * cos - ball1.vx * sin,
+
+
+                        // 第二部分               //不用考虑竖直方向的速度
+                        vxTotal = vx0 - vx1;
+                //带入公式计算碰撞后的速度
+                vx0 = ((ball0.mass - ball1.mass) * vx0 + 2 * ball1.mass * vx1) / (ball0.mass + ball1.mass);
+                vx1 = vxTotal + vx0;
+                x0 += vx0;
+                x1 += vx1;
+
+                //第三部分               //位置旋转回去
+                var x0Final = x0 * cos - y0 * sin,
+                        y0Final = y0 * cos + x0 * sin,
+                        x1Final = x1 * cos - y1 * sin,
+                        y1Final = y1 * cos + x1 * sin;
+                //调整球体实际上位于屏幕的位置
+                ball1.x = ball0.x + x1Final;
+                ball1.y = ball0.y + y1Final;
+                ball0.x = ball0.x + x0Final;
+                ball0.y = ball0.y + y0Final;
+                //素的旋转回去
+                ball0.vx = vx0 * cos - vy0 * sin;
+                ball0.vy = vy0 * cos + vx0 * sin;
+                ball1.vx = vx1 * cos - vy1 * sin;
+                ball1.vy = vy1 * cos + vx1 * sin;
+            }
+        };
+
+        (function drawFrame() {
+            window.requestAnimationFrame(drawFrame, canvas);
+            context.clearRect(0, 0, canvas.width, canvas.height);
+
+            ball0.x += ball0.vx;
+            ball1.x += ball1.vx;
+
+            ballCollsion(ball0, ball1);
+
+            ball0.draw(context);
+            ball1.draw(context);
+        }());
+    };
+</script>
+</body>
+</html>

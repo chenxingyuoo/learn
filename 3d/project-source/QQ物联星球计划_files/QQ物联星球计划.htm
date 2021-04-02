@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<!-- saved from url=(0073)http://qzs.qq.com/iot/act/starplan/index.html?g_f=5757&srctype=61&ticket= -->
+<html style="overflow: hidden; height: 100%; font-size: 100px;" class="fp-enabled">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>QQ物联星球计划</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="罕见日食直播！QQ物联、上海天文台、深圳市天文台首次联手。">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,minimal-ui">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <!--<base href="http://qzonestyle.gtimg.cn/open_proj/op_mt_proj/qq-controller-event/starplan-over/">-->
+    <base href=".">
+    <link rel="stylesheet" type="text/css" href="./QQ物联星球计划_files/starplan.css">
+</head>
+<body id="box" style="overflow: hidden; height: 100%;" class="fp-viewing-1">
+<div id="j-loading" class="loading" style="display: none;">
+    <div class="loading-box"><i class="load"></i>
+        <svg width="170" height="170" id="svg1">
+            <path d="M89.56,27.597c0,0,43.705-1.197,51.01,36.441c0,0,5.695,29.466-2.477,49.152
+    c0,0-6.19,20.925-33.428,26.372c0,0-28.291,6.562-52.372-4.953c0,0-17.085-7.181-21.914-30.952c0,0-6.314-31.076,4.209-50.514
+    c0,0,9.162-21.543,37.267-25.009C71.855,28.133,81.594,27.205,89.56,27.597z" id="circleone" stroke="#2C2C2C"
+                  stroke-width="1" fill="none"></path>
+            <image xlink:href="img/ball/satellite-load.png" x="-15px" y="-12px" height="30px" width="24px">
+                <animatemotion dur="6s" repeatCount="indefinite" keyTimes="0; .8; 1" keySplines=".5 0 .5 1"
+                               rotate="auto">
+                    <mpath xlink:href="//qzs.qq.com/iot/act/starplan/index.html#circleone"></mpath>
+                </animatemotion>
+            </image>
+        </svg>
+        <svg width="170" height="170" id="svg2">
+            <path d="M90.877,51.031c0,0,24.019-0.496,27.899,25.34c0,0,2.806,18.572-4.623,29.054
+    c0,0-2.724,3.714-3.962,4.705l7.759,7.924H79.404c0,0-14.733-0.289-21.832-11.184c0,0-6.892-9.533-5.736-26.125
+    c0,0,0.164-20.552,16.425-26.825C68.261,53.92,75.731,50.041,90.877,51.031z" id="circleone2" stroke="#2C2C2C"
+                  stroke-width="1" fill="none"></path>
+            <image xlink:href="img/ball/star-load.png" x="-5px" y="-5px" height="10px" width="10px">
+                <animatemotion dur="4s" repeatCount="indefinite" values="160;40;160" rotate="auto">
+                    <mpath xlink:href="//qzs.qq.com/iot/act/starplan/index.html#circleone2"></mpath>
+                </animatemotion>
+            </image>
+            <rect x="0" y="0" width="30" height="30" style="stroke: #090915; fill: #090915"></rect>
+        </svg>
+    </div>
+    <span class="num"><span id="j-progress">100</span>%</span> <span class="wording">星球计划正在启动...</span></div>
+<script>!function (t, a) {
+  "function" == typeof define && define.amd ? define(a) : "object" == typeof exports ? module.exports = a(require, exports, module) : t.CountUp = a()
+}(this, function () {
+  var t = function (t, a, e, n, i, r) {
+    for (var o = 0, s = ["webkit", "moz", "ms", "o"], u = 0; u < s.length && !window.requestAnimationFrame; ++u) window.requestAnimationFrame = window[s[u] + "RequestAnimationFrame"], window.cancelAnimationFrame = window[s[u] + "CancelAnimationFrame"] || window[s[u] + "CancelRequestAnimationFrame"];
+    window.requestAnimationFrame || (window.requestAnimationFrame = function (t) {
+      var a = (new Date).getTime(), e = Math.max(0, 16 - (a - o)), n = window.setTimeout(function () {
+        t(a + e)
+      }, e);
+      return o = a + e, n
+    }), window.cancelAnimationFrame || (window.cancelAnimationFrame = function (t) {
+      clearTimeout(t)
+    }), this.options = {useEasing: !0, useGrouping: !0, separator: ",", decimal: "."};
+    for (var m in r) r.hasOwnProperty(m) && (this.options[m] = r[m]);
+    "" === this.options.separator && (this.options.useGrouping = !1), this.options.prefix || (this.options.prefix = ""), this.options.suffix || (this.options.suffix = ""), this.d = "string" == typeof t ? document.getElementById(t) : t, this.startVal = Number(a), this.endVal = Number(e), this.countDown = this.startVal > this.endVal, this.frameVal = this.startVal, this.decimals = Math.max(0, n || 0), this.dec = Math.pow(10, this.decimals), this.duration = 1e3 * Number(i) || 2e3;
+    var l = this;
+    this.version = function () {
+      return "1.6.0"
+    }, this.printValue = function (t) {
+      var a = isNaN(t) ? "--" : l.formatNumber(t);
+      "INPUT" == l.d.tagName ? this.d.value = a : "text" == l.d.tagName || "tspan" == l.d.tagName ? this.d.textContent = a : this.d.innerHTML = a
+    }, this.easeOutExpo = function (t, a, e, n) {
+      return e * (-Math.pow(2, -10 * t / n) + 1) * 1024 / 1023 + a
+    }, this.count = function (t) {
+      l.startTime || (l.startTime = t), l.timestamp = t;
+      var a = t - l.startTime;
+      l.remaining = l.duration - a, l.frameVal = l.options.useEasing ? l.countDown ? l.startVal - l.easeOutExpo(a, 0, l.startVal - l.endVal, l.duration) : l.easeOutExpo(a, l.startVal, l.endVal - l.startVal, l.duration) : l.countDown ? l.startVal - (l.startVal - l.endVal) * (a / l.duration) : l.startVal + (l.endVal - l.startVal) * (a / l.duration), l.frameVal = l.countDown ? l.frameVal < l.endVal ? l.endVal : l.frameVal : l.frameVal > l.endVal ? l.endVal : l.frameVal, l.frameVal = Math.round(l.frameVal * l.dec) / l.dec, l.printValue(l.frameVal), a < l.duration ? l.rAF = requestAnimationFrame(l.count) : l.callback && l.callback()
+    }, this.start = function (t) {
+      return l.callback = t, l.rAF = requestAnimationFrame(l.count), !1
+    }, this.pauseResume = function () {
+      l.paused ? (l.paused = !1, delete l.startTime, l.duration = l.remaining, l.startVal = l.frameVal, requestAnimationFrame(l.count)) : (l.paused = !0, cancelAnimationFrame(l.rAF))
+    }, this.reset = function () {
+      l.paused = !1, delete l.startTime, l.startVal = a, cancelAnimationFrame(l.rAF), l.printValue(l.startVal)
+    }, this.update = function (t) {
+      cancelAnimationFrame(l.rAF), l.paused = !1, delete l.startTime, l.startVal = l.frameVal, l.endVal = Number(t), l.countDown = l.startVal > l.endVal, l.rAF = requestAnimationFrame(l.count)
+    }, this.formatNumber = function (t) {
+      t = t.toFixed(l.decimals), t += "";
+      var a, e, n, i;
+      if (a = t.split("."), e = a[0], n = a.length > 1 ? l.options.decimal + a[1] : "", i = /(\d+)(\d{3})/, l.options.useGrouping) for (; i.test(e);) e = e.replace(i, "$1" + l.options.separator + "$2");
+      return l.options.prefix + e + n + l.options.suffix
+    }, l.printValue(l.startVal)
+  };
+  return t
+});
+var options = {useEasing: !0, useGrouping: !0, separator: ",", decimal: ".", prefix: "", suffix: "", duration: 3},
+  progressTimeout, pageProgress = new CountUp("j-progress", 0, 90, 0, options.duration, options);
+pageProgress.start();</script>
+<a class="btn-music"></a>
+<div id="j-bgm-box"></div>
+<div id="j-pane-container" class="panes wrapper fullpage-wrapper"
+     style="height: 100%; position: relative; touch-action: none; transform: translate3d(0px, -667px, 0px); transition: all 700ms ease;"></div>
+<section id="j-cube-page" class="page3 moving" style=""><a class="btn-lock"></a> <i class="lock-tip none"></i>
+    <div class="front"><i class="fb c1"></i> <i class="fb c2"></i> <i class="fb word1"></i>
+        <div class="fb word2"><span class="angle">0°</span> <span class="distance">3000</span></div>
+    </div>
+    <div id="quanjing" class="quanjing" style="">
+        <div class="main">
+            <div style="overflow: hidden; transform-style: preserve-3d; width: 375px; height: 667px; perspective: 279.84px;">
+                <div style="transform-style: preserve-3d; width: 375px; height: 667px; transform: translate3d(0px, 0px, 279.84px) matrix3d(1, 0, 0, 0, 0, -1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1) translate3d(187.5px, 333.5px, 0px);">
+                    <div id="section_0"
+                         style="width: 514px; height: 514px; background-image: url(&quot;img/0001.jpg&quot;); background-size: cover; position: absolute; transform: translate3d(-50%, -50%, 0px) matrix3d(0, 0, -1, 0, 0, -1, 0, 0, 1, 0, 0, 0, -256, 0, 0, 1);">
+                        <div class="button_ball left_button_01" data-planet="connect">
+                            <div class="ball"><img src="./QQ物联星球计划_files/connect.gif" class="ball-qq"></div>
+                            <i class="connect-tip"></i><i class="name"></i></div>
+                        <div class="button_ball left_button_02" data-planet="mars">
+                            <div class="ball"><i class="shadow"></i>
+                                <div class="ball-img ball-mars ball-qi"></div>
+                            </div>
+                            <i class="name"></i></div>
+                    </div>
+                    <div id="section_1"
+                         style="width: 514px; height: 514px; background-image: url(&quot;img/0002.jpg&quot;); background-size: cover; position: absolute; transform: translate3d(-50%, -50%, 0px) matrix3d(0, 0, 1, 0, 0, -1, 0, 0, -1, 0, 0, 0, 256, 0, 0, 1);">
+                        <div class="button_ball right_button_01" data-planet="saturn">
+                            <div class="ball">
+                                <div class="ball-img ball-tu"></div>
+                            </div>
+                            <i class="name"></i></div>
+                    </div>
+                    <div id="section_2"
+                         style="width: 514px; height: 514px; background-image: url(&quot;img/0001.jpg&quot;); background-size: cover; position: absolute; transform: translate3d(-50%, -50%, 0px) matrix3d(-1, 0, 0, 0, 0, 0, 1, 0, 0, -1, 0, 0, 0, 256, 0, 1);">
+                        <div class="button_ball up_button_01" data-planet="qlippie">
+                            <div class="ball"><img src="./QQ物联星球计划_files/qlippie.gif" class="ball-qlippie"></div>
+                            <i class="name"></i></div>
+                    </div>
+                    <div id="section_3"
+                         style="width: 514px; height: 514px; background-image: url(&quot;img/0002.jpg&quot;); background-size: cover; position: absolute; transform: translate3d(-50%, -50%, 0px) matrix3d(-1, 0, 0, 0, 0, 0, -1, 0, 0, 1, 0, 0, 0, -256, 0, 1);">
+                        <div class="button_ball bottom_button_01" data-planet="jupiter">
+                            <div class="ball"><i class="shadow"></i>
+                                <div class="ball-img ball-jupiter"></div>
+                            </div>
+                            <i class="name"></i></div>
+                    </div>
+                    <div id="section_4"
+                         style="width: 514px; height: 514px; background-image: url(&quot;img/0001.jpg&quot;); background-size: cover; position: absolute; transform: translate3d(-50%, -50%, 0px) matrix3d(-1, 0, 0, 0, 0, -1, 0, 0, 0, 0, -1, 0, 0, 0, 256, 1);">
+                        <div class="button_ball back_button_01" data-planet="sun">
+                            <div class="ball"><i class="shadow"></i>
+                                <div class="ball-img ball-sun"></div>
+                            </div>
+                            <i class="sun-tip"></i><i class="name"></i></div>
+                    </div>
+                    <div id="section_5"
+                         style="width: 514px; height: 514px; background-image: url(&quot;img/0002.jpg&quot;); background-size: cover; position: absolute; transform: translate3d(-50%, -50%, 0px) matrix3d(1, 0, 0, 0, 0, -1, 0, 0, 0, 0, 1, 0, 0, 0, -256, 1);">
+                        <div class="button_ball front_button_01" data-planet="earth">
+                            <div class="ball"><i class="shadow"></i><i class="sate"></i>
+                                <div class="ball-img ball-earth"></div>
+                            </div>
+                            <i class="name"></i></div>
+                        <div class="button_ball front_button_02" data-planet="moon">
+                            <div class="ball"><i class="shadow"></i>
+                                <div class="ball-img ball-moon"></div>
+                            </div>
+                            <i class="name"></i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="quanjing-bf" class="quanjing-bf" style="display:none">
+        <div class="quanjing-inner">
+            <div class="button_ball left_button_01" data-planet="connect">
+                <div class="ball"><img src="./QQ物联星球计划_files/connect.gif" class="ball-qq"></div>
+                <i class="connect-tip"></i> <i class="name"></i></div>
+            <div class="button_ball left_button_02" data-planet="mars">
+                <div class="ball"><i class="shadow"></i>
+                    <div class="ball-img ball-mars ball-qi"></div>
+                </div>
+                <i class="name"></i></div>
+            <div class="button_ball right_button_01" data-planet="saturn">
+                <div class="ball">
+                    <div class="ball-img ball-tu"></div>
+                </div>
+                <i class="name"></i></div>
+            <div class="button_ball up_button_01" data-planet="qlippie">
+                <div class="ball"><img src="./QQ物联星球计划_files/qlippie.gif" class="ball-qlippie"></div>
+                <i class="name"></i></div>
+            <div class="button_ball bottom_button_01" data-planet="jupiter">
+                <div class="ball"><i class="shadow"></i>
+                    <div class="ball-img ball-jupiter"></div>
+                </div>
+                <i class="name"></i></div>
+            <div class="button_ball back_button_01" data-planet="sun">
+                <div class="ball"><i class="shadow"></i>
+                    <div class="ball-img ball-sun"></div>
+                </div>
+                <i class="sun-tip"></i> <i class="name"></i></div>
+            <div class="button_ball front_button_01" data-planet="earth">
+                <div class="ball"><i class="shadow"></i> <i class="sate"></i>
+                    <div class="ball-img ball-earth"></div>
+                </div>
+                <i class="name"></i></div>
+            <div class="button_ball front_button_02" data-planet="moon">
+                <div class="ball"><i class="shadow"></i>
+                    <div class="ball-img ball-moon"></div>
+                </div>
+                <i class="name"></i></div>
+        </div>
+        <div id="quanjing-bg" class="quanjing-bg">
+            <div class="bg"></div>
+        </div>
+    </div>
+    <div id="cube-guide" class="guide" style="display: none;">
+        <div class="pop-mask"></div>
+        <div class="guide-inner">
+            <div class="guide-ios" style="display: none;"><i></i><span>转动手机开始探索</span><span>点击星球更多惊喜</span></div>
+            <div class="guide-android" style="display:none"><i></i><span>拖动手机开始探索</span><span>点击星球更多惊喜</span></div>
+        </div>
+    </div>
+    <div id="share-guide" class="guide share">
+        <div class="pop-mask"></div>
+        <div class="share-inner">
+            <div class="share-pic"><i></i><span>邀请好友一起探索</span></div>
+        </div>
+    </div>
+    <div class="pop"></div>
+</section>
+<div class="no-landscape-mask"></div>
+<div class="no-landscape">
+    <div class="ico"></div>
+    <div class="txt"><p>为了更好的体验，请使用竖屏浏览</p></div>
+</div>
+<script defer="defer" src="./QQ物联星球计划_files/main.js"></script>
+<script defer="defer" src="./QQ物联星球计划_files/tvp.player_v2_jq.js"></script>
+<script defer="defer" type="text/javascript" src="./QQ物联星球计划_files/h5" charset="UTF-8"></script>
+<script id="tpl-dialog-video" type="text/plain">
+    <div
+     class="pop-mask"></div>
+            <div class="pop-inner">
+                <span class="close"></span>
+                <div class="pop-before">
+                    <span class="km">{far|safe}</span>
+                    <span class="km-name">{name}</span>
+                </div>
+                <div class="pop-after">
+                    <i class="ico-notice"></i>
+                    <span class="name">{title}</span>
+                    <p class="far">{desc}</p>
+                    <div id="video-box" class="video-box"></div>
+                    <a class="btn btn-more">立即去看直播</a>
+                    <a class="btn btn-friend">邀请好友探索</a>
+                </div>
+            </div>
+</script>
+<script id="tpl-dialog-star" type="text/plain">
+    <div
+     class="pop-mask"></div>
+            <div class="pop-inner pop-star">
+                <span class="close"></span>
+                <div class="pop-before">
+                    <span class="km">{far|safe}</span>
+                    <span class="km-name">{name|safe}</span>
+                </div>
+                <div class="pop-after">
+                     <i class="ico-notice"></i>
+                    <span class="name">{title}</span>
+                    <p class="far">{desc}</p>
+                    <div id="j-star-list" class="star-list"><div class="star-list-inner"></div></div>
+                    <a class="btn btn-more">立即去看直播</a>
+                    <a class="btn btn-friend">邀请好友探索</a>
+                </div>
+            </div>
+</script>
+<script id="tpl-dialog-tudou" type="text/plain">
+    <div
+     class="pop-mask"></div>
+            <div class="pop-inner pop-tudou">
+                <span class="close"></span>
+                <div class="pop-before">
+                    <span class="km">{far|safe}</span>
+                    <span class="km-name">{name}</span>
+                </div>
+                <div class="pop-after">
+                     <i class="ico-notice"></i>
+                    <span class="name">{title}</span>
+                    <p class="far">{desc}</p>
+                    <div class="tudou"><img src="img/tudou.png" alt=""></div>
+                    <a class="btn btn-more">立即去看直播</a>
+                    <a class="btn btn-friend">邀请好友探索</a>
+                </div>
+            </div>
+</script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+p {
+  background: -webkit-linear-gradient(top, #fff, #666);
+  background: -moz-linear-gradient(top, #fff, #666);
+  background: -ms-linear-gradient(top, #fff, #666);
+  background: -o-linear-gradient(top, #fff, #666);
+  filter: progid:DXImageTransform.Microsoft.gradient(startcolorstr=#fff,endcolorstr=#666,gradientType=0);
+  background: linear-gradient(to bottom, #fff, #666);
+  height: 50px;
+  width: 100px;
+}

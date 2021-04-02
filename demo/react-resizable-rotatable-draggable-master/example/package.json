@@ -1,0 +1,13 @@
+{
+  "private": true,
+  "scripts": {
+    "build": "webpack -c webpack.config.js --mode production",
+    "build-dev": "webpack -c webpack.config.js --mode development --watch"
+  },
+  "dependencies": {
+    "babel-loader": "^8.0.5",
+    "react-resizable-rotatable-draggable": "file:../",
+    "webpack": "^4.28.4",
+    "webpack-cli": "^3.2.1"
+  }
+}

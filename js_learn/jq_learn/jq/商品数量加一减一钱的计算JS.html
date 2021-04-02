@@ -1,0 +1,359 @@
+@extends('layout.main')
+
+@section('title', '商品详情')
+
+@section('header_related')
+    <style type="text/css">
+        .meau-box {
+            min-height: 35px;
+            line-height: 35px;
+            margin-left: 15px;
+            border-bottom: 1px #eee solid;
+            overflow: inherit;
+        }
+        .cla {
+            display: inline-block;
+            font-weight: bolder;
+            float: left;
+        }
+        .pad-10 {
+            margin-left: 15px;
+        }
+
+        .boxs{
+            border: 1px solid gray;
+            margin-bottom: 5px;
+        }
+        .col-md-6 a img{
+            width: 100%;
+            height: 100%;
+        }
+
+        .widget-container .widget-block p{
+            display: inline-block;
+            width: 50%;
+        }
+        .widget-container .widget-block p:nth-child(2n-1){
+            float: left;
+        }
+        #demo3{
+            text-align:center;
+        }
+
+    </style>
+@endsection
+
+@section('content')
+<div class="main-container">
+    <div class="container-fluid">
+        @include('layout.breadcrumb', [
+                 'title' => '商品一',
+                 'breadcrumb' => [
+                     '订单管理' => '',
+                     '我要采购' => '',
+
+                 ]
+             ])
+        <div class="row" style="margin-bottom: 23px">
+            <div class="col-md-12">
+                <div class="meau-box">
+                   <span class="cla">
+                    分　类 :
+                   </span>
+
+                    <div class="col-md-11">
+                                        <span class="pad-10">
+                        <a style="color: #454545" ;="" href="http://mdj.devudpower.cn/order/purchase?category=3"> 保湿</a>
+                    </span>
+                                        <span class="pad-10">
+                        <a style="color: #fb8c00" ;="" href="http://mdj.devudpower.cn/order/purchase?category=4"> 保鲜</a>
+                    </span>
+                                        <span class="pad-10">
+                        <a style="color: #454545" ;="" href="http://mdj.devudpower.cn/order/purchase?category=26"> 面部护理</a>
+                    </span>
+                    </div>
+                </div>
+                <div class="meau-box">
+                   <span class="cla">
+                     小分类 :
+                   </span>
+                    <div class="col-md-11">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="col-md-6">
+            <div class="box-widget widget-module">
+                <div class="widget-head clearfix">
+                    <span class="h-icon"><i class="fa fa-bars"></i></span>
+                    <h4>商品图片</h4>
+                </div>
+                <div class="widget-container">
+                    <div class="widget-block" style="display: inline-block">
+                        <div class="tb-item-info">
+                            <div class="">
+                                <div id="boxID"><!--焦点图盒子-->
+                                    <div class=""><img src="" alt="请稍候..." /></div><!--载入画面(可删除)-->
+                                    <div class="pic"><!--内容列表(li数目可随意增减)-->
+                                        <ul>
+                                            <li><a href="#"><img src="/images/1.jpg" width="350px" height="300px" thumb="" alt="标题1" text="详细描述1" /></a></li>
+                                            <li><a href="#"><img src="/images/2.jpg" width="350px" height="300px" thumb="" alt="标题2" text="详细描述2" /></a></li>
+                                            <li><a href="#"><img src="/images/3.jpg" width="350px" height="300px" thumb="" alt="标题3" text="详细描述3" /></a></li>
+                                            <li><a href="#"><img src="/images/4.jpg" width="350px" height="300px" thumb="" alt="标题4" text="详细描述4" /></a></li>
+                                            <li><a href="#"><img src="/images/5.jpg" width="350px" height="300px" thumb="" alt="标题5" text="详细描述5" /></a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="tb-item-r"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+            <div class="col-md-6">
+                <div class="box-widget widget-module">
+                    <div class="widget-head clearfix">
+                        <span class="h-icon"><i class="fa fa-bars"></i></span>
+                        <h4>商品参数</h4>
+                    </div>
+                    <div class="bb-tip bb-alert alert alert-success" style="display: none;">
+                        <span>您已成功加进购物车</span>
+                    </div>
+                    <div class="widget-container">
+                        <div class="widget-block" style="display: inline-block">
+                            <p>
+                                <span class="">商品编号：</span>
+                                <span class="">12355</span>
+                            </p>
+                            <p>
+                                <span class="">商品名称：</span>
+                                <span class="">美的空调</span>
+                            </p>
+                            <p>
+                                <span class="">商品分类：</span>
+                                <span class="">保湿</span>
+                            </p>
+
+                            <p>
+                                <span class="">品　　牌：</span>
+                                <span class="">美的</span>
+                            </p>
+                            <p>
+                                <span class="">型　　号：</span>
+                                <span class="">j23</span>
+                            </p>
+                            <p>
+                                <span class="">采购单位：</span>
+                                <span class="">阿里巴巴</span>
+                            </p>
+
+                            <p>
+                                <span class="">采购单价：</span>
+                                <span class="">￥1599</span>
+                            </p>
+                            <p>
+                                <span class="">包装规格：</span>
+                                <span class="">纸箱</span>
+                            </p>
+                            <div class="Commodity introduction" style="min-height:100px">
+                                <h5>商品介绍</h5>
+                                <p style="text-indent: 2em;width: 100%;">近年来植物萃取精华已然成了最受欢迎的保湿成分之一，很多天然的植物都具有保湿肌肤、滋润调理肌肤、改善肌肤粗糙、促进肌肤血液循环的功效，能够以最天然的呵护为肌肤做到保湿补水的效果。最常见的植物萃取精华要属海藻精华、芦荟精华、薰衣草精华等等，美眉们再挑选保湿护肤品的时候，应该要适当挑选含有这几类植物精华的保湿产品，对于肌肤保湿补水的功效是非常棒的。</p>
+                            </div>
+
+                            <div class=" col-md-6">
+                            <div class="input-group bootstrap-touchspin">
+
+                                <span class="input-group-addon bootstrap-touchspin-prefix" style="display: none;">
+
+                                </span>
+                                <input class="good-num form-control" id="demo3" type="text" value="1" style="display: block;">
+                                <span class="input-group-addon bootstrap-touchspin-postfix" style="display: none;"></span>
+
+                            </div>
+                            </div>
+
+                            <div class=" col-md-6">
+                                <a class="btn btn-danger" ><i class="icon-play"></i> 加入购物车</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div><!--row结束-->
+    </div>
+
+</div>
+
+@endsection
+
+@section('footer_related')
+   <script src="/js/bootbox.js"></script>
+    <script src="/js/myfocus-2.0.1.full.js"></script>
+   <script src="/js/icheck.js"></script>
+   <script src="/js/sweetalert.js"></script>
+   <script src="/js/jquery.bootstrap-touchspin.js"></script>
+   <script type="text/javascript">
+       var $ = jQuery;
+       $(document).ready(function(){
+       myFocus.set({
+           id:'boxID',//焦点图盒子ID
+           pattern:'mF_games_tb',//风格应用的名称
+           auto:false,
+           trigger:'mouseenter',//触发切换模式:'click'(点击)/'mouseover'(悬停)
+           width:390,//设置图片区域宽度(像素)
+           height:300,//设置图片区域高度(像素)
+           txtHeight:'default'//文字层高度设置(像素),'default'为默认高度，0为隐藏
+       });
+
+       //点击购物车，加入购物车事件
+       var $ = jQuery;
+       $('.btn-danger').on('click',function(e){
+           e.preventDefault;
+           var $ = jQuery;
+           $('.bb-tip').fadeIn(1500,function(){
+               $('.bb-tip').fadeOut(4000);
+           });
+       });
+
+
+           /*购物车点击+1插件*/
+           if ($.fn.TouchSpin) {
+               $("input[id='demo3']").TouchSpin({
+                   min: 0,
+                   max: 9999,
+                   step: 1
+               });
+           }
+
+           //用户更改了商品个数之后，计算每一类商品的总额，以及所有商品的总额
+           $('.good-num').on('change',function(e){
+               var $this= $(this);
+               var goodNum=$this.val();
+               if(goodNum>=1) {
+                   var ActionURL = "{{ url('card') }}/append";
+                   var token = '{{ csrf_token() }}';
+                   e.preventDefault();
+                   var goods_id = $this.closest('.goodList').attr('goods_id');
+                   var price = $this.closest('.goodList').find('.pur-price').text().split(',').join('');
+                   //求得每一类商品的总额
+                   var newSum = accMul(goodNum, price).toFixed(2);
+                   $this.closest('.goodList').find('.sum').text(newSum);
+                   totalMoney($this);
+
+               }
+               //上传发送更改数量的请求
+               if (goodNum == 0) {
+                   swal("商品数量无效!", "商品数量不能修改为0!", "error");
+                   $this.attr("value","1");
+                   var price = $this.closest('.goodList').find('.pur-price').text();
+                   $this.closest('.goodList').find('.sum').text(price);
+                   totalMoney($this);
+
+               }
+               goodNum=$this.val();
+               $.ajax({
+                   url: ActionURL,
+                   data: {
+                       _token:token,
+                       goods_id : goods_id,
+                       count:goodNum,
+                       type_id : 3
+                   },
+                   success: function(json) {
+                       if (json.state == 1) {
+                           //window.location.reload();
+                       }
+                       else {
+                           // swal("添加失败!", json.message, "error");
+                       }
+                   },
+                   error: function(error) {
+                       console.log(error);
+                   }
+               });
+           });
+           function totalMoney($this){
+               //求所有商品的总额
+               var $goodBody = $this.closest('.good-body');
+               var $sums = $goodBody.find('.sum');
+               var total = 0;
+               $sums.each(function (k) {
+                   var num = $sums.eq(k).text().split(',').join('');
+                   total = accAdd(total, num);
+               });
+               $('.fon-morbig').text(total.toFixed(2));
+
+           }
+           //两个数相加的方法
+           function accAdd(arg1, arg2) {
+               var r1, r2, m, c;
+               try {
+                   r1 = arg1.toString().split(".")[1].length;
+               }
+               catch (e) {
+                   r1 = 0;
+               }
+               try {
+                   r2 = arg2.toString().split(".")[1].length;
+               }
+               catch (e) {
+                   r2 = 0;
+               }
+               c = Math.abs(r1 - r2);
+               m = Math.pow(10, Math.max(r1, r2));
+               if (c > 0) {
+                   var cm = Math.pow(10, c);
+                   if (r1 > r2) {
+                       arg1 = Number(arg1.toString().replace(".", ""));
+                       arg2 = Number(arg2.toString().replace(".", "")) * cm;
+                   } else {
+                       arg1 = Number(arg1.toString().replace(".", "")) * cm;
+                       arg2 = Number(arg2.toString().replace(".", ""));
+                   }
+               } else {
+                   arg1 = Number(arg1.toString().replace(".", ""));
+                   arg2 = Number(arg2.toString().replace(".", ""));
+               }
+               return (arg1 + arg2) / m;
+           }
+           //两个浮点数相乘的方法
+           function accMul(arg1, arg2) {
+               var m = 0, s1 = arg1.toString(), s2 = arg2.toString();
+               try {
+                   m += s1.split(".")[1].length;
+               }
+               catch (e) {
+               }
+               try {
+                   m += s2.split(".")[1].length;
+               }
+               catch (e) {
+               }
+               return Number(s1.replace(".", "")) * Number(s2.replace(".", "")) / Math.pow(10, m);
+           }
+           //选中商品
+           $('.tc-check,.tc-check-all').iCheck({
+               checkboxClass: 'icheckbox_minimal-aero',
+               radioClass: 'iradio_minimal-aero',
+               increaseArea: '30%' // optional
+           });
+
+           $('.tc-check-all').on('ifChanged',function (e){
+               var $ = jQuery;
+               var et = e.currentTarget;
+               if (et.checked){
+                   $('.tc-check').iCheck('check');
+               }else{
+                   $('.tc-check').iCheck('uncheck');
+               }
+           });
+       });
+   </script>
+@endsection

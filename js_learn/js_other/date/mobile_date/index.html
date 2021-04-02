@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1 user-scalable=0"/>
+    <link rel="stylesheet" href="./css/styles.css">
+    <style>
+        *{
+            padding: 0;
+            margin: 0;
+        }
+        ul,li{
+            list-style-type: none;
+        }
+        select{
+            border:1px solid #ddd;
+        }
+        .clearfix{
+            overflow: hidden;
+        }
+
+        #date-wrap{
+            overflow: hidden;
+        }
+        .date-box{
+            overflow: hidden;
+        }
+
+        .control-bar {
+            padding: 10px 0px;
+        }
+        .control-bar .control-module {
+            float: left;
+            margin-right: 5px;
+            position: relative;
+        }
+        .control-bar .control {
+            float: left;
+            height: 12px;
+            line-height: 12px;
+            padding: 4px 10px 0;
+        }
+
+        .date-head{
+            position: relative;
+            z-index: 10;
+        }
+        .date-head li{
+            border-bottom: 1px solid #f1ebe4;
+            border-right: 1px solid #f1ebe4;
+            background-color: #ddd;
+        }
+
+        .date-body-wrap{
+            overflow: hidden;
+            background-color: #fff;
+        }
+        .date-body-box{
+            overflow: hidden;
+        }
+        .date-body-main{
+            display: -webkit-box;
+        }
+        .date-body-main .date-item{
+            border-bottom: 1px solid #f1ebe4;
+            /*border-right: 1px solid #f1ebe4;*/
+            height: 50px;
+            position: relative;
+        }
+        .date-body-main .date-item.marketing-day .marketing-tips:after{
+            content: "营";
+            position: absolute;
+            top: 0;
+            left: 0;
+            background-color: red;
+            color: #fff;
+            width: 20px;
+            height: 20px;
+            text-align: center;
+            line-height: 20px;
+        }
+        .date-body-main .date-body-item{
+            width: 100%;
+        }
+        .date-body-main .date-body-item .date-row-item{
+            width: 100%;
+        }
+        .date-body-main .date-body-item span{
+            font-size: 13px;
+            display: block;
+        }
+        .lunar-style .lunar {
+            color: #8eb475;
+        }
+        .solar-style .lunar {
+            color: #86a9c0;
+        }
+        .black-style .lunar {
+            color: #000;
+        }
+        .today{
+            background-color: #c40e0e;
+            color: #ddd;
+        }
+        .date-info{
+            height: 200px;
+            width: 100%;
+            background-color: #0094ff;
+            position: absolute;
+            top: 320px;
+            left: 0;
+            z-index: 10;
+        }
+    </style>
+</head>
+
+<body>
+
+<div id="date-wrap">
+    <div class="date-bar-box">
+        <div class="control-bar">
+            <div class="control-module year-control">
+                <a class="prev" id="prevYear"><<</a>
+                <select class="list year-list">
+
+                </select>
+                <a class="next" id="nextYear">>></a>
+
+            </div>
+            <div class="control-module month-control">
+                <a class="prev" id="prevMonth"><<</a>
+                <select class="list month-list ">
+
+                </select>
+                <a class="next" id="nextMonth">>></a>
+
+            </div>
+            <div id="today-btn">返回今天</div>
+        </div>
+    </div>
+
+    <div class="date-box">
+        <ul class="date-head clearfix display-flex">
+            <li data-id="6" class="days-title flex1-center">日</li>
+            <li data-id="0" class="days-title flex1-center">一</li>
+            <li data-id="1" class="days-title flex1-center">二</li>
+            <li data-id="2" class="days-title flex1-center">三</li>
+            <li data-id="3" class="days-title flex1-center">四</li>
+            <li data-id="4" class="days-title flex1-center">五</li>
+            <li data-id="5" class="days-title flex1-center">六</li>
+        </ul>
+        <div class="date-body-wrap">
+            <div class="date-body-box">
+                <div class="date-body-main">
+                    <div class="date-body-item">
+
+                    </div>
+                    <div class="date-body-item">
+
+                    </div>
+                    <div class="date-body-item">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="date-info"></div>
+
+
+<script src="./dist/calendar.js"></script>
+<script>
+    //开启严格模式
+
+    var calendar = new Calendar({
+        calendarInit : function (obj, initCallback){
+//            console.log(obj);
+            var options = obj.options;
+            var _success = function _success(res){
+                debugger;
+                var date = res.data.calendars;
+                date.forEach(function (item, index) {
+//                    debugger;
+                    var dateArr = item.calendarDateTime.split("-");
+                    obj.calendarInfo.yFtv.push(dateArr[1] + dateArr[2] + "  " + item.artileTile);
+                });
+
+                initCallback && initCallback();
+
+            };
+
+            $.ajax({
+                url : 'http://mrm.amediaz.cn/calendar',
+                type : 'GET',
+                data : {
+                    currentDate : options.currYear + '-' + options.currMonth + 1 + '-' + options.currDay
+                },
+                success : _success
+            });
+        },
+        afterDrawCld : function (obj){
+
+
+        },
+        clickDay : function (obj){
+            console.log(obj);
+        }
+    });
+    calendar.init();
+</script>
+</body>
+</html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>2.线性运动(Linear motion)</title>
+</head>
+
+<body>
+<canvas id="canvas" width="500" height="500" style="background-color: #000;">
+</canvas>
+
+<script src="../js/ball.js"></script>
+<script src="../js/utils.js"></script>
+
+<script>
+    window.onload = function(){
+        var canvas = document.getElementById('canvas'),
+                context = canvas.getContext('2d');
+        var angle = 0,
+                range = 50,
+                xspeed = 1,
+                yspeed = 0.05;
+
+        var ball = new Ball();
+
+        (function drawFrame(){
+            window.requestAnimationFrame(drawFrame,canvas);
+            context.clearRect(0,0,canvas.width,canvas.height);
+
+            ball.x += xspeed; //水平，沿x轴方向水平运动
+
+            if(ball.x > canvas.width + ball.radius){
+                ball.x = -ball.radius;
+            }
+            //垂直， 由于angle角度没发生变化，所以纵坐标保持不变
+            ball.y = canvas.height/2+Math.sin(angle)*range;
+
+            angle += 0.05; //取消注释看看发生了什么？
+            ball.draw(context);
+        })();
+    }
+</script>
+
+</body>
+</html>

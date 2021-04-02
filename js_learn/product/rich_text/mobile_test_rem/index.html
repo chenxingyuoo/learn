@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html class="mobile-show" lang="en"><!--class="edit"-->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"
+          charset="utf-8">
+
+    <title>Title</title>
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <link rel="stylesheet" href="index.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-size: 1.4rem !important;
+        }
+
+        .slides {
+            width: 960px;
+            height: 700px;
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            margin: auto;
+            overflow: visible;
+            z-index: 1;
+            text-align: center;
+            -webkit-perspective: 600px;
+            perspective: 600px;
+            -webkit-perspective-origin: 50% 40%;
+            perspective-origin: 50% 40%;
+        }
+
+        .sl-block {
+            width: 800px;
+            /* left: 50%;
+             !*margin-left: -400px;*!
+             top: 270px;*/
+            left: 80px;
+            top: 190px;
+            height: auto;
+            cursor: pointer;
+            -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+            -webkit-transition: none;
+            transition: none;
+        }
+
+        .slides .sl-block {
+            display: block;
+            position: absolute;
+            z-index: auto;
+        }
+
+        .sl-block-content {
+            cursor: pointer;
+            display: block;
+            position: relative;
+            width: 100%;
+            height: 100%;
+            max-width: none;
+            max-height: none;
+            outline: 0;
+            word-wrap: break-word;
+        }
+
+        .slides-stack, .slides-item {
+            height: 700px;
+            font-weight: inherit;
+            padding: 0;
+            text-align: center;
+            position: relative;
+        }
+
+        .edit-box {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            padding-left: 240px;
+        }
+
+        html {
+            font-size: 62.5%;
+            /*10 ÷ 16 × 100% = 62.5%*/
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            background: #fff;
+            overflow: hidden;
+        }
+
+        body {
+            position: relative;
+            line-height: 1;
+            background-color: #fff;
+            color: #000;
+
+        }
+
+        body > *:not(.reveal) {
+            font-family: "Open Sans", Helvetica, sans-serif;
+        }
+
+        .edit-wrap {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .edit-main {
+            width: 100%;
+            height: 100%;
+            background: white;
+        }
+
+        .edit-content {
+            position: relative;
+            z-index: 10;
+            color: black;
+            font-family: "Open Sans", sans-serif;
+            font-size: 30px;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            -ms-touch-action: none;
+            touch-action: none;
+        }
+
+        a {
+            width: 960px;
+            height: 700px;
+            left: 50%;
+            top: 50%;
+            margin-left: -480px;
+            margin-top: -350px;
+            bottom: auto;
+            right: auto;
+            transform: scale(0.550208);
+        }
+
+        .sl-block-grid {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            left: 0;
+            top: 0;
+            z-index: 0;
+        }
+
+        .sl-block-grid-inner {
+            position: absolute;
+        }
+
+        .moblie-slides {
+            width: 100%;
+            height: 100%;
+        }
+
+        .mobile-show .slides-stack {
+            width: 960px;
+            height: 700px;
+            left: 50%;
+            top: 50%;
+            margin-left: -480px;
+            margin-top: -350px;
+            bottom: auto;
+            right: auto;
+            /*transform: scale(0.550208);*/
+            position: absolute;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+
+
+<!--手机端的显示格式-->
+<div class="edit-wrap">
+    <div class="edit-main ">
+        <div class="edit-content reveal">
+            <div class="slides moblie-slides">
+                <div class="slides-stack">
+
+                    <div class="slides-scroll">
+                        <!--1-->
+                        <section class="slides-item">
+                            <div class="sl-block" data-block-type="text">
+                                <div class="sl-block-content" data-placeholder-tag="h1"
+                                     data-placeholder-text="Title Text"><h1>Title Text</h1></div>
+                            </div>
+
+                        </section>
+
+                        <section class="slides-item">
+                            <div class="sl-block" data-block-type="text">
+                                <div class="sl-block-content" data-placeholder-tag="h1"
+                                     data-placeholder-text="Title Text"><h1>Title Text</h1></div>
+                            </div>
+
+                            <div class="sl-block" data-block-type="text" style="    top: 272px;">
+                                <div class="sl-block-content" data-placeholder-tag="h2"
+                                     data-placeholder-text="Title Text"><h2>Title Text</h2></div>
+                            </div>
+
+                        </section>
+
+                        <section class="slides-item" style="display: block;">
+                            <div class="sl-block" data-block-type="text"
+                                 style="width: 410px; left: 49px; top: 106px; height: auto;"
+                                 data-block-id="2a569e8ebd4b1c5148b887aeb601df9a">
+                                <div class="sl-block-content" data-placeholder-tag="h2"
+                                     data-placeholder-text="Title Text"
+                                     style="text-align: left;"><h2>Title Text</h2></div>
+                            </div>
+
+                            <div class="sl-block" data-block-type="text"
+                                 style="width: 410px; left: 49px; top: 200px; height: auto;"
+                                 data-block-id="879cf3b72dc76b3a086dae5d9ab02760">
+                                <div class="sl-block-content" data-placeholder-tag="p"
+                                     data-placeholder-text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin urna odio, aliquam vulputate faucibus id, elementum lobortis felis. Mauris urna dolor, placerat ac sagittis quis."
+                                     style="text-align: left;"><p>Lorem ipsum dolor sit amet, consectetur adipiscing
+                                    elit.
+                                    Proin urna odio, aliquam vulputate faucibus id, elementum lobortis felis. Mauris
+                                    urna
+                                    dolor, placerat ac sagittis quis.</p></div>
+                            </div>
+
+                            <div class="sl-block" data-block-type="text"
+                                 style="width: 410px; left: 499px; top: 106px; height: auto;"
+                                 data-block-id="f5d532caefa8d67d05ec8065de95177c">
+                                <div class="sl-block-content" data-placeholder-tag="h2"
+                                     data-placeholder-text="Title Text"
+                                     style="text-align: left;"><h2>Title Text</h2></div>
+                            </div>
+
+                            <div class="sl-block" data-block-type="text"
+                                 style="width: 410px; left: 499px; top: 200px; height: auto;"
+                                 data-block-id="6d5042d8f45fe8c59af4a52f560873ab">
+                                <div class="sl-block-content" data-placeholder-tag="p"
+                                     data-placeholder-text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin urna odio, aliquam vulputate faucibus id, elementum lobortis felis. Mauris urna dolor, placerat ac sagittis quis."
+                                     style="text-align: left;"><p>Lorem ipsum dolor sit amet, consectetur adipiscing
+                                    elit.
+                                    Proin urna odio, aliquam vulputate faucibus id, elementum lobortis felis. Mauris
+                                    urna
+                                    dolor, placerat ac sagittis quis.</p></div>
+                            </div>
+                        </section>
+
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--<div class="edit-box">
+
+    <div class="edit-wrap">
+        <div class="edit-main ">
+            <div class="edit-content reveal">
+
+                <div class="slides">
+                    <div class="slides-stack">
+
+                        &lt;!&ndash;1&ndash;&gt;
+                        <section class="slides-item">
+                            <div class="sl-block" data-block-type="text">
+                                <div class="sl-block-content" data-placeholder-tag="h1"
+                                     data-placeholder-text="Title Text"><h1>Title Text</h1></div>
+                            </div>
+
+                        </section>
+
+                        &lt;!&ndash;2&ndash;&gt;
+                        &lt;!&ndash;<section class="slides-item">
+                            <div class="sl-block" data-block-type="text">
+                                <div class="sl-block-content" data-placeholder-tag="h1"
+                                     data-placeholder-text="Title Text"><h1>Title Text</h1></div>
+                            </div>
+
+                            <div class="sl-block" data-block-type="text" style="    top: 272px;">
+                                <div class="sl-block-content" data-placeholder-tag="h2"
+                                     data-placeholder-text="Title Text"><h2>Title Text</h2></div>
+                            </div>
+
+                        </section>&ndash;&gt;
+
+                        &lt;!&ndash;3&ndash;&gt;
+                        &lt;!&ndash;<section class="slides-item">
+                            <div class="sl-block" data-block-type="text">
+                                <div class="sl-block-content" data-placeholder-tag="h1"
+                                     data-placeholder-text="Title Text"><h1>Title Text</h1></div>
+                            </div>
+
+                            <div class="sl-block" data-block-type="text" style="    top: 272px;">
+                                <div class="sl-block-content" data-placeholder-tag="h2"
+                                     data-placeholder-text="Title Text">
+                                    <ul><li>Bullet One</li><li>Bullet Two</li><li>Bullet Three</li></ul>
+                                </div>
+                            </div>
+
+                        </section>&ndash;&gt;
+
+
+                        &lt;!&ndash;4&ndash;&gt;
+                        &lt;!&ndash;<section class="slides-item" style="display: block;">
+                            <div class="sl-block" data-block-type="text"
+                                 style="width: 410px; left: 49px; top: 106px; height: auto;"
+                                 data-block-id="2a569e8ebd4b1c5148b887aeb601df9a">
+                                <div class="sl-block-content" data-placeholder-tag="h2" data-placeholder-text="Title Text"
+                                     style="text-align: left;"><h2>Title Text</h2></div>
+                            </div>
+
+                            <div class="sl-block" data-block-type="text"
+                                 style="width: 410px; left: 49px; top: 200px; height: auto;"
+                                 data-block-id="879cf3b72dc76b3a086dae5d9ab02760">
+                                <div class="sl-block-content" data-placeholder-tag="p"
+                                     data-placeholder-text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin urna odio, aliquam vulputate faucibus id, elementum lobortis felis. Mauris urna dolor, placerat ac sagittis quis."
+                                     style="text-align: left;"><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                                    Proin urna odio, aliquam vulputate faucibus id, elementum lobortis felis. Mauris urna
+                                    dolor, placerat ac sagittis quis.</p></div>
+                            </div>
+
+                            <div class="sl-block" data-block-type="text"
+                                 style="width: 410px; left: 499px; top: 106px; height: auto;"
+                                 data-block-id="f5d532caefa8d67d05ec8065de95177c">
+                                <div class="sl-block-content" data-placeholder-tag="h2" data-placeholder-text="Title Text"
+                                     style="text-align: left;"><h2>Title Text</h2></div>
+                            </div>
+
+                            <div class="sl-block" data-block-type="text"
+                                 style="width: 410px; left: 499px; top: 200px; height: auto;"
+                                 data-block-id="6d5042d8f45fe8c59af4a52f560873ab">
+                                <div class="sl-block-content" data-placeholder-tag="p"
+                                     data-placeholder-text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin urna odio, aliquam vulputate faucibus id, elementum lobortis felis. Mauris urna dolor, placerat ac sagittis quis."
+                                     style="text-align: left;"><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                                    Proin urna odio, aliquam vulputate faucibus id, elementum lobortis felis. Mauris urna
+                                    dolor, placerat ac sagittis quis.</p></div>
+                            </div>
+                        </section>&ndash;&gt;
+
+                        &lt;!&ndash;5&ndash;&gt;
+                        &lt;!&ndash; <section class="slides-item">
+                             <div class="sl-block" data-block-type="text"
+                                  style="width: 900px; left: 30px; top: 58px; height: auto;"
+                                  data-block-id="a12b5d6cd4fb874080642061137cf524">
+                                 <div class="sl-block-content" data-placeholder-tag="h1"
+                                      style="font-size: 200%; text-align: left;" data-placeholder-text="Text">
+                                     <h1>One<br>Two<br>Three</h1>
+                                 </div>
+                             </div>
+                         </section>&ndash;&gt;
+
+                        &lt;!&ndash;6&ndash;&gt;
+                        &lt;!&ndash;<section class="slides-item">
+                                <div class="sl-block" data-block-type="text"
+                                     style="width: 800px; left: 79px; top: 50px; height: auto;"
+                                     data-block-id="05f062a89fa37c4da80aa5bdf14af28d">
+                                    <div class="sl-block-content" data-placeholder-tag="h2"
+                                         data-placeholder-text="Title Text"><h2>Title Text</h2></div>
+                                </div>
+                                <div class="sl-block" data-block-type="image"
+                                     style="width: 700px; height: 475px; left: 129px; top: 144px;"
+                                     data-block-id="99a3c5fb5cfe25907b0eadc56852bbdd">
+                                    <div class="sl-block-content"></div>
+                                    <div class="editing-ui sl-block-overlay sl-block-placeholder"
+                                         style="z-index: -1;"></div>
+                                </div>
+                        </section>&ndash;&gt;
+
+                        &lt;!&ndash;7&ndash;&gt;
+                        &lt;!&ndash;<section class="slides-item">
+                                <div class="sl-block" data-block-type="text"
+                                     style="width: 430px; left: 23px; top: 87px; height: auto;"
+                                     data-block-id="444daff663c332f2fddea905a4918672">
+                                    <div class="sl-block-content" data-placeholder-tag="h2"
+                                         data-placeholder-text="Title Text" style="text-align: left;"><h2>Title
+                                        Text</h2></div>
+                                </div>
+                                <div class="sl-block" data-block-type="text"
+                                     style="width: 430px; left: 23px; top: 161px; height: auto;"
+                                     data-block-id="6c657928dd5fb9574cb385be4d1bf977">
+                                    <div class="sl-block-content" data-placeholder-tag="p"
+                                         data-placeholder-text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi nec metus justo. Aliquam erat volutpat."
+                                         style="z-index: 13; text-align: left;"><p>Lorem ipsum dolor sit amet,
+                                        consectetur adipiscing elit. Morbi nec metus justo. Aliquam erat volutpat.</p>
+                                    </div>
+                                </div>
+                                <div class="sl-block" data-block-type="image"
+                                     style="width: 454px; height: 641px; left: 479px; top: 29px;"
+                                     data-block-id="0aa528f6d22d6700c753c9eb02801513">
+                                    <div class="sl-block-content"></div>
+                                    <div class="editing-ui sl-block-overlay sl-block-placeholder"
+                                         style="z-index: -1;"></div>
+                                </div>
+                        </section>&ndash;&gt;
+
+                        &lt;!&ndash;8&ndash;&gt;
+                        &lt;!&ndash;<section class="slides-item">
+                                <div class="sl-block" data-block-type="image"
+                                     style="width: 700px; height: 475px; left: 130px; top: 65px;"
+                                     data-block-id="8ce265276fe5913604f721cefd664d39">
+                                    <div class="sl-block-content"></div>
+                                    <div class="editing-ui sl-block-overlay sl-block-placeholder"
+                                         style="z-index: -1;"></div>
+                                </div>
+                                <div class="sl-block" data-block-type="text"
+                                     style="width: 800px; left: 80px; top: 575px; height: auto;"
+                                     data-block-id="ff4164ebe04eaa0f9b7f3c63b80900e6">
+                                    <div class="sl-block-content" data-placeholder-tag="h2"
+                                         data-placeholder-text="Title Text"><h2>Title Text</h2></div>
+                                </div>
+                        </section>&ndash;&gt;
+
+                    </div>
+
+                </div>
+
+                <div class="sl-block-grid">
+                    <canvas id="sl-block-canvas" class="sl-block-grid-inner" width="960" height="700"
+                            style="left: 83px; top: 0px; width: 960px; height: 700px;"></canvas>
+                </div>
+
+                <div class="backgrounds">
+                    <div class="slide-background present template-item-thumb-background"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>-->
+
+
+<script src="../../jquery1.9.1.js"></script>
+<script>
+
+
+    (function (doc, win) {
+        var docEl = doc.documentElement,
+                resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',
+                recalc = function () {
+                    var clientWidth = docEl.clientWidth;
+                    if (!clientWidth) return;
+                    docEl.style.fontSize = 20 * (clientWidth / 320) + 'px';
+                };
+
+        if (!doc.addEventListener) return;
+        win.addEventListener(resizeEvt, recalc, false);
+        doc.addEventListener('DOMContentLoaded', recalc, false);
+    })(document, window);
+
+    /* var scale_w = document.body.clientWidth / 1000;
+     var scale = scale_w > 1 ? 1 : scale_w  ;
+
+     $('.slides-stack').css('transform',' scale(' + scale + ')');
+
+     $(window).on('resize',function (){
+
+     var scale_w = document.body.clientWidth / 1000 ;
+     var scale = scale_w > 1 ? 1 : scale_w  ;
+     $('.slides-stack').css('transform',' scale(' + scale + ')');
+     })*/
+</script>
+<script>
+    $(function () {
+        var $doc = $(document);
+
+        $doc.on('click', '.sl-templates-header .page-tab', function () {
+            var $that = $(this);
+            var index = $that.index();
+            var $page = $('.sl-templates-body').find('.page');
+            if (!$that.hasClass('selected')) {
+                $that.addClass('selected').siblings().removeClass('selected');
+
+                if (index == 0) {
+                    $page.eq(0).removeClass('past').addClass('present');
+                    $page.eq(1).removeClass('present').addClass('future');
+                } else {
+                    $page.eq(0).removeClass('present').addClass('past');
+                    $page.eq(1).removeClass('future').addClass('present');
+                }
+
+            }
+        })
+    })
+</script>
+</body>
+</html>

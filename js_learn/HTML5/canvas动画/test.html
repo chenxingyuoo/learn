@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="chrome=IE8">
+    <meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+    <title>Canvas Mouse Event Demo</title>
+    <!--<link href="default.css" rel="stylesheet" />-->
+    <script>
+        var ctx = null; // global variable 2d context
+        var started = false;
+        var mText_canvas = null;
+        var x = 0, y =0;
+        var frame = 0; // 22 5*5 + 2
+        var imageReady = false;
+        var myImage = null;
+        var px = 300;
+        var py = 300;
+        var x2 = 300;
+        var y2 = 0;
+        window.onload = function() {
+            var canvas = document.getElementById("animation_canvas");
+            console.log(canvas.parentNode.clientWidth);
+            canvas.width = canvas.parentNode.clientWidth;
+            canvas.height = canvas.parentNode.clientHeight;
+            if (!canvas.getContext) {
+                console.log("Canvas not supported. Please install a HTML5 compatible browser.");
+                return;
+            }
+// get 2D context of canvas and draw rectangel
+            ctx = canvas.getContext("2d");
+            ctx.fillStyle="black";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            myImage = document.createElement('img');
+            myImage.src = "./guy.png";
+            myImage.onload = loaded();
+        }
+        function loaded() {
+            imageReady = true;
+            setTimeout( update, 1000/30);
+        }
+        function redraw() {
+            ctx.clearRect(0, 0, 460, 460)
+            ctx.fillStyle="black";
+            ctx.fillRect(0, 0, 460, 460);
+// find the index of frames in image
+            var height = myImage.naturalHeight/5;
+            var width = myImage.naturalWidth/5;
+            var row = Math.floor(frame / 5);
+            var col = frame - row * 5;
+            var offw = col * width;
+            var offh = row * height;
+// first robin
+            px = px - 5;
+            py = py - 5;
+            if(px < -50) {
+                px = 300;
+            }
+            if(py < -50) {
+                py = 300;
+            }
+//var rate = (frame+1) /22;
+//var rw = Math.floor(rate * width);
+//var rh = Math.floor(rate * height);
+            ctx.drawImage(myImage, offw, offh, width, height, px, py, width, height);
+// second robin
+            x2 = x2 - 5;
+            y2 = y2 + 5;
+            if(x2 < -50) {
+                x2 = 300;
+                y2 = 0;
+            }
+            ctx.drawImage(myImage, offw, offh, width, height, x2, y2, width, height);
+        }
+        function update() {
+            redraw();
+            frame++;
+            if (frame >= 22) frame = 0;
+            setTimeout( update, 1000/30);
+        }
+    </script>
+</head>
+<body>
+<h1>HTML Canvas Animations Demo - By Gloomy Fish</h1>
+<pre>Play Animations</pre>
+<div id="my_painter">
+    <canvas id="animation_canvas"></canvas>
+</div>
+</body>
+</html>

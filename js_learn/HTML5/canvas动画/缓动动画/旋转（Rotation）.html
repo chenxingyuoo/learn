@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+
+<canvas id="canvas" width="500" height="500" style="background-color: #000;">
+</canvas>
+<script type="text/javascript" src="../js/utils.js"></script>
+<script src="../js/arrow.js"></script>
+
+<script>
+
+    window.onload = function () {
+        var canvas = document.getElementById('canvas'),
+                context = canvas.getContext('2d');
+        var rotation = 90,
+                targetRotation = 270,
+                easing = 0.01;
+
+        //then ease it:
+
+
+        var arrow = new Arrow();
+
+        arrow.x = canvas.width / 2;
+        arrow.y = canvas.height / 2;
+
+        (function drawFrame() {
+
+            var stopAni = window.requestAnimationFrame(drawFrame, canvas);
+
+            context.clearRect(0, 0, canvas.width, canvas.height);
+
+            if(Math.ceil(rotation) >= targetRotation){
+                //停止动画
+                window.cancelAnimationFrame(stopAni);
+            }
+
+            rotation += (targetRotation - rotation) * easing;
+            arrow.rotation =  rotation * Math.PI / 180;
+
+            arrow.draw(context);
+        }())
+    }
+
+
+
+</script>
+</body>
+</html>

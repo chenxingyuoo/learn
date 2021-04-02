@@ -1,0 +1,92 @@
+<html style=""><head>
+    <meta charset="UTF-8">
+    <title>Three.js チュートリアル２：アニメーション</title>
+    <script src="./Three.js"></script>
+    <style>
+        div#canvas-frame{
+            border: none;
+            cursor: pointer;
+            width: 600px;
+            height: 600px;
+            background-color: #FFFFFF;
+        }
+    </style>
+    <script>
+        var width, height;
+        var renderer;
+        function initThree() {
+            width = document.getElementById('canvas-frame').clientWidth;
+            height = document.getElementById('canvas-frame').clientHeight;
+            try {renderer = new THREE.WebGLRenderer({antialias: true});} catch (e) {}
+            if(!renderer) document.getElementById("errer").innerHTML = '<p style="text-align:center;font-size:small; color:red">お使いの環境ではWebGLはご利用いただけません。<br />WebGLに対応していない方のためにGIFファイルを以下に用意しました。<br /><br /><img src="http://www.natural-science.or.jp/images/20120217-5.gif" alt="WEBGLデモ" /></p>';
+            renderer.setSize(width, height);
+            document.getElementById('canvas-frame').appendChild(renderer.domElement);
+            renderer.setClearColor(0x000000, 1.0);
+        }
+
+        var camera;
+        function initCamera() {
+            camera = new THREE.PerspectiveCamera( 45 , width / height , 1 , 10000 );
+            camera.up.x = 0;
+            camera.up.y = 0;
+            camera.up.z = 1;
+            camera.position.set( 300, 50, 0);
+            camera.lookAt( {x:0, y:0, z:0 } );
+        }
+        var scene;
+        function initScene() {
+            scene = new THREE.Scene();
+        }
+        var light, light2;
+        function initLight() {
+            light = new THREE.DirectionalLight(0xFFFFFF, 1.0, 0);
+            light.position.set( 0, 100, 0 );
+            scene.add(light);
+            /*
+            light2 = new THREE.AmbientLight(0x555555);
+            scene.add(light2);
+            */
+        }
+        var sphere1, sphere2 ;
+        function initObject(){
+            var texture1  = new THREE.ImageUtils.loadTexture('earthmap1k.jpg');
+            sphere1 = new THREE.Mesh(
+                new THREE.SphereGeometry(50,50,50),
+                new THREE.MeshLambertMaterial({map: texture1})
+            );
+            scene.add(sphere1);
+            sphere1.position.set(0,0,0);
+            var texture2  = new THREE.ImageUtils.loadTexture('moonmap1k.jpg');
+            sphere2 = new THREE.Mesh(
+                new THREE.SphereGeometry(5,20,20),
+                new THREE.MeshLambertMaterial({map: texture2})
+            );
+            scene.add(sphere2);
+
+        }
+        var t=0;
+        function loop() {
+            t++;
+            renderer.clear();
+            sphere1.rotation.set( Math.PI/2 , t/100, 0 );
+            sphere2.rotation.set( Math.PI/2 , t/200, 0 );
+            sphere2.position.set( -70*Math.sin(t/200) , 70*Math.cos(t/200) ,0);
+            renderer.render(scene, camera);
+            window.requestAnimationFrame(loop);
+        }
+        function threeStart() {
+            initThree();
+            initCamera();
+            initScene();
+            initLight();
+            initObject();
+            loop();
+        }
+    </script>
+</head>
+
+<body onload="threeStart();">
+<div id="errer"></div>
+<div id="canvas-frame"><canvas width="1200" height="1200" style="width: 600px; height: 600px;"></canvas></div>
+
+</body></html>

@@ -1,0 +1,26 @@
+<% include layout/header.html %>
+
+<div class="jumbotron pl-20 pr-20">
+    <form action="/post" method='post'>
+        <!--<input type="text"  >-->
+        <textarea class="article" name='article' id='article' placeholder='说出你此刻的想法...' style="margin-bottom: 15px;min-height: 100px"></textarea>
+        <div>
+            <input type="submit" name='submit' value='发表' class="btn btn-success">
+        </div>
+    </form>
+</div>
+
+<section class="show pl-20 pr-20">
+
+    <% posts.forEach(function(v, k){ %>
+    <article class="col">
+        <div class="col-box">
+            <h3 class="author"><%= v.user %> : </h3>
+            <p class="talk-about"><%= v.post %></p>
+        </div>
+    </article>
+    <% }) %>
+
+</section>
+
+<% include layout/footer.html %>

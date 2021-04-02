@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html >
+<head>
+    <meta charset="UTF-8">
+    <title>星球大战</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<audio src="media/explosion.wav" id="expMusic"></audio>
+<audio src="media/GAME%20OVER.mp3" id="gameoverMusic"></audio>
+<canvas id="canvas"></canvas>
+
+<script src="js/common/common.js"></script>
+<script src="js/class/data.js"></script>
+<script src="js/class/Sprite.js"></script>
+<script src="js/class/SpriteExplosion.js"></script>
+<script src="js/class/Player.js"></script>
+<script src="js/class/Planet.js"></script>
+<script src="js/class/Fire.js"></script>
+<script src="js/class/Asteroid.js"></script>
+<script src="js/class/Explosion.js"></script>
+<script src="js/class/Action.js"></script>
+<!--<script src="js/game.js"></script>-->
+<script>
+    (function (){
+        // 当所有DOM解析完以后会触发这个事件
+        window.addEventListener("DOMContentLoaded", gameInit);
+
+        //图片初始化
+        var sprite;
+        var spriteExplosion;
+
+
+
+        var data; //数据
+
+        var player; // 飞船
+
+        var planet; // 星球
+
+        var fire; // 子弹
+
+        var asteroid; //陨石
+
+        var explosion; //爆炸
+
+        var action; //用户交互
+
+
+        sprite = new Sprite();
+        spriteExplosion = new SpriteExplosion();
+        window.onload = function () {
+            sprite.init();
+            spriteExplosion.init();
+        };
+
+
+
+        //Game
+        function gameInit() {
+
+            //获取画布 , 暂且把这几个参数放到window下供几个模块使用 ， 不想污染命名空间的话应该把这几个值传到模块之间 ，
+            // 或者在模块里面定义（这样做性能应该没有前者好 ， 多次dom操作，浪费内存）
+            window.canvas = document.getElementById('canvas');
+            window.ctx = canvas.getContext('2d');
+            window.cH = ctx.canvas.height = window.innerHeight;
+            window.cW = ctx.canvas.width = window.innerWidth;
+
+
+            data = new Data();
+
+            //子弹实例化
+            fire = new Fire();
+
+            //飞船实例化
+            player = new Player();
+
+            //星球实例化
+            planet = new Planet();
+
+            //陨石类
+            asteroid = new Asteroid();
+
+            //爆炸类
+            explosion = new Explosion();
+
+            action = new Action();
+
+            //canvas监听事件
+            canvas.addEventListener('click', function (e) {
+                action.mouseClick(e, {
+                    fire : fire ,
+                    player : player,
+                    data : data,
+                    asteroid : asteroid,
+                    explosion : explosion
+                })
+            });
+            canvas.addEventListener('mousemove', function (e){
+                action.mouseMove(e, data)
+            });
+            window.addEventListener("resize", update);
+
+            //resize
+            function update() {
+                cH = ctx.canvas.height = window.innerHeight;
+                cW = ctx.canvas.width = window.innerWidth;
+            }
+
+
+            //启动函数
+            function gameStart() {
+                var local_destroyed = parseInt(localStorage.getItem('destroyed'));
+                if (!data.gameOver) {
+                    ctx.clearRect(0, 0, cW, cH);
+                    ctx.beginPath();
+
+                    player.draw(fire, data , sprite);//飞船绘制
+                    planet.draw(sprite);   //星球绘制
+
+                    //如果游戏开始或者进行中
+                    if (data.playing) {
+
+                        //子弹发射
+                        if (fire.bullets.length - data.destroyed) {
+                            fire.draw({
+                                asteroid : asteroid,
+                                explosion : explosion,
+                                sprite : sprite,
+                                data : data
+                            });
+                        }
+
+                        //陨石绘制
+                        asteroid.draw({
+                            explosion : explosion,
+                            sprite : sprite,
+                            spriteExplosion : spriteExplosion,
+                            action : action,
+                            data : data,
+                        });
+
+                        //游戏中的记录 , 分数绘制
+                        data.scoreDraw()
+                    } else {  //否则绘制开始按钮
+                        ctx.drawImage(sprite.img, 428, 12, 70, 70, cW / 2 - 35, cH / 2 - 35, 70, 70);
+                    }
+                } else if (data.count < 1) {
+                    data.count = 1;
+                    ctx.fillStyle = 'rgba(0,0,0,0.75)';
+                    ctx.rect(0, 0, cW, cH);
+                    ctx.fill();
+
+                    ctx.font = "60px Verdana";
+                    ctx.fillStyle = "white";
+                    ctx.textAlign = "center";
+                    ctx.fillText("GAME OVER", cW / 2, cH / 2 - 150);
+
+                    ctx.font = "20px Verdana";
+                    ctx.fillStyle = "white";
+                    ctx.textAlign = "center";
+                    ctx.fillText("Total destroyed: " + data.destroyed, cW / 2, cH / 2 + 140);
+
+                    //判断记录是否被替换
+                    data.record = local_destroyed || 0 > data.record ? local_destroyed || 0 : data.record;
+
+                    ctx.font = "20px Verdana";
+                    ctx.fillStyle = "white";
+                    ctx.textAlign = "center";
+                    ctx.fillText("RECORD: " + data.record, cW / 2, cH / 2 + 185);
+
+                    ctx.drawImage(sprite.img, 500, 18, 70, 70, cW / 2 - 35, cH / 2 + 40, 70, 70);
+                }
+            }
+
+            //循环
+            (function drawFrame() {
+                window.requestAnimationFrame(drawFrame);
+                gameStart();
+            }())
+
+        }
+    })();
+</script>
+<!--<script>
+    // 当所有DOM解析完以后会触发这个事件
+    window.addEventListener("DOMContentLoaded", gameInit);
+
+    //图片初始化
+    var sprite;
+    var spriteExplosion;
+
+    var canvas,
+            ctx,
+            cH,
+            cW;
+
+    var expMusic,
+            gameoverMusic;
+
+    var data; //数据
+
+    var player; // 飞船
+
+    var planet; // 星球
+
+    var fire; // 子弹
+
+    var asteroid; //陨石
+
+    var explosion; //爆炸
+
+    var action; //用户交互
+
+//    var bullets = [],        //子弹
+             /*asteroids = [],*/        //陨石
+//            explosions = [];        //爆炸
+//            destroyed = 0,         //总的摧毁数目
+//            record = parseInt(localStorage.getItem('destroyed')) || 0,         //最高纪录
+//            count = 0,         //实时摧毁数
+//            playing = false,     //游戏是否进行中
+//            gameOver = false;     //游戏是否结束
+//            _planet = {deg: 0};  //飞船转动角度
+
+
+
+
+
+
+
+    sprite = new Sprite();
+    spriteExplosion = new SpriteExplosion();
+    window.onload = function () {
+        sprite.init();
+        spriteExplosion.init();
+    };
+
+
+
+
+
+
+
+
+    //Game
+    function gameInit() {
+        //获取画布
+        canvas = document.getElementById('canvas');
+        ctx = canvas.getContext('2d');
+        cH = ctx.canvas.height = window.innerHeight;
+        cW = ctx.canvas.width = window.innerWidth;
+
+        //获取音乐
+        expMusic = document.getElementById('expMusic');
+        gameoverMusic = document.getElementById('gameoverMusic');
+
+        expMusic.playbackRate = 2.0; //两倍播放速度
+
+
+
+
+        data = new Data();
+
+        //子弹实例化
+        fire = new Fire();
+
+        //飞船实例化
+        player = new Player();
+
+        //星球实例化
+        planet = new Planet();
+
+        //陨石类
+        asteroid = new Asteroid();
+
+        //爆炸类
+        explosion = new Explosion();
+
+        action = new Action();
+
+        //canvas监听事件
+        canvas.addEventListener('click', function (e) {
+            action.mouseClick(e, {
+                fire : fire ,
+                player : player,
+                data : data,
+                asteroid : asteroid
+            })
+        });
+        canvas.addEventListener('mousemove', function (e){
+            action.mouseMove(e, data)
+        });
+        window.addEventListener("resize", update);
+
+        //resize
+        function update() {
+            cH = ctx.canvas.height = window.innerHeight;
+            cW = ctx.canvas.width = window.innerWidth;
+        }
+
+
+        //启动函数
+        function gameStart() {
+            var local_destroyed = parseInt(localStorage.getItem('destroyed'));
+            if (!data.gameOver) {
+                ctx.clearRect(0, 0, cW, cH);
+                ctx.beginPath();
+
+                player.draw(fire, data);//飞船绘制
+                planet.draw();   //星球绘制
+
+                //如果游戏开始或者进行中
+                if (data.playing) {
+
+                    //
+
+                    //子弹发射
+                    if (fire.bullets.length - data.destroyed) {
+                        fire.draw({
+                            asteroid : asteroid,
+                            explosion : explosion,
+                            data : data
+                        });
+                    }
+
+                    //陨石绘制
+                    asteroid.draw({
+                        explosion : explosion,
+                        data : data,
+                    });
+
+                    //游戏中的记录
+                    ctx.font = "20px Verdana";
+                    ctx.fillStyle = "white";
+                    ctx.textBaseline = 'middle';
+                    ctx.textAlign = "left";
+                    ctx.fillText('Record: ' + data.record + '', 20, 30);
+
+                    ctx.font = "40px Verdana";
+                    ctx.fillStyle = "white";
+                    ctx.strokeStyle = "black";
+                    ctx.textAlign = "center";
+                    ctx.textBaseline = 'middle';
+                    ctx.strokeText('' + data.destroyed + '', cW / 2, cH / 2);
+                    ctx.fillText('' + data.destroyed + '', cW / 2, cH / 2);
+                } else {  //否则绘制开始按钮
+                    ctx.drawImage(sprite.img, 428, 12, 70, 70, cW / 2 - 35, cH / 2 - 35, 70, 70);
+                }
+            } else if (data.count < 1) {
+                data.count = 1;
+                ctx.fillStyle = 'rgba(0,0,0,0.75)';
+                ctx.rect(0, 0, cW, cH);
+                ctx.fill();
+
+                ctx.font = "60px Verdana";
+                ctx.fillStyle = "white";
+                ctx.textAlign = "center";
+                ctx.fillText("GAME OVER", cW / 2, cH / 2 - 150);
+
+                ctx.font = "20px Verdana";
+                ctx.fillStyle = "white";
+                ctx.textAlign = "center";
+                ctx.fillText("Total destroyed: " + data.destroyed, cW / 2, cH / 2 + 140);
+
+                //判断记录是否被替换
+                data.record = local_destroyed || 0 > data.record ? local_destroyed || 0 : data.record;
+
+                ctx.font = "20px Verdana";
+                ctx.fillStyle = "white";
+                ctx.textAlign = "center";
+                ctx.fillText("RECORD: " + data.record, cW / 2, cH / 2 + 185);
+
+                ctx.drawImage(sprite.img, 500, 18, 70, 70, cW / 2 - 35, cH / 2 + 40, 70, 70);
+            }
+        }
+
+        //循环
+        (function drawFrame() {
+            window.requestAnimationFrame(drawFrame);
+            gameStart();
+        }())
+
+    }
+</script>-->
+</body>
+</html>

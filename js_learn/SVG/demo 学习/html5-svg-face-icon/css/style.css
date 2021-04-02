@@ -1,0 +1,22 @@
+body{
+  background:#2D2E3F;
+}
+.st0{
+  fill:#DBA6F5;/*purple*/
+}
+.st1{
+  fill:#F7696D;/*red*/
+}
+.st2{
+  fill:#41C2ED;/*blue*/
+}
+.st3{
+  fill:#F7CE30;/*yellow*/
+}
+.st4{
+  fill:#FFFFFF;/*white*/
+}
+svg{
+  width:15%;
+  height:15%;
+}

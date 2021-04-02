@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>路径</title>
+</head>
+<body>
+
+
+<canvas id="canvas" width="800" height="600"></canvas>
+
+<!--实验代码如下，通过分别注释closePath 和beginPath看fill stoke 和fill stroke结合下画出来的两个1/4弧线达到实验效果-->
+
+<script>
+    document.body.onload = draw23('canvas')
+    function draw23(id) {
+        var canvas = document.getElementById(id);
+        if (canvas == null) {
+            return false;
+        }
+        var context = canvas.getContext('2d');
+        var n = 0;
+
+        //左侧1/4圆弧
+        context.beginPath();
+        context.arc(100, 150, 50, 0, Math.PI/2 , false);
+        context.fillStyle = 'rgba(255,0,0,0.25)';
+        context.fill();
+        context.strokeStyle = 'rgba(255,0,0,0.25)'
+        context.closePath();
+        context.stroke();
+
+        //右侧1/4圆弧
+        context.beginPath();
+        context.arc(300, 150, 50, 0, Math.PI/2 , false);
+        context.fillStyle = 'rgba(255,0,0,0.25)';
+        context.fill();
+        context.strokeStyle = 'rgba(255,0,0,0.25)';
+        context.closePath();
+        context.stroke();
+    }
+
+    /*得出的结论有：*号为重点
+
+    1、系统默认在绘制第一个路径的开始点为beginPath
+
+    *2、如果画完前面的路径没有重新指定beginPath，那么画第其他路径的时候会将前面最近指定的beginPath后的全部路径重新绘制
+
+    3、每次调用context.fill（）的时候会自动把当次绘制的路径的开始点和结束点相连，接着填充封闭的部分
+
+    ps：书本的结论是 如果没有closePath那么前面的路劲会保留，实验证明正确的结论是 如果没有重新beginPath那么前面的路劲会保留
+
+    ps1：如果你真心凌乱了，那么记住每次画路径都在前后加context.beginPath() 和context.closePath()就行
+
+*/
+</script>
+</body>
+</html>

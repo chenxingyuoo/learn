@@ -1,0 +1,12 @@
+{
+  "name": "@chenxingyu_o/pkga",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "chenxingyu <2731173104@qq.com> (https://registry.npmjs.org/)",
+  "license": "MIT"
+}

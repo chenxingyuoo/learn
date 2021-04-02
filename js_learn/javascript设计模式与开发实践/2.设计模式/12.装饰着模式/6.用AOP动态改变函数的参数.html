@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+
+<script>
+    Function.prototype.before = function (beforefn) {
+        var self = this;
+        return function () { // 返回包含了原函数和新函数的"代理"函数
+            beforefn.apply(this, arguments);    //arguments
+            return self.apply(this, arguments);  //arguments
+        }
+    }
+
+    var func = function( param ){
+        console.log( param ); //     {a: "a", b: "b"}
+    }
+
+    func = func.before( function( param ){
+        param.b = 'b';
+    });
+
+    func( {a: 'a'} );
+
+
+    //ajax请求加token的例子 , 不改变原函数
+
+    var ajax = function( type, url, param ){
+        console.dir(param);
+         //    ajax
+    };
+
+    ajax( 'get', 'http:// xxx.com/userinfo', { name: 'sven' } ); //{ name: 'sven' }
+
+    var getToken = function(){
+        return 'Token';
+    }
+
+    ajax = ajax.before(function( type, url, param ){
+        param.Token = getToken();
+    });
+
+    ajax( 'get', 'http:// xxx.com/userinfo', { name: 'sven' } ); //{ name: 'sven', Token : 'Token' }
+
+</script>
+
+</body>
+</html>

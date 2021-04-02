@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+
+<script>
+    function foo(num) {
+        debugger;
+        console.log( "foo: " + num );
+        // 记录 foo 被调用的次数
+        this.count++;
+    }
+
+    foo.count = 0;
+
+    var i;
+    for (i=0; i<10; i++) {
+        if (i > 5) {
+           foo.call( foo, i );
+        }
+    }
+
+    console.log(foo.count);
+
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,133 @@
+
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Ssocket</title>
+
+</head>
+
+<body>
+<p>我的id：<?php echo $userid ?></p>
+<p>我的名字：<?php echo $name; ?></p>
+<h4>在线用户列表</h4>
+<table border="1" id="userlists">
+    <thead>
+    <tr>
+        <th width="80px">ID</th>
+        <th width="80px">用户名</th>
+        <th width="80px">选中</th>
+    </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+<p style="margin-top:10px">
+    信息:
+    <input type="text" style="width:338px" id="content">
+    <button id="send">发送</button>
+</p>
+<div id="msg"></div>
+<div id="unline"></div>
+
+
+<script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script type="text/javascript">
+    var userid='<?php echo $userid; ?>';
+    var username='<?php echo $name; ?>';
+
+    var socket = io();
+
+    //欢迎信息
+    socket.on('open',function(res){
+        console.log(res);
+    });
+
+    //无连接 , 下线通知
+    socket.on('disconnect',function(res){
+        console.log('not connect');
+    });
+
+    //接收用户消息
+    socket.on('receivenews',function(res){
+        var html='<p>来自用户 ('+res.fromusername+') 的消息: '+res.content+'</p>';
+        $('#msg').append(html)
+    });
+
+    //接收系统消息
+    socket.on('system',function(res){
+        if(res.alluser){
+            var html='';
+            var time=0;
+            $.each(res.alluser,function(k,v){
+                time++;
+                html+='<tr userid="'+'v.userid'+'"><td>'+time+'<td>'+'v.username'+'</td>';
+                html+='<td><input class="checkbox" type="checkbox" class="checkbox" userid="'+'v.userid'+'"></td></tr>';
+
+            })
+            $('#userlists tbody').html(html);
+        }
+    })
+
+    //获取推送信息
+    socket.on('broadcast',function(res){
+        if(res.type==1){
+            $('#userlists tbody tr[userid="'+res.unlineid+'"]').remove();
+            $('#unline').append('<p>用户'+res.unlinename+'离线</p>')
+            return false;
+        }
+
+        if(res.type==2&&res.userid){
+
+            if($('#userlists tbody tr[userid="'+res.userid+'"]').length>0){
+                return false;
+            }
+            var html='';
+            var length=$('#userlists tbody tr').length;
+            html+='<tr userid="'+res.userid+'"><td>'+(length+1)+'<td>'+res.username+'</td>';
+            html+='<td><input type="checkbox" class="checkbox" userid="'+res.userid+'"></td></tr>';
+            $('#userlists tbody').append(html);
+            $('#unline').append('<p>用户'+res.username+'上线</p>')
+            return false;
+        }
+    })
+
+    $(function(){
+        $('.checkbox').on('click',function(){
+            if($(this).attr('checked')=='checked'){
+                $('.checkbox').removeAttr('checked');
+                $(this).attr('checked',true);
+            }
+
+        })
+
+        //输入框回车事件
+        $("#content").keyup(function(e){
+            if(e.keyCode==13){
+                $('#send').trigger('click');
+            }
+            return false;
+        });
+
+        $('#send').click(function(){
+
+            var content=$('#content').val();
+            var data={};
+            var touserid=$('.checkbox').attr('userid');
+            if(touserid==undefined){
+                alert('请选择用户');
+                return false;
+            }
+            if(content!=''){
+                $('#content').val('');
+                data.fromuserid=userid;
+                data.touserid=touserid;
+                data.content=content;
+                //发送信息
+                socket.emit('sendnews',data);
+            }
+        })
+    })
+</script>
+</body>
+</html>

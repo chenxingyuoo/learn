@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+
+<body>
+
+<script>
+    //Reflect.defineProperty方法基本等同于Object.defineProperty，用来为对象定义属性。未来，后者会被逐渐废除，请从现在开始就使用Reflect.defineProperty代替它。
+    function MyDate() {
+        /*…*/
+    }
+
+    var o = {
+        a: 1
+    }
+
+    // 旧写法
+    //    Object.defineProperty(MyDate, 'now', {
+    //        value: () => Date.now()
+    //    });
+
+    // 新写法
+    Object.defineProperty(o, 'now', {
+//        writable: true,
+//        configurable: true,
+//        enumerable: true,
+//        value:  Date.now(),
+        get: () => {
+            debugger;
+            return this.a + 1;
+        },
+        set: (val) => {
+            debugger;
+        },
+    });
+
+
+    console.log(o.b) // Runs the getter, which yields a + 1 (which is 1)
+
+
+</script>
+
+</body>
+</html>

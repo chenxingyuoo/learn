@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<script>
+    //1.3 模块的加载
+
+    //到目前为止，我们可以把多个模块都定义在一个文件中，然后手动引入这个js文件，但是如果一个页面要引用很多个模块，引入工作就变得比较麻烦，比如说，单页应用程序（SPA）一般比较复杂，往往包含数以万计行数的js代码，这些代码至少分布在几十个甚至成百上千的模块中，如果我们也在主界面就加载它们，载入时间会非常难以接受。但我们可以这样看：主界面加载的时候，并不是用到了所有这些功能，能否先加载那些必须的，而把剩下的放在需要用的时候再去加载？
+
+    //算了，我们还是用最简单的方式了，就是动态创建script标签，然后设置src，添加到document.head里，然后监听它们的完成事件，做后续操作。真的很简单，因为我们的框架不需要考虑那么多种情况，不需要AMD，不需要require那么麻烦，用这框架的人必须按照这里的原则写。
+
+
+    //界面把所依赖的js文件路径放在数组里，然后挨个创建script标签，src设置为路径，添加到head中，监听它们的完成事件。在这个完成时间里，我们要做这么一些事情：在fileMap里记录当前js文件的路径，防止以后重复加载，检查列表中所有文件，看看是否全部加载完了，如果全加载好了，就执行回调。
+
+
+    (function() {
+        //保存模块
+        var moduleMap = {};
+        //保存js文件路径
+        var fileMap = {};
+
+
+        var thin = {
+
+            define: function(name, dependencies, factory) {
+
+                //注册模块 ， 如果 moduleMap 里面没有的话。
+                if(!moduleMap[name]){
+                    var module = {
+                        name: name,
+                        dependencies: dependencies,
+                        factory: factory
+                    }
+
+                    moduleMap[name] = module;
+                }
+
+                return moduleMap[name];
+            },
+
+
+            use: function(name) {
+
+                var module = moduleMap[name];
+
+                if (!module.entity) {
+                    var args = [];
+                    //遍历依赖项
+                    for (var i=0; i<module.dependencies.length; i++) {
+                        if (moduleMap[module.dependencies[i]].entity) {
+                            args.push(moduleMap[module.dependencies[i]].entity);
+                        }
+                        else {
+                            //递归获取依赖项 ，然后当作参数，用这个模块的工厂方法来实例化了一下
+                            //递归完之后 ， 将返回的结过push 进 args
+                            args.push(this.use(module.dependencies[i]));
+                        }
+                    }
+
+                    //使用每个依赖项递归此函数，执行的时候， 因为依赖项本身是没有其他依赖项（也就是工厂方法），所有就会在 module.entity 中保存起来此依赖项（工厂方法 或者说 模块）
+                    module.entity = module.factory.apply(null, args);
+                }
+
+                return module.entity;
+            },
+
+            require: function (pathArr, callback) {
+
+                for (var i = 0; i < pathArr.length; i++) {
+                    var path = pathArr[i];
+
+                    if (!fileMap[path]) {
+                        var head = document.getElementsByTagName('body')[0];
+                        var node = document.createElement('script');
+                        node.type = 'text/javascript';
+                        node.async = 'true';
+                        node.src = path + '.js';
+                        node.onload = function () {
+                            fileMap[path] = true;
+                            head.removeChild(node);
+                            checkAllFiles();
+                        };
+                        head.appendChild(node);
+                    }
+                }
+
+                function checkAllFiles() {
+                    var allLoaded = true;
+                    for (var i = 0; i < pathArr.length; i++) {
+                        if (!fileMap[pathArr[i]]) {
+                            allLoaded = false;
+                            break;
+                        }
+                    }
+
+                    //所有文件加载完毕才执行回调函数
+                    if (allLoaded) {
+                        callback ? callback() : '';
+                    }
+                }
+            }
+        };
+
+        window.thin = thin;
+    })();
+
+
+
+    thin.define("constant.PI", [], function() {
+        return 3.14159;
+    });
+
+    thin.define("shape.Circle", ["constant.PI"], function(pi) {
+        var Circle = function(r) {
+            this.r = r;
+        };
+
+        Circle.prototype = {
+            area : function() {
+                return pi * this.r * this.r;
+            }
+        }
+
+        return Circle;
+    });
+
+
+    thin.define("shape.Rectangle", [], function() {
+        var Rectangle = function(l, w) {
+            this.l = l;
+            this.w = w;
+        };
+
+        Rectangle.prototype = {
+            area: function() {
+                return this.l * this.w;
+            }
+        };
+
+        return Rectangle;
+    });
+
+
+
+    thin.define("shape.Circle", ["constant.PI"], function(pi) {
+        var Circle = function(r) {
+            this.r = r;
+        };
+
+        Circle.prototype = {
+            area : function() {
+                return pi * this.r * this.r;
+            }
+        }
+
+        return Circle;
+    });
+
+
+    thin.define("ShapeTypes", ["shape.Circle", "shape.Rectangle"], function(Circle, Rectangle) {
+        return {
+            CIRCLE: Circle,
+            RECTANGLE: Rectangle
+        };
+    });
+
+    thin.define("ShapeFactory", ["ShapeTypes"], function(ShapeTypes) {
+        return {
+            getShape: function(type) {
+                var shape;
+
+                switch (type) {
+                    case "CIRCLE": {
+                        shape = new ShapeTypes[type](arguments[1]);
+                        break;
+                    }
+                    case "RECTANGLE":  {
+                        shape = new ShapeTypes[type](arguments[1], arguments[2]);
+                        break;
+                    }
+                }
+
+                return shape;
+            }
+        };
+    });
+
+
+    //在这个例子里定义了四个模块，每个模块只需要定义自己所直接依赖的模块，其他的可以不必定义。
+    var ShapeFactory = thin.use("ShapeFactory");
+    console.log(ShapeFactory.getShape("CIRCLE", 5).area()); //78.53975
+    console.log(ShapeFactory.getShape("RECTANGLE", 3, 4).area());  //12
+
+    //执行循序
+    // 1执行 thin.use("ShapeFactory");
+    // 2  遍历 ShapeFactory 模块的依赖项 ， ShapeFactory 的依赖项 ShapeTypes 递归 thin.use()函数
+    // 3  执行thin.use('ShapeTypes') ，遍历 ShapeTypes 模块的依赖项 (2个)  ，  ShapeTypes 的依赖项 shape.Circle（ShapeTypes的第一个依赖项） 递归 thin.use()函数 。 然后执行thin.use('shape.Circle') ，遍历 shape.Circle 模块的依赖项 （1个） ， shape.Circle的依赖项 constant.PI 递归thin.use()函数 。  再到 shape.Rectangle（ShapeTypes的第二个依赖项） 递归 thin.use()函数；
+
+    //就这样一直依赖下去 ，一个依赖着一个
+
+
+
+    //测试引入js文件
+    thin.require(['test'], function () {}); //没有引进js？
+
+</script>
+</body>
+</html>

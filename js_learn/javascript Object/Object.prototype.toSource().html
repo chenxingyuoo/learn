@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Object.prototype.toSource()</title>
+</head>
+<body>
+<script>
+
+    function Person(name) {
+        this.name = name;
+    }
+
+    Person.prototype.toSource = function Person_toSource() {
+        return 'new Person(' + (this.name) + ')';
+    };
+
+    console.log(new Person('Joe').toSource()); // ---> new Person("Joe")
+
+</script>
+</body>
+</html>

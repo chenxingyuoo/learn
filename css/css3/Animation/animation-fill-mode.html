@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+    <meta charset="utf-8"/>
+    <title>animation-fill-mode_CSS参考手册_web前端开发参考手册系列</title>
+    <meta name="author" content="Joy Du(飘零雾雨), dooyoe@gmail.com, www.doyoe.com"/>
+    <style>
+        h1 {
+            font-size: 16px;
+        }
+
+        li {
+            padding: 10px;
+        }
+
+        span {
+            display: block;
+            width: 80px;
+            height: 80px;
+            padding: 10px;
+            border-radius: 50px;
+            box-shadow: 0 0 10px rgba(204, 102, 0, .8);
+            background: #F6D66E;
+            background: -moz-linear-gradient(top, #fff, #F6D66E);
+            background: -webkit-linear-gradient(top, #fff, #F6D66E);
+            background: linear-gradient(top, #fff, #F6D66E);
+        }
+
+        .none span {
+            -moz-animation: animations 1s ease;
+            -webkit-animation: animations 1s ease;
+            animation: animations 1s ease;
+        }
+
+        @-webkit-keyframes animations {
+            0% {
+                -webkit-transform: translate(0, 0);
+            }
+            100% {
+                -webkit-transform: translate(400px);
+            }
+        }
+
+        @-moz-keyframes animations {
+            0% {
+                -moz-transform: translate(0, 0);
+            }
+            100% {
+                -moz-transform: translate(400px);
+            }
+        }
+
+        @keyframes animations {
+            0% {
+                transform: translate(0, 0);
+            }
+            100% {
+                transform: translate(400px);
+            }
+        }
+
+        .forwards span {
+            -moz-animation: animations2 1s ease forwards;
+            -webkit-animation: animations2 1s ease forwards;
+            animation: animations2 1s ease forwards;
+        }
+
+        @-webkit-keyframes animations2 {
+            0% {
+                -webkit-transform: translate(0, 0);
+            }
+            100% {
+                -webkit-transform: translate(400px);
+            }
+        }
+
+        @-moz-keyframes animations2 {
+            0% {
+                -moz-transform: translate(0, 0);
+            }
+            100% {
+                -moz-transform: translate(400px);
+            }
+        }
+
+        @keyframes animations2 {
+            0% {
+                transform: translate(0, 0);
+            }
+            100% {
+                transform: translate(400px);
+            }
+        }
+
+        .backwards span {
+            -moz-animation: animations3 1s ease backwards;
+            -webkit-animation: animations3 1s ease backwards;
+            animation: animations3 1s ease backwards;
+        }
+
+        @-webkit-keyframes animations3 {
+            0% {
+                -webkit-transform: translate(0, 0);
+            }
+            100% {
+                -webkit-transform: translate(400px);
+            }
+        }
+
+        @-moz-keyframes animations3 {
+            0% {
+                -moz-transform: translate(0, 0);
+            }
+            100% {
+                -moz-transform: translate(400px);
+            }
+        }
+
+        @keyframes animations3 {
+            0% {
+                transform: translate(0, 0);
+            }
+            100% {
+                transform: translate(400px);
+            }
+        }
+
+        .both span {
+            -moz-animation: animations4 1s ease both;
+            -webkit-animation: animations4 1s ease both;
+            animation: animations4 1s ease both;
+        }
+
+        @-webkit-keyframes animations4 {
+            0% {
+                -webkit-transform: translate(0, 0);
+            }
+            100% {
+                -webkit-transform: translate(400px);
+            }
+        }
+
+        @-moz-keyframes animations4 {
+            100% {
+                -moz-transform: translate(400px);
+            }
+        }
+
+        @keyframes animations4 {
+            0% {
+                transform: translate(0, 0);
+            }
+            100% {
+                transform: translate(400px);
+            }
+        }
+    </style>
+</head>
+<body>
+<h1>animation-fill-mode：</h1>
+<ul>
+    <li class="none">
+        <strong>none: </strong>
+        <span></span>
+    </li>
+    <li class="forwards">
+        <strong>forwards: </strong>
+        <span></span>
+    </li>
+    <li class="backwards">
+        <strong>backwards: </strong>
+        <span></span>
+    </li>
+    <li class="both">
+        <strong>both: </strong>
+        <span></span>
+    </li>
+</ul>
+</body>
+</html>
+			

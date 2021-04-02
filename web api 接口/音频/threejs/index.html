@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+
+<video src="" autoplay></video>
+
+<script src="js/three.js"></script>
+<script>
+
+    var hasUserMedia = navigator.webkitGetUserMedia ? true : false;
+
+
+    var video = document.querySelector('video');
+
+    navigator.webkitGetUserMedia({video : true}, function(stream){
+        video.src    = webkitURL.createObjectURL(stream);
+    }, function(error){
+        console.log("Failed to get a stream due to", error);
+    });
+
+
+    var videoTexture = new THREE.Texture( video );
+
+    var material   = new THREE.MeshLambertMaterial({
+        map : videoTexture
+    });
+
+
+    if( video.readyState === video.HAVE_ENOUGH_DATA ){
+        videoTexture.needsUpdate = true;
+    }
+
+</script>
+</body>
+</html>

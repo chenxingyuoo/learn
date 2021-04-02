@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+
+<div id="myDiv">I am some inner html</div>
+
+<script src="../ramda.js"></script>
+<script>
+    // 在关于纯函数的的那一章（即第 3 章）里，有一个很奇怪的例子。
+    // 这个例子中的函数会产生副作用，但是我们通过把它包裹在另一个函数里的方式把它变得看起来像一个纯函数。
+    // 这里还有一个类似的例子：
+
+    //  getFromStorage :: String -> (_ -> String)
+    var getFromStorage = function(key) {
+        return function() {
+            return localStorage[key];
+        }
+    }
+
+    // 要是我们没把 getFromStorage 包在另一个函数里，它的输出值就是不定的，会随外部环境变化而变化。
+    // 有了这个结实的包裹函数（wrapper），同一个输入就总能返回同一个输出：一个从 localStorage 里取出某个特定的元素的函数。
+    // 就这样（也许再高唱几句赞美圣母的赞歌）我们洗涤了心灵，一切都得到了宽恕。
+    // 然而，这并没有多大的用处，你说是不是。就像是你收藏的全新未拆封的玩偶，不能拿出来玩有什么意思。
+    // 所以要是能有办法进到这个容器里面，拿到它藏在那儿的东西就好了...办法是有的，请看 IO
+
+
+    var IO = function(f) {
+        debugger;
+        this.__value = f;
+    }
+
+    IO.of = function(x) {
+        return new IO(function() {
+            return x;
+        });
+    }
+
+    IO.prototype.map = function(f) {
+        debugger;
+        return new IO(R.compose(f, this.__value));
+    }
+
+    // IO 跟之前的 functor 不同的地方在于，它的 __value 总是一个函数。
+    // 不过我们不把它当作一个函数——实现的细节我们最好先不管。
+    // 这里发生的事情跟我们在 getFromStorage 那里看到的一模一样：IO 把非纯执行动作（impure action）捕获到包裹函数里，目的是延迟执行这个非纯动作。
+    // 就这一点而言，我们认为 IO 包含的是被包裹的执行动作的返回值，而不是包裹函数本身。
+    // 这在 of 函数里很明显：IO(function(){ return x }) 仅仅是为了延迟执行，其实我们得到的是 IO(x)。
+
+    //  io_window_ :: IO Window
+    var io_window = new IO(function(){ return window; });
+
+    console.log(io_window.map(function(win){ return win.innerWidth }));
+
+    console.log(io_window.__value());
+    // window
+
+
+    //  split :: String -> String -> [String]
+    var split = R.curry(function split(what, str){
+        return str.split(what)
+    });
+
+    var head = function(x) {
+        return x[0];
+    };
+
+    console.log(io_window.map(R.prop('location')).map(R.prop('href')).map(split('/')));
+    // IO(["http:", "", "localhost:8000", "blog", "posts"])
+
+    //  $ :: String -> IO [DOM]
+    var $ = function(selector) {
+        return new IO(function(){ return document.querySelectorAll(selector); });
+    }
+
+
+
+    console.log($('#myDiv').map(head).map(function(div){ return div.innerHTML; }));
+    // IO('I am some inner html')
+
+
+    // 这里，io_window 是一个真正的 IO，我们可以直接对它使用 map。
+    // 至于 $，则是一个函数，调用后会返回一个 IO。我把这里的返回值都写成了概念性的，这样就更加直观；
+    // 不过实际的返回值是 { __value: [Function] }。
+    // 当调用 IO 的 map 的时候，我们把传进来的函数放在了 map 函数里的组合的最末端（也就是最左边），反过来这个函数就成为了新的 IO 的新 __value，并继续下去。
+    // 传给 map 的函数并没有运行，我们只是把它们压到一个“运行栈”的最末端而已，一个函数紧挨着另一个函数，就像小心摆放的多米诺骨牌一样，让人不敢轻易推倒。
+    // 这种情形很容易叫人联想起“四人帮”（译者注：《设计模式》一书作者）提出的命令模式（command pattern）或者队列（queue）。
+
+    // 花点时间找回你关于 functor 的直觉吧。
+    // 把实现细节放在一边不管，你应该就能自然而然地对各种各样的容器使用 map 了，不管它是多么奇特怪异。
+    // 这种伪超自然的力量要归功于 functor 的定律，我们将在本章末尾对此作一番探索。
+    // 无论如何，我们终于可以在不牺牲代码纯粹性的情况下，随意使用这些不纯的值了。
+
+
+    // 好了，我们已经把野兽关进了笼子。但是，在某一时刻还是要把它放出来。
+    // 因为对 IO 调用 map 已经积累了太多不纯的操作，最后再运行它无疑会打破平静。
+    // 问题是在哪里，什么时候打开笼子的开关？而且有没有可能我们只运行 IO 却不让不纯的操作弄脏双手？
+    // 答案是可以的，只要把责任推到调用者身上就行了。
+    // 我们的纯代码，尽管阴险狡诈诡计多端，但是却始终保持一副清白无辜的模样，反而是实际运行 IO 并产生了作用的调用者，背了黑锅。
+    // 来看一个具体的例子。
+
+
+
+    //  url :: IO String
+    var url = new IO(function() { return window.location.href; });
+
+    //  toPairs =  String -> [[String]]
+    var toPairs = compose(map(split('=')), split('&'));
+
+    //  params :: String -> [[String]]
+    var params = compose(toPairs, last, split('?'));
+
+    //  findParam :: String -> IO Maybe [String]
+    var findParam = function(key) {
+        return map(compose(Maybe.of, filter(compose(eq(key), head)), params), url);
+    };
+
+    ////// 非纯调用代码: ///////
+
+    // 调用 __value() 来运行它！
+    findParam("searchTerm").__value();
+    // Maybe(['searchTerm', 'wafflehouse'])
+
+    //url 包裹在一个 IO 里，然后把这头野兽传给了调用者；一双手保持的非常干净。
+    // 你可能也注意到了，我们把容器也“压栈”了，要知道创建一个 IO(Maybe([x])) 没有任何不合理的地方。
+    // 我们这个“栈”有三层 functor（Array 是最有资格成为 mappable 的容器类型），令人印象深刻。
+
+    //有件事困扰我很久了，现在我必须得说出来：IO 的 __value 并不是它包含的值，也不是像两个下划线暗示那样是一个私有属性。
+    // __value 是手榴弹的弹栓，只应该被调用者以最公开的方式拉动。为了提醒用户它的变化无常，我们把它重命名为 unsafePerformIO 看看。
+
+    var IO = function(f) {
+        this.unsafePerformIO = f;
+    }
+
+    IO.prototype.map = function(f) {
+        return new IO(_.compose(f, this.unsafePerformIO));
+    }
+
+    // 看，这就好多了。现在调用的代码就变成了 findParam("searchTerm").unsafePerformIO()，
+    // 对应用程序的用户（以及本书读者）来说，这简直就直白得不能再直白了。
+
+    // IO 会成为一个忠诚的伴侣，帮助我们驯化那些狂野的非纯操作。
+    // 下一节我们将学习一种跟 IO 在精神上相似，但是用法上又千差万别的类型。
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,23 @@
+{
+  "name": "dome_movie",
+  "authors": [
+    "2731173104@qq.com"
+  ],
+  "description": "dome_movie movie",
+  "main": "",
+  "moduleType": [],
+  "license": "MIT",
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "public/libs",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "~3.3.6"
+  }
+}

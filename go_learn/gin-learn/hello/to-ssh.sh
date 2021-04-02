@@ -1,0 +1,1 @@
+rsync -rv --progress main root@101.200.82.95:/home/project/go-hello-world

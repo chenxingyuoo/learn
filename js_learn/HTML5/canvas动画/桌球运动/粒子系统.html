@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+<canvas id="canvas" width="500" height="500" style="background:#45cb96;"></canvas>
+<script src="../js/utils.js"></script>
+<script src="../js/ball.js"></script>
+<script>
+    window.onload = function(){
+        var canvas = document.getElementById('canvas'),
+                context = canvas.getContext('2d');
+
+        var balls = [],
+                numBalls = 40,  //球数
+                long = 85,   //定义两个球的距离长度 ， 小于85就连线
+                bounce = -1.0;   //弹跳系数
+
+        //循环实例化球体
+        for(var i=0; i<numBalls; i++){
+            var radius = Math.random()*5 + 5;
+            //var color = Math.random()*(0xffffff);
+            var ball = new Ball(radius, "#fff");
+            ball.mass = Math.random()*5 + 2;
+            ball.x = Math.random()*canvas.width;
+            ball.y = Math.random()*canvas.height;
+            ball.vx = Math.random()*6 - 3;  //水平加速度
+            ball.vy = Math.random()*6 - 3;  //垂直加速度
+            balls.push(ball);
+        }
+
+
+        function rotate(x, y, sin, cos, reverse){
+            return {
+                x: (reverse)?(x*cos + y*sin):(x*cos - y*sin),
+                y: (reverse)?(y*cos - x*sin):(y*cos + x*sin)
+            }
+        }
+
+        //碰撞检测
+        function checkCollision(ball0, ball1){
+            var dx = ball1.x - ball0.x,
+                    dy = ball1.y - ball0.y,
+                    dist = Math.sqrt(dx*dx + dy*dy); //用于距离的碰撞检测
+
+            if(dist < ball0.radius + ball1.radius){  //如果发生碰撞
+                //计算物体间的夹角，并得出坐标旋转所需要的sin,cos值
+                var angle = Math.atan2(dy, dx),
+                        sin = Math.sin(angle),
+                        cos = Math.cos(angle);
+
+                //ball0旋转后的坐标
+                var pos0 = {
+                    x: 0,
+                    y: 0
+                }
+
+                //ball1旋转后的坐标
+                var pos1 = rotate(dx, dy, sin, cos, true);
+
+                //ball0 旋转后的速度
+                var vel0 = rotate(ball0.vx, ball0.vy, sin, cos, true);
+
+                //ball1 旋转后的速度
+                var vel1 = rotate(ball1.vx, ball1.vy, sin, cos, true);
+
+                //不用考虑竖直方向的速度
+
+                var vxTotal = vel0.x - vel1.x;
+                //带入公式计算碰撞后的速度
+                vel0.x = ((ball0.mass - ball1.mass)*vel0.x + 2*ball1.mass*vel1.x)/(ball0.mass + ball1.mass);
+                vel1.x = vxTotal + vel0.x;
+
+                //更新位置 - 以避免物体变得粘在一起
+                var absV = Math.abs(vel0.x) + Math.abs(vel1.x),
+                        overlap = (ball0.radius + ball1.radius) - Math.abs(pos0.x - pos1.x);
+                //更新位置
+                pos0.x += vel0.x / absV * overlap;
+                pos1.x += vel1.x / absV * overlap;
+
+                //位置旋转回去
+                var pos0F = rotate(pos0.x, pos0.y, sin, cos, false);
+                var pos1F = rotate(pos1.x, pos1.y, sin, cos, false);
+
+                //调整位置，以实际屏幕位置
+                ball1.x = ball0.x + pos1F.x;
+                ball1.y = ball0.y + pos1F.y;
+                ball0.x = ball0.x + pos0F.x;
+                ball0.y = ball0.y + pos0F.y;
+
+                //速度旋转回去
+                var vel0F = rotate(vel0.x, vel0.y, sin, cos, false);
+                var vel1F = rotate(vel1.x, vel1.y, sin, cos, false);
+
+                ball0.vx = vel0F.x;
+                ball0.vy = vel0F.y;
+                ball1.vx = vel1F.x;
+                ball1.vy = vel1F.y;
+
+            }
+        }
+
+        //边界检测
+        function checkWalls(ball){
+            if(ball.x + ball.radius > canvas.width){
+                ball.x = canvas.width - ball.radius;
+                ball.vx *= bounce;
+            }else if(ball.x - ball.radius < 0){
+                ball.x = ball.radius;
+                ball.vx *= bounce;
+            }
+
+            if(ball.y + ball.radius > canvas.height){
+                ball.y = canvas.height - ball.radius;
+                ball.vy *= bounce;
+            }else if(ball.y - ball.radius < 0){
+                ball.y = ball.radius;
+                ball.vy *= bounce;
+            }
+        }
+
+        //运动
+        function move(ball){
+            ball.x += ball.vx;
+            ball.y += ball.vy;
+            //边界检测
+            checkWalls(ball);
+        }
+
+        //绘画球体
+        function draw(ball){
+            ball.draw(context);
+        }
+
+        //画线
+        function drawLine(ball0, ball1){
+            var dx = ball1.x - ball0.x,
+                    dy = ball1.y - ball0.y,
+                    dist = Math.sqrt(dx*dx + dy*dy);
+
+            if(dist < long){
+                context.save();
+                context.strokeStyle = "rgba(255,255,255,0.5)";
+                context.beginPath();
+                context.moveTo(ball0.x, ball0.y);
+                context.lineTo(ball1.x, ball1.y);
+                context.closePath()
+                context.stroke()
+                context.restore();
+            }
+        }
+
+
+
+
+        (function drawFrame(){
+            window.requestAnimationFrame(drawFrame, canvas);
+            context.clearRect(0, 0, canvas.width, canvas.height);
+
+            balls.forEach(move);
+            for(var ballA, i=0, len = numBalls - 1; i<len; i++){
+                ballA = balls[i];
+                for(var ballB, j=i+1; j<numBalls; j++){
+                    ballB = balls[j];
+                    checkCollision(ballA, ballB);
+                    drawLine(ballA, ballB);
+                }
+            }
+
+            balls.forEach(draw);
+        }())
+    }
+
+</script>
+
+</body>
+</html>

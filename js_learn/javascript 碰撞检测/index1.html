@@ -1,0 +1,110 @@
+<HTML>
+<HEAD>
+    <TITLE>碰撞按角度计算 能量守衡</TITLE>
+    <META http-equiv='Content-Type' content='text/html;charset=gb2312'>
+</HEAD>
+<BODY text="#FFFFFF" bgcolor=#000000 topmargin=0 leftmargin=0 scroll=no>
+<div id=imgdiv2></div>
+<div id=imgdiv style="width:100%;height:100%;"></div>
+<SCRIPT language=JavaScript>
+    <!--
+    var $=function(obj){return typeof(obj)=="string"?document.getElementById(obj):obj;};
+    onload=function(){
+        moveTo(0,0);focus();
+        resizeTo(2000,2000);
+        w=document.body.clientWidth;
+        h=document.body.clientHeight;
+        $("imgdiv").style.width =w+"px";
+        $("imgdiv").style.height=h+"px";
+        var d='';
+        x=[];
+        y=[];
+        mr=[];
+        xs=[];
+        ys=[];
+        fm=[];
+        fr=[];
+        fn=[];
+        var wr=w-100;
+        var hr=h-100;
+        imgn=10;
+        for(var i=0;i<imgn;i++){
+            var xr=Math.round(Math.random()*wr);
+            var yr=Math.round(Math.random()*hr);
+            mr[i]=Math.round(Math.random()*2*Math.PI);
+            xs[i]=Math.round(Math.random()*10+3);
+            ys[i]=Math.round(Math.random()*10+3);
+            x[i]=xr;
+            y[i]=yr;
+            fm[i]=30;
+            fr[i]=40;
+            fn[i]=fr[i]*2;
+            d+="<img id='img"+i+"' src='#' style='position:absolute;left:"+xr+"px;top:"+yr+"px;z-index:10;width:0px;height:0px;border:0px;overflow:hidden;'>";
+        }
+        $("imgdiv").innerHTML+=d;
+        runi=0;
+        runInterval();
+    };
+    function runInterval(){
+        $("img"+runi).src="http://img0.imgtn.bdimg.com/it/u=7065115,2775626573&fm=21&gp=0.jpg";
+        $("img"+runi).style.width =(fr[runi]*2)+"px";
+        $("img"+runi).style.height=(fr[runi]*2)+"px";
+
+        setInterval("runmove('"+runi+"');",fm[runi]);
+        runi++;
+        var timer=setTimeout("runInterval()",1000);
+        if(runi>imgn-1){clearTimeout(timer);}
+    }
+    onresize=function(){
+        w=document.body.clientWidth;
+        h=document.body.clientHeight;
+        $("imgdiv").style.width =w+"px";
+        $("imgdiv").style.height=h+"px";
+    };
+    function runmove(n){
+        x[n]+=xs[n];
+        y[n]+=ys[n];
+        $("img"+n).style.left=x[n];
+        $("img"+n).style.top =y[n];
+        for(var i=0;i<imgn;i++){
+            if(i!=n){
+                var RR=fr[n]+fr[i];
+                if(Math.abs(x[n]-x[i])<RR){
+                    if(Math.abs(y[n]-y[i])<RR){
+                        var dx=(x[n]-x[i]);
+                        var dy=(y[n]-y[i]);
+                        var R=Math.sqrt(dx*dx+dy*dy);
+                        if(R<RR){
+                            x[n]+=(RR-R)*dx/R;
+                            y[n]+=(RR-R)*dy/R;
+                            $("img"+n).style.left=x[n];
+                            $("img"+n).style.top =y[n];
+                            if(dx==0){
+                                var dvx=0;
+                            }else{
+                                var dvx=(fm[i]*(2*xs[i]*dx*dx+2*ys[i]*dx*dy)-fm[n]*(2*xs[n]*dx*dx+2*ys[n]*dy*dx))/(fm[n]+fm[i])/(dx*dx+dy*dy);
+                            }
+                            if(dy==0){
+                                var dvy=0;
+                            }else{
+                                var dvy=(fm[i]*(2*xs[i]*dx*dy+2*ys[i]*dy*dy)-fm[n]*(2*xs[n]*dx*dy+2*ys[n]*dy*dy))/(fm[n]+fm[i])/(dx*dx+dy*dy);
+                            }
+                            xs[n]+=dvx;
+                            ys[n]+=dvy;
+                            xs[i]-=dvx;
+                            ys[i]-=dvy;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        switch(true){
+            case ((x[n]<0&&xs[n]<0)||(x[n]+fn[n]>w&&xs[n]>0)):xs[n]*=-1;break;
+            case ((y[n]<0&&ys[n]<0)||(y[n]+fn[n]>h&&ys[n]>0)):ys[n]*=-1;break;
+        }
+    }
+    -->
+</SCRIPT>
+</BODY>
+</HTML> 

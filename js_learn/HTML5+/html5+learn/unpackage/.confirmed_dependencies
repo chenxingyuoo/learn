@@ -1,0 +1,11 @@
+{
+	"index.html": {
+		"resources": [
+			"css/common.css"
+		],
+		"refer": [
+			"plus/accelerometer_shake.html",
+			"plus/doc.html"
+		]
+	}
+}

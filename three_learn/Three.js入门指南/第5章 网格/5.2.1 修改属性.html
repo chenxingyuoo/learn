@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+
+<script src="../three.js"></script>
+<script>
+  //除了在构造函数中指定材质，在网格被创建后，也能对材质进行修改：
+
+  window.onload = init;
+
+  function init() {
+    //渲染器
+    var renderer = new THREE.WebGLRenderer();
+    renderer.setSize(400, 300);
+    renderer.setClearColor(0x000000);
+    document.getElementsByTagName('body')[0].appendChild(renderer.domElement);
+
+    //场景
+    var scene = new THREE.Scene();
+
+    // camera
+    var camera = new THREE.OrthographicCamera(-2.5, 2.5, 1.875, -1.875, 0.1, 100);
+    camera.position.set(5, 5, 20);
+    camera.lookAt(new THREE.Vector3(0, 0, 0));
+    scene.add(camera);
+
+    // light
+    var light = new THREE.PointLight(0xffffff, 1, 100);
+    light.position.set(10, 15, 5);
+    scene.add(light);
+
+    var material = new THREE.MeshLambertMaterial({
+      color: 0xffff00
+    });
+    var geometry = new THREE.CubeGeometry(1, 2, 3);
+    var mesh = new THREE.Mesh(geometry, material);
+    scene.add(mesh);
+
+    mesh.material = new THREE.MeshLambertMaterial({
+      color: 0xff0000
+    });
+
+    renderer.render(scene, camera);
+
+  }
+</script>
+
+</body>
+</html>

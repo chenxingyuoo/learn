@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Object.isFrozen 函数</title>
+</head>
+
+<body>
+<script>
+    //如果无法在对象中修改现有属性的特性和值，且无法向对象添加新属性，则返回 true。
+    //该Object.isFrozen（）确定某个对象被冻结。
+
+    //返回值
+    /*如果满足下列所有条件，则为 true：
+    对象是不可扩展的，这表示无法向对象添加新属性。
+    configurable 特性对于所有现有属性为 false。
+    writable 特性对于所有现有数据属性为 false。*/
+
+    // Create an object that has two properties.
+    var obj = { pasta: "spaghetti", length: 10 };
+
+    // Freeze the object, and verify that it is frozen.
+    Object.freeze(obj);
+    document.write(Object.isFrozen(obj)); // true
+    debugger
+
+    // Try to add a new property, and then verify that it is not added.
+    obj.newProp = 50;
+    document.write (obj.newProp); // undefined
+    document.write ("<br/>");
+
+    // Try to delete a property, and then verify that it is still present.
+    delete obj.length;
+    document.write (obj.length); // 10
+    document.write ("<br/> ");
+
+    // Try to change a property value, and then verify that it is not changed.
+    obj.pasta = "linguini";
+    document.write (obj.pasta); // spaghetti
+
+    // Output:
+    // true
+    // undefined
+    // 10
+    // spaghetti
+
+    //preventExtensions  //冻结一个对象
+
+    // A new object is extensible, so it is not frozen.
+    Object.isFrozen({}); // === false
+
+    // An empty object which is not extensible is vacuously frozen.
+    var vacuouslyFrozen = Object.preventExtensions({});
+    Object.isFrozen(vacuouslyFrozen); // === true
+
+    // A new object with one property is also extensible, ergo not frozen.
+    var oneProp = { p: 42 };
+    Object.isFrozen(oneProp); // === false
+
+    // Preventing extensions to the object still doesn't make it frozen,
+    // because the property is still configurable (and writable).
+    Object.preventExtensions(oneProp);
+    Object.isFrozen(oneProp); // === false
+
+    // ...but then deleting that property makes the object vacuously frozen.
+    delete oneProp.p;
+    Object.isFrozen(oneProp); // === true
+
+    // A non-extensible object with a non-writable but still configurable property is not frozen.
+    var nonWritable = { e: 'plep' };
+    Object.preventExtensions(nonWritable);
+    Object.defineProperty(nonWritable, 'e', { writable: false }); // make non-writable
+    Object.isFrozen(nonWritable); // === false
+
+    // Changing that property to non-configurable then makes the object frozen.
+    Object.defineProperty(nonWritable, 'e', { configurable: false }); // make non-configurable
+    Object.isFrozen(nonWritable); // === true
+
+    // A non-extensible object with a non-configurable but still writable property also isn't frozen.
+    var nonConfigurable = { release: 'the kraken!' };
+    Object.preventExtensions(nonConfigurable);
+    Object.defineProperty(nonConfigurable, 'release', { configurable: false });
+    Object.isFrozen(nonConfigurable); // === false
+
+    // Changing that property to non-writable then makes the object frozen.
+    Object.defineProperty(nonConfigurable, 'release', { writable: false });
+    Object.isFrozen(nonConfigurable); // === true
+
+    // A non-extensible object with a configurable accessor property isn't frozen.
+    var accessor = { get food() { return 'yum'; } };
+    Object.preventExtensions(accessor);
+    Object.isFrozen(accessor); // === false
+
+    // ...but make that property non-configurable and it becomes frozen.
+    Object.defineProperty(accessor, 'food', { configurable: false });
+    Object.isFrozen(accessor); // === true
+
+    // But the easiest way for an object to be frozen is if Object.freeze has been called on it.
+    var frozen = { 1: 81 };
+    Object.isFrozen(frozen); // === false
+    Object.freeze(frozen);
+    Object.isFrozen(frozen); // === true
+
+    // By definition, a frozen object is non-extensible.
+    Object.isExtensible(frozen); // === false
+
+    // Also by definition, a frozen object is sealed.
+    Object.isSealed(frozen); // === true
+
+
+    Object.isFrozen(1);
+    // TypeError: 1 is not an object (ES5 code)
+
+    Object.isFrozen(1);
+    // true                          (ES6 code)
+</script>
+</body>
+</html>

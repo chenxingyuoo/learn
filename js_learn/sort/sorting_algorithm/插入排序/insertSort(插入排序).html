@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>insertSort（插入排序）</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+
+<div style="margin:50px;">
+    <h1>排序算法动画演示 <small><a href="https://github.com/jun-lu/SortAnimate">view Github</a></small></h1>
+
+    <div>
+        <p>
+            动画速度：<input value="170" max="200" min="1" id="speed" type="range" >
+        </p>
+        <p>
+            数组长度：
+            <input value="50" width="50" id="arrlen">
+            <input type="button" value="随机数组" id="randomArray" class="btn" />
+        </p>
+        <p>
+            待排序数组：<input id="arrayText" value="[43,27,39,17,32,21,14,42,22,15,18,12,46,1,16,10,4,29,3,23,24,49,0,5,36,13,34,6,19,47,9,33,31,20,28,44,38,37,41,40,8,35,30,7,11,45,2,25,48,26]" style="width:80%;">
+        </p>
+        <p></p>
+    </div>
+    <div>
+
+        <!--<input type="button" value="冒泡排序" attr="quick" id="bubble_btn" class="btn" />-->
+        <!--<input type="button" value="快速排序" attr="quick" id="quick_btn" class="btn" />-->
+        <input type="button" value="插入排序" id="insert_btn" class="btn" />
+        <!--<input type="button" value="希尔排序" onclick="playSortAnimate(sortMethodMap.shell)" class="btn" />
+        <input type="button" value="选择排序" onclick="playSortAnimate(sortMethodMap.selection)" class="btn" />
+        <input type="button" value="鸡尾酒排序" onclick="playSortAnimate(sortMethodMap.cocktail)" class="btn" />
+        <input type="button" value="奇偶排序" onclick="playSortAnimate(sortMethodMap.oddEven)" class="btn" />
+        <input type="button" value="梳排序" onclick="playSortAnimate(sortMethodMap.comb)" class="btn" />-->
+
+
+    </div>
+    <div>
+        <div class="sort-animate-box" id="sortAnimateBox" style="height:100px;"></div>
+        <div id="sortText"></div>
+    </div>
+
+</div>
+
+
+<!--首先选取数组的第一项即a[0]，我们可以认为这个数是已经排好序的，再取a[1]项插入到已经排好序的元素中，此时只有a[0]，所以我们需要比较a[1]和a[0]的大小。如果a[1]<a[0]，则需要把a[1]先用一个临时变量temp保存，a[0]往后挪一位（即a[1]的位置），然后把temp赋值给a[0]。要插入的元素依次为a[1]-a[a.length-1]项，插入每一项时，都需要从后往前遍历已排好序的元素，如果已排好序的元素比要插入的元素大，则把该元素往后挪一位，直到已排好的元素小于等于要插入的元素（或者已经遍历完了已排好序的数组项），则把要插入的元素放入该位置+1的索引中（或者放在数组的第0个位置）。对每个插入项都执行上面的操作，则最后的数组就排好序了。-->
+
+<script src="js/sortAnimate.js"></script>
+<script>
+    //插入排序
+    function insertSort(arr, srotanimte) {
+        if (Object.prototype.toString.call(arr).slice(8, -1) === "Array") {
+            var temp = null;   //定义一个临时变量保存要插入元素的值
+            for (var i = 1; i < arr.length; i++) {  //从索引位置1开始遍历数组
+
+                if (arr[i] < arr[i - 1]) {  //只有要插入的元素小于已排好序的最大元素的时候才需要进行下面的操作
+                    temp = arr[i];  //把要插入的元素赋给一个临时变量
+                    var p = i - 1;  //已排好序的数组的最后一项索引为i-1
+                    while (temp < arr[p] && p >= 0) {  //如果要插入的元素小于已排好序的元素并且没有到已排好数组的开始位置
+                        //交换两个数的位置
+                        srotanimte.exChange(p + 1, p);
+
+                        arr[p + 1] = arr[p];  //把大于要插入元素(temp)的已排好序元素位置往后挪一位
+                        p--;  //从后往前便利已经排好序的元素
+                    }
+                    arr[p + 1] = temp;  //把要插入的元素插入到已排好序的数组中,索引位置为p+1
+                }
+            }
+            return arr;  //返回已排好序的数组
+        }else{
+            return 'arr is not an Array!';
+        }
+    }
+
+
+     //var a=[12,3,43,11,56,90,7,66,82];
+     //console.log(insertSort(a));
+
+
+    var srotanimte = null;
+
+    function $(id){
+        return document.getElementById(id);//.value;
+    };
+
+
+    //随机数组
+    function randomArrayText( len ){
+        len = len || 50;
+        var arr = [];
+        for(var i=0; i<len;i++){
+            arr.push( i );
+        }
+        arr.sort(function(){
+            return Math.random() - 0.5;
+        });
+        document.getElementById( "arrayText" ).value = "["+ arr.toString() +"]";
+    };
+
+    //随机数组
+    $('randomArray').addEventListener('click',function(){
+        var value = $('arrlen').value;
+        randomArrayText(value);
+    },false);
+
+
+    //获取数组
+    function getArray(){
+        var text = document.getElementById( "arrayText" ).value;
+        try{
+            return JSON.parse( text );
+        }catch(e){
+            alert("数组有错误")
+        }
+    }
+
+    //播放排序动画
+    function playSortAnimate(sortFun){
+        //获取数组
+        var arr = getArray();
+        srotanimte = new SortAnimate(arr, $('sortAnimateBox'));
+        sortFun(arr , srotanimte);
+        srotanimte.play(); //播放动画
+    };
+
+    //点击按钮执行，播放排序动画
+    $('insert_btn').addEventListener('click',function(){
+        playSortAnimate(insertSort);
+    },false);
+
+
+
+</script>
+</body>
+</html>

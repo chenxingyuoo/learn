@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+	<title>webpack 多页应用框架</title>
+    <link rel="stylesheet" href="../dist/css/home.css">
+</head>
+<body>
+
+<div id="app"></div>
+
+<div class="">home 123</div>
+
+<script type="text/javascript" src="../dist/js/home.js"></script>
+<script>
+    var obj = { common: [ './src/assets/sass/common/common.scss' ],
+        home: [ './src/assets/sass/home/home.scss' ],
+        login: [ './src/assets/sass/login/login.scss' ] };
+
+
+        for (var key in obj) {
+            var concatArray = [];
+            var concatName;
+
+            if (key !== 'common') {
+                for (var key1 in obj.common) {
+                    concatArray.push(obj.common[key1]);
+                }
+
+                for (var key2 in obj[key]) {
+                    concatArray.push(obj[key][key2]);
+                }
+
+                concatName = key + '.scss';
+
+                console.log(concatArray);
+                console.log(concatName);
+
+                // gulp.src(concatArray)
+                //     .pipe(concat('style.scss'))
+                //     .pipe(sass().on('error', sass.logError))
+                //     .pipe(gulp.dest('./dist/css'));
+
+            }
+        }
+</script>
+</body>
+</html>

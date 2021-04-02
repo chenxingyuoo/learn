@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Object.defineProperties 函数</title>
+</head>
+
+<body>
+<script>
+    //将一个或多个属性添加到对象，并/或修改现有属性的特性。
+    //添加属性
+    var newLine = "<br />";
+
+    var obj = {};
+    Object.defineProperties(obj, {
+        newDataProperty: {
+            value: 101,
+            writable: true,
+            enumerable: true,
+            configurable: true
+        },
+        newAccessorProperty: {
+            set: function (x) {
+                document.write("in property set accessor" + newLine);
+                this.newaccpropvalue = x;
+            },
+            get: function () {
+                document.write("in property get accessor" + newLine);
+                return this.newaccpropvalue;
+            },
+            enumerable: true,
+            configurable: true
+        }});
+
+    // Set the accessor property value.
+    obj.newAccessorProperty = 10;
+    document.write ("newAccessorProperty value: " + obj.newAccessorProperty + newLine);
+
+    // Output:
+    // in property set accessor
+    // in property get accessor
+    // newAccessorProperty value: 10
+
+
+    //与前面的示例类似，下面的示例将动态添加属性而不是使用对象文本添加。
+    var newLine = "<br />";
+
+    // Create the descriptors object.
+    var descriptors = new Object();
+
+    // Add a data property descriptor to the descriptors object.
+    descriptors.newDataProperty = new Object();
+    descriptors.newDataProperty.value = 101;
+    descriptors.newDataProperty.writable = true;
+    descriptors.newDataProperty.enumerable = true;
+    descriptors.newDataProperty.configurable = true;
+
+    // Add an accessor property descriptor to the descriptors object.
+    descriptors.newAccessorProperty = new Object();
+    descriptors.newAccessorProperty.set = function (x) {
+        document.write("in property set accessor" + newLine);
+        this.newaccpropvalue = x;
+    };
+    descriptors.newAccessorProperty.get = function () {
+        document.write("in property get accessor" + newLine);
+        return this.newaccpropvalue;
+    };
+    descriptors.newAccessorProperty.enumerable = true;
+    descriptors.newAccessorProperty.configurable = true;
+
+    // Call the Object.defineProperties function.
+    var obj = new Object();
+    Object.defineProperties(obj, descriptors);
+
+    // Set the accessor property value.
+    obj.newAccessorProperty = 10;
+    document.write ("newAccessorProperty value: " + obj.newAccessorProperty + newLine);
+
+    // Output:
+    // in property set accessor
+    // in property get accessor
+    // newAccessorProperty value: 10
+
+
+    //修改属性
+    //若要修改对象的属性特性，请添加以下代码。   Object.defineProperties 函数修改 newDataProperty 的 writable 特性，并修改 newAccessorProperty 的 enumerable 特性。  它将 anotherDataProperty 添加进对象，因为该属性名不存在。
+
+    Object.defineProperties(obj, {
+        newDataProperty: { writable: false },
+        newAccessorProperty: { enumerable: false },
+        anotherDataProperty: { value: "abc" }
+    });
+
+</script>
+</body>
+</html>

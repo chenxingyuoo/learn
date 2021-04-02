@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>test_equery</title>
+</head>
+
+<body>
+
+<ul>
+    <li>1</li>
+    <li>2</li>
+    <li>3</li>
+    <li>4</li>
+</ul>
+<script src="equery.js"></script>
+<script>
+    es.reader(function () {
+        alert('load');
+        var o = {
+            a : 1,
+            b : 2,
+            c : 3,
+            d : 4
+        }
+        es.each(document.querySelectorAll('li') , function ( v , k) {
+            console.log(v,k) /*  返回结果 ？
+                                li          0
+                                <li>2</li>  1
+                                <li>3</li>  2
+                                <li>4</li>  3 */
+        });
+
+        es.each(o , function ( v , k) {
+            console.log(v,k);  /*  返回结果
+                                  a 1
+                                  b 2
+                                  c 3
+                                  d 4
+                                 */
+        })
+
+        function eachs(obj,cb){
+            var i = 0,result;
+            if (obj.length === +obj.length) { ////说明是一个类数组 or 数组
+                //if obj.length !== i
+                while(obj.length !== i) {
+                    //将obj元素依次调用cb函数
+                    result = cb.call(null,obj[i], i, obj[i]);
+                    if (result === 'break') {
+                        break;
+                    }
+                    if (result !== undefined) {
+                        return result;
+                    }
+                    i++;
+                }
+            }
+
+        }
+
+
+        var objs = {
+                a : 1,
+                b : 2,
+                c : 3,
+                d : 4,
+                length : 4
+        }
+       //zai在这里定义方法
+       eachs(objs, function (k, v) {
+           console.log(k,v)  ; /*  没有排除类数组
+                                0
+                                1
+                                2
+                                3
+                                4
+                                ***/
+       })
+
+
+        /*es.ajaxs({
+            url : 'equery.php',
+            type : 'post',
+            data:{
+                a:1,
+                b : 2
+            },
+            success : function (xhr) {
+                console.log('success',xhr);
+            },
+            error : function (xhr) {
+                console.log('error',xhr)
+            }
+        })*/
+        es.ajax({
+            url : 'equery.php',
+            type : 'post',
+            data : {
+                a : 10,
+                b : 2
+            },
+            success : function (xhr,data) {
+                debugger
+                console.log(xhr);
+                console.log(data)
+            },
+            error : function (xhr) {
+                console.log('error',xhr)
+            }
+        })
+       /* document.querySelectorAll('li').es.on('click', function (e) {
+            console.log(e)
+        })*/
+
+    })
+
+
+</script>
+</body>
+</html>

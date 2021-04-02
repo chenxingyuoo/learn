@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>绘制矩形</title>
+</head>
+<body>
+<p>context:一直觉得这个翻译成“上下文”真够蛋疼的，context是一个封装了很多绘图功能的对象，获取这个对象的方法是</p>
+
+<p>var context =canvas.getContext("2d");</p>
+
+<p>也许这个2d勾起了大家的无限遐想，但是很遗憾的告诉你html5还只是个少女，不提供3d服务。</p>
+
+<p>canvas元素绘制图像的时候有两种方法，分别是</p>
+
+<p>context.fill()//填充</p>
+
+<p>context.stroke()//绘制边框</p>
+
+<p>style:在进行图形绘制前，要设置好绘图的样式</p>
+
+<p>context.fillStyle//填充的样式</p>
+
+<p>context.strokeStyle//边框样式</p>
+
+<p>context.lineWidth//图形边框宽度</p>
+
+<p>颜色的表示方式:</p>
+
+<p>直接用颜色名称:"red" "green" "blue"</p>
+
+<p>十六进制颜色值: "#EEEEFF"</p>
+
+<p>rgb(1-255,1-255,1-255)</p>
+
+<p>rgba(1-255,1-255,1-255,透明度)</p>
+
+<p>和GDI是如此的相像，所以用过GDI的朋友应该很快就能上手</p>
+
+<p>绘制矩形 context.fillRect(x,y,width,height) strokeRect(x,y,width,height)</p>
+
+<p>x:矩形起点横坐标（坐标原点为canvas的左上角，当然确切的来说是原始原点，后面写到变形的时候你就懂了，现在暂时不用关系）</p>
+
+<p>y:矩形起点纵坐标</p>
+
+<p>width:矩形长度</p>
+
+<p>height:矩形高度</p>
+
+
+<canvas id="canvas" width="800" height="600"></canvas>
+
+<script>
+    function draw21(id) {
+        var canvas = document.getElementById(id)
+        if (canvas == null)
+            return false;
+        var context = canvas.getContext("2d");
+        //实践表明在不设施fillStyle下的默认fillStyle=black
+        context.fillRect(0, 0, 100, 100);
+        //实践表明在不设施strokeStyle下的默认strokeStyle=black
+        context.strokeRect(120, 0, 100, 100);
+
+        //设置纯色
+        context.fillStyle = "red";
+        context.strokeStyle = "blue";
+        context.fillRect(0, 120, 100, 100);
+        context.strokeRect(120, 120, 100, 100);
+
+        //设置透明度实践证明透明度值>0,<1值越低，越透明，值>=1时为纯色，值<=0时为完全透明
+        context.fillStyle = "rgba(255,0,0,0.2)";
+        context.strokeStyle = "rgba(255,0,0,0.2)";
+        context.fillRect(240,0 , 100, 100);
+        context.strokeRect(240, 120, 100, 100);
+    }
+    document.body.onload = draw21('canvas');
+</script>
+</body>
+</html>

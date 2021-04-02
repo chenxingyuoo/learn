@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+
+<button id="count">点击</button>
+<div id="show">显示</div>
+
+<script>
+
+    var Event = function event() {
+        var clientList = {};
+
+        //监听
+        var listen = function (key, fn) {
+            if (!clientList[key]) {
+                clientList[key] = [];
+            }
+            clientList[key].push(fn); //添加回调进入队列
+        };
+
+        //删除
+        var remove = function (key, fn) {
+            var fns = clientList[key];
+
+            if (!fns) { //如果key对应的消息没有被人订阅 ， 则直接返回
+                return false;
+            }
+
+            if (!fn) { //如果没有传入具体的回调函数 ， 表示要取消 key 对应消息的所有订阅
+                fns && ( fns.length = 0 );
+            } else {
+                for (var l = fns.length - 1; l >= 0; l--) { //反向遍历
+                    var _fn = fns[l];
+                    if (_fn === fn) {
+                        fns.splice(l, 1);  //删除订阅者的回调函数
+                    }
+                }
+            }
+        };
+
+        //触发
+        var trigger = function () {
+            var key = Array.prototype.shift.call(arguments), // 取出消息类型
+                fns = clientList[key];
+
+            if (!fns || fns.length === 0) {  // 如果没有订阅该消息，则返回
+                return false;
+            }
+
+            for (var i = 0, fn; fn = fns[i++];) {   //循环触发函数
+                fn.apply(this, arguments);
+            }
+        };
+
+        return {
+            listen: listen,
+            remove: remove,
+            trigger: trigger
+        }
+    };
+
+    var _event = Event();
+
+    var a = (function() {
+        var count = 0;
+        var button = document.getElementById('count');
+
+        button.onclick = function(e){
+            _event.trigger( 'add', count++ );
+        }
+    })();
+
+    var b = (function(){
+        var div = document.getElementById( 'show' );
+        _event.listen( 'add', function( count ){
+            div.innerHTML = count;
+        });
+    })();
+
+
+    //如果多个全局对象太多 ， 会搞不清楚消息来自哪个模块 ， 或者消息会流向哪些模块
+
+
+</script>
+
+</body>
+</html>

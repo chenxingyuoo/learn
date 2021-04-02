@@ -1,0 +1,63 @@
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>Go wasm</title>
+</head>
+
+<style>
+body {
+	text-align: center
+}
+input {
+	height: 50px;
+	font-size: 20px;
+}
+#result {
+	margin-left: 20px;
+}
+</style>
+
+<body>
+	<script src="wasm_exec.js"></script>
+	<script>
+	// 容纳 WebAssembly 模块的容器
+ 	var go = new Go();
+	// 下载 WebAssembly 模块并执行模块
+  // 也就是运行 Go 代码里面的 main 函数
+  // 这样 fib 函数就注册进了 Javascript 全局环境
+  // WebAssembly.instantiateStreaming(fetch("fib.wasm"), go.importObject).then((result) => {
+	// 	go.run(result.instance);
+	// 	console.log(window);
+	// });
+
+	async function init () {
+		const response = fetch("fib.wasm");
+		const result = await WebAssembly.instantiateStreaming(
+			response,
+			go.importObject
+		);
+		go.run(result.instance);
+	}
+
+	init()
+
+	function callFib() {
+		let paramInput = document.getElementById("param")
+		let n = parseInt(paramInput.value || "0")
+		// 传入输入参数和回调函数
+		// 回调函数负责呈现结果
+		
+		fibFun(n, function(result) {
+			var resultDom = document.getElementById("result")
+			resultDom.value = result
+	  })
+	}
+
+	</script>
+	// 输入发生变化时，调用 WebAssembly 的 fib 函数
+        <input type="number" id="param" oninput="callFib()"/>
+	<input type="text" id="result" />
+</body>
+
+</html>

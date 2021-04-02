@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+
+<script>
+
+    //async 函数的实现原理，就是将 Generator 函数和自动执行器，包装在一个函数里。
+    async function fn(args) {
+        // ...
+    }
+
+    // 等同于
+
+    function fn(args) {
+        return spawn(function* () {
+            // ...
+        });
+    }
+
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>图像平铺</title>
+</head>
+<body>
+
+<canvas id="canvas" width="1200" height="600"></canvas>
+
+<!--context.createPattern(image,type)
+
+type:
+
+no-repeat:不平铺
+
+repeat-x:横方向平铺
+
+repeat-y:纵方向平铺
+
+repeat:全方向平铺-->
+
+
+<script>
+
+    document.body.onload = draw14('canvas');
+    function draw14(id) {
+        //传统的平铺是用for循环来处理的，现在直接调用接口
+        var image = new Image();
+        var canvas = document.getElementById(id);
+        if (canvas == null)
+            return false;
+        var context = canvas.getContext("2d");
+        var type = ["no-repeat", "repeat-x", "repeat-y", "repeat"];
+        var i = 0;
+        image.src = "2.jpg";
+        image.onload = function () {
+            var interval = setInterval(function () {
+                //每次转换平铺类型清空
+                context.clearRect(0, 0, 1200, 300);
+                if (i >= 4) {
+                    i = 0;
+                }
+                var ptrn = context.createPattern(image, type[i]);
+                context.fillStyle = ptrn;
+                context.fillRect(0, 0, 1200, 300);
+                i++;
+            }, 1000);
+        };
+    }
+</script>
+
+</body>
+</html>

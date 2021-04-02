@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Object.freeze 函数</title>
+</head>
+
+<body>
+<script>
+    //阻止修改现有属性的特性和值，并阻止添加新属性。
+    // Create an object that has two properties.
+    var obj = { pasta: "spaghetti", length: 10 };
+
+    // Freeze the object.
+    Object.freeze(obj);
+
+    // Try to add a new property, and then verify that it is not added.
+    obj.newProp = 50;
+    document.write(obj.newProp);
+    document.write("<br/>");
+
+    // Try to delete a property, and then verify that it is still present.
+    delete obj.length;
+    document.write(obj.length);
+    document.write("<br/>");
+
+    // Try to change a property value, and then verify that it is not changed.
+    obj.pasta = "linguini";
+    document.write(obj.pasta);
+
+    // Output:
+    // undefined
+    // 10
+    // spaghetti
+</script>
+</body>
+</html>

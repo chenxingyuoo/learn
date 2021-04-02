@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>适配置器（Adapter）模式</title>
+</head>
+
+<body>
+
+
+<div class="dom">1</div>
+<div class="dom">2</div>
+<div class="dom">3</div>
+<div class="dom">4</div>
+<div class="dom">5</div>
+<script>
+
+    //判断数据类型，这样写法相对简便，可以按需产生对应函数
+    function isType(type) {
+        return function(obj) {
+            return {}.toString.call(obj) == "[object " + type + "]"
+        }
+    }
+    var isObject = isType("Object")
+    var isString = isType("String")
+    var isArray = Array.isArray || isType("Array")
+    var isFunction = isType("Function")
+
+
+
+    var YAHOO = {
+        util : {},
+    };
+    YAHOO.util.Dom = {};
+
+    YAHOO.lang = YAHOO.lang || {
+                isArray: function (o) {
+
+                    if (o) {
+                        var l = YAHOO.lang;
+                        // 如果该对象有 length 这个属性，同时支持 splice 方法，
+                        // 那么就认为它为数组。
+                        return l.isNumber(o.length) && l.isFunction(o.splice);
+                    }
+                    return false;
+                },
+
+                isBoolean: function (o) {
+                    return typeof o === 'boolean';
+                },
+
+                isFunction: function (o) {
+                    return typeof o === 'function';
+                },
+
+                isNull: function (o) {
+                    return o === null;
+                },
+
+                isNumber: function (o) {
+                    return typeof o === 'number' && isFinite(o);
+                },
+
+                isObject: function (o) {
+                    return (o && (typeof o === 'object' ||
+                            YAHOO.lang.isFunction(o))) || false;
+                },
+
+                isString: function (o) {
+                    return typeof o === 'string';
+                },
+
+                isUndefined: function (o) {
+                    return typeof o === 'undefined';
+                }
+            };
+
+
+
+    //适配置器（Adapter）模式：将一个类的接口转换成客户希望的另外一个接口。适配器模式使得原本由于接口不兼容而不能一起工作的那些类可以一起工作，使用这种模式的对象又叫包装器，因为他们是在用一个新的接口包装另一个对象。
+
+    //从表面上看，它和门面模式有点相似，差别在于它们如何改变接口，门面模式展现的是一个简化的接口，它并不提供额外的选择，而适配器模式则要把一个接口转换为另一个接口，它并不会滤除某些能力，也不会简化接口。先来一个简单的示例看看：
+
+    //假如有一个3个字符串参数的函数，但是现在拥有的却是一个包含三个字符串元素的对象，那么就可以用一个配置器来衔接二者
+    var clientObject = {
+        str1: 'bat',
+        str2: 'foo',
+        str3: 'baz'
+    };
+    function interfaceMethod(str1, str2, str3) {
+        alert(str1)
+    }
+    //配置器函数
+    function adapterMethod(o) {
+        interfaceMethod(o.str1, o.str2, o.str3);
+    }
+    adapterMethod(clientObject);
+    //adapterMethod函数的作为就在于对interfaceMethod函数进行包装，并把传递给它的参数转换为后者需要的形式。
+
+    //　　适配器模式的工作机制是：用一个新的接口对现有类得接口进行包装。
+
+    //示例：适配两个库。下面的例子要实现的是从Prototype库的$函数到YUI的get方法的转换。
+
+
+    //先看它们在接口方面的差别
+    //Prototype $ function
+    function $() {
+        var elements = new Array();
+        for (var i = 0; i < arguments.length; i++) {
+            var element = arguments[i];
+            if (typeof element == 'string') {
+                element = document.getElementById(element);
+            }
+            if (element.length == 1)    return element;
+            elements.push(element);
+        }
+        return elements;
+    }
+
+    //YUI get method
+
+    YAHOO.util.Dom.get = function (el) {
+        if (YAHOO.lang.isString(el)) {
+            return document.getElementById(el);
+        }
+        if (YAHOO.lang.isArray(el)) {
+            var c = [];
+            for (var i = 0, len = el.length; i < len; ++i) {
+                c[c.length] = YAHOO.util.Dom.get(el[i]);
+            }
+            return c;
+        }
+        if (el) {
+            return el;
+        }
+        return null;
+    };
+    var dom = document.querySelectorAll('.dom');
+    var d = YAHOO.util.Dom.get(dom);
+    console.log(d); //[div.dom, div.dom, div.dom, div.dom, div.dom]*!/*/
+
+
+    //二者区别就在于get具有一个参数，且可以是HTML,字符串或者数组；而$木有正是的参数，允许使用者传入任意数目的参数，不管HTML还是字符串。
+    //如果需要从使用Prototype的$函数改为使用YUI的get方法（或者相反，那么用适配器模式其实很简单）
+
+    function PrototypeToYUIAdapter() {
+        return YAHOO.util.Dom.get(arguments);
+    }
+
+    var PrototypeToYUI= PrototypeToYUIAdapter($);
+    console.log(PrototypeToYUI);
+    var doms = document.querySelectorAll('.dom');
+    var ds = PrototypeToYUI[0](doms);
+    console.log(ds); // 0 : NodeList[5]  ; //[div.dom, div.dom, div.dom, div.dom, div.dom]
+
+    function YUIToPrototypeAdapter(el) {
+        return $.apply(window, el instanceof Array ? el : [el]);
+    }
+
+    var YUIToPrototype = YUIToPrototypeAdapter(YAHOO.util.Dom.get);
+    console.log(YUIToPrototype);
+    var domss = document.querySelectorAll('.dom');
+    var dss = YUIToPrototype(domss);
+    console.log(dss); // [div.dom, div.dom, div.dom, div.dom, div.dom]
+
+</script>
+</body>
+</html>

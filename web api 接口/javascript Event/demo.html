@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+
+<table class="fullwidth-table">
+    <thead>
+    <tr>
+        <th><font><font>例</font></font></th>
+        <th><font><font>标记</font></font></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td><input type="checkbox" id="checkbox"><label for="checkbox"><font><font>复选框</font></font></label></td>
+        <td><code>&lt;input type="checkbox" id="checkbox"/&gt;&lt;label for="checkbox"&gt;Checkbox&lt;/label&gt;</code></td>
+
+    </tr>
+    <tr>
+        <td><font><font class=""><input type="button" onclick="simulateClick();" value="模拟点击"></font></font></td>
+        <td><code>&lt;input type="button" onclick="simulateClick();"
+            value="Simulate click"/&gt;</code></td>
+    </tr>
+    <tr>
+        <td><font><font><input type="button" onclick="addHandler();" value="添加调用了preventDefault点击处理程序"></font></font></td>
+        <td><code>&lt;input type="button" onclick="addHandler();"
+            value="Add a click handler that calls preventDefault"/&gt;</code></td>
+    </tr>
+    <tr>
+        <td><font><font><input type="button" onclick="removeHandler();" value="删除调用了preventDefault单击处理程序"></font></font></td>
+        <td><code>&lt;input type="button" onclick="removeHandler();"
+            value="Remove the click handler that calls preventDefault"/&gt;</code></td>
+    </tr>
+    </tbody>
+
+</table>
+
+
+<script>
+
+    function preventDef(event) {
+        event.preventDefault();
+    }
+
+    function addHandler() {
+        document.getElementById("checkbox").addEventListener("click",
+                preventDef, false);
+    }
+
+    function removeHandler() {
+        document.getElementById("checkbox").removeEventListener("click",
+                preventDef, false);
+    }
+
+    function simulateClick() {
+        var evt = document.createEvent("MouseEvents");
+        evt.initMouseEvent("click", true, true, window,
+                0, 0, 0, 0, 0, false, false, false, false, 0, null);
+        var cb = document.getElementById("checkbox");
+        var canceled = !cb.dispatchEvent(evt);
+        if(canceled) {
+            // Some handler called preventDefault
+            alert("canceled");
+        } else {
+            // None of the handlers called preventDefault
+            alert("not canceled");
+        }
+    }
+
+</script>
+
+</body>
+</html>

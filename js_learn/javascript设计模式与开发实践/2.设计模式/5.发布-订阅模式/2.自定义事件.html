@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+
+<script>
+    var salesOffices = {}; //
+
+    salesOffices.clientList = {}; //
+
+    salesOffices.listen = function (key , fn) { //
+        debugger;
+        if ( !this.clientList[ key ] ){
+            this.clientList[ key ] = [];
+        }
+        this.clientList[ key ].push(fn); //
+    };
+
+    salesOffices.trigger = function () { //
+        debugger;
+        var key = Array.prototype.shift.call( arguments ), // 取出消息类型
+            fns = this.clientList[ key ];
+
+        if ( !fns || fns.length === 0 ){  // 如果没有订阅该消息，则返回
+            return false;
+        }
+
+        for (var i = 0, fn; fn = fns[i++];) {
+            fn.apply(this, arguments);
+        }
+    }
+
+    salesOffices.listen('squareMeter88',function (price) {
+        console.log('价格= ' + price);
+    })
+
+    salesOffices.listen('squareMeter110', function( price) {
+        console.log('价格= ' + price);
+    });
+
+    salesOffices.trigger( 'squareMeter88',  2000000 ); //输出:200万
+    salesOffices.trigger( 'squareMeter110', 3000000 ); //输出:300万
+
+</script>
+
+</body>
+</html>

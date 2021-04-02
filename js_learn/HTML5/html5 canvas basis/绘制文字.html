@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>绘制文字</title>
+</head>
+
+<body>
+
+<!--填充文字：context.fillText(text,x,y)
+
+绘制文字轮廓 context.strokeText(text,x,y)
+
+text:要绘制的文字
+
+x:文字起点的x坐标轴
+
+y:文字起点的y坐标轴
+
+context.font:设置字体样式
+
+context.textAlign:水平对齐方式
+
+start、end、right、center
+
+context.textBaseline:垂直对齐方式
+
+top、hanging、middle、alphabetic、ideographic、bottom
+
+var length=context.measureText(text):计算字体长度(px)那么能不能计算高度啊，很遗憾，不能-->
+
+<canvas id="canvas" width="800" height="600"></canvas>
+
+<script>
+
+    document.body.onload = draw17('canvas');
+
+    function draw17(id) {
+        var canvas = document.getElementById(id);
+        if (canvas == null)
+            return false;
+        var context = canvas.getContext("2d");
+        context.fillStyle = "#EEEEFF";
+        context.fillRect(0,0,400,300);
+        context.fillStyle = "#00f";
+        context.font = "italic 30px sans-serif";
+        context.textBaseline = 'top';  //设置或返回在绘制文本时使用的当前文本基线
+        //填充字符串
+        var txt="fill示例文字"
+        context.fillText(txt, 0, 0);
+        var length=context.measureText(txt);
+        context.fillText("长" + length.width + "px", 0, 50);
+        context.font = "bolid 30px sans-serif";
+        txt = "stroke示例文字";
+        length = context.measureText(txt);
+        context.strokeText(txt,0,100);
+        context.fillText("长" + length.width + "px", 0, 150);
+    }
+</script>
+
+</body>
+</html>

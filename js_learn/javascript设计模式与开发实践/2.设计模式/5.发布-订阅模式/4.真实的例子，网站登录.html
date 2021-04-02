@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+
+<script>
+    //登录成功
+    //    login.succ(function (data) {
+    //        header.setAvatar(data.avatar);
+    //        nav.setAvatar(data.avatar);
+    //        message.refresh();
+    //        cart.refresh();
+    //    });
+
+
+    //封装http请求
+    var ajax = (function () {
+        var notThing = function () {
+        };
+        var defaults = {
+            type: 'GET',
+            async: true,
+            success: notThing,
+            error: notThing
+        };
+
+        return function (options) {
+            var settings = Object.assign(defaults, options || {});
+            var xhr = new window.XMLHttpRequest();
+
+            xhr.open(settings.type, settings.url, settings.async);
+
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4) {
+                    if ((xhr.status >= 200 && xhr.status < 300) || xhr.status == 304) {
+                        var result = JSON.parse(xhr.responseText);
+                        //成功回调
+                        settings.success(result, xhr);
+                    } else {
+                        //错误回调
+                        settings.error(xhr.statusText || null, xhr.status ? 'error' : 'abort', xhr);
+                    }
+                }
+            };
+
+            xhr.send(settings.data ? settings.data : null);
+
+            return xhr;
+        }
+    })();
+
+
+    //构造函数模式
+    var Event = function Event() {
+        this.clientList = {};
+    }
+
+    Event.prototype.on = function (key, fn) {
+        if (!this.clientList[key]) {
+            this.clientList[key] = [];
+        }
+        this.clientList[key].push(fn); //
+    }
+
+    Event.prototype.off = function (key, fn) {
+        var fns = this.clientList[key];
+        if (!fns) {
+            return false;
+        }
+
+        //如果没有传入具体的回调函数 ， 表示要取消 key 对应消息的所有订阅
+        if (!fn) {
+            fns && ( fns.length = 0 );
+        } else {
+            for (var l = fns.length - 1; l >= 0; l--) { //反向遍历
+                var _fn = fns[l];
+                if (_fn === fn) {
+                    fns.splice(l, 1);  //删除订阅者的回调函数
+                }
+            }
+        }
+    }
+
+    Event.prototype.trigger = function () {
+        var key = Array.prototype.shift.call(arguments), // 取出消息类型
+            fns = this.clientList[key];
+
+        if (!fns || fns.length === 0) {  // 如果没有订阅该消息，则返回
+            return false;
+        }
+
+        for (var i = 0, fn; fn = fns[i++];) {
+            fn.apply(this, arguments);
+        }
+    };
+
+
+    //实例化自定义事件
+    var login = new Event();
+
+    var header = (function () { // header 模块
+        login.listen('loginSucc', function (data) {
+            header.setAvatar(data.avatar);
+        });
+        return {
+            setAvatar: function (data) {
+                console.log('设置header头像');
+            }
+        }
+    })();
+
+    var nav = (function () { //nav模块
+        login.listen('loginSucc', function (data) {
+            nav.setAvatar(data.avatar);
+        });
+        return {
+            setAvatar: function (data) {
+                console.log('设置nav头像');
+            }
+        }
+    })();
+
+    var address = (function () { // address 模块
+        login.listen('loginSucc', function (obj) {
+            address.refresh(obj);
+        });
+        return {
+            refresh: function( obj ){
+                console.log( '刷新地址信息' ); }
+        }
+    })();
+
+
+    ajax({
+        url: './login.test',
+        type: 'GET',
+        success: function (data) {
+            //登录成功
+            login.trigger('loginSucc', data); //发布登录成功的消息
+        },
+        error: function () {
+
+        }
+    });
+
+</script>
+
+</body>
+</html>

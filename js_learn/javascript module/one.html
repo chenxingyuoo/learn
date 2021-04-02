@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+
+<body>
+
+<script>
+
+    //1.1 模块的定义
+
+    //本来我们打算自己当上帝的，现在只好改行先当个工商局长。你想开店吗？先来注册，不然封杀你！于是良民们纷纷来注册。店名叫什么，从哪进货，卖什么的，一一登记在案，为了方便下面的讨论，我们连进货的过程都让工商局管理起来。
+
+    //店名，指的就是这里的模块名，从哪里进货，代表它依赖什么其他模块，卖什么，表示它对外提供一些什么特性。
+
+    //好了，考虑到我们的这个注册管理机构是个全局作用域，我们还得把它挂在window上作为属性，然后再用一个function隔离出来，要不然，别人也定义一个同名的，就把我们覆盖掉了。
+
+    /*(function() {
+     window.thin = {
+     define: function(name, dependencies, factory) {
+     //register a module
+     }
+     };
+     })();*/
+
+
+    //在这个module方法内部，应当怎么去实现呢？我们的module应当有一个地方存储，但存储是要在工商局内部的，不是随便什么人都可以看到的，所以，这个存储结构也放在工商局同样的作用域里。
+
+    //用什么结构去存储呢？工商局备案的时候，店名不能跟已有的重复，所以我们发现这是用map的很好场景，考虑到JavaScript语言层面没有map，我们弄个Object来存。
+
+    (function () {
+        var moduleMap = {};
+        window.thin = {
+            define: function (name, dependencies, factory) {
+                //注册模块 ， 如果 moduleMap 里面没有的话。
+                if (!moduleMap[name]) {
+                    var module = {
+                        name: name,
+                        dependencies: dependencies,
+                        factory: factory
+                    }
+
+                    moduleMap[name] = module;
+                }
+
+                return moduleMap[name];
+            }
+        };
+    })();
+
+    //现在，模块的存储结构就搞好了。
+</script>
+
+</body>
+</html>

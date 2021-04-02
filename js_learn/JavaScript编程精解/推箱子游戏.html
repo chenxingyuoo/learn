@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>推箱子游戏</title>
+    <link rel="stylesheet" href="sokoban.css">
+</head>
+
+<body>
+
+
+<script>
+
+    //游戏版展示
+    function Square(character, div){
+
+        //用div构建每一个网格
+        this.div = div;
+
+        var content = {'@':'player', '#': 'wall' ,  '*': 'exit', ' ':'empty', '0': 'boulder'}[character];
+
+        if(content == null){
+            throw new Error('unrecognized character ' + character + '.');
+        }
+        this.setContent(content);
+    }
+
+    Square.prototype.setContent = function (content) {
+        this.content = content;
+        //设置这个div的样式
+        this.div.className = 'iw-' + content + ' wif';
+    }
+
+
+
+    function forEachIn(obj, action) {
+        //枚举对象 ， 满足条件就执行 action 函数 ， 实参是 prototype, obj[prototype]
+        for (var prototype in obj) {
+            if (Object.prototype.hasOwnProperty.call(obj, prototype)) {
+                action(prototype, obj[prototype]);
+            }
+        }
+    }
+
+    //创建节点辅助函数
+    function dom(name, attribute){
+        var node = document.createElement(name);
+        if(attribute){
+            forEachIn(attribute, function (name, value) {
+                node.setAttribute(name, value)
+            })
+        }
+
+        //第2个参数是 attribute 。 超出设置文本属性
+        for (var i = 2; i < arguments.length; i++) {
+            var child = arguments[i];
+            if(typeof child == 'string'){
+                child = document.createTextNode(child);
+            }
+            node.appendChild(child);
+        }
+
+        return node;
+    }
+
+    //记录坐标位置
+    function Point(x, y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    Point.prototype.add = function (other) {
+        return new Point(this.x + other.x , this.y + other.y );
+    };
+
+
+    //代表整个游戏版的另一个对象。负者该游戏等级创建DOM 结构 和 Square对象的网格 ， 使用模拟生态圈里面的 point方法记住玩家的位置 。
+    function SokobanField(level){
+
+        this.fieldDiv = dom('DIV');
+        this.squares = [];  //保存每一行的div，及其content属性
+        this.bouldersToGo = level.boulders;
+
+        for (var y = 0; y < level.field.length; y++) {
+            var line = level.field[y], squarRow = [];  //squarRow 保存对应div的content属性 ， 是墙壁或是空格等。
+            for (var x = 0; x < line.length; x++) {
+                //创建div
+                var div = dom('DIV');
+                this.fieldDiv.appendChild(div);
+                //为div设置对象的样式 ， 然后保存至squarRow 数组
+                squarRow.push(new Square(line.charAt(x), div));
+                //记录玩家的位置
+                if(line.charAt(x) == '@'){
+                    this.playerPos = new Point(x, y);
+                }
+            }
+            //每行结束添加br标签
+            this.fieldDiv.appendChild(dom('BR'));
+            //保存每行的div到网格里面的单元格
+            this.squares.push(squarRow);
+        }
+    }
+
+
+    //两个简单的方法用于查看还需要推动多少石头 ，以及查看该等级的游戏是否结束
+    SokobanField.prototype.status = function(){
+        return this.bouldersToGo + 'boulder' + (this.bouldersToGo == 1 ? '' : 's') + ' to go.';
+    }
+
+    SokobanField.prototype.wom = function () {
+        return this.bouldersToGo <= 0
+    }
+
+
+    //向dom树插入游戏版 ， 我们可以继续并使用游戏板this.fieldDiv对象
+    SokobanField.prototype.place = function (where) {
+        where.appendChild(this.fieldDiv);
+    }
+
+    SokobanField.prototype.remove = function () {
+        this.fieldDiv.parentNode.removeChild(this.fieldDiv);
+    }
+
+    //移动玩家和石头
+    SokobanField.prototype.move = function (direction) {
+
+        var playSquare = this.squares[this.playerPos.y][this.playerPos.x],  //获取玩家位置
+            targetPos = this.playerPos.add(direction),   //新的玩家位置
+            targetSquare = this.squares[targetPos.y][targetPos.x];  //当玩家尝试向某个位置移动的时候， 查看这个位置是空格 ， 还是石头等
+
+
+        //判断是否是墙壁
+        if(targetSquare.content == 'boulder'){
+            //玩家才有坐标 ， 也就是拥有add方法
+            var pushPos = targetPos.add(direction); //新的玩家位置占了这块石头的位置 ， 这块石头的位置也要移动一个单元格。
+            var pushSquare = this.squares[pushPos.y][pushPos.x];  //查看石头要移动到这个单元格是否是 空的 或者 是出口 ， 不是的话就不移动
+            if(pushSquare.content == 'empty'){
+                targetSquare.setContent('empty'); //石头设置成空
+                pushSquare.setContent('boulder'); //石头移动到这里，这里设置成石头
+
+            }else if(pushSquare.content == 'exit'){
+                targetSquare.setContent('empty');  //石头设置成空
+                this.bouldersToGo--;
+            }
+        }
+
+        //判断是否是空格
+        if(targetSquare.content == 'empty'){
+            //玩家设置成空格
+            playSquare.setContent('empty');
+            //空格设置成玩家
+            targetSquare.setContent('player');
+            //更新玩家的位置
+            this.playerPos = targetPos;
+        }
+
+    }
+
+
+    var level = {
+        boulders : 10,
+        field : [
+            "######  ##### ",
+            "#    #  #   # ",
+            "# 0  #### 0 # ",
+            "# 0 @    0  # ",
+            "#  #######0 # ",
+            "####   ### ###",
+            "       #     #",
+            "       #0    #",
+            "       # 0   #",
+            "      ## 0   #",
+            "      #*0 0  #",
+            "      ########"
+        ]
+    };
+
+    //初始化网格 ， 向dom树添加游戏版
+   /* (new SokobanField(level).place(document.body));*/
+
+
+    function method(object, name) {
+        return function () {
+            object[name].apply(object, arguments);
+        }
+    }
+
+
+    //。事件对象
+    function nornalizeEvent(event){
+        if(!event.stopPropagation){
+            event.stopPropagation = function () {
+                this.cancelBubble = true;
+            }
+            event.preventDefault = function(){
+                this.returnValue = false;
+            }
+        }
+        if(!event.stop){
+            event.stop = function () {
+                this.stopPropagation();
+                this.preventDefault();
+            }
+        }
+
+        if(event.srcElement && !event.target){
+            event.target = event.srcElement
+        }
+
+        if((event.toElement || event.fromElement) && !event.relatedTarget){
+            event.relatedTarget = event.toElement || event.fromElement;
+        }
+
+        if(event.clientX != undefined && event.pageX == undefined){
+            event.pageX = event.clientX + document.body.scrollLeft;
+            event.pageY = event.clientY + document.body.scrollTop;
+        }
+
+        if(event.type == 'keypress'){
+            event.character = String.fromCharCode( event.charCode || event.keyCode);
+        }
+        return event;
+    }
+
+
+
+    //注册事件
+    function registerEventHandler(node , event, handler){
+        if(typeof node.addEventListener  == 'function'){
+            node.addEventListener(event,handler, false);
+        }else{
+            node.attachEvent('on' + event , handler);
+        }
+    }
+
+    //删除事件
+    function unregisterEventHandler(node , event, handler){
+        if(typeof node.removeEventListener == 'function'){
+            node.removeEventListener(event,handler, false);
+        }else{
+            node.detachEvent('on' + event , handler);
+        }
+    }
+
+
+    function addHandler(node , type ,handler){
+        function wrapHanlder(event){
+            handler(nornalizeEvent(event || window.event));
+        }
+
+        registerEventHandler(node , type ,wrapHanlder);
+        return {node : node , type : type , handler : wrapHanlder};
+    }
+
+
+    function removeHandler(obj){
+        unregisterEventHandler(obj.node, obj.type, obj.handler);
+    }
+
+
+    //控制器对象
+    //功能
+    //1.准备放置游戏版的位置
+    //2.创建和删除SokobanField对象，
+    //3.捕获键盘事件 ， 并且在当前游戏板上使用正确的参数调用move方法。
+    //4.持续跟踪当前关卡 ， 完成后跳到下一关卡
+    //5.添加按钮来重置当前关卡或者整个游戏。
+
+
+    //我们先从构造函数开始了解。它接收等级对象为第一个参数，让玩家可以通过关卡， 第二个参数是可以附加游戏界面的dom节点 ， 它创建一组简单的dom节点来包裹游戏板。两个按钮和一个带有显示状态信息的div元素。
+
+    //按钮上click事件句柄可以简单附加到游戏对象（之前定义的method函数）的方法上， 用于处理这些按钮相关的动作。
+
+
+    function SokobanGame(levels, places){
+
+        this.levels = levels;
+        var newGame = dom('BUTTON',null,'New Game');
+
+        addHandler(newGame,'click',method(this,'newGame'));
+
+        var reset = dom('BUTTON',null,'Reset level');
+        addHandler(reset, 'click',method(this,'resetLevel'));
+
+        this.status = dom('DIV');
+        this.container = dom('DIV',null,dom('H1',null,'Sokoban'),dom('DIV',null,newGame, ' ',reset), this.status);
+
+        places.appendChild(this.container);
+
+        addHandler(document, 'keydown',method(this,'keyDown'));
+
+        this.newGame();
+    }
+
+    //开始新游戏 ，设置游戏的 level 属性为0， 并令 resetLevel来设置等级 ，
+    SokobanGame.prototype.newGame = function () {
+        this.level = 0;
+        this.resetLevel();
+    }
+
+    //该方法负责创建和显示游戏版,如果已有一个游戏版，先删掉它
+    SokobanGame.prototype.resetLevel = function(){
+        if(this.field){
+            this.field.remove();
+        }
+        this.field = new SokobanField(this.levels);
+        this.field.place(this.container);
+        this.updataStutas();
+    }
+
+    //状态文本更新
+    SokobanGame.prototype.updataStutas = function(){
+        this.status.innerHTML = 'Level ' + (1 + this.level) + ': ' + this.field.status();
+    }
+
+
+
+    var arrowKeyCode = {
+        37 : new Point(-1, 0), //left
+        38 : new Point(0, -1), //up
+        39 : new Point(1, 0), //right
+        40 : new Point(0, 1), //down
+    }
+
+    //定义keyDown方法
+    SokobanGame.prototype.keyDown = function(event){
+        console.log(event.keyCode)
+        if(arrowKeyCode.hasOwnProperty(event.keyCode)){
+            event.stop();
+            this.field.move(arrowKeyCode[event.keyCode]);
+            this.updataStutas();
+
+            if(this.field.wom()){
+                if(this.level < this.levels.length - 1){
+                    alert('恭喜通过，前往下一关吧');
+                    this.level++;
+                    this.resetLevel();
+                }else{
+                    alert('你赢了 ， 游戏结束');
+                    this.newGame();
+                }
+            }
+        }
+    }
+
+
+    var sokobanGame = new SokobanGame(level,document.body);
+</script>
+</body>
+</html>

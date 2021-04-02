@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>数据双向绑定</title>
+</head>
+
+<body>
+<script>
+
+    //2.1 数据绑定的原理
+
+    //数据绑定是一种很便捷的特性，一些RIA框架带有双向绑定功能，比如Flex和Silverlight，当某个数据发生变更时，所绑定的界面元素也发生变更，当界面元素的值发生变化时，数据也跟着变化，这种功能在处理表单数据的填充和收集时，是非常有用的。
+
+    //在HTML中，原生是没有这样的功能的，但有些框架做到了，它们是怎么做到的呢？我们来做个简单的试试，顺便探讨一下其中原理。
+
+    //先看数据到界面上的的绑定，比如：
+
+    //<input vm-value="name"/>
+    var person = {
+        name: "Tom"
+    };
+
+    //如果我们给name重新赋值，person.name = "Jerry"，怎么才能让界面得到变更
+
+    //从直觉来说，我们需要在name发生改变的时候，触发一个事件，或者调用某个指定的方法，然后才好着手做后面的事情，比如：
+
+
+    var persons = {
+    name: "Tom",
+    setName: function(newName) {
+        this.name = newName;
+        //do something
+    }
+    };
+
+    //这样我们可以在setName里面去给input赋值。推而广之，为了使得实体包含的多个属性都可以运作，可以这么做：
+
+
+    var person = {
+        name: "Tom",
+        gender: 5,
+        set: function(key, value) {
+            this[key] = value;
+            //do something
+        }
+    };
+
+    //或者合并两个方法，只判断是否传了参数：
+
+    Person.prototype.name = function(value) {
+        if (arguments.length == 0) {
+            return this._name;
+        }
+        else {
+            this._name = value;
+        }
+    }
+
+
+    //这种情况下，赋值的时候就是person.name("Tom")，取值的时候就是var name = person.name()了。
+
+    //JavaScript里面de存取器,老早以前是没有的，但现在有了，那就是Object.defineProperty，它的第三个参数就是可选的存取函数。比如说：
+
+    var person = {};
+
+    // Add an accessor property to the object.
+    Object.defineProperty(person, "name", {
+        set: function (value) {
+            this._name = value;
+            //do something
+        },
+        get: function () {
+            return this._name;
+        },
+        enumerable: true,
+        configurable: true
+    });
+
+
+    //赋值的时候，person.name = "Tom"，取值的时候，var name = person.name，简直太美妙了。注意这里define的时候，是定义在实例上的，如果想要定义到类型里面，可以在构造器里面定义。
+
+    //现在我们从数据到DOM的绑定可以解决掉了，至少我们能够在变量被更改的时候去做一些自己的事情，比如查找这个属性被绑定到哪些控件了，然后挨个对其赋值。框架怎么知道属性被绑定到哪些控件了呢？这个直接在第二部分的实现过程中讨论。
+
+    //再看控件到数据的绑定，这个其实很好理解。无非就是给控件添加change之类的事件监听，在这里面把关联到的数据更新掉。到这里，我们在原理方面已经没有什么问题了，现在开始准备把它写出来。
+
+
+
+
+
+
+
+
+
+
+
+
+</script>
+</body>
+</html>

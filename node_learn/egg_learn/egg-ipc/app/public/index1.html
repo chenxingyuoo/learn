@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <script src="./socket.io.js"></script>
+  <script>
+    // socket.io引入成功后，可通过io()生成客户端所需的socket对象。
+    let socket = io('http://localhost:8050/chat',{
+      query: {
+
+      },
+      transports: ['websocket']
+    });
+
+    // socket.emmit()用户客户端向服务端发送消息，服务端与之对应的是socket.on()来接收信息。
+    // socket.emit('client message', {msg:'hi, server'});
+
+    // socket.on()用于接收服务端发来的消息
+    socket.on('connect',  ()=>{
+      console.log('client connect server');
+    });
+    socket.on('disconnect', ()=>{
+      console.log('client disconnect');
+    });
+  </script>
+</head>
+<body>
+
+</body>
+</html>

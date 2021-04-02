@@ -1,0 +1,174 @@
+#!/usr/bin/env node
+ 
+/**
+ * Module dependencies.
+ */
+ 
+const fs = require('fs')
+const path = require('path')
+const ora = require('ora')
+const home = require('user-home')
+const download = require('download-git-repo')
+const program = require('commander')
+const localPath = require('../lib/local-path')
+
+const isLocalPath = localPath.isLocalPath
+const getTemplatePath = localPath.getTemplatePath
+ 
+program
+  .version('0.1.0')
+  .option('-p, --peppers', 'Add peppers')
+  .option('-P, --pineapple', 'Add pineapple')
+  .option('-b, --bbq-sauce', 'Add bbq sauce')
+  .option('-c, --cheese [type]', 'Add the specified type of cheese [marble]', 'marble')
+  .parse(process.argv);
+ 
+console.log('you ordered a pizza with:');
+if (program.peppers) console.log('  - peppers');
+if (program.pineapple) console.log('  - pineapple');
+if (program.bbqSauce) console.log('  - bbq');
+console.log('  - %s cheese', program.cheese);
+
+
+// 拷贝
+// function formDirectory(src, to) {
+//   console.log('src', src);
+//   console.log('to', to);
+//   console.log('fs.existsSync(to)', fs.existsSync(to));
+  
+//   if (fs.existsSync(to) == false) {
+//       fs.mkdirSync(to);
+//   }
+//   if (fs.existsSync(src) == false) {
+//       fs.mkdirSync(src);
+//   }
+//   // console.log("src:" + src + ", to:" + to);
+//   // 拷贝新的内容进去
+//   var dirs = fs.readdirSync(src);
+//   dirs.forEach(function(item){
+//       var item_path = path.join(src, item);
+//       var temp = fs.statSync(item_path);
+//       if (temp.isFile()) { // 是文件
+//          // console.log("Item Is File:" + item);
+//           fs.formFileSync(item_path, path.join(to, item));
+//       } else if (temp.isDirectory()){ // 是目录
+//           // console.log("Item Is Directory:" + item);
+//           formDirectory(item_path, path.join(to, item));
+//       }
+//   });
+// }
+
+// formDirectory(path.join(__dirname, '..', 'templates'), path.join(__dirname, '..', 'demo'))
+
+/**
+ * Help.
+ */
+
+function help () {
+  program.parse(process.argv)
+  if (program.args.length < 1) return program.help()
+}
+help()
+
+
+/**
+ * Settings.
+ */
+
+let template = program.args[0]
+const hasSlash = template.indexOf('/') > -1
+const rawName = program.args[1]
+const inPlace = !rawName || rawName === '.'
+const name = inPlace ? path.relative('../', process.cwd()) : rawName
+const to = path.resolve(rawName || '.')
+const clone = program.clone || false
+
+const tmp = path.join(home, '.vue-templates', template.replace(/[\/:]/g, '-'))
+if (program.offline) {
+  console.log(`> Use cached template at ${chalk.yellow(tildify(tmp))}`)
+  template = tmp
+}
+
+/**
+ * Padding.
+ */
+
+console.log()
+process.on('exit', () => {
+  console.log()
+})
+
+if (inPlace || exists(to)) {
+  inquirer.prompt([{
+    type: 'confirm',
+    message: inPlace
+      ? 'Generate project in current directory?'
+      : 'Target directory exists. Continue?',
+    name: 'ok'
+  }]).then(answers => {
+    if (answers.ok) {
+      run()
+    }
+  }).catch(logger.fatal)
+} else {
+  run()
+}
+
+/**
+ * Check, download and generate the project.
+ */
+
+function run () {
+  // check if template is local
+  if (isLocalPath(template)) {
+    const templatePath = getTemplatePath(template)
+    if (exists(templatePath)) {
+      generate(name, templatePath, to, err => {
+        if (err) logger.fatal(err)
+        console.log()
+        logger.success('Generated "%s".', name)
+      })
+    } else {
+      logger.fatal('Local template "%s" not found.', template)
+    }
+  } else {
+    if (!hasSlash) {
+      // use official templates
+      const officialTemplate = 'vuejs-templates/' + template
+      if (template.indexOf('#') !== -1) {
+        downloadAndGenerate(officialTemplate)
+      } else {
+        // if (template.indexOf('-2.0') !== -1) {
+        //   warnings.v2SuffixTemplatesDeprecated(template, inPlace ? '' : name)
+        //   return
+        // }
+
+        downloadAndGenerate(officialTemplate)
+      }
+    } else {
+      downloadAndGenerate(template)
+    }
+  }
+}
+
+/**
+ * Download a generate from a template repo.
+ *
+ * @param {String} template
+ */
+
+function downloadAndGenerate (template) {
+  const spinner = ora('downloading template')
+  spinner.start()
+  // Remove if local template exists
+  if (exists(tmp)) rm(tmp)
+  download(template, tmp, { clone }, err => {
+    spinner.stop()
+    if (err) logger.fatal('Failed to download repo ' + template + ': ' + err.message.trim())
+    generate(name, tmp, to, err => {
+      if (err) logger.fatal(err)
+      console.log()
+      logger.success('Generated "%s".', name)
+    })
+  })
+}

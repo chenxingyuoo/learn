@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+
+<script src="../three.js"></script>
+<script>
+  //在上两节中，我们学习了如何创建几何形状与材质，而网格的创建非常简单，只要把几何形状与材质传入其构造函数。
+  // 最常用的物体是网格（Mesh），它代表包含点、线、面的几何体，其构造函数是：
+  //Mesh(geometry, material)
+
+  window.onload = init;
+
+  function init() {
+    //渲染器
+    var renderer = new THREE.WebGLRenderer();
+    renderer.setSize(400, 300);
+    renderer.setClearColor(0x000000);
+    document.getElementsByTagName('body')[0].appendChild(renderer.domElement);
+
+    //场景
+    var scene = new THREE.Scene();
+
+    // camera
+    var camera = new THREE.OrthographicCamera(-5, 5, 3.75, -3.75, 0.1, 100);
+    camera.position.set(25, 25, 25);
+    camera.lookAt(new THREE.Vector3(0, 0, 0));
+    scene.add(camera);
+
+    // light
+    var light = new THREE.PointLight(0xffffff, 1, 100);
+    light.position.set(10, 15, 5);
+    scene.add(light);
+
+    var material = new THREE.MeshLambertMaterial({
+      color: 0xffff00
+    });
+    var geometry = new THREE.CubeGeometry(1, 2, 3);
+    var mesh = new THREE.Mesh(geometry, material);
+    scene.add(mesh);
+
+    renderer.render(scene, camera);
+
+  }
+</script>
+
+</body>
+</html>

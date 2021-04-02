@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>demo</title>
+	<meta charset="utf-8"/>
+</head>
+
+<body>
+
+<script type="text/javascript">
+   
+   //函数创建对象
+   function Student (name) {
+	   this.name = name ;
+	   this.hello = function(){
+	   	  alert('hello ' + this.name );
+	   }
+
+   }
+
+   var xiaoming = new Student('xiaoming');
+   console.log(xiaoming.name);
+   xiaoming.hello();
+
+
+   //验证
+   console.log(xiaoming.constructor === Student.prototype.constructor) //true
+   console.log(Student.prototype.constructor === Student)  //true
+   console.log(Object.getPrototypeOf(xiaoming) === Student.prototype)  //true
+   console.log(xiaoming instanceof Student) //true
+
+
+
+   //原型继承
+   function Students(name){
+   	  this.name = name;
+   }
+
+   Students.prototype.hello = function(){
+   	  alert('hello ' + this.name);
+   }
+
+   var xiaoming = new Students('xiaoming');
+   var xiaohong = new Students('xiaohong');
+
+   console.log(xiaoming.name);  //xiaoming
+   console.log(xiaoming.hello());  //hello xiaoming
+   console.log(xiaohong.name);  //xiaohong
+   console.log(xiaohong.hello());  //hello xiaohong
+   debugger
+
+
+   //一个常用的编程模式像
+   function Studentss(props){
+   	  this.name = props.name || '匿名';
+   	  this.grade = props.grade || 1;
+   }
+
+   Studentss.prototype.hello = function(){
+   	  alert('hello ' + this.name )
+   }
+
+   function createStudent(props){
+   	  return new Studentss(props || {});
+   	}
+
+   	var opt = {
+        name : "小明",
+        grade:6
+   	}
+
+   	var xiaoming = new createStudent(opt);
+
+   	console.log(xiaoming.name)  //小明
+   	console.log(xiaoming.grade)  //6
+   	console.log(xiaoming.hello())  //hello 小明
+
+
+</script>
+
+</body>
+</html>

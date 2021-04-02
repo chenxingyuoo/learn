@@ -1,0 +1,18 @@
+<!--<import src="../../component/alert/index.wxml"/>-->
+<!--<template is="alert" data="{{ ...alertObj }}"/>-->
+
+<!--<view class="index-wrap flex-center" wx:if="{{isAvatarUrl === false}}">-->
+    <!--<view class="index-box flex-column-center">-->
+
+        <!--<view class="suit-image-box flex-column-center">-->
+            <!--<view class="suit-image mb-30">-->
+                <!--<image src="../../assets/img/user-image.png" class="wh-ratio100"/>-->
+            <!--</view>-->
+
+            <!--<view class="mb-50">恭喜你获得探索星空形象，未来在你手中</view>-->
+
+            <!--<button class="btn-primary" bindtap="clickGetSuit">点击领取</button>-->
+        <!--</view>-->
+
+    <!--</view>-->
+<!--</view>-->

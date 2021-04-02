@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>单个颜色实现 hover 和 active 时的明暗变化效果</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        .pesudo {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%,-50%);
+            width: 120px;
+            padding: 60px;
+            text-align: center;
+            color: white;
+            border-radius: 1em;
+            background: #00aabb;
+            cursor: pointer;
+        }
+        .pesudo:before{
+            position: absolute;
+            top: 0; right: 0; bottom: 0; left: 0;
+            z-index:-1;
+            border-radius:1em;
+            background:rgba(0,0,0,.1);
+        }
+        .pesudo:hover:before{
+            content:"";
+        }
+        .pesudo:after{
+            position: absolute;
+            top: 0; right: 0; bottom: 0; left: 0;
+            z-index:-1;
+            border-radius:1em;
+            background:rgba(255,255,255,.2);
+        }
+        .pesudo:active:after{
+            content:"";
+        }
+    </style>
+</head>
+<body>
+
+<!--
+单个颜色实现 hover 和 active 时的明暗变化效果
+利用伪类及透明度实现
+-->
+<hgroup class="pesudo">
+    <h1>.pesudo</h1>
+</hgroup>
+</body>
+</html>

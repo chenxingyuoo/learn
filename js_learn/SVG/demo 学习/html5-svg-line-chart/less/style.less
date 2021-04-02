@@ -1,0 +1,66 @@
+@font-face {
+  font-family: "Source Sans Pro Light";
+  font-weight: lighter;
+  src: url("http://meloncholy.com/static/fonts/source-sans-pro/SourceSansPro-Light.otf");
+}
+
+html {
+  font-size: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: #222;
+  color: #fff;
+  font: lighter normal 18px/22px "Source Sans Pro Light", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  height: 100%;
+  padding: 0 50px;
+}
+
+h1 {
+  font-size: 48px;
+  line-height: 60px;
+}
+
+a {
+  color: #fff;
+}
+
+.graph {
+  background-color: #383838;
+  font-size: 14px;
+  height: 50%;
+  margin-bottom: 16px;
+  width: 100%;
+}
+
+.graph svg {
+  overflow: visible;
+}
+.domain {
+  display: none;
+}
+.tick {
+  shape-rendering: "crispEdges";
+  stroke: #fff;
+  stroke-width: 1px;
+}
+.graph-val {
+  text-anchor: end;
+}
+
+text {
+  fill: #fff;
+}
+
+.line {
+  fill: none;
+  stroke-width: 3px;
+  vector-effect: non-scaling-stroke;
+}
+
+.area {
+  vector-effect: non-scaling-stroke;
+}

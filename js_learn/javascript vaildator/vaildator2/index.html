@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+
+<form id="example_form" method="get" action="">
+    <div id="div">
+        <label for="email">邮箱验证</label>
+        <input type="email" name="email" id="email" class="form-control" placeholder="Email">
+    </div>
+    <div >
+        <label for="phone">手机验证</label>
+        <input type="text" name="phone" id="phone" class="form-control" placeholder="phone">
+    </div>
+    <div >
+        <label for="sex">手机验证</label>
+        <input type="radio" name="sex" id="sex" class="form-control" placeholder="sex">
+        <input type="radio" name="sex" id="sexs" class="form-control" placeholder="sex">
+    </div>
+    <input type="submit" id="submit" value="submit">
+</form>
+
+<script src="js/vaildator2.js"></script>
+<script>
+    //点击事件
+    document.getElementById('submit').addEventListener('click', function () {
+        var validator = new FormValidator('example_form', [{
+            name: 'email',
+            display: 'required',
+            rules: 'required|valid_email'
+        }, {
+            name: 'sex',
+            rules: 'required'
+        }], function(errors) {
+            if (errors.length > 0) {
+                console.log(errors)
+                // Show the errors
+            }
+        });
+        validator._validateForm();
+    }, false);
+</script>
+</body>
+</html>

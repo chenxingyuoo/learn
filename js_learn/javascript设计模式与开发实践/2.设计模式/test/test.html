@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <meta name="viewport" content="width=640, user-scalable=no">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        #my-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+    </style>
+</head>
+
+<body>
+
+<canvas id="my-canvas"></canvas>
+
+<script>
+    window.onload = function () {
+        var myCanvas = document.querySelector('#my-canvas');
+        var context = myCanvas.getContext('2d');
+
+        myCanvas.width = 640;
+        myCanvas.height = document.documentElement.clientHeight;
+
+        var canWidth = myCanvas.width;
+        var canHeight = myCanvas.height;
+
+
+        function Drawguy(){
+            this.width = 0;
+            this.height = 0;
+            this.index = 0;
+            this.guyPic = new Image();
+            this.init();
+        }
+
+        Drawguy.prototype.init = function (){
+            this.guyPic.src = './img/guy.png';
+        };
+
+        Drawguy.prototype.draw = function () {
+            this.guyPic.onload = function () {
+                this.width = this.guyPic.naturalWidth;
+                this.height = this.guyPic.naturalHeight;
+            }.bind(this);
+
+            this.index = (this.index + 1) % 8;
+            context.drawImage(this.guyPic, this.index * 176,  0 , 176 , 377, 0, 0, 176 , 377);
+        };
+
+
+        var drawguy = new Drawguy();
+
+        (function road(){
+            window.setTimeout(road, 500);
+            context.clearRect(0, 0, canWidth, canHeight);
+
+
+            //绘制跑男
+            drawguy.draw();
+        })()
+
+
+
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>多物体旋转</title>
+</head>
+
+<body>
+<canvas id="canvas" width="400" height="400" style="background:#000;"></canvas>
+<script src="../js/utils.js"></script>
+<script src="../js/ball.js"></script>
+<script>
+    window.onload = function(){
+        var canvas = document.getElementById('canvas'),
+                context = canvas.getContext('2d'),
+                vr = 0.05, //每一帧转动的弧度值
+                cos = Math.cos(vr), // 得到cos值
+                sin = Math.sin(vr), // 得到sin值
+                centerX = canvas.width/2,
+                centerY = canvas.height/2,
+                canvasWidth = canvas.width,
+                canvasHeight = canvas.height,
+                balls = [];
+        for(var i=0; i<10; i++){
+            var size = Math.random()*20 + 5,   //大小
+                    color = Math.random()*(0xffffff),    //颜色
+                    ball = new Ball(size, color);
+            ball.id = "ball_" + i;   //给每个小球一个id
+            ball.x = Math.random()*canvasWidth;
+            ball.y = Math.random()*canvasHeight;
+            balls.push(ball);
+        }
+
+        (function drawFrame(){
+            window.requestAnimationFrame(drawFrame, canvas);
+            context.clearRect(0, 0, canvas.width, canvas.height);
+
+            balls.forEach(function(ball){
+                var x1 = ball.x - centerX, //相对中心点的位置
+                    y1 = ball.y - centerY;
+
+                var newX = x1 * cos - y1 * sin, //旋转一定角度后的位置
+                    newY = y1 * cos + x1 * sin;
+
+                ball.x = centerX + newX;   //更新球的位置
+                ball.y = centerY + newY;
+            });
+
+            //循环绘制
+            balls.forEach(function (ball) {
+                ball.draw(context);
+            });
+
+        }());
+    }
+</script>
+</body>
+</html>

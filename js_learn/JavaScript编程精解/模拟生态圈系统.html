@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<script>
+
+
+
+    //高阶函数
+    function foreach(array, action){
+        for (var i = 0; i < array.length; i++) {
+            //action 可以是声明函数 ， 也可以是匿名函数 ， 括号里面就是传的实参
+            action(array[i]);  //这里是bind函数返回的结果 依次 执行 array 每一个数组元素 ， 返回一个数组
+
+        }
+
+    }
+
+    //词典 ， 查阅此属性是否为该对象拥有；
+    function Dictionary(startValues){
+        this.values = startValues || '';
+    }
+
+    //添加key / value
+    Dictionary.prototype.store = function (name , values) {
+        this.values[name] = values;
+    };
+
+    //查阅key
+    Dictionary.prototype.lookup = function (name) {
+        return this.values[name]
+    };
+
+    //是用来判断一个对象是否有你给出名称的属性或对象，检测所指定的属性是否为一个对象的一部分以及该属性是否是可枚举的
+    Dictionary.prototype.contains = function (name) {
+
+        return Object.prototype.propertyIsEnumerable.call(this.values, name)
+    }
+
+
+    Dictionary.prototype.each = function (action) {
+
+        //谁调用this变量就执行该对象   ,   例： 下面实例了Directions函数 ，构造函数里面的 this.values 变量是等于传进来的所有值 ， 这里是一个对象 , 它的values值就是下面的值
+        /* {     'n' : new Point(0 , -1),
+                'ne' : new  Point(1, -1),
+                'e' : new Point(1, 0),
+                'se' : new Point(1, 1),
+                's' : new Point(0, 1),
+                'sw' : new Point(-1 , 1),
+                'w' : new Point(-1, 0),
+                'nw' : new Point(-1, -1)
+         }*/
+        forEachIn(this.values , action);
+    }
+
+    //但是我们发现hasOwnProperty属性怎么办 ，调用obj.hasOwnProperty 将会失败 ， 我们可以这样做
+    function forEachIn(obj, action){
+
+        //枚举对象 ， 满足条件就执行 action 函数 ， 实参是 prototype, obj[prototype]
+        for(var prototype in obj){
+
+            if(Object.prototype.hasOwnProperty.call(obj, prototype)){
+                action(prototype, obj[prototype]);
+            }
+        }
+    }
+
+
+
+
+
+
+    //1. 定义生态圈 ， 二维网格， 在这个网格里面有很多昆虫 ， 当生态圈被激活时 ， 所有昆虫都有机会做一个改变生态圈状态的动作 ， 比如移动；
+
+    var thePlan =
+            ["############################",
+             "#     #  #     o          ##",
+             "#                          #",
+             "#       ####               #",
+             "##      #  #    # #        #",
+             "###       ##      #        #",
+             "#        ###      #        #",
+             "#   ###                    #",
+             "#   ##       o             #",
+             "# o  #          o      ### #",
+             "#    #                     #",
+             "############################"
+            ];
+
+    //thePlan创建一个生态圈对象 ， 该对象跟踪生态圈的形状和内容。允许昆虫在内部移动 ， 它有两个方法， ： toString ， 用于生态圈转回与q其基于 plan l类似的字符串 ， 以便看到内部发生的情况 : step 允许生态圈里的所有昆虫都移动一步 ，只要它们愿意。
+
+
+    //2. 空间里的点。point , 接收x,y坐标 ， 返回拥有x和y属性的对象该构造函数有一个add方法
+    function Point(x, y){
+        this.x = x;
+        this.y = y;
+    }
+
+    //接收另一个point作为参数，并且返回一个新point ，新point的x，y值 ，是给定的两个point点x ， 点y 相加的和
+    Point.prototype.add = function (other) {
+
+        return new Point(this.x + other.x , this.y + other.y);
+    }
+
+
+    Point.prototype.toString = function () {
+        return "(" + this.x + "," + this.y + ")";
+    }
+    //console.log(Point.toString());
+
+
+    //ren任何时候都不要讲数据程显示 和 解决问题的代码混在一个数据类型里， 把它们分开更为清晰有条理
+
+    //3 chen呈现网格 ， 生态圈对象负责存储值 ， 而且询问昆虫要做什么
+    //在网格上存储值有两种方式 ：
+    //二维数组
+    var grid = [
+            ['1,1','2,1','3,0'],
+            ['0,1','4,6','5,8']
+    ];
+    //console.log(grid[1][2]) //5,8
+
+    //第二种方式是把要存储的值放在一个数组里， z在这种情况下 ， 坐标x 和 y上的元素可以在数组的x + y * width 位置找到 ， width是网格的宽度
+    var grids = [
+        '1,1','2,1','3,0',
+        '0,1','4,6','5,8'
+    ];
+    //console.log(grids[2 + 1 * 3])  //5,8
+    //console.log(grids[2 + 1 * 2])  //4,6
+
+
+    //定义Grid对象。包含一些方法
+    function Grid(width , height){
+        this.width = width;
+        this.height = height;
+        this.cells = new Array(width * height);
+    }
+
+    //读取数组 ， 查找这个坐标位置对应的 字符串 是  ‘#’、‘o (o = stupidBug 对象) ’、‘ ’
+    Grid.prototype.valueAt = function (point) {
+        return this.cells[point.x + point.y * this.width ];
+    }
+
+    //设置数组
+    Grid.prototype.setValueAt = function (point, value) {
+        return this.cells[point.x + point.y * this.width ] = value;
+    }
+
+
+    //判断是否在网格范围内
+    Grid.prototype.isInside = function (point) {
+        return point.x >= 0 && point.y >= 0
+               && point.x < this.width && point.y < this.height;
+    }
+
+    //昆虫移动
+    Grid.prototype.moveValue = function (from ,to) {
+
+        //  因为是昆虫 ， 所以 是 stupidBug 对象 ，stupidBug 对象是初始化网格条用 elementFromCharacter返回的
+        this.setValueAt(to, this.valueAt(from));
+        //移动之后 ， 原来的点变成undefined ， 移动后的点就是这只昆虫 stupidBug 对象
+        this.setValueAt(from , undefined);
+    }
+
+    //var Grids = new Grid(3, 5);
+    //console.log(Grids)
+
+    //还要遍历网格里的所有元素 ， 找出需要移动的昆虫或者将整个网格转成字符串
+    Grid.prototype.each = function (action) {
+        for (var y = 0; y < this.height; y++) {
+            for (var x = 0; x < this.width; x++) {
+
+                var point = new Point(x, y);
+
+                action(point , this.valueAt(point));
+                //console.log(action)
+
+            }
+
+        }
+    }
+
+
+    //4. 昆虫的编程接口
+    //在编写生态圈构造函数之前 ， 先将生态圈内部的昆虫具体化， 前面提到 ， 生态圈将询问昆虫想做什么样的活动 ，
+    //实现方式如下 ： 每一个昆虫都有一个act方法 ， 调用的时候返回action。 action是一个带有type属性的对象 ， 表示昆虫想要采取的举动类型 ， 比如move ， 绝大多数action也会包含额外的信息 ， 比如昆虫要移动的方向。。
+
+    //返回的方向 ， 表示从上方 n 开始 ， 到右上 。 类推。。
+    var directions = new Dictionary({
+        'n' : new Point(0 , -1),
+        'ne' : new  Point(1, -1),
+        'e' : new Point(1, 0),
+        'se' : new Point(1, 1),
+        's' : new Point(0, 1),
+        'sw' : new Point(-1 , 1),
+        'w' : new Point(-1, 0),
+        'nw' : new Point(-1, -1)
+    });
+
+    //啊、如果一只昆虫决定移动 ， 它会通过给定action结果的directions方向 ， 可以编写一个总是向南的笨昆虫，'向着阳光的方向'；
+    function stupidBug(){};
+
+    stupidBug.prototype.act = function (surrounding) {
+        return {type: 'move' , directions : 's'};
+    }
+
+
+    //5、 生态圈对象。
+    //现在开始编写生态圈对象类型 ， 下面是生态圈对象的构造函数 ， 接收plan参数（字符串数组） ， 并初始化网格。
+    var wall = {};
+    function elementFromCharacter(character){
+        if(character == ' '){
+            return undefined;
+        }else if(character == '#'){
+            return wall;
+        }else if(character == 'o'){
+            return new stupidBug();   //如果是昆虫 ， 就new一个stupidBug ， 它的原型上就有 act 方法 和 character = ’o‘
+        }
+    }
+
+    //并初始化网格 , this指的是Terrarium函数 ， 每次调用一个函数，就会创建一个新的this变量
+    function Terrarium(plan){
+        var grid = new Grid(plan[0].length, plan.length);
+        for (var y = 0; y < plan.length; y++) {
+            var line = plan[y];
+            for (var x = 0; x < line.length; x++) {
+                grid.setValueAt(new Point(x, y) , elementFromCharacter(line.charAt(x)));
+            }
+        }
+        this.grid = grid;
+    }
+
+    //生态圈对象最简单的方法是toString , 它将整个生态圈转化为字符串 ， 为了使它更加简单 ， 可以为wall 和 stupidBug 原型添加一个 character属性。
+    wall.character = '#';
+    stupidBug.prototype.character = 'o';
+
+    function charterFromElement(element){
+        if(element == undefined){
+            return ' ';
+        }else{
+            return element.character;
+        }
+    }
+
+
+
+    //现在可以用 Grid 的each 方法构建字符串了 ， 为了易于读懂 ， 在每行结束的位置添加换行符 ,
+    Terrarium.prototype.toString = function () {
+        var characters = [];
+        var endOfLine = this.grid.width - 1;
+        this.grid.each(function (point, value) {
+            characters.push(charterFromElement(value));
+
+            //在每行结束的位置添加换行符
+            if(point.x == endOfLine){
+                characters.push('\n');
+            }
+        })
+        return characters.join('');
+    }
+
+
+    //6 this ji及其作用域 ,  toString方法 ， 可能某一时刻要访问this变量 ， 可惜这样不起作用 ， 调用一个新的函数 ， 它总会创建一个新的this变量 ， 因此 ， 函数外部的this都不可见 。 如果需要访问整个this对象 ， 可以将它 保存到一个变量 ， 然后到这里访问 ， var that = this ; 不过为了代码不混乱 ， 可以使用分布函数解决 。 将this作为apply 的第一个参数
+
+    function bind(func , object){
+
+        return function () {
+
+            return func.apply(object, arguments);
+
+        }
+    }
+
+    var x = [];
+    var pushX = bind(x.push, x);
+    pushX('A');
+    pushX('B');
+    console.log(x)  // ['A' , 'B']
+
+
+    //通过这种方式 ， 可以将内部函数bind 到 this 上 ， 它拥有与外部函数同样的this对象 ， 在bind(x,push,x)上，x名称依然使用了两次 ， 下面有个更简洁的方式。
+    function method(object, name){
+        return function () {
+            object[name].apply(object,arguments);
+        }
+    }
+
+    var pushs = method(x, 'push');
+
+
+    //7 有活力的生命。
+    //实现生态圈的step方法时， 需要使用bing 或者 method 方法  ， step方法遍历网格上所有昆虫 ， 询问每个昆虫的动作 ， 并且执行它们的动作 。 可能想在网格上使用each ， 并且只处理遇到的昆虫 。 但是这样做 ， 当昆虫向南或者向东移动之后 ， 在相同的方向会再次遇到它 ， 并且允许它再次移动 。
+    //因此 ， 首先将昆虫对象收集到一个数组里 ， 然后再进行处理 ， 该方法收集昆虫对象和其他拥有act方法的对象 ， 并且将其保存在包含昆虫当前位置的对象里 。
+    Terrarium.prototype.listActingCreatures = function () {
+
+        var found = [];
+        //之所有这里有this.grid.each的方法是实例Terrarium函数的时候 ， this变量指向了grid。
+
+        this.grid.each(function (point,value) {  //如果遍历到是昆虫 ， 就new一个stupidBug ， 它的原型上就有 act 方法 和 character 属性 ’o‘ , push进 found 数组 ， 返回这个有关方向等属性的对象的数组,再进行foreach高阶函数调用
+            if(value != undefined && value.act){
+                found.push({object : value , point : point});
+            }
+        })
+        return found;
+    }
+
+    //当让昆虫行动时 ， 必须传一个带有环境信息的对象给它 ， 该对象就是之前的方向名称等属性 ，每个属性有一个charterFromElement方法返回的仅有的一个字符串，表明那个昆虫在那个方向可以看到什么 。
+
+
+    //接收一个参数是该昆虫处在该点的方向信息 ， 返回一个带有当前环境信息的变量 ， 当处于边缘的时候 ， 返回 ’#‘
+    Terrarium.prototype.listSurroundings = function (center) {
+        var result = {};
+        var grid = this.grid;
+
+        directions.each(function (name, directions) {
+
+            var place = center.add(directions);
+            if(grid.isInside(place)){
+                result[name] = charterFromElement(grid.valueAt(place));
+            }else{
+                result[name] = '#'; //# 代表墙壁
+            }
+        })
+        return result;
+    }
+
+
+    //上面两个方法不是Terrarium对象外部接口的一部分 ， 而是内部细节 ， 有些语言可以显示的将方法和属性定义为私有的 ， 并且当尝试从对象外部访问他们会报错 ，javascript 却 不然 ，因此内部属性和私有方法可以使用_下划线命名 。
+
+
+    //还有另外一个辅助方法 ，该方法向昆虫要求一个行为并且执行该行为  ， 它接收生物以及该生物所在位置的点作为参数，到现在为止 ， 它只知道move行为
+    Terrarium.prototype.processCreature = function (creature) {
+
+        //通过执行step到foreach 。 creature 是 foreach 传进来的数组
+
+        var point = creature.point;
+        console.log(creature.object,point)
+
+        //point 是坐标 ， 原型上带有add方法
+        var action = creature.object.act(this.listSurroundings(point));
+
+        //是移动 并且 creature包含 -》 有方向
+        if(action.type == 'move' && directions.contains(action.directions)){
+            //创建一个新的坐标   ， directions.lookup(action.directions) = 查看这个方向的坐标
+            var to = point.add(directions.lookup(action.directions));
+
+            //如果 新创建的 to 坐标 是在这个网格内， 并且没有被占用位置 ， 是undefined （也就是实例化Terrarium函数，并初始化网格的时候条用elementFromCharacter函数 ， 如果是字符串就返回了undefined ）。
+            // 那么这只昆虫就移动到这个点上
+            if(this.grid.isInside(to) && this.grid.valueAt(to) == undefined){
+                this.grid.moveValue(point, to);
+
+
+                // 此时 this.grid.valueAt(point) 这个位置上的昆虫移动到 this.grid.valueAt(to) 上 ，this.grid.valueAt(point) 变成undefined
+                console.log(this.grid.valueAt(point),this.grid.valueAt(to))
+            }
+        }else{
+            throw new Error('unsupported action:' + action.type)
+        }
+
+    }
+
+
+
+    //该方法检测s所选择的方向是否在网格中并且无阻碍 ， 否则就忽略它 ， 通过这种方式， 昆虫可以向任何方向移动 ， 只要该方向是可以移动的 。 这个方法担当昆虫与生态圈之间的隔离层 ，并允许降低编写昆虫actf方法的精确度 ， 例如 ，stupidBug总是z尝试向南移动 ， 而不管是否全面有墙壁的阻碍 。
+
+    //利用z这三种内部 , 最终可以编写step方法 ， 它为所有的昆虫提供了一次做某件事(所有带有act方法的元素--如果希望墙也可以移动 ， 可以为wall对象添加act方法。)的机会。
+
+        Terrarium.prototype.step = function () {
+            // this.listActingCreatures() 返回4个数组 ， thePlan网格中有4个昆虫 ，所以是对的
+            // bind 分布函数
+            console.log(bind(this.processCreature, this))
+            console.log(this)
+            foreach(this.listActingCreatures(), bind(this.processCreature, this));
+        }
+
+
+    //8.昆虫移动
+    //创建一个生态圈，看看是否有事情发生。
+    var terrarium = new Terrarium(thePlan);
+    terrarium.step();
+    console.log(Point.toString())
+    console.log(terrarium.toString())
+
+
+
+</script>
+</body>
+</html>

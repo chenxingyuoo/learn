@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+
+<body>
+<canvas id="canvas" width="1000" height="1000" style="border: 1px solid #ddd;display: block;margin: 50px">
+    您的浏览器不支持 HTML5 canvas 标签。
+</canvas>
+
+<script type="text/javascript">
+    window.onload = function (){
+        // setTransform() 绘制一个矩形，通过 setTransform() 重置并创建新的变换矩阵，再次绘制矩形，重置并创建新的变换矩阵，然后再次绘制矩形。请注意，每当您调用 setTransform() 时，它都会重置前一个变换矩阵然后构建新的矩阵，因此在下面的例子中，不会显示红色矩形，因为它在蓝色矩形下面：
+
+        var c=document.getElementById("canvas");
+        var ctx=c.getContext("2d");
+
+        ctx.fillStyle="yellow";
+        ctx.fillRect(20,20,250,100);
+
+        ctx.setTransform(1,0.5,-0.5,1,30,10);
+        ctx.fillStyle="red";
+        ctx.fillRect(0,0,250,100);
+
+        ctx.setTransform(1,0.5,-0.5,1,30,10);
+        ctx.fillStyle="blue";
+        ctx.fillRect(0,0,250,100);
+
+
+    }
+</script>
+</body>
+</html>

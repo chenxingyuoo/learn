@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+
+<!--<script src="src/util.js"></script>-->
+<script src="dist/event.js"></script>
+<script>
+
+    var event = new Event();
+
+    function getChen(data){
+       console.log(data);
+    }
+
+    function getChen1(data){
+        console.log(data);
+    }
+
+    event.on('chen',getChen);
+
+//    event.off('chen',getChen);
+//    event.off('chen', getChen);
+
+    event.on('chen',getChen1);
+
+
+    event.trigger('chen' , getChen1 ,{username : 'chenxingyu'});
+
+    event.trigger('chen',{age : 21});
+
+
+//        event.offAll('chen');
+
+//    event.trigger('chen',{
+//        username : 'chenxignyu'
+//    })
+
+</script>
+
+</body>
+</html>

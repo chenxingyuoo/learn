@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+
+<script>
+    function getStockSymbol(name) {
+        return new Promise((resolve) => {
+            resolve(name);
+        });
+    }
+
+    function getStockPrice(symbol){
+        let s = Symbol(symbol);
+        let tock = {
+            [s] : {
+                money : 10000
+            }
+        };
+        return tock[s]
+    }
+
+    async function getStockPriceByName(name) {
+        var symbol = await getStockSymbol(name);
+        var stockPrice = await getStockPrice(symbol);
+        return stockPrice;
+    }
+
+    getStockPriceByName('goog').then(function (result) {
+        console.log(result);
+    });
+
+
+    //下面是另一个例子，指定多少毫秒后输出一个值。
+
+    function timeout(ms) {
+        return new Promise((resolve) => {
+            debugger;
+            setTimeout(resolve, ms);
+        });
+    }
+
+    async function asyncPrint(value, ms) {
+        await timeout(ms);
+        debugger;
+        console.log(value);
+    }
+
+    asyncPrint('hello world', 2000);
+
+    //由于async函数返回的是 Promise 对象，可以作为await命令的参数。所以，上面的例子也可以写成下面的形式。
+
+    async function timeout(ms) {
+        await new Promise((resolve) => {
+            setTimeout(resolve, ms);
+        });
+    }
+
+    async function asyncPrint(value, ms) {
+        await timeout(ms);
+        console.log(value);
+    }
+
+    asyncPrint('hello world', 50);
+
+    //async 函数有多种使用形式。
+
+
+    // 函数声明
+    async function foo() {}
+
+    // 函数表达式
+    const foo = async function () {};
+
+    // 对象的方法
+    let obj = { async foo() {} };
+    obj.foo().then((value) => {
+
+    })
+
+    // Class 的方法
+    class Storage {
+        constructor() {
+            this.cachePromise = caches.open('avatars');
+        }
+
+        async getAvatar(name) {
+            const cache = await this.cachePromise;
+            return cache.match(`/avatars/${name}.jpg`);
+        }
+    }
+
+    const storage = new Storage();
+    storage.getAvatar('jake').then((value) => {
+
+    });
+
+    // 箭头函数
+    const foo = async () => {};
+
+</script>
+
+</body>
+</html>

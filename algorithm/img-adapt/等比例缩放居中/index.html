@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    div{
+      border: 1px solid #ddd;
+      position: relative;
+    }
+  </style>
+</head>
+<body>
+  
+<section id="box-wrap"></section>
+
+<script src="../../utils/dom.js"></script>
+<script src="../../utils/ratio.js"></script>
+<script>
+  var boxData = [
+    {
+      width: 300,
+      height: 400
+    },
+    {
+      width: 900,
+      height: 300
+    }
+  ]
+
+  function init(e) {
+    boxData.map((item,i) => {
+      const div = document.createElement('div')
+      div.style.width = item.width + 'px'
+      div.style.height = item.height + 'px'
+      div.id = 'box' + i
+      domUtils.$('#box-wrap').appendChild(div)
+
+      const img = document.createElement('img')
+      img.src = '../../images/龙猫.jpg'
+      img.onload = (e) => {
+        const target = e.currentTarget
+        const imgWidth = target.naturalWidth
+        const imghHeight = target.naturalHeight
+        
+        const posInfo = getZoomCentered({
+          width: imgWidth, 
+          height: imghHeight
+        }, {
+          width: item.width, 
+          height: item.height
+        })
+
+        img.style.width = posInfo.width + 'px'
+        img.style.height = posInfo.height + 'px'
+        img.style.top = posInfo.y + 'px'
+        img.style.left = posInfo.x + 'px'
+        img.style.position = 'absolute'
+        img.style.display = 'block'
+      }
+
+      div.appendChild(img)
+    })
+
+   
+    
+  }
+  window.addEventListener('DOMContentLoaded', init, false)
+</script>
+</body>
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+
+<!--<script src="../lodash.js"></script>-->
+<!--<script src="../ramda.js"></script>-->
+<script>
+
+    //函数组合
+    var compose = function(f,g) {
+        return function(x) {
+            return f(g(x));
+        };
+    };
+
+
+    //范畴学（category theory）是数学中的一个抽象分支，
+    // 能够形式化诸如集合论（set theory）、类型论（type theory）、群论（group theory）以及逻辑学（logic）等数学分支中的一些概念。
+    // 范畴学主要处理对象（object）、态射（morphism）和变化式（transformation），而这些概念跟编程的联系非常紧密
+
+    //对象的搜集
+
+    //对象就是数据类型，例如 String、Boolean、Number 和 Object 等等。
+    // 通常我们把数据类型视作所有可能的值的一个集合（set）。
+    // 像 Boolean 就可以看作是 [true, false] 的集合，Number 可以是所有实数的一个集合。
+    // 把类型当作集合对待是有好处的，因为我们可以利用集合论（set theory）处理类型
+
+    //态射的搜集
+
+    //态射是标准的、普通的纯函数。
+
+    //态射的组合
+
+    //你可能猜到了，这就是本章介绍的新玩意儿——组合。我们已经讨论过 compose 函数是符合结合律的，这并非巧合，结合律是在范畴学中对任何组合都适用的一个特性。+
+
+    var g = function(x){ return x.length; };
+    var f = function(x){ return x === 4; };
+    var isFourLetterWord = compose(f, g);
+
+    isFourLetterWord('hello');
+
+    //identity 这个独特的态射
+
+    //让我们介绍一个名为 id 的实用函数。这个函数接受随便什么输入然后原封不动地返回它：
+
+    var id = function(x){ return x; };
+
+    //你可能会问“这到底哪里有用了？”。别急，我们会在随后的章节中拓展这个函数的，暂时先把它当作一个可以替代给定值的函数——一个假装自己是普通数据的函数。
+    //id 函数跟组合一起使用简直完美。下面这个特性对所有的一元函数（unary function）（一元函数：只接受一个参数的函数） f 都成立：
+
+    // identity
+    compose(id, f) == compose(f, id) == f;
+    // true
+
+    //嘿，这就是实数的单位元（identity property）嘛！
+    // 如果这还不够清楚直白，别着急，慢慢理解它的无用性。
+    // 很快我们就会到处使用 id 了，不过暂时我们还是把当作一个替代给定值的函数。
+    // 这对写 pointfree 的代码非常有用。
+
+
+
+
+
+
+
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Object.getOwnPropertySymbols 函数 </title>
+</head>
+
+<body>
+<script>
+    //返回对象的自有符号属性。对象的自有符号属性是指直接在此对象上定义、而非从对象的原型继承的属性。
+    //下面的代码示例演示如何获取对象的符号属性。
+    var obj = {};
+    var key = Symbol('description');
+
+    obj[key] = 'data';
+
+    var symbols = Object.getOwnPropertySymbols(obj);
+
+    console.log(symbols);
+    console.log(symbols[0].toString());
+
+    // Output:
+    // undefined
+    // Symbol(description)
+</script>
+</body>
+</html>

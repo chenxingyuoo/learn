@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang=zh-cn manifest=index.manifest>
+<!-- 离线缓存图片文件，以便下次使用相关图片时可以迅速载入 -->
+<head>
+    <title>重力感应球</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,
+height=device-height,initial-scale=1.0, minimum-scale=1.0,
+maximum-scale=1.0,user-scalable=no, target-densityDpi=device-dpi">
+    <!--<script type="text/javascript" charset="utf-8" src="foropera.js"></script>-->
+</head>
+<body style="margin-top:0px;margin-left:0px;">
+<div id="helpme" style="opacity:
+0.9;position:absolute;z-index:1000;top:100px;left:20px;display:none;background-color:#333;-webkit-border-radius:15px;right:20px;">
+    <center style="margin-left:10px;margin-right:10px;border-bottom:1px #777
+solid;"><span
+            style=color:#fff;height:30px;line-height:60px;font-size:26px;margin-top:25px;margin-bottom:35px;">重力感应球</span></center>
+    <div
+            style="color:#ccc;font-size:18px;margin-left:20px;margin-right:20px;margin-top:
+16px;">HTML5的Device API集成了调取重力感应和重力加速的功能。基于此功能，欧朋浏览器 HTML5
+        体验版可以实现重力感应，并在网页上呈现效果。此demo就是利用了这个特性。晃动手机，便可实现小球在
+        网页上滚动的特效。
+    </div>
+    <br>
+    <center>
+        <button onclick="hiddeDiv('helpme')" style="opacity:1;
+background-color:#777;border:0px;height:35px;line-height:25px;color:#eee;
+width:140px;font-size:18px;-webkit-border-radius:5px;">关闭提示
+        </button>
+    </center>
+    <br>
+</div>
+<div id="help"
+     style="z-index:1000;position:absolute;left:0px;top:30px;">
+    <img src="help.png"
+    onclick="showhelp('')">
+</div>
+<script type="text/javascript">
+    function hiddeDiv(id) {
+        document.getElementById('helpme').style.display = 'none';
+    }
+    function showhelp() {
+        document.getElementById('helpme').style.display = '';
+    }
+</script>
+<canvas id="ball"
+        style="margin-top:0px;margin-left:0px;z-index:10;"></canvas>
+<img id="gunball" style="display:none" src="opera_ball.png">
+<script type="text/javascript">
+    window.onload = function (){
+        var cur_x = 0;
+        var cur_y = 0;
+        var ball_radius = 50; //球的半径，用来判断是否靠近边界，进行碰撞检测用
+        var initialized = false; //初始化的值
+        var ww;
+        var wh;
+        var speed_x = 0;
+        var speed_y = 0;
+        var accel_x;
+        var accel_y;
+        var friction_accel = 0.02; //摩擦系数
+        var interval = 33; //毫秒数, 约为30帧每秒
+        var bg_color = "#EEEEEE";
+        var fg_color = "#333";
+        var absorbing_rate = 0.5; //弹力消耗比例
+        var gunball = new Image();
+        gunball.src = "opera_ball.png"; //实例化的滚球的图像
+        var opera_pix_bg = new Image();
+        opera_pix_bg.src = "opera_pix_bg2.png"; //实例化的背景图
+        function inSameDirection(a, b) { //方向判断函数
+            return a > 0 && b > 0 || a <= 0 && b <= 0;
+        }
+        function getCurpos(cur_pos, speed, accel, boundary) { //当前位置判断函数
+            if (speed == 0 && Math.abs(accel) <= friction_accel)
+                return [cur_pos, speed];
+            start_speed = speed;
+            f_accel = (speed > 0 ? -friction_accel : friction_accel); //摩擦力导致速度变慢
+            speed += accel + f_accel; //速度的方向被改变了
+            if (!inSameDirection(f_accel, accel) && !inSameDirection(f_accel, start_speed) && !inSameDirection(start_speed, speed)) {
+//因为摩擦，球的速度逐渐为0
+                speed = 0;
+            }
+            cur_pos += (start_speed + speed) / 2; //边界检测
+            if (cur_pos > boundary - ball_radius) {
+                cur_pos = boundary - ball_radius;
+                speed = -speed * absorbing_rate;
+            }
+            else if (cur_pos < 0) {
+                cur_pos = 0;
+                speed = -speed * absorbing_rate;
+            }
+            return [cur_pos, speed];
+        }
+        function physics() { //物理运动计算函数
+            var x = getCurpos(cur_x, speed_x, accel_x, ww);
+            cur_x = x[0];
+            speed_x = x[1];
+            var y = getCurpos(cur_y, speed_y, accel_y, wh);
+            cur_y = y[0];
+            speed_y = y[1];
+        }
+        function paint() { //绘图函数
+            debugger;
+            var ball_canvas = document.getElementById('ball');
+            var ctx = ball_canvas.getContext('2d');
+            physics(); //引入物理运动计算的函数
+//            ctx.drawImage(opera_pix_bg, 0, 0, ww, wh);
+            ctx.drawImage(gunball, cur_x, cur_y, 50, 50);
+            setTimeout(paint, interval);
+        }
+        function clearCanvas() { //擦除画布的函数
+            var ball_canvas = document.getElementById('ball');
+            var ctx = ball_canvas.getContext('2d');
+        }
+        function update(evt) { //更新画布的函数
+            var ball_canvas = document.getElementById('ball');
+            if (ball_canvas.width != window.outerWidth ||
+                    ball_canvas.height != window.outerHeight) {
+                ball_canvas.width = window.outerWidth;
+                ball_canvas.height = window.outerHeight;
+                clearCanvas();
+            }
+            ww = ball_canvas.width;
+            wh = ball_canvas.height;
+//根据重力传感器的值计算加速度
+            accel_x = Math.sin(evt.gamma / 180 * Math.PI);
+            accel_y = Math.sin(evt.beta / 180 * Math.PI);
+            if (!initialized) {
+                cur_x = ww / 2 + ball_radius; //滚球当前位置的x坐标值
+                cur_y = wh / 2 + ball_radius; //滚球当前位置的y坐标值
+                initialized = true;
+                clearCanvas();
+                paint(); //调用绘图函数
+            }
+        }
+        function preload() {
+            var ball_canvas = document.getElementById('ball');
+            if (ball_canvas.width != window.outerWidth ||
+                    ball_canvas.height != window.outerHeight) {
+                ball_canvas.width = window.outerWidth;
+                ball_canvas.height = window.outerHeight;
+            }
+            ww = ball_canvas.width;
+            wh = ball_canvas.height;
+            paint();
+        }
+        preload();
+        window.addEventListener('deviceorientation', update, true);
+    }
+</script>
+</body>
+</html>

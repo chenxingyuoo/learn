@@ -1,0 +1,16 @@
+$fontStack:    Helvetica, sans-serif;
+$primaryColor: #333;
+
+.home-boxs{
+  font-family: $fontStack;
+  color: $primaryColor;
+  font-size: 125px;
+}
+
+a {
+    display: flex;
+}
+
+b{
+  font-family: $fontStack;
+}

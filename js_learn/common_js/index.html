@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>my_common_js</title>
+</head>
+
+<body>
+
+<script src="common.js"></script>
+<script>
+
+    //test trim
+    console.log(' 哈哈哈 哈哈  '.trim());    //哈哈哈 哈哈
+
+    //test clearS
+    console.log(' 哈哈哈  哈哈  '.clearS());  //哈哈哈哈哈
+
+
+    //test replaceReg
+    var reg = /i\s+am/g;
+    console.log(' 哈哈哈 i am 哈哈  '.replaceReg(reg));  // 哈哈哈  哈哈
+
+    //test normalizeMap
+    normalizeMap(['a', 'b', 'c']);
+
+    //    [
+    //        {
+    //          key : 'a',
+    //          value : 'a'
+    //        },
+    //        {
+    //            key : 'b',
+    //            value : 'b'
+    //        },
+    //        {
+    //            key : 'c',
+    //            value : 'c'
+    //        },
+    //    ]
+
+    normalizeMap({
+        a : '1',
+        b : '2',
+        c : '3'
+    });
+    //    [
+    //        {
+    //          key : 'a',
+    //          value : '1'
+    //        },
+    //        {
+    //            key : 'b',
+    //            value : '2'
+    //        },
+    //        {
+    //            key : 'c',
+    //            value : '3'
+    //        },
+    //    ]
+
+
+    //test bind
+    var obj = {a : 1};
+
+    function test(){
+        console.log(this.a);
+    }
+
+    var _test = bind(test, obj);
+    _test();
+
+
+    //test arrInvoker
+
+    var obj = {
+        a : 'aaa',
+        b : 'bbb',
+        fn : 'fnfnfn'
+    }
+    var arrFn = [
+            function printA(obj){
+                console.log('printA');
+                console.log(obj.a);
+            },
+            function printB(obj){
+                console.log('printB');
+                console.log(obj.b);
+            }
+    ]
+    var _arrInvoker = arrInvoker(arrFn);
+    _arrInvoker(obj);
+
+
+    //test fnInvoker
+    var o = {
+        fn : function printFn(obj){
+            console.log('printFn');
+            console.log(obj.fn);
+        }
+    }
+
+
+    var _fnInvoker = fnInvoker(o);
+    _fnInvoker(obj);
+
+
+    //test toObject
+    toObject([{a : 1},{ b : 2}])
+
+
+
+    //test  curry
+    var _alert = curry(alert);
+    _alert('hahahah');
+
+
+    //test cache
+    var cache$1 = new Cache(1000);
+
+    cache$1.put('cachea', {
+        name : 'cachea',
+        sayHello : function (){
+            debugger;
+            alert(this.name)
+        }
+    });
+
+    cache$1.get('cachea', true);
+
+
+    //test _debounce  指定延迟时间执行函数
+    var delay = _debounce(function alertHi(object){
+        alert(object.hi)
+    },2000);
+
+    delay({
+        hi : 'hihihi'
+    })
+
+
+
+
+
+
+</script>
+</body>
+</html>

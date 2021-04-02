@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel='stylesheet' href='/stylesheets/bootstrap.css'/>
+    <link rel='stylesheet' href='/stylesheets/bootstrap-theme.css'/>
+    <link rel='stylesheet' href='/stylesheets/style.css'/>
+    <title><% title %></title>
+</head>
+
+<body>
+
+<nav class="navbar navbar-inverse " role="navigation">
+    <div class="container-fluid">
+
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">Microblog</a>
+        </div>
+
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <li class=""><a href="/">首页</a></li>
+
+                <% if( !session.user || session.success !== '登录成功' ){ %>
+                    <li><a href="/login">登录</a></li>
+                    <li><a href="/reg">注册</a></li>
+                <% } else { %>
+                   <li><a href="/user/<%= session.user.name %>">我的微博</a></li>
+                   <li><a href="/logout">退出登录</a></li>
+                <% } %>
+                <!--<li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <span class="caret"></span></a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="#">Action</a></li>
+                        <li><a href="#">Another action</a></li>
+                        <li><a href="#">Something else here</a></li>
+                        <li class="divider"></li>
+                        <li><a href="#">Separated link</a></li>
+                        <li class="divider"></li>
+                        <li><a href="#">One more separated link</a></li>
+                    </ul>
+                </li>-->
+            </ul>
+        </div>
+    </div>
+</nav>

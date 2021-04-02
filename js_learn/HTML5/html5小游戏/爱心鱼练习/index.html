@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>爱心鱼小游戏</title>
+
+    <style>
+        body {
+            padding-top: 10px;
+        }
+
+        .all_bg {
+            width: 800px;
+            height: 600px;
+            margin: 0 auto;
+        }
+
+        #allcanvas {
+            position: relative;
+            width: 800px;
+            height: 600px;
+            margin: 0px;
+        }
+
+        #canvas1 {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            z-index: 1;
+        }
+
+        #canvas2 {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            z-index: 0;
+        }
+
+    </style>
+
+</head>
+
+<body>
+<div class="all_bg">
+    <div id="allcanvas">
+        <canvas id="canvas1" width="800" height="600"></canvas>
+        <canvas id="canvas2" width="800" height="600"></canvas>
+    </div>
+</div>
+
+<script src="./js/commonFunctions.js"></script>
+<script src="./js/backGround.js"></script>
+<script src="./js/ane.js"></script>
+<script src="./js/fruit.js"></script>
+<script src="./js/big_fish.js"></script>
+<script src="./js/collision.js"></script>
+<script src="./js/small_fish.js"></script>
+
+<script>
+    "use strict";
+    var can1;
+    var can2;
+
+    var ctx1;
+    var ctx2;
+
+    var lastTime;   //记录最后一次的时间
+    var deltaTime;  //增量时间
+
+    var background;  //存储背景对象
+    var ane; //储存海葵对象
+    var fruit; //存储果实对象
+
+    var canWidth;  //canvas宽
+    var canHeight; //canvas高
+
+    var big_fish; //存储大鱼对象
+    var small_fish; //存储小鱼对象
+
+    var mouseX;
+    var mouseY;
+
+    document.body.onload = game;
+
+    function game(){
+        init();
+        lastTime = Date.now();
+        deltaTime = 0;
+        gameLoop();  //循环 ，利用requestAnimationFrame返回每一帧
+    }
+
+    function init(){
+        can1 = document.getElementById('canvas1');
+        ctx1 = can1.getContext('2d');
+
+        can2 = document.getElementById('canvas2');
+        ctx2 = can2.getContext('2d');
+
+        canWidth = can1.width; //canvas宽
+        canHeight = can1.height;  //canvas高
+
+        //绑定鼠标移动事件，让大鱼跟随鼠标
+        can1.addEventListener('mousemove',omMouseMove, false);  //omMouseMove函数求出x ， y 坐标的值
+
+        //1.canvas2 绘制背景图片
+        background = new drawBackGround();
+        background.init(); //init 初始化可放到构造函数里面执行
+
+        //2. canvas2 绘制海葵
+        ane = new AneObj();
+        ane.init(); //init 初始化可放到构造函数里面执行
+
+        //3. canvas2 绘制果实对象
+        fruit = new FruitObj();
+        fruit.init(); //init 初始化可放到构造函数里面执行
+
+        //5.canvas1 绘制大鱼
+        big_fish = new BigFish();
+        big_fish.init();  //init 初始化可放到构造函数里面执行
+        mouseX = canWidth * 0.5;
+        mouseY = canHeight * 0.5;
+
+        //7.canvas1 绘制小鱼
+        small_fish = new SmallFish();
+        small_fish.init(); //init 初始化可放到构造函数里面执行
+
+    }
+
+
+    function gameLoop(){
+        window.requestAnimFrame(gameLoop); //递归自己
+
+        var nowTime = Date.now();  //当前时间
+        deltaTime = nowTime - lastTime;  //deltaTime ，增量时间 ， 每两帧的时间间隔 ， 保证游戏画面流畅
+        lastTime = nowTime;  //记录最后一次的时间
+
+
+        //解决在谷歌浏览器不在页面的生活 ， 果实变得很大
+        if(deltaTime > 40 ) deltaTime = 40;
+
+        //1.canvas2 绘制画布背景
+        background.draw();
+
+        //2. canvas2 绘制海葵
+        ane.draw();
+
+        //3. canvas2 绘制果实对象
+        fruit.draw();
+
+        //4. canvas2 果实出生 ， 控制页面果实最大数
+        fruit.fruitMonitor(15);
+
+        //5. canvas1 绘制大鱼
+        //不清除矩形内指定的像素就会图片重叠 ，看起来非常粗糙
+        ctx1.clearRect(0 , 0 , canWidth , canHeight);  //在给定的矩形内清除指定的像素
+        big_fish.draw();
+
+        //6. 判断大鱼与果实之间的距离 ， 一定距离，果实被吃掉
+        bigFruitCollision();
+
+        //7. 绘制小鱼
+        small_fish.draw();
+
+    }
+
+    function omMouseMove(e){
+        if(e.offsetX || e.layerX){
+            mouseX = e.offsetX == undefined ? e.layerX : e.offsetX;
+            mouseY = e.offsetX == undefined ? e.layerY : e.offsetY;
+        }
+    }
+
+
+
+
+</script>
+
+</body>
+</html>

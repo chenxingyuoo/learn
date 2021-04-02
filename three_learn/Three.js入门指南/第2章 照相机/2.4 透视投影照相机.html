@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+
+<script src="../three.js"></script>
+<script>
+  window.onload = init;
+
+  function init(){
+    //渲染器
+    var renderer = new THREE.WebGLRenderer();
+    renderer.setSize(400, 300);
+    renderer.setClearColor(0x000000);
+    document.getElementsByTagName('body')[0].appendChild(renderer.domElement);
+
+    //场景
+    var scene = new THREE.Scene();
+
+    var camera = new THREE.PerspectiveCamera(45, 400 / 300, 1, 10);
+    camera.position.set(0, 0, 5);
+    scene.add(camera);
+
+    // a cube in the scene
+    var cube = new THREE.Mesh(new THREE.CubeGeometry(1, 1, 1),
+      new THREE.MeshBasicMaterial({
+        color: 0xff0000,
+        wireframe: true
+      })
+    );
+    scene.add(cube);
+
+    //渲染
+    renderer.render(scene, camera);
+  }
+</script>
+
+
+</body>
+</html>

@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+
+<script>
+
+
+    //単例模式实现 发布-订阅模式
+
+    var event = function event() {
+        var clientList = {};
+
+        var listen = function (key, fn) { //
+            if (!clientList[key]) {
+                clientList[key] = [];
+            }
+            clientList[key].push(fn); //
+        };
+
+        var remove = function (key, fn) {
+            var fns = clientList[key];
+
+            if (!fns) { //如果key对应的消息没有被人订阅 ， 则直接返回
+                return false;
+            }
+
+            if (!fn) { //如果没有传入具体的回调函数 ， 表示要取消 key 对应消息的所有订阅
+                fns && ( fns.length = 0 );
+            } else {
+                for (var l = fns.length - 1; l >= 0; l--) { //反向遍历
+                    var _fn = fns[l];
+                    if (_fn === fn) {
+                        fns.splice(l, 1);  //删除订阅者的回调函数
+                    }
+                }
+            }
+        };
+
+        var trigger = function () {
+            var key = Array.prototype.shift.call(arguments), // 取出消息类型
+                fns = clientList[key];
+
+            if (!fns || fns.length === 0) {  // 如果没有订阅该消息，则返回
+                return false;
+            }
+
+            for (var i = 0, fn; fn = fns[i++];) {
+                fn.apply(this, arguments);
+            }
+        };
+
+        return {
+            listen: listen,
+            remove: remove,
+            trigger: trigger
+        }
+    };
+
+    //创建一个事件
+    var salesOffices = event();
+
+    salesOffices.listen('squareMeter88', function (price) {
+        console.log(' 价格  = ' + price);
+    });
+
+    salesOffices.listen('squareMeter100', function (price) {
+        console.log(' 价格 = ' + price);
+    });
+
+    salesOffices.trigger('squareMeter88', 2000000); //    2000000
+    salesOffices.trigger('squareMeter100', 3000000); //    3000000
+
+
+    //创建一个事件
+    var test = event();
+
+    var testFn = function (data) {
+        debugger;
+        console.log('data: ' + data);
+    }
+
+    test.listen('test:test', testFn);
+
+    test.remove('test:test', testFn);
+
+    test.trigger('test:test', {'test': '1342ewds'})
+
+
+    //
+    var event1 = {
+        clientList: [],
+        listen: function (key, fn) { //
+            if (!this.clientList[key]) {
+                this.clientList[key] = [];
+            }
+            this.clientList[key].push(fn); //
+        },
+        remove: function (key, fn) {
+            var fns = this.clientList[key];
+
+            if (!fns) { //如果key对应的消息没有被人订阅 ， 则直接返回
+                return false;
+            }
+
+            if (!fn) { //如果没有传入具体的回调函数 ， 表示要取消 key 对应消息的所有订阅
+                fns && ( fns.length = 0 );
+            } else {
+                for (var l = fns.length - 1; l >= 0; l--) { //反向遍历
+                    var _fn = fns[l];
+                    if (_fn === fn) {
+                        fns.splice(l, 1);  //删除订阅者的回调函数
+                    }
+                }
+            }
+        },
+        trigger: function () {
+            var key = Array.prototype.shift.call(arguments), // 取出消息类型
+                fns = this.clientList[key];
+
+            if (!fns || fns.length === 0) {  // 如果没有订阅该消息，则返回
+                return false;
+            }
+
+            for (var i = 0, fn; fn = fns[i++];) {
+                fn.apply(this, arguments);
+            }
+        }
+    }
+
+    //定义一个installEvent函数，这个函数可以给所有的对象都动态安装发布-订阅模式
+    var installEvent = function (obj) {
+        for (var i in event1) {
+            obj[i] = event1[i];
+        }
+    };
+
+    var salesOffices1 = {};
+    installEvent( salesOffices1 );
+
+    salesOffices1.listen('squareMeter88', function (price) {
+        console.log(' 价格  = ' + price);
+    });
+
+    salesOffices1.trigger('squareMeter88', 100000);
+
+
+    //构造函数模式
+    var Event = function Event(){
+        this.clientList = {};
+    }
+
+    Event.prototype.on = function (key, fn){
+        if (!this.clientList[key]) {
+            this.clientList[key] = [];
+        }
+        this.clientList[key].push(fn); //
+    }
+
+    Event.prototype.off = function (key, fn){
+        var fns = this.clientList[key];
+        if (!fns) {
+            return false;
+        }
+
+        //如果没有传入具体的回调函数 ， 表示要取消 key 对应消息的所有订阅
+        if (!fn) {
+            fns && ( fns.length = 0 );
+        } else {
+            for (var l = fns.length - 1; l >= 0; l--) { //反向遍历
+                var _fn = fns[l];
+                if (_fn === fn) {
+                    fns.splice(l, 1);  //删除订阅者的回调函数
+                }
+            }
+        }
+    }
+
+    Event.prototype.trigger = function (){
+        var key = Array.prototype.shift.call(arguments), // 取出消息类型
+            fns = this.clientList[key];
+
+        if (!fns || fns.length === 0) {  // 如果没有订阅该消息，则返回
+            return false;
+        }
+
+        for (var i = 0, fn; fn = fns[i++];) {
+            fn.apply(this, arguments);
+        }
+    }
+
+    var test1 = new Event();
+
+    test1.on('test1:on',function (test){
+        console.log(test);
+    });
+
+    test1.trigger('test1:on', {'test1': '112edsadc'})
+
+
+
+</script>
+
+</body>
+</html>

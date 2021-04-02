@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>面向对象编程</title>
+</head>
+
+<body>
+<script>
+
+
+
+
+    // du对象
+    var rabbit = {};
+    //对象里边的方法
+    rabbit.speak = function (line) {
+        console.log('the rabbit say'  + ':' + line)
+    };
+    
+    console.log('I’m alive')
+
+
+
+    //有很多只兔子 ， 指明那一只说 , 用到 apply call方法 ,它们传入null 或者 undefined ， 默认对象为window
+    function speaks(line){
+        console.log('the ' + this.adjective +' rabbit say'  + ':' + line)
+    }
+    var whiteRabbit = {adjective : 'white' , speak : ''};
+    var fatRabbit = {adjective : 'fat', speak : ''};
+
+    whiteRabbit.speak = ('Oh my god');
+    fatRabbit.speak = ('i could sure use a ...');
+
+    //speaks函数里面的 this.adjective 绑定到 whiteRabbit 对象 ， 所有this对象指向 whiteRabbit
+    speaks.apply(whiteRabbit , ['i am white']);
+    //结果 ： 'the white rabbit say : i am white'
+
+    //speaks函数里面的 this.adjective 绑定到 fatRabbit 对象 ， 所有this对象指向 fatRabbit
+    speaks.apply(fatRabbit , ['i am fat']);
+    //结果 ： 'the fat rabbit say : i am fat'
+
+
+    //构造函数 ， 使用new 关键字 ， 会创建一个新对象 ， 其this会指向这个新对象， 该对象会自动返回特定值
+    function Rabbit(adjective){
+        this.adjective = adjective;
+        this.speak = function (line) {
+            console.log('the ' + this.adjective +' rabbit say'  + ':' + line)
+        }
+    }
+
+    var killerRabbit = new Rabbit('whiles');
+    console.log(killerRabbit.speak('GRAAAAAAAAH!'));
+    //结果 'the whiles rabbit say : GRAAAAAAAAH!'
+
+
+    //非 new
+    function Rabbits(adjective){
+        //返回一个对象
+        return {
+            adjective : adjective,
+            speak : function (line) {
+                console.log('the ' + this.adjective +' rabbit say'  + ':' + line)
+            }
+        }
+    }
+
+    var Rabbit2 = new Rabbits('fat');
+    console.log(Rabbit2.speak('ooooo!'));
+    //结果 'the fat rabbit say : ooooo!'
+
+
+    //构造函数与原型模式(推荐)
+    //自有方法 ， 不共享
+    function RabbitTwo(adjective, name){
+        this.name = name;
+        this.adjective = adjective;
+    }
+
+    //原型上定义方法 ， 共享
+    /*RabbitTwo.prototype = {
+        constructor : RabbitTwo,
+        speak : function (line) {
+           console.log('the ' + this.adjective + ' rabbit say' + ':' + line)
+        },
+        dance : function () {
+            console.log('the ' + this.adjective + ' rabbit dances a jig')
+        }
+    };*/
+
+    //上面可以写成简单明了的原型方法
+    RabbitTwo.prototype.speak = function (line) {
+        console.log('the ' + this.adjective + ' rabbit say' + ':' + line);
+    };
+
+    RabbitTwo.prototype.dance = function () {
+        console.log('the ' + this.adjective + ' rabbit dances a jig')
+    };
+
+
+
+    var Rabbit1 = new RabbitTwo('white','Rabbit1');
+    console.log(Rabbit1)
+    console.log(Rabbit1.speak('i am Rabbit1'))   //the white rabbit say:i am Rabbit1
+    console.log(Rabbit1.dance())   //the white rabbit dances a jig
+
+    var Rabbit2 = new RabbitTwo('fat','Rabbit2');
+    console.log(Rabbit2)
+    console.log(Rabbit2.speak('i am Rabbit2'))   //the fat rabbit say:i am Rabbit2
+    console.log(Rabbit2.dance())   //he fat rabbit dances a jig
+
+    //在这里看出原型上的方法、属性是共享的 ， 构造函数里面的自由属性、方法是不共享的 ，自有，因此不相等
+    console.log(Rabbit1 == Rabbit2)  //false , 两个相同的对象 ，实际上他们是不相等的
+    console.log(Rabbit1.adjective == Rabbit2.adjective)  //false
+    console.log(Rabbit1.speak == Rabbit2.speak) //true
+    console.log(Rabbit1.dance == Rabbit2.dance) //true
+
+
+    //原型污染 ， 防止修改constructor
+
+    //例  bad
+
+
+
+
+
+
+    /*
+    * *
+    * *
+    * */
+
+    //扩展对象
+    Object.prototype.properties = function () {
+        var result = [];
+        // 这里 this == { x : 10 , y : 3} ， 调用一次函数就会创建一个新的this变量 ， 它指向调用它的对象
+        for( var prototype in this){
+            result.push(prototype);
+        }
+        return result;
+    }
+
+    var test = { x : 10 , y : 3};
+    test.properties();
+    // ['x' , 'y' , 'properties'] ; 问题就出现了，由于Object的原型有properties属性，使用for/in遍历r任何对象的属性都会将这个共享属性返回；
+
+    //重写  properties ， 判断是自有属性还是原型上的属性；
+    Object.prototype.properties = function () {
+        var result = [];
+        for( var prototype in this){
+            if(this.hasOwnProperty(prototype))  //是否是该对象自身的给定属性 ， 或者自有属性
+                result.push(prototype);
+        }
+        return result;
+    }
+
+    test.properties();
+    // ['x' , 'y' ] ;
+
+    //抽象成高阶函数
+    function forEachIns(obj, action){
+        for(var prototype in obj){
+            if(obj.hasOwnProperty(prototype)){
+                action(prototype, obj[prototype]);
+            }
+        }
+    }
+
+    //但是我们发现hasOwnProperty属性怎么办 ，调用obj.hasOwnProperty 将会失败 ， 我们可以这样做
+    function forEachIn(obj, action){
+        for(var prototype in obj){
+            if(Object.prototype.hasOwnProperty.call(obj, prototype)){
+                action(prototype, obj[prototype]);
+            }
+        }
+    }
+
+    //注 ： 还有一个 propertyIsEnumerable() , 作用跟 hasOwnProperty 几乎一样 ， 唯一不同就是可以过滤掉隐藏属性 ， 例如 toString() , __proto__
+    var obj = {foo : 'bar'};
+    Object.prototype.propertyIsEnumerable.call(obj, 'foo');  //true
+
+
+
+    //词典 ， 查阅此属性是否为该对象拥有；
+    function Dictionary(startValues){
+        this.values = startValues || '';
+    }
+
+    //添加key / value
+    Dictionary.prototype.store = function (name , values) {
+        this.values[name] = values;
+    };
+
+    //查阅key
+    Dictionary.prototype.lookup = function (name) {
+        return this.values[name]
+    };
+
+    Dictionary.prototype.contains = function (name) {
+        return Object.prototype.propertyIsEnumerable.call(this.values, name)
+    }
+
+    Dictionary.prototype.each = function (action) {
+        forEachIn(this.values , action);
+    }
+
+    var colors = new Dictionary({grover : 'blue'  , elmo :'gray' , bert : 'yellow'});
+    console.log(colors);  //values = {grover : 'blue'  , elmo :'gray' , bert : 'yellow'}
+    colors.contains('grover');
+    console.log(colors.contains('grover')) //true
+
+    colors.contains('constructor');
+    console.log(colors.contains('constructor')) //false
+
+    colors.store('ernie' , 'white');
+    console.log(colors);  ////values = {grover : 'blue'  , elmo :'gray' , bert : 'yellow' ,'ernie' : 'white'}
+
+    colors.each(function (name, color) {
+        console.log(name , 'is' , color);
+    });
+
+    //grover is blue
+    //elmo is gray
+    //bert is yellow
+    //ernie is white
+
+
+
+
+</script>
+</body>
+</html>

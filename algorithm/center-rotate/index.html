@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    #box{
+      width: 200px;
+      height: 200px;
+      border: 1px solid #ddd;
+      position: absolute;
+      left: 100px;
+      top: 100px;
+    }
+    #rotate {
+      width: 10px;
+      height: 10px;
+      position: absolute;
+      top: -30px;
+      left: 50%;
+      transform: translateX(-50%)
+    }
+  </style>
+</head>
+<body>
+
+
+  <div id="box">
+    <div id="rotate">口</div>
+  </div>
+  <script src="../utils/dom.js"></script>
+  <script src="../utils/triangleFn.js"></script>
+  <script>
+    function init() {
+      const data = {
+        angle: 0
+      }
+      const box = domUtils.$('#box')
+      const rotateBox = domUtils.$('#rotate')
+
+
+      function onRotate (deltaX, deltaY) {
+       
+      }
+
+      rotateBox.addEventListener('mousedown', (e) => {
+        const { clientX, clientY } = e
+
+        const rect = box.getBoundingClientRect()
+        const center = {
+          x: rect.left + rect.width / 2,
+          y: rect.top + rect.height / 2
+        }
+        const startVector = {
+          x: clientX - center.x,
+          y: clientY - center.y
+        }
+
+        let startAngle = data.angle
+
+        const onMove = (e) => {
+          e.stopImmediatePropagation()
+          if (e.stopPropagation) e.stopPropagation()
+          if (e.preventDefault) e.preventDefault()
+          const { clientX, clientY } = e
+          // const deltaX = (clientX - startX)
+          // const deltaY = (clientY - startY)
+          const rotateVector = {
+            x: clientX - center.x,
+            y: clientY - center.y
+          }
+
+          // let angle = Math.atan2(rotateVector.y, rotateVector.x) *  (180 / Math.PI) + 90
+          // angle = (angle + 360) % 360
+
+          let angle = getAngle(startVector, rotateVector)
+
+          angle = Math.round(angle + startAngle)
+          console.log('angle', angle);
+          
+          box.style.transform = 'rotate(' + angle + 'deg)'
+
+          data.angle = angle
+
+          // onRotate(e, deltaX, deltaY)
+          // startX = clientX
+          // startY = clientY
+        }
+        const onUp = (e) => {
+          document.removeEventListener('mousemove', onMove)
+          document.removeEventListener('mouseup', onUp)
+          // if (!this._isMouseDown) return
+          // this._isMouseDown = false
+          // this.onDragEnd && this.onDragEnd(e)
+        }
+        document.addEventListener('mousemove', onMove)
+        document.addEventListener('mouseup', onUp)
+      })      
+    }
+
+    
+    window.addEventListener('DOMContentLoaded', init, false)
+
+  </script>
+</body>
+</html>

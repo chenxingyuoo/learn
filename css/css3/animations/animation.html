@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>animatiion</title>
+	<meta charset="utf-8"/>
+	<style type="text/css">
+       .box{
+       	 width: 40px;
+       	 height: 40px;
+       	 background: red;
+       	 border-radius: 40px;
+       	 margin: 100px auto;
+         animation : fadOut 1.0s infinite ease-in-out;
+         -webkit-animation : fadOut 1.0s infinite ease-in-out;
+       }
+       @keyframes fadOut{
+         from{
+			 opacity:0;
+			 transform: scale(0,0)
+		 }
+         to{
+			 opacity:1;
+			 transform: scale(1,0)
+		 }
+       }
+       @-webkit-keyframes fadOut{
+         from{
+			 transform: scale(0,0)};
+         to{transform: scale(1,0),opacity:0};	 	
+       }
+	</style>
+</head>
+
+<body>
+<div class="box"></div>
+</body>
+</html>

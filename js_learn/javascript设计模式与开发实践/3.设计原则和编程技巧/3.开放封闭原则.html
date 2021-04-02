@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+
+
+<nav id="nav-wrap">
+    <div class="nav-item" data_type="text">添加文字</div>
+    <div class="nav-item" data_type="img">添加图片</div>
+    <div class="nav-item" data_type="video">添加视频</div>
+</nav>
+
+<script>
+    //过多的条件分之语句是违反开放 、封闭原则的一种常见原因
+
+    var makeSound = function (animal) {
+        if (animal instanceof Duck) {
+            console.log('嘎嘎嘎');
+        } else if (animal instanceof Chicken) {
+            console.log('咯咯咯');
+        } else if (animal instanceof Dog ) {
+            console.log( '汪汪汪' );
+        }
+    };
+
+    var Duck = function(){};
+    var Chicken = function(){};
+    var Dog = function(){}
+
+    makeSound( new Duck() );   //嘎嘎嘎
+    makeSound( new Chicken() ); //咯咯咯
+    makeSound( new Dog() ); //汪汪汪
+
+
+
+    //利用对象的多态性重构它们
+    var makeSound = function (animal){
+        animal.sound();
+    }
+
+    var Duck = function(){};
+    Duck.prototype.sound = function (){
+        console.log('嘎嘎嘎');
+    }
+
+    var Chicken = function(){};
+    Chicken.prototype.sound = function (){
+        console.log('咯咯咯');
+    }
+
+    var Dog = function(){};
+    Dog.prototype.sound = function (){
+        console.log('汪汪汪');
+    }
+
+    makeSound( new Duck() );   //嘎嘎嘎
+    makeSound( new Chicken() ); //咯咯咯
+    makeSound( new Dog() ); //汪汪汪
+
+
+    //过多的条件分之语句
+//    var navItems = document.querySelectorAll('.nav-item');
+//    navItems.forEach(function (item, index){
+//        item.addEventListener('click', function (){
+//            var dataType = this.getAttribute('data_type');
+//            if (dataType === 'text') {
+//                console.log('添加文字');
+//            } else if (dataType === 'img') {
+//                console.log('添加图片');
+//            } else if (dataType === 'video') {
+//                console.log('添加视频');
+//            }
+//        }, false);
+//    });
+
+
+//    var addGraphic = function (graphic){
+//        graphic.add(arguments);
+//    };
+//
+//    var Text = function (){};
+//    Text.prototype.add = function (dataType){
+//        if (dataType === 'text') {
+//            console.log('添加文字');
+//        }
+//    }
+//
+//    var Img = function (){};
+//    Img.prototype.add = function (dataType){
+//        if (dataType === 'img') {
+//            console.log('添加图片');
+//        }
+//    }
+//
+//    var Video = function (){};
+//    Video.prototype.add = function (dataType){
+//        if (dataType === 'video') {
+//            console.log('添加视频');
+//        }
+//    }
+//
+//
+//    addGraphic(new Text());
+//    addGraphic(new Img());
+//    addGraphic(new Video());
+
+
+    var Text = function (){
+        this.dataType = 'text';
+    };
+    Text.prototype.add = function (dataType){
+        console.log('添加文字');
+    }
+
+    var Img = function (){
+        this.dataType = 'img'
+    };
+    Img.prototype.add = function (dataType){
+        console.log('添加图片');
+    }
+
+    var Video = function (){
+        this.dataType = 'video'
+    };
+    Video.prototype.add = function (dataType){
+        console.log('添加视频');
+    }
+
+    //利用迭代器模式消除条件分之语句
+
+    //图文类
+    function Graphic(){
+        this.graphic = [];
+    }
+
+    //添加图文
+    Graphic.prototype.addGraphic = function (graphic){
+        this.graphic.push(graphic);
+    }
+
+    //执行图文
+    Graphic.prototype.actionGraphic = function (type){
+        if (typeof type !== 'string') {
+            throw Error('请确认 type 为字符串类型');
+        }
+        for (var i = 0, len = this.graphic.length; i < len; i++) {
+            //如果是这种类型 ， 则执行
+            if (this.graphic[i].dataType === type) {
+                return this.graphic[i].add();
+            }
+        }
+    };
+
+    //实例化图文类
+    var graphic = new Graphic();
+    graphic.addGraphic( new Text() );
+    graphic.addGraphic( new Img() );
+    graphic.addGraphic( new Video() );
+
+
+    var navItems = document.querySelectorAll('.nav-item');
+    navItems.forEach(function (item, index){
+        item.addEventListener('click', function (){
+            var dataType = this.getAttribute('data_type');
+
+            //利用迭代器模式消除条件分之语句
+            graphic.actionGraphic(dataType);
+        }, false);
+    });
+
+
+</script>
+
+</body>
+</html>

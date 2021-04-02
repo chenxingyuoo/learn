@@ -1,0 +1,5 @@
+D:\Html5Guide\Html5Guide\bin\Html5Guide.dll
+D:\Html5Guide\Html5Guide\bin\Html5Guide.pdb
+D:\Html5Guide\Html5Guide\obj\Debug\ResolveAssemblyReference.cache
+D:\Html5Guide\Html5Guide\obj\Debug\Html5Guide.dll
+D:\Html5Guide\Html5Guide\obj\Debug\Html5Guide.pdb

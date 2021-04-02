@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .box{
+            display: flex;
+            -webkit-display: flex;
+        }
+        .box div{
+            border: 1px solid #ddd;
+        }
+        .box .div1{
+            flex : 1;
+            -webkit-flex : 1;
+        }
+        .box .div2{
+            flex : 1;
+            -webkit-flex : 1;
+        }
+        .box .div3{
+            flex : 1;
+            -webkit-flex : 1;
+        }
+    </style>
+</head>
+<body>
+
+<script>
+    //海鸥程序
+
+    var Flock = function(n) {
+        this.seagulls = n;
+    };
+
+    Flock.prototype.conjoin = function(other) {
+        this.seagulls += other.seagulls;
+        return this;
+    };
+
+    Flock.prototype.breed = function(other) {
+        this.seagulls = this.seagulls * other.seagulls;
+        return this;
+    };
+
+    var flock_a = new Flock(4);
+    var flock_b = new Flock(2);
+    var flock_c = new Flock(0);
+
+    var result = flock_a.conjoin(flock_c).breed(flock_b).conjoin(flock_a.breed(flock_b)).seagulls;
+
+
+
+
+    //=> 32
+
+    //我相信没人会写这样糟糕透顶的程序。代码的内部可变状态非常难以追踪，而且，最终的答案还是错的！
+    // 正确答案是 16，但是因为 flock_a 在运算过程中永久地改变了，所以得出了错误的结果。这是 IT 部门混乱的表现，非常粗暴的计算方式。
+
+
+    var add = function(x, y) { return x + y };
+    var multiply = function(x, y) { return x * y };
+
+    var flock_a = 4;
+    var flock_b = 2;
+    var flock_c = 0;
+
+    var result = add(multiply(flock_b, add(flock_a, flock_c)), multiply(flock_a, flock_b));
+    console.log(result);
+
+    var x = 2;
+    var y = 4;
+    var z = 6;
+
+    // 结合律（assosiative）
+
+    add(add(x, y), z) == add(x, add(y, z));
+
+    // 交换律（commutative）
+
+    add(x, y) == add(y, x);
+
+    // 同一律（identity）
+
+    add(x, 0) == x;
+
+    // 分配律（distributive）
+
+    multiply(x, add(y,z)) == add(multiply(x, y), multiply(x, z));
+
+    // 应用同一律，去掉多余的加法操作（add(flock_a, flock_c) == flock_a）
+    var result = add(multiply(flock_b, add(flock_a, flock_c)), multiply(flock_a, flock_b));
+    console.log(result);
+
+
+    // 应用分配律（distributive）
+    multiply(x, add(y,z))
+
+
+</script>
+
+</body>
+</html>

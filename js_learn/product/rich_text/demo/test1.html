@@ -1,0 +1,99 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="textml; charset=utf-8" />
+    <title>无标题文档</title>
+    <style>
+    body{background:#FFF}
+    #div1{  width: 10px;height:10px;background:#ccc;position:absolute;bottom:0; right:0; }
+    #div1:hover{cursor:se-resize}
+    #div2{
+        width: 200px;
+        height: 100px;
+        background: #F00;
+        position: absolute;
+
+    }
+    #div2:hover{cursor:Move}
+
+    </style>
+
+
+<body>
+<div id="div2">
+    <div id="div1">
+    </div>
+</div>
+
+</body>
+<script>
+    window.onload=function day(){
+
+        move();
+        daorxiao();
+    }
+
+    function daorxiao()
+    {
+        var odiv=document.getElementById('div1');
+        var odiv2=document.getElementById('div2');
+        odiv.onmousedown=function(ev)
+        {
+            var oEvent=ev||event;
+            var disX=oEvent.clientX-odiv.offsetLeft;
+            var disY=oEvent.clientY-odiv.offsetTop;
+
+            document.onmousemove=function(ev)
+            {
+                var oEvent=ev||event;
+
+                odiv2.style.width=oEvent.clientX-disX+'px';
+                odiv2.style.height=oEvent.clientY-disY+'px';
+
+            };
+            document.onmouseup=function(ev)
+            {
+                document.onmousemove=null;
+                document.onmouseup=null;
+
+            };
+        };
+
+
+    }
+    function move()
+
+    {
+
+        var odiv=document.getElementById('div1');
+        var odiv2=document.getElementById('div2');
+
+
+
+        odiv2.onmousedown=function(ev){
+
+            var oEvent=ev||event;
+            var disX=oEvent.clientX-odiv2.offsetLeft;
+            var disY=oEvent.clientY-odiv2.offsetTop;
+
+
+            document.onmousemove=function(ev)
+            {
+                var oEvent=ev||event;
+                var l2=oEvent.clientX-disX;
+                var k2=oEvent.clientY-disY;
+                odiv2.style.left=l2+'px';
+                odiv2.style.top=k2+'px';
+            };
+            document.onmouseup=function(ev)
+            {
+                document.onmousemove=null;
+                document.onmouseup=null;
+            };
+
+        };
+
+    }
+</script>
+
+</html>

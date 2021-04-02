@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        .main *{
+            padding:0;
+            margin:0;
+            font-family:'Source Code Pro', Menlo, Consolas, Monaco, monospace;
+            box-sizing: content-box;
+            -webkit-box-sizing: content-box;
+        }
+        .main {
+            position: relative;
+            width: 680px;
+            margin: 0 auto;
+        }
+        .view {
+            width: 300px;
+            margin: 10px;
+            float: left;
+            border: 10px solid #fff;
+            overflow: hidden;
+            position: relative;
+            text-align: center;
+            -webkit-box-shadow: 1px 1px 2px #e6e6e6,-1px -1px 2px #e6e6e6;
+            -moz-box-shadow: 1px 1px 2px #e6e6e6,-1px -1px 2px #e6e6e6;
+            box-shadow: 1px 1px 2px #e6e6e6,-1px -1px 2px #e6e6e6;
+            cursor: default;
+        }
+        .view .mask{
+            width: 300px;
+            height: 200px;
+            position: absolute;
+            overflow: hidden;
+            top: 0;
+            left: 0;
+        }
+        .view img {
+            display: block;
+            position: relative;
+            max-width:100%;
+        }
+        .view h2 {
+            text-transform: uppercase;
+            color: #fff;
+            text-align: center;
+            position: relative;
+            font-size: 17px;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.8);
+            margin: 20px 0 0 0;
+        }
+        .view p {
+            font-size: 12px;
+            position: relative;
+            color: #fff;
+            padding: 10px 20px 20px;
+            text-align: left;
+        }
+        .view .link {
+            display: inline-block;
+            text-decoration: none;
+            padding: 7px 14px;
+            background: #000;
+            color: #fff;
+            text-transform: uppercase;
+            -webkit-box-shadow: 0 0 1px #000;
+            -moz-box-shadow: 0 0 1px #000;
+            box-shadow: 0 0 1px #000;
+            font-size: 14px;
+        }
+        .view .link:hover {
+            -webkit-box-shadow: 0 0 5px #000;
+            -moz-box-shadow: 0 0 5px #000;
+            box-shadow: 0 0 5px #000;
+        }
+        .view-tenth img {
+            -webkit-transform: scaleY(1);
+            -moz-transform: scaleY(1);
+            -o-transform: scaleY(1);
+            -ms-transform: scaleY(1);
+            transform: scaleY(1);
+            -webkit-transition: all 7s ease-in-out;
+            -moz-transition: all 7s ease-in-out;
+            -o-transition: all 7s ease-in-out;
+            -ms-transition: all 7s ease-in-out;
+            transition: all 7s ease-in-out;
+        }
+        .view-tenth .mask {
+            background-color: rgba(249, 179, 255, 0.3);
+            -webkit-transition: all 5s linear;
+            -moz-transition: all 5s linear;
+            -o-transition: all 5s linear;
+            -ms-transition: all 5s linear;
+            transition: all 5s linear;
+            -ms-filter: "progid: DXImageTransform.Microsoft.Alpha(Opacity=0)";
+            filter: alpha(opacity=0);
+            opacity: 0;
+        }
+        .view-tenth h2 {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+            background: transparent;
+            margin: 20px 40px 0px 40px;
+            -webkit-transform: scale(0);
+            -moz-transform: scale(0);
+            -o-transform: scale(0);
+            -ms-transform: scale(0);
+            transform: scale(0);
+            color: #333;
+            -webkit-transition: all 5s linear;
+            -moz-transition: all 5s linear;
+            -o-transition: all 5s linear;
+            -ms-transition: all 5s linear;
+            transition: all 5s linear;
+            -ms-filter: "progid: DXImageTransform.Microsoft.Alpha(Opacity=0)";
+            filter: alpha(opacity=0);
+            opacity: 0;
+        }
+        .view-tenth p {
+            color: #333;
+            -ms-filter: "progid: DXImageTransform.Microsoft.Alpha(Opacity=0)";
+            filter: alpha(opacity=0);
+            opacity: 0;
+            -webkit-transform: scale(0);
+            -moz-transform: scale(0);
+            -o-transform: scale(0);
+            -ms-transform: scale(0);
+            transform: scale(0);
+            -webkit-transition: all 5s linear;
+            -moz-transition: all 5s linear;
+            -o-transition: all 5s linear;
+            -ms-transition: all 5s linear;
+            transition: all 5s linear;
+        }
+        .view-tenth .link {
+            -ms-filter: "progid: DXImageTransform.Microsoft.Alpha(Opacity=0)";
+            filter: alpha(opacity=0);
+            opacity: 0;
+            -webkit-transform: scale(0);
+            -moz-transform: scale(0);
+            -o-transform: scale(0);
+            -ms-transform: scale(0);
+            transform: scale(0);
+            -webkit-transition: all 5s linear;
+            -moz-transition: all 5s linear;
+            -o-transition: all 5s linear;
+            -ms-transition: all 5s linear;
+            transition: all 5s linear;
+        }
+        .view-tenth:hover img {
+            -webkit-transform: scale(2);
+            -moz-transform: scale(2);
+            -o-transform: scale(2);
+            -ms-transform: scale(2);
+            transform: scale(2);
+            -ms-filter: "progid: DXImageTransform.Microsoft.Alpha(Opacity=0)";
+            filter: alpha(opacity=0);
+            opacity: 0;
+        }
+        .view-tenth:hover .mask {
+            -ms-filter: "progid: DXImageTransform.Microsoft.Alpha(Opacity=100)";
+            filter: alpha(opacity=100);
+            opacity: 1;
+        }
+        .view-tenth:hover h2,
+        .view-tenth:hover p,
+        .view-tenth:hover .link {
+            -webkit-transform: scale(1);
+            -moz-transform: scale(1);
+            -o-transform: scale(1);
+            -ms-transform: scale(1);
+            transform: scale(1);
+            -ms-filter: "progid: DXImageTransform.Microsoft.Alpha(Opacity=100)";
+            filter: alpha(opacity=100);
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+<div class="main">
+    <div class="view view-tenth">
+        <figure>
+            <div class="thumb"><img src="http://img1.imgtn.bdimg.com/it/u=801259110,2755395409&fm=206&gp=0.jpg" /></div>
+            <div class="mask">
+                <h2>Wonder Girls</h2>
+                <p>Wonder Girls一向以青春活力的形象展现在观众面前，先后在韩国和...</p>
+                <a href="#" class="link">查看全文</a>
+            </div>
+        </figure>
+    </div>
+    <div class="view view-tenth">
+        <figure>
+            <div class="thumb"><img src="http://img1.imgtn.bdimg.com/it/u=801259110,2755395409&fm=206&gp=0.jpg" /></div>
+            <div class="mask">
+                <h2>Wonder Girls</h2>
+                <p>Wonder Girls一向以青春活力的形象展现在观众面前，先后在韩国和...</p>
+                <a href="#" class="link">查看全文</a>
+            </div>
+        </figure>
+    </div>
+    <div class="view view-tenth">
+        <figure>
+            <div class="thumb"><img src="http://img1.imgtn.bdimg.com/it/u=801259110,2755395409&fm=206&gp=0.jpg" /></div>
+            <div class="mask">
+                <h2>Wonder Girls</h2>
+                <p>Wonder Girls一向以青春活力的形象展现在观众面前，先后在韩国和...</p>
+                <a href="#" class="link">查看全文</a>
+            </div>
+        </figure>
+    </div>
+    <div class="view view-tenth">
+        <figure>
+            <div class="thumb"><img src="http://img1.imgtn.bdimg.com/it/u=801259110,2755395409&fm=206&gp=0.jpg" /></div>
+            <div class="mask">
+                <h2>Wonder Girls</h2>
+                <p>Wonder Girls一向以青春活力的形象展现在观众面前，先后在韩国和...</p>
+                <a href="#" class="link">查看全文</a>
+            </div>
+        </figure>
+    </div>
+</div>
+</body>
+</html>

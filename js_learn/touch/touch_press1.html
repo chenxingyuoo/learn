@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no" charset="utf-8">
+</head>
+
+<body>
+
+<div id="longPress" class="longPress">3</div>
+<script>
+    var _longPress = document.querySelectorAll('.longPress');
+    var longPress = function(_longPress, fn) {
+        var timeout = undefined;
+        for(var i = 0;i<_longPress.length;i++){
+            _longPress[i].addEventListener('touchstart', function(event) {
+                timeout = setTimeout(fn.apply(this,_longPress), 800);  //长按时间超过800ms，则执行传入的方法
+            }, false);
+            _longPress[i].addEventListener('touchend', function(event) {
+                clearTimeout(timeout);  //长按时间少于800ms，不会执行传入的方法
+            }, false);
+        }
+    }
+
+    longPress(_longPress , function(el){
+        //do something...
+        console.log('111', el)
+    });
+</script>
+</body>
+</html>

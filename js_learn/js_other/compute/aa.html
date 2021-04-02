@@ -1,0 +1,115 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html" charset="utf-8">
+    <title>在线一元二次方程式计算器</title>
+</head>
+<body>
+<form name="fquad">
+    <p align="center">解二次方程式计算<br>
+    </p>
+    <table align="center">
+        <tbody>
+        <tr>
+            <td bgcolor="#990000">
+                <h2><font color="#ffffff"><input size="4" name="fa" type="text"> x<sup>2</sup>+ <input size="4"
+                                                                                                       name="fb"
+                                                                                                       type="text"> x +
+                    <input size="4" name="fc" type="text"> = 0 <input onclick="checkQuad()" type="button" value="解题">
+                    <input type="reset" value="重置"> </font></h2>
+
+                <p align="center"><font color="#ffffff" face="Arial"><b>一元二次方程的解法</b></font></p>
+            </td>
+        </tr>
+        <tr>
+            <td bgcolor="#990000">
+                <h2><font color="#ffffff">x<sub><a style="text-decoration: none"><font
+                        color="#ffffff">1</font></a></sub>=<input size="45" name="x1" type="text"> <br>
+                    x<sub>2</sub>=<input size="45" name="x2" type="text"> </font></h2>
+            </td>
+        </tr>
+        <tr>
+
+        </tr>
+        </tbody>
+    </table>
+</form>
+<p align="center">Made by CRoot</p>
+<script language="JavaScript">
+    <!--
+    var rootparti;
+    var rootpart;
+    var det;
+    var rootparti1;
+    var rootparti2;
+    var a;
+    var b;
+    var c;
+    var x1;
+    var x2;
+    var i = "i";
+    function checkQuad() {
+        var a = document.fquad.fa.value;
+        var b = document.fquad.fb.value;
+        var c = document.fquad.fc.value;
+        if (a == 0 && c != 0) {
+            x1 = -c / b;
+            x2 = "Not a quadratic equation, but here is your answer for x";
+            document.fquad.x1.value = x1;
+            document.fquad.x2.value = x2;
+        }
+        else if (a == "" && c != 0) {
+            x1 = -c / b;
+            x2 = "Not a quadratic equation";
+            document.fquad.x1.value = x1;
+            document.fquad.x2.value = x2;
+        }
+        else {
+            quad();
+        }
+    }
+    function quad() {
+        var a = document.fquad.fa.value;
+        var b = document.fquad.fb.value;
+        var c = document.fquad.fc.value;
+        det = Math.pow(b, 2) - 4 * a * c;
+        rootpart = Math.sqrt(det) / (2 * a);
+        rootparti = (Math.sqrt(-det) / (2 * a)) + i;
+        if (parseFloat(rootparti) < 0) {
+            rootparti1 = rootparti;
+            rootparti2 = (-1 * parseFloat(rootparti)) + i;
+        }
+        else {
+            rootparti1 = (-1 * parseFloat(rootparti)) + i;
+            rootparti2 = rootparti;
+        }
+        if (rootparti1 == "1i") {
+            rootparti1 = i;
+            rootparti2 = "-i";
+        }
+        else if (rootparti1 == "-1i") {
+            rootparti1 = "-i";
+            rootparti2 = i;
+        }
+        if (det == 0) {
+            x1 = x2 = -b / (2 * a);
+        }
+        else if (det > 0) {
+            x1 = (-b + Math.sqrt(det)) / (2 * a);
+            x2 = (-b - Math.sqrt(det)) / (2 * a);
+        }
+        else if ((-b / (2 * a)) == 0) {
+            x1 = rootparti1;
+            x2 = rootparti2;
+        }
+        else {
+            x1 = (-b / (2 * a) + " + " + rootparti1);
+            x2 = (-b / (2 * a) + " + " + rootparti2);
+        }
+        document.fquad.x1.value = x1;
+        document.fquad.x2.value = x2;
+    }
+    // will solve for complex numbers
+    //   -->
+</script>
+</body>
+</html>

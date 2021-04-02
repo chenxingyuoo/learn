@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>姨妈家里的猫</title>
+</head>
+
+<body>
+<script>
+
+    /*var mailArchive = [
+        'Dear nephew,...(mail number 1)',
+        '(mail number 2)' ,
+        '(mail number 3)' ,
+        '(mail number 4)'
+    ]
+
+    for(var i = 0 ;i<mailArchive.length; i++){
+        var email = mailArchive[i]
+    }
+
+    //找出相关段落
+    var paragraph = 'born 12-13-2012 (mother spot): White Fang';
+    console.log(paragraph.slice(0,4) == 'born') //true
+    //封装一个函数实现
+    function startWith(str , pattern){
+        return str.slice(0, pattern.length) == pattern;
+    }
+    startWith(paragraph, 'born');
+    console.log(startWith(paragraph, 'born')); //true
+
+
+    //提取猫的名字
+    function catName(paragraph){
+        //冒号后面的内容，用逗号切割
+        var clone = paragraph.indexOf(':');
+        return paragraph.slice(clone + 2).split(',');
+    }
+
+    catName('born 12/09/2016 (mother Yellow Bess): Doctor Hobbles the 2nd, Noog');
+    console.log(catName('born 12/09/2016 (mother Yellow Bess): Doctor Hobbles the 2nd,Noog')) //["Doctor Hobbles the 2nd", "Noog"]
+
+    */
+
+
+
+    //邮件字符串数字
+    var ARCHIVE = [
+        'born 12-13-2012 (mother spot): White Fang',
+        'born 12/09/2016 (mother Yellow Bess): Doctor Hobbles the 2nd,Noog',
+        'died 12/09/2016 (mother Yellow Bess): storage',
+        'died 12/09/2016 (mother Yellow Bess): Spot'
+    ];
+
+    //封装函数的好处 ， livingCat在函数中是局部变量 ， 而不是全局变量 ， 因此该函数只有在函数运行时才存在
+    function findLivingCat(){
+        //活着的猫集合 ， 默认有一只
+        var livingCat = {'Spot':true};
+
+        //检测每只猫是否活着 ， 取出它们的名字 ， 做不同处理
+        function handlePararaph(paragraph){
+            if(startWith(paragraph,'born')){
+                var cat_names = catName(paragraph);
+                addToset(livingCat, cat_names)
+                /*for (var name = 0; name < cat_names.length; name++) {
+                 var obj = cat_names[name];
+                 livingCat[obj] = true;
+                 }*/
+            }else if(startWith(paragraph,'died')){
+                var cat_names = catName(paragraph);
+                removeSet(livingCat, cat_names)
+                /*for (var name = 0; name < cat_names.length; name++) {
+                 var obj = cat_names[name];
+                 delete livingCat[obj];
+
+                 }*/
+            }
+        }
+
+        for (var mail = 0; mail < ARCHIVE.length; mail++) {
+            var paragraphs = ARCHIVE[mail].split('\n');
+            console.log(paragraphs)
+            for (var i = 0; i < paragraphs.length; i++) {
+                var paragraph = paragraphs[i];
+                handlePararaph(paragraph)
+            }
+        }
+
+
+        //判断在这个集合 ， 就是活着的
+        if('Spot' in livingCat){
+            alert('born')
+        }else{
+            alert('died')
+        }
+
+        //列举出所有活着的猫集合
+        for (var  i in livingCat) {
+            var obj = livingCat[i];
+            console.log(obj)
+
+        }
+
+        return livingCat;
+    }
+
+    //添加到这个集合
+    function addToset(sets, values){
+        for (var i = 0; i < values.length; i++) {
+            var name = values[i];
+            sets[name] = true;
+        }
+    }
+
+    //从这个集合删除
+    function removeSet(sets, values){
+        for (var i = 0; i < values.length; i++) {
+            var name = values[i];
+            delete sets[name];
+        }
+    }
+
+
+    //封装一个函数找出 开头是 'born' 或者是 'died' 的邮件
+    function startWith(str , pattern){
+        return str.slice(0, pattern.length) == pattern;
+    }
+
+    //提取猫的名字
+    function catName(paragraph){
+        //冒号后面的内容，用逗号切割
+        var clone = paragraph.indexOf(':');
+        return paragraph.slice(clone + 2).split(',');
+    }
+
+
+
+
+    //提取日期
+    /*function extractDate(paragraph){
+        function numberAt(start, length){
+            return Number(paragraph.slice(start, start+length))
+        }
+
+        return new Date(numberAt(11,4), numberAt(8, 2) - 1 ,numberAt(5, 2));
+    }*/
+
+    //正则提取日期
+    function extractDate(string){
+
+        var found = string.match(/\b(\d\d?)\/|-(\d\d?)\/|-(\d{4})\b/);
+        if(found == null){
+            throw new Error('no date found in...')
+        }
+        return new Date(Number(found[3]), Number(found[2] - 1) ,  Number(found[1]))
+    }
+
+    console.log(extractDate('born 12-13-2012 (mother spot): White Fang'));
+
+
+    //收集更多信息
+    function catRecord(name, birthdate, mother){
+        return {name : name, birthdate : birthdate, mother : mother}
+    }
+
+    function addCats(sets, name, birthdate, mother){
+        for (var i = 0; i < name.length; i++) {
+            sets[name[i]] = catRecord(name[i], birthdate, mother);
+        }
+    }
+
+    function deadCats(sets, name, deathdate){
+        for (var i = 0; i < name.length; i++) {
+            sets[name[i]] = deathdate;
+        }
+    }
+
+    //提取猫母亲的名字
+    function extractMother(paragraph){
+        var start = paragraph.indexOf('mother ') + ('mother '.length);
+        var end = paragraph.indexOf(')');
+        return paragraph.slice(start, end)
+    }
+    console.log(extractMother('born 12-13-2012 (mother spot): White Fang'));
+
+
+    //计算猫的新算法
+    function findCats(){
+        //活着的猫集合 ， 默认有一只
+        var cats = {'Spot': catRecord('spot', new Date(2016,2,5), 'undkas') }
+
+        function handlePararaph(paragraph){
+            var cat_names = catName(paragraph);
+            var times = extractDate(paragraph);
+            var mother = extractMother(paragraph);
+
+            if(startWith(paragraph,'born')){
+                addCats(cats, cat_names, times, mother);
+            }else if(startWith(paragraph,'died')){
+                deadCats(cats, cat_names, times)
+
+            }
+        }
+
+        for (var mail = 0; mail < ARCHIVE.length; mail++) {
+            var paragraphs = ARCHIVE[mail].split('\n');
+            for (var i = 0; i < paragraphs.length; i++) {
+                var paragraph = paragraphs[i];
+                handlePararaph(paragraph)
+            }
+        }
+
+        return cats
+
+    }
+
+    console.log(findCats());
+
+</script>
+</body>
+</html>

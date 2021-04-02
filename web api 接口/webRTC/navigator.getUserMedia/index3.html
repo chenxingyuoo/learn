@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<audio src="" autoplay></audio>
+
+<script>
+    window.AudioContext = window.AudioContext ||
+            window.webkitAudioContext;
+
+    var context = new AudioContext();
+
+    var errorCallback = function (){
+        console.log('errorCallback');
+    }
+
+    navigator.getUserMedia({audio: true}, function(stream) {
+        var microphone = context.createMediaStreamSource(stream);
+        var filter = context.createBiquadFilter();
+
+        document.querySelector('audio').src = window.URL.createObjectURL(stream);
+
+        // microphone -> filter -> destination.
+        microphone.connect(filter);
+        filter.connect(context.destination);
+    }, errorCallback);
+</script>
+
+</body>
+</html>

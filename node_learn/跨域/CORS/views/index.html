@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+
+<div class="cors">发送cors请求</div>
+
+<script>
+
+    document.addEventListener('DOMContentLoaded', function (){
+        document.querySelector('.cors').addEventListener('click', function () {
+            var xhr = new XMLHttpRequest();
+            xhr.onload = function(data){
+                var _data = JSON.parse(data.target.responseText);
+                for(var key in _data){
+                    console.log('key: ' + key +' value: ' + _data[key]);
+                }
+            };
+            xhr.open('POST','http://127.0.0.1:3000/cors',true);
+            xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
+            xhr.send();
+        }, false);
+    }, false)
+
+</script>
+
+</body>
+</html>

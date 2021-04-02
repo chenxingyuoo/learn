@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Object.isSealed 函数</title>
+</head>
+
+<body>
+<script>
+    //如果无法在对象中修改现有属性的特性，且无法向对象添加新属性，则返回 true。
+
+    /*返回值
+    如果满足下面两个条件，则为 true：
+    对象是不可扩展的，这表示无法向对象添加新属性。
+    configurable 特性对于所有现有属性为 false。
+    在该对象不具有任何属性的情况下，如果该对象是不可扩展的，则此函数返回 true。*/
+
+    // Create an object that has two properties.
+    var obj = { pasta: "spaghetti", length: 10 };
+
+    // Seal the object, and verify that it is sealed.
+    Object.seal(obj);
+    document.write(Object.isSealed(obj));
+    document.write("<br/>");
+
+    // Try to add a new property, and then verify that it is not added.
+    obj.newProp = 50;
+    document.write(obj.newProp); //undefined
+    document.write("<br/>");
+
+    // Try to delete a property, and then verify that it is still present.
+    delete obj.length;
+    document.write(obj.length); //10
+
+    // Output:
+    // true
+    // undefined
+    // 10
+
+
+    //该Object.isSealed（）方法确定某个对象是密封的。
+    // Objects aren't sealed by default.
+    var empty = {};
+    Object.isSealed(empty); // === false
+
+    // If you make an empty object non-extensible, it is vacuously sealed.
+    Object.preventExtensions(empty);
+    Object.isSealed(empty); // === true
+
+    // The same is not true of a non-empty object, unless its properties are all non-configurable.
+    var hasProp = { fee: 'fie foe fum' };
+    Object.preventExtensions(hasProp);
+    Object.isSealed(hasProp); // === false
+
+    // But make them all non-configurable and the object becomes sealed.
+    Object.defineProperty(hasProp, 'fee', { configurable: false });
+    Object.isSealed(hasProp); // === true
+
+    // The easiest way to seal an object, of course, is Object.seal.
+    var sealed = {};
+    Object.seal(sealed);
+    Object.isSealed(sealed); // === true
+
+    // A sealed object is, by definition, non-extensible.
+    Object.isExtensible(sealed); // === false
+
+    // A sealed object might be frozen, but it doesn't have to be.
+    Object.isFrozen(sealed); // === true (all properties also non-writable)
+
+    var s2 = Object.seal({ p: 3 });
+    Object.isFrozen(s2); // === false ('p' is still writable)
+
+    var s3 = Object.seal({ get p() { return 0; } });
+    Object.isFrozen(s3); // === true (only configurability matters for accessor properties)
+
+</script>
+</body>
+</html>

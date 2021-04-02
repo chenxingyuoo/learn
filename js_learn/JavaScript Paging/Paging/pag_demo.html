@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>分页</title>
+</head>
+
+<body>
+<!--应用举例：-->
+<table width="100%" cellpadding="0" cellspacing="0" border="1" style="padding:2px " bordercolorlight="#3B4D61" bordercolordark="#ffffff"  id='tableList'>
+    <thead>
+    <tr bgcolor="#415A76" class="TitleTr">
+        <td align="center" class="white_text" nowrap>公务卡号</td>
+        <td align="center" class="white_text"  nowrap>持卡人</td>
+        <td align="center" class="white_text" nowrap>状态</td>
+    </tr>
+    <thead>
+    <tbody id="group_one">
+
+    </tbody>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0" border="1" style="padding:2px ">
+    <tr>
+        <td colspan="3" align="center">
+            总共：<span id="total"></span>条记录&nbsp;每页显示100条&nbsp;
+            <a href="#" onclick="page.firstPage();">首页</a>
+            <a href="#" onclick="page.prevPage();">上一页</a>
+            <a href="#" onclick="page.nextPage();">下一页</a>
+            <a href="#" onclick="page.lastPage();">尾页</a>
+            <span id="pageindex"></span>
+        </td>
+    </tr>
+</table>
+
+<script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.js"></script>
+<script>
+    /* js分页类
+     * @param iAbsolute 每页显示记录数
+     * @param sTableId 分页表格属性ID值，为String
+     * @param sTBodyId 分页表格TBODY的属性ID值,为String,此项为要分页的主体内容
+     */
+    //页面初始化
+
+
+    var page;
+
+    function init() {
+
+        var html = '';
+        for (var i = 0; i < 1000; i++) {
+
+            html += '<tr>' +
+                    '<td align="left" nowrap>'+i+'</td>'+
+                    '<td align="left" nowrap>'+i+'</td>'+
+                    '<td align="center" nowrap>'+i+'</td>' +
+                    '</tr>';
+        }
+
+        $('#group_one').append(html);
+        page = new Page(100,'tableList','group_one',1);
+    }
+
+    function Page(iAbsolute,sTableId,sTBodyId,pageIndex){
+        this.absolute = iAbsolute;
+        this.tableId = sTableId;
+        this.tBodyId = sTBodyId;
+        this.rowCount = 0;//记录数
+        this.pageCount = 0;//页数
+        this.pageIndex = pageIndex - 1 || 0;//页索引
+        this._oTable = null;//表格引用
+        this._oTBody = null;//要分页内容
+        this._dataRows = 0;//记录行引用
+        this._oldTBody = null;
+        this._init(); //初始化;
+    }
+
+
+
+    Page.prototype._init = function () {
+
+        this._oTable = document.getElementById(this.tableId);//获取table引用
+        this._oTBody = document.getElementById(this.tBodyId);//获取tBody引用
+        this._dataRows = this._oTBody.rows;
+        this.rowCount = this._dataRows.length; //行数
+        document.getElementById('total').innerHTML = this.rowCount;
+
+        try {
+            this.absolute = (this.absolute <= 0 || this.absolute > this.rowCount) ? this.rowCount : this.absolute;
+            this.pageCount = parseInt( this.rowCount % this.absolute == 0  ? this.rowCount / this.absolute : this.rowCount/this.absolute + 1 );
+        }catch(e){}
+        //更新table行数
+        this._updateTableRows();
+    }
+
+
+    //下一页
+    Page.prototype.nextPage = function () {
+        if(this.pageIndex + 1 < this.pageCount){
+            this.pageIndex += 1;
+            this._updateTableRows();
+        }
+    };
+
+    //上一页
+    Page.prototype.prevPage = function () {
+        if(this.pageIndex >= 1 ){
+            this.pageIndex -= 1;
+            this._updateTableRows();
+        }
+    };
+
+
+    //第一页
+    Page.prototype.firstPage = function () {
+        if(this.pageIndex != 0) {
+            this.pageIndex = 0;
+            this._updateTableRows();
+        }
+    };
+
+    //尾页
+    Page.prototype.lastPage = function () {
+        //
+        if(this.pageIndex+1 != this.pageCount) {
+            this.pageIndex = this.pageCount - 1;
+            this._updateTableRows();
+        }
+
+    }
+
+    //执行分页时，更新显示表格内容
+    Page.prototype._updateTableRows = function () {
+        //当前行数
+        var curRowCount = this.absolute * this.pageIndex;  //第二页就要从第100行开始
+        //记录超出的行数 ， 超出就弹出alert提示
+        var moreRow =  this.absolute + curRowCount > this.rowCount ? this.absolute + curRowCount - this.rowCount : 0;
+
+
+        //克隆所有的行
+        var tempRows = this._cloneRows();
+
+        //删除 原来 的 tbody。
+        var removedTBody = this._oTable.removeChild(this._oTBody);
+
+        //创建tbody
+        var newTBody = document.createElement("TBODY");
+        newTBody.setAttribute("id", this.tBodyId);
+
+        var i = curRowCount;
+        // 超出的行数弹出alert， 否则添加克隆的行
+        if(!(i < this.absolute + curRowCount - moreRow)){
+            alert('没有更多数据了')
+        }else{
+            //添加克隆的行
+            for (; i < this.absolute + curRowCount - moreRow ; i++) {
+                newTBody.appendChild(tempRows[i]);
+            }
+        }
+
+        //向页面tbody添加表格
+        this._oTable.appendChild(newTBody);
+
+        /*
+         this.dataRows为this.oTBody的一个引用，
+         移除this.oTBody那么this.dataRows引用将销失,
+         code:this.dataRows = tempRows;恢复原始操作行集合.
+         */
+        this._dataRows = tempRows;
+        this._oTBody = newTBody;
+
+    }
+
+
+    //克隆原始操作行集合
+    Page.prototype._cloneRows = function() {
+        var tempRows = [];
+        //this._dataRows保存了所有的行（tr）
+        for(var i=0; i<this._dataRows.length; i++) {
+            tempRows[i] = this._dataRows[i].cloneNode(true); //克隆所有的tr
+        }
+        return tempRows;
+    };
+
+
+    init();
+</script>
+</body>
+</html>

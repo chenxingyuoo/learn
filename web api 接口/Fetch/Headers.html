@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+
+<script>
+
+    //使用 Headers 的接口，你可以通过 Headers() 构造函数来创建一个你自己的 headers 对象。一个 headers 对象是一个简单的多名值对：
+
+    var content = "Hello World";
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "text/plain");
+    myHeaders.append("Content-Length", content.length.toString());
+    myHeaders.append("X-Custom-Header", "ProcessThisImmediately");
+
+
+    myHeaders = new Headers({
+        "Content-Type": "text/plain",
+        "Content-Length": content.length.toString(),
+        "X-Custom-Header": "ProcessThisImmediately",
+    });
+
+    //它的内容可以被获取：
+    console.log(myHeaders.has("Content-Type")); // true
+    console.log(myHeaders.has("Set-Cookie")); // false
+    myHeaders.set("Content-Type", "text/html");
+    myHeaders.append("X-Custom-Header", "AnotherValue");
+
+    console.log(myHeaders.get("Content-Length")); // 11
+    console.log(myHeaders.getAll("X-Custom-Header")); // ["ProcessThisImmediately", "AnotherValue"]
+
+    myHeaders.delete("X-Custom-Header");
+    console.log(myHeaders.getAll("X-Custom-Header")); // [ ]
+
+
+    var myResponse = Response.error();
+    try {
+        myResponse.headers.set("Origin", "http://mybank.com");
+    } catch(e) {
+        console.log("Cannot pretend to be a bank!");
+    }
+
+
+    //最佳实践是在使用之前检查 content type 是否正确，比如：
+    fetch('./data.json').then(function(response) {
+        if(response.headers.get("content-type") === "application/json") {
+            return response.json().then(function(json) {
+                // process your JSON further
+                console.log(json);
+            });
+        } else {
+            console.log("Oops, we haven't got JSON!");
+        }
+    });
+
+</script>
+
+</body>
+</html>

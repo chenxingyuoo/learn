@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+
+<script>
+    //观察者模式（Observer mode）指的是函数自动观察数据对象，一旦对象有变化，函数就会自动执行。
+    const queuedObservers = new Set();
+
+    const observe = fn => {
+        debugger;
+        return queuedObservers.add(fn);
+    }
+    const observable = obj => {
+        debugger
+        return new Proxy(obj, {set});
+    }
+
+    function set(target, key, value, receiver) {
+        debugger;
+        const result = Reflect.set(target, key, value, receiver);
+        queuedObservers.forEach(observer => {
+            observer()
+        });
+        return result;
+    }
+
+
+    const person = observable({
+        name: '张三',
+        age: 20
+    });
+
+    function print() {
+        debugger;
+        console.log(`${person.name}, ${person.age}`)
+    }
+
+    observe(print);
+    person.name = '李四';
+    // 输出
+    // 李四, 20
+
+
+    //上面代码中，先定义了一个Set集合，所有观察者函数都放进这个集合。然后，observable函数返回原始对象的代理，拦截赋值操作。拦截函数set之中，会自动执行所有观察者。
+
+
+</script>
+
+</body>
+</html>

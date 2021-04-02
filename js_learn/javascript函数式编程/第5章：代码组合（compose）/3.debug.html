@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+
+<script src="../lodash.js"></script>
+<script>
+
+    //组合的一个常见错误是，在没有局部调用之前，就组合类似 map 这样接受两个参数的函数。
+
+
+    //函数组合
+    var compose = function(f,g) {
+        debugger;
+        return function(x) {
+            debugger;
+            return f(g(x));
+        };
+    };
+
+
+    var reduce = _.curry(function(f, x, xs){
+        return xs.reduce(f, x);
+    });
+
+    var map = _.curry(function(f, xs){
+        debugger;
+        return xs.map(f);
+    });
+
+    var replace = _.curry(function(reg, sub, s){
+        return s.replace(reg, sub);
+    });
+
+
+    var reverse = reduce(function(acc, x){
+        return [x].concat(acc);
+    }, []);
+
+    var exclaim = function(x) { return x + '!'; };
+
+    var toUpperCase = function(x) {
+        debugger;
+        return x.toUpperCase();
+    };
+
+    var toLower = function(x) {
+        debugger;
+        return x.toLowerCase();
+    };
+
+    var head = function(x) {
+        return x[0];
+    };
+
+
+//    var angry = compose(exclaim, toUpperCase);
+
+    // 错误做法：我们传给了 `angry` 一个数组，根本不知道最后传给 `map` 的是什么东西。
+//    var latin = compose(map, angry, reverse);
+
+//    latin(["frog", "eyes"]);
+    // error
+
+
+    // 正确做法：每个函数都接受一个实际参数。
+//    var latin = compose(map(angry), reverse);
+
+//    latin(["frog", "eyes"]);
+    // ["EYES!", "FROG!"])
+
+
+    //如果在 debug 组合的时候遇到了困难，那么可以使用下面这个实用的，但是不纯的 trace 函数来追踪代码的执行情况。
+
+    var trace = _.curry(function(tag, x){
+        console.log(tag, x);
+        return x;
+    });
+
+    var join = _.curry(function (what, str){
+        debugger;
+        return str.join(what);
+    });
+
+    var split = _.curry(function (what, str){
+        debugger;
+        return str.split(what);
+    });
+
+//    var dasherize = compose(join('-'), compose(toLower, split(' ')), replace(/\s{2,}/ig, ' '));
+
+//    dasherize('The world is a vampire');
+    // TypeError: Cannot read property 'apply' of undefined
+
+
+    var dasherize = compose(join('-'), compose(map(toLower), split(' ')));
+
+    console.log(dasherize('The world is a vampire'));
+
+    //the-world-is-a-vampire
+
+</script>
+
+</body>
+</html>

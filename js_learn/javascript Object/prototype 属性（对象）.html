@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>prototype 属性（对象）</title>
+</head>
+
+<body>
+<script>
+    function array_max( ){
+        var i, max = this[0];
+        for (i = 1; i < this.length; i++)
+        {
+            if (max < this[i])
+                max = this[i];
+        }
+        return max;
+    }
+    Array.prototype.max = array_max;
+    var myArray = new Array(7, 1, 3, 11, 25, 9);
+    document.write(myArray.max());
+
+    // Output:
+    // 25
+
+    //所有内部 JavaScript 对象都有一个只读的 prototype 属性。  可将属性和方法添加到原型中，但不能为对象分配其他原型。  但是，可以向用户定义的对象分配新的原型。
+</script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Object.create 函数</title>
+</head>
+
+<body>
+<script>
+
+    var Fn = function () {
+
+    };
+    Fn.prototype.sayHello = function (name) {
+        alert('hello ' + name )
+    };
+
+
+    //创建一个具有指定原型且可选择性地包含指定属性的对象。
+    var newObj = Object.create(Fn.prototype, {
+        size: {
+            value: "large",
+            enumerable: true
+        },
+        shape: {
+            value: "round",
+            enumerable: true
+        }
+    });
+
+    document.write(newObj.size + "<br/>");
+    document.write(newObj.shape + "<br/>");
+    document.write(Object.getPrototypeOf(newObj));
+
+    newObj.sayHello('I am newObj');
+
+    // Output:
+    // large
+    // round
+    // null
+</script>
+</body>
+</html>

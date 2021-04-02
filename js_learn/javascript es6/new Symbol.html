@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>new Symbol</title>
+</head>
+<body>
+<script>
+    var sym1 = Symbol();
+    var sym2 = Symbol("foo");
+    var sym3 = Symbol("foo");
+
+
+    Symbol("foo") === Symbol("foo"); // false
+
+//    var sym = new Symbol(); // TypeError
+
+    debugger
+    var sym = Symbol("foo");
+    typeof sym;     // "symbol"
+    var symObj = Object(sym);
+    typeof symObj;  // "object"
+
+    typeof Symbol() === 'symbol'
+    typeof Symbol('foo') === 'symbol'
+    typeof Symbol.iterator === 'symbol'
+
+    //Symbols and for...in iteration
+
+    //符号是不可枚举在...的迭代。此外，Object.getOwnPropertyNames（）将不会返回符号对象的属性，
+    // 但是，你可以使用Object.getOwnPropertySymbols（）来获取这些
+
+    var obj = {};
+
+    obj[Symbol("a")] = "a";
+    obj[Symbol.for("b")] = "b";
+    obj["c"] = "c";
+    obj.d = "d";
+
+    for (var i in obj) {
+        console.log(i); // logs "c" and "d"
+    }
+
+    debugger
+
+    //Symbols and JSON.stringify()
+    //符号键控属性将透过JSON.stringify时完全忽略
+    JSON.stringify({[Symbol("foo")]: "foo"});
+    // '{}'
+
+    //符号包装对象的属性键
+    //当一个符号包装对象被用作属性键，这个对象将被强制转换成其包装标志
+    var sym = Symbol("foo");
+    var obj = {[sym]: 1};
+    obj[sym];            // 1
+    obj[Object(sym)];    // still 1
+
+
+</script>
+</body>
+</html>

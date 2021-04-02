@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        #box{
+            width: 100px;
+            height: 100px;
+            background-color: aqua;
+        }
+    </style>
+</head>
+
+<body>
+
+<div id="box"></div>
+
+<script src="js/tween_learn.js"></script>
+<script>
+    window.onload = () => {
+      let box = document.querySelector('#box');
+
+      let tween = new TWEEN.Tween({x : 0})
+        .to({x : 200},2000)
+        .onUpdate((e) => {
+          box.style.webkitTransform = 'translateX('+ e.x +'px)';
+        });
+
+      tween.start();
+
+      const animate = (time) => {
+        requestAnimationFrame(animate);
+        TWEEN.update(time);
+      };
+
+      animate()
+
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+
+<script>
+    window.ondeviceorientation =  function(e)
+    {
+        var ang;
+        var o = window.orientation;  //获取设备方向
+        if(o == 90){
+            ang = e.beta;  //设备横向1
+        }
+        else if(o == -90){
+            ang = -e.beta;  //设备横向2
+        }
+        else if(o == 0){
+            ang = e.gamma;    //设备纵向
+        }
+
+        if(ang > 5)
+        {
+            keyState[Q.KEY.RIGHT] = true;
+        }
+        else if(ang < -5)
+        {
+            keyState[Q.KEY.LEFT] = true;
+        }
+        else
+        {
+            keyState[Q.KEY.RIGHT] = false;
+            keyState[Q.KEY.LEFT] = false;
+        }
+    }
+</script>
+
+</body>
+</html>

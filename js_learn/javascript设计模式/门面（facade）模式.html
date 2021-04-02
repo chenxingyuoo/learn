@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>门面（facade）模式</title>
+</head>
+
+<body style="height: 1000px;">
+<script>
+    //门面（facade）模式：门面模式是几乎所有JavaScript库的核心原则
+    //子系统中的一组接口提供一个一致的界面，门面模式定义了一个高层接口，这个接口使得这一子系统更加容易使用，简单的说这是一种组织性的模式，它可以用来修改类和对象的接口，使其更便于使用。
+
+    //门面模式的两个作用：1.简化类的接口；2.消除类与使用它的客户代码之间的耦合。
+
+    //门面模式的使用目的就是图方面。
+
+    //想象一下计算机桌面上的那些快捷方式图标，它们就是在扮演一个把用户引导至某个地方的接口的角色，每次操作都是间接的执行一些幕后的命令。
+
+    //你在看这篇的博客的时候我就假设你已经有JavaScript的使用经验了，那么你一定写过或者看过这样的代码：
+    var addEvent = function (el, type, fn) {
+        if (window.addEventListener) {
+            el.addEventListener(type, fn);
+        } else if (window.attachEvent) {
+            el.attachEvent('on' + type, fn);
+        } else {
+            el['on' + type] = fn;
+        }
+    }
+
+    //　　这个就是一个JavaScript中常见的事件监听器函数，这个函数就是一个基本的门面，有了它，就有了为DOM节点添加事件监听器的简便方法。
+
+    // 现在要说门面模式的精华部分了，为什么说JavaScript库几乎都会用这种模式类。假如现在要设计一个库，那么最好把其中所有的工具元素放在一起，这样更好用，访问起来更简便。看代码：
+    //_model.util是一个命名空间
+    var _myModel = {};
+    _myModel.util = {};
+    _myModel.util.Event = {
+        getEvent: function (e) {
+            return e || window.event;
+        },
+        getTarget: function (e) {
+            return e.target || e.srcElement;
+        },
+        preventDefault: function (e) {
+            if (e.preventDefault) {
+                e.preventDefault();
+            } else {
+                e.returnValue = false;
+            }
+        }
+    };
+
+
+    //事件工具大概就是这么一个套路，然后结合addEvent函数使用
+    addEvent(document.querySelector('body'), 'click', function (e) {
+
+        alert(_myModel.util.Event.getTarget(e));
+    });
+
+    //在处理游览器差异问题时最好的解决办法就是把这些差异抽取的门面方法中，这样可以提供一个更一致的接口，addEvent函数就是一个例子。
+
+</script>
+</body>
+</html>

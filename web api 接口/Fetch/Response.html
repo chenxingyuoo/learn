@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+
+<script>
+    //如上述, Response 实例是在fentch()处理完promises之后返回的.
+    //它的实例也可用通过JavaScript来创建, 但只有在ServiceWorkers中才真正有用,当使用respondWith()方法并提供了一个自定义的response来接受request时:
+
+
+
+    var myBody = new Blob();
+
+    document.addEventListener('fetch', function(event) {
+        debugger;
+        event.respondWith(new Response(myBody, {
+            headers: { "Content-Type" : "text/plain" }
+        }));
+    });
+
+
+</script>
+
+</body>
+</html>

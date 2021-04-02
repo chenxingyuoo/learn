@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="MobileOptimized" content="320"/>
+    <link rel="stylesheet" href="../css/common.css">
+    <script src="../js/common.js"></script>
+    <script type="text/javascript" charset="utf-8">
+        document.addEventListener("plusready",plusready,false);
+        function plusready () {
+            var pwListcontent = plus.webview.getWebviewById("listcontent");
+            if (pwListcontent) {
+                console.log("该webview已经存在，不重复创建");
+            }
+            else{
+                pwListcontent = plus.webview.create("plus/listcontent.html","listcontent",{top:"44px",bottom:"0px"}) //创建名为listcontent的webview
+                plus.webview.currentWebview().append(pwListcontent)
+            }
+        }
+    </script>
+</head>
+<body>
+<div style="text-align: center;">位于上面的webview里的title</div>
+<hr />
+<br /><br /><br /><br />
+<div id="divloading" style="text-align: center;">正在加载...</div>
+<div class="button" id="plus/main.html" onclick="clicked(this.id)">跳转页面</div>
+</body>
+</html>

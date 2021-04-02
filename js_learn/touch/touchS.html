@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en" style="height: 100%;">
+<head>
+    <meta name="viewport" content="width=320, user-scalable=0">
+    <meta charset="UTF-8">
+    <title>touchs</title>
+    <style>
+        .div{
+            width: 80px;
+            height: 141.75px;
+            background: grey;
+            float: left;
+        }
+    </style>
+</head>
+
+<body id="body" style="background: yellowgreen;height: 100%;width: 100%;margin: 0;padding: 0">
+
+<select style="position: absolute;width: 100px">
+    <option>1</option>
+    <option>1</option>
+    <option>1</option>
+    <option>1</option>
+</select>
+
+<div class="div"></div>
+<div class="div"></div>
+<div class="div"></div>
+<div class="div"></div>
+<div class="div"></div>
+<div class="div"></div>
+<div class="div"></div>
+<div class="div"></div>
+<div class="div"></div>
+<div class="div"></div>
+<div class="div"></div>
+<div class="div"></div>
+<div class="div"></div>
+<div class="div"></div>
+<div class="div"></div>
+<div class="div"></div>
+<script>
+
+    window.requestAnimFrame = (function() {
+        return window.requestAnimationFrame || window.webkitRequestAnimationFrame ||function( /* function FrameRequestCallback */ callback, /* DOMElement Element */ element) {
+                    return window.setTimeout(callback, 1000 / 60);
+                };
+    })();
+
+    window.cancelAnimFrame = (function (){
+        return window.cancelAnimationFrame || window.webkitCancelAnimationFrame || clearTimeout;
+    })();
+
+    var body = document.getElementById('body');
+    var win_w = document.documentElement.clientWidth;
+    var win_h = document.documentElement.clientHeight;
+    var item_w = win_w / 4;  //把每一个盒子分成屏幕宽度的 1/4
+    var item_h = win_h / 4;  //把每一个盒子分成屏幕高度的 1/4
+
+    function TouchS(obj){
+        this.obj = obj || document.body;
+        this.start_x = null;
+        this.start_y = null;
+        this.move_x = null;
+        this.move_y = null;    //
+        this.point_arr = [];   //储存每一个区域的坐标集合
+        this.num = 0;          //主要用来生成数组 ， interval有多少个name ，就有多少个数组
+        this.lastName = null;  //记录一个盒子的名字
+        this.isS = ['false','false','false','false','false','false']; //判断手指在每个盒子是否按循序滑动
+        this.timer = null; //定时器
+        this.init(); //初始化
+    }
+
+    TouchS.prototype.init = function (){
+        //S形状的主要坐标区间
+        this.interval = [
+            {
+                top : 0,
+                bottom : item_h,
+                left : item_w * 2,
+                right : item_w * 3,
+                name : 'one',
+                num : 0
+            },
+            {
+                top : 0,
+                bottom : item_h,
+                left : item_w,
+                right : item_w * 2,
+                name : 'two',
+                num : 1
+            },
+
+            {
+                top : item_h,
+                bottom : item_h * 2,
+                left : item_w,
+                right : item_w * 2,
+                name : 'three',
+                num : 2
+            },
+            /*{
+                top : item_h,
+                bottom : item_h * 2,
+                left : item_w * 2,
+                right : item_w * 3,
+                name : 'four'
+            },
+
+            {
+                top : item_h *　2,
+                bottom : item_h * 3,
+                left : item_w,
+                right : item_w * 2,
+                name : 'five'
+            },*/
+            {
+                top : item_h *　2,
+                bottom : item_h * 3,
+                left : item_w * 2,
+                right : item_w * 3,
+                name : 'four',
+                num : 3
+            },
+
+
+            {
+                top : item_h *　3,
+                bottom : item_h * 4,
+                left : item_w * 2,
+                right : item_w * 3,
+                name : 'five',
+                num : 4
+            },
+
+            {
+                top : item_h *　3,
+                bottom : item_h * 4,
+                left : item_w,
+                right : item_w * 2,
+                name : 'six',
+                num : 5
+            },
+        ];
+
+        //绑定事件
+        this.bindEvent();
+    };
+
+    //绑定事件
+    TouchS.prototype.bindEvent = function (){
+        var self = this;
+        var obj = self.obj;
+        //移动开始
+        obj.addEventListener('touchstart',function (e){
+            if(e.touches.length === 1){
+                self.start_x = e.touches[0].clientX;
+                self.start_y = e.touches[0].clientY;
+            }
+        },false);
+
+        obj.addEventListener('touchmove',function (e){
+            if(e.touches.length === 1){
+                self.timer = requestAnimFrame(function (){
+                    self.touchMove(e);
+                });
+            }
+        },false);
+
+        //移动结束 ， 判断是否是S手型
+        obj.addEventListener('touchend',function (e){
+            requestAnimFrame(function (){
+                self.touchEnd();
+            });
+
+        },false);
+    };
+
+    //手指移动处理函数
+    TouchS.prototype.touchMove = function (e){
+        var self = this;
+        self.move_x = e.touches[0].clientX;
+        self.move_y = e.touches[0].clientY;
+
+        //S形状的主要坐标区间
+        for (var i = 0, len = self.interval.length; i < len; i++) {
+            var obj = self.interval[i];
+            //判断在哪个范围
+            if( self.move_x >= obj.left
+                    && self.move_x <= obj.right
+                    && self.move_y >= obj.top
+                    && self.move_y <= obj.bottom
+            ){
+
+                //lastName , num 全局变量 ， 主要用来做标识
+                if(self.lastName &&  self.lastName !== obj.name){
+                    self.num++;
+                    self.lastName = obj.name;
+                }
+
+                //如果没有该数组 ， 生成该数组
+                if(!self.point_arr[self.num]){
+                    self.lastName = obj.name;
+                    self.point_arr[self.num] = [];
+                }
+                //把该坐标push到对应的数组中
+                self.point_arr[self.num].push({ x : self.move_x , y : self.move_y , num : obj.num , name : obj.name});
+            }
+
+        }
+    };
+
+    //手指移动结束处理函数
+    TouchS.prototype.touchEnd = function (e){
+        var self = this;
+        //清除定时器
+        cancelAnimFrame(self.timer);
+
+        //手指需要在第一个盒子开始移动
+        var one = self.interval[0];
+        if(self.start_x < one.left || self.start_x > one.right || self.start_y > one.bottom){
+            alert('不是S');
+            //恢复初始状态
+            self.restore();
+            return;
+        }
+
+        //数组长度小于6， 说明不是S手型
+        if(self.point_arr.length < 6){
+            alert('不是S');
+            //恢复初始状态
+            self.restore();
+            return;
+        }
+
+        //判断手指在每个盒子是否按循序滑动
+        for (var i = 0, len = self.point_arr.length; i < len; i++) {
+            var obj = self.point_arr[i];
+            if( i === obj[0].num){
+                self.isS[i] = 'true'
+            }
+        }
+
+        //把数组切割字符串，做判断
+        var isS = self.isS.join();
+        //有一个为 false ， 都不是S
+        if(/false/g.test(isS)){
+            alert('不是S');
+            //恢复初始状态
+            self.restore();
+            return;
+        }
+        //恢复初始状态
+        self.restore();
+        console.log(self)
+
+    };
+
+    //恢复初始状态
+    TouchS.prototype.restore = function (){
+        var self = this;
+        self.num = 0;
+        self.lastName = null;
+        self.point_arr = [];
+        for (var i = 0, len = self.isS.length; i < len; i++) {
+            self.isS[i] = 'false';
+
+        }
+    };
+
+    new TouchS();
+
+
+
+</script>
+</body>
+</html>

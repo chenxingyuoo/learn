@@ -1,0 +1,76 @@
+.container
+   .row
+      .page-header
+         h1= title
+         small 重度科幻迷
+
+.navbar.navbar-default.navbar-fixed-bottom
+   .container
+      .navbar-header
+         a.navbar-brand(href="/") 重度科幻迷
+      if user
+         p.navbar-text.navbar-right
+            span 欢迎您,#{user.name}
+            span &nbsp;|&nbsp;
+            a.navbar-link(href="#", data-toggle="modal", data-target="#logOutModal") 退出
+      else
+         p.navbar-text.navbar-right
+            a.navbar-link(href="#", data-toggle="modal", data-target="#signinModal") 登录
+            span &nbsp;|&nbsp;
+            a.navbar-link(href="#", data-toggle="modal", data-target="#signupModal") 注册
+
+//bootstrap注册弹框
+#signupModal.modal.fade
+   .modal-dialog
+      .modal-content
+
+         form(method="POST", action="/user/signup")
+            .modal-header 注册
+            .modal-body
+               .form-group
+                  label(for="signupName") 用户名
+                  input#signupName.form-control(name="user[name]", type="text")
+               .form-group
+                  label(for="signupPassword") 密码
+                  input#signupPassword.form-control(name="user[password]", type="password")
+               div.alert.alert-danger.hides(role="alert")
+                  span.glyphicon.glyphicon-exclamation-sign(aria-hidden="true")
+                  span.sr-only Error:
+                  span.alert-text Enter a valid email address
+            .modal-footer
+               button.btn.btn-default(type="button", data-dismiss="modal") 关闭
+               button.btn.btn-success.user-signup-btn(type="submit") 提交
+
+//bootstrap登录弹框
+#signinModal.modal.fade
+   .modal-dialog
+      .modal-content
+         form(method="POST", action="/user/signin")
+            .modal-header 登录
+            .modal-body
+               .form-group
+                  label(for="signinName") 用户名
+                  input#signinName.form-control(name="user[name]", type="text")
+               .form-group
+                  label(for="signinPassword") 密码
+                  input#signinPassword.form-control(name="user[password]", type="password")
+               div.alert.alert-danger.hides(role="alert")
+                  span.glyphicon.glyphicon-exclamation-sign(aria-hidden="true")
+                  span.sr-only Error:
+                  span.alert-text Enter a valid email address
+            .modal-footer
+               button.btn.btn-default(type="button", data-dismiss="modal") 关闭
+               button.btn.btn-success.user-signin-btn(type="submit") 提交
+
+//bootstrap退出登录弹框
+#logOutModal.modal.fade
+   .modal-dialog
+      .modal-content
+         form(method="get", action="/user/logout")
+            .modal-header 登录
+            .modal-body
+               .form-group
+                  label(for="signinName") 您确定要退出登录吗?
+            .modal-footer
+               button.btn.btn-default(type="button", data-dismiss="modal") 关闭
+               button.btn.btn-success(type="submit") 确定

@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>you and me聆听音乐网</title>
+	<link rel="stylesheet" type="text/css" href="./css/ttpod.css">
+	<script type="text/javascript" src="./js/jquery-2.1.3.min.js"></script>
+	<script type="text/javascript" src="./js/ttpod.js"></script>
+	<style type="text/css">
+	*{margin:0 auto;}
+	body{
+		background: #EAE8E8;
+	}
+	#songplay_bg{
+		width: 962px;
+		height: 394px;
+		margin-top:50px;
+
+	}
+	#songplay_bg .control_bg{
+		width: 250px;
+		height: 394px;
+		
+		float: left;
+	}
+	#songplay_bg .control_bg .songheader{
+		width: 150px;
+		height: 150px;
+		margin-top:10px;
+		position: relative;
+		border-radius: 75px;
+		border:solid 3px #FFFFFF;
+		box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+		
+	}
+	#songplay_bg .control_bg .songheader .songpic{
+		display: block;
+		width: 150px;
+		height: 150px;
+		border-radius: 75px;
+		border:none;
+	}
+	/*-----------------------*/
+	#songplay_bg .control_bg .songheader .rotate{
+		animation:header 5s linear 0s infinite normal;
+		-moz-animation:header 5s linear 0s infinite normal;/* Firefox */
+		-webkit-animation:header 5s linear 0s infinite normal; /* Safari and Chrome or liebao*/
+		-o-animation:header 5s linear 0s infinite normal; /* Opera */
+	}
+	@keyframes header{ /*for ie*/
+		0%{
+		 transform:rotate(0deg);
+		 -webkit-transform:rotate(0deg);/* Safari and Chrome or 360 or liebao*/
+		 -moz-transform:rotate(0deg);/*Gecko内核*/
+		}
+		100%{
+		transform:rotate(360deg);
+		-webkit-transform:rotate(360deg);
+		 -moz-transform:rotate(360deg);
+		}
+	}
+	@-moz-keyframes header{ /* Firefox */
+		0%{
+		 transform:rotate(0deg);
+		 -webkit-transform:rotate(0deg);/* Safari and Chrome or 360 or liebao*/
+		 -moz-transform:rotate(0deg);/*Gecko内核*/
+		}
+		100%{
+		transform:rotate(360deg);
+		-webkit-transform:rotate(360deg);
+		 -moz-transform:rotate(360deg);
+		}
+	}
+	@-o-keyframes header {
+		0%{
+		 transform:rotate(0deg);
+		 -webkit-transform:rotate(0deg);/* Safari and Chrome or 360 or liebao*/
+		 -moz-transform:rotate(0deg);/*Gecko内核*/
+		}
+		100%{
+		transform:rotate(360deg);
+		-webkit-transform:rotate(360deg);
+		 -moz-transform:rotate(360deg);
+		}
+	}
+	@-webkit-keyframes header {/* Safari and Chrome or liebao Opera */
+		0%{
+		 transform:rotate(0deg);
+		 -webkit-transform:rotate(0deg);/* Safari and Chrome or 360 or liebao*/
+		 -moz-transform:rotate(0deg);/*Gecko内核*/
+		}
+		100%{
+		 transform:rotate(360deg);
+		 -webkit-transform:rotate(360deg);
+		 -moz-transform:rotate(360deg);
+		}
+	}
+	#songplay_bg .control_bg .songheader .playb1{
+		position: absolute;
+		left:0;
+		right: 0;
+		top:52px;
+		width: 44px;
+		height: 44px;
+		cursor: pointer;
+		opacity:0.2;
+		background-image:url(../images/index_10.png);
+		background-position: 0px 0;
+		background-repeat: no-repeat;
+	}
+	#songplay_bg .control_bg .songheader .playb1:hover{
+		opacity:0.8;
+	}
+	#songplay_bg .control_bg .songmessage{
+		margin-top:20px;
+		width: 200px;
+		height: 80px;
+		
+	}
+	#songplay_bg .control_bg .songmessage .songname{
+		width: 220px;
+		height: 30px;
+		border-bottom: dashed 1px #ccc;
+		font-family: 'Microsoft YaHei', sans-serif;
+		font-size: 13px;
+		line-height: 30px;
+		color: #246AAF;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+		overflow: hidden;
+	}
+	#songplay_bg .control_bg .songmessage .songer{
+		width: 220px;
+		height: 30px;
+		font-family: 'Microsoft YaHei', sans-serif;
+		font-size: 13px;
+		line-height: 30px;
+		color: #246AAF;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+		overflow: hidden;
+	}
+	#songplay_bg .control_bg .control{
+		margin-top: 20px;
+		width: 230px;
+		height: 40px;
+	
+	}
+	#songplay_bg .control_bg .control .annius_last{
+		width: 25px;
+		height: 25px;
+		float: left;
+		margin-left: 10px;
+		margin-top:8px;
+		background-image: url(../images/index_12-07.png);
+		background-size: 25px 25px;
+		background-repeat: no-repeat;
+		background-position: 0 0;
+		cursor: pointer;
+	}
+	#songplay_bg .control_bg .control .annius_last:hover{
+		background-image: url(../images/index_12-06.png);
+	}
+	#songplay_bg .control_bg .control .annius_ps{
+		width: 40px;
+		height: 40px;
+		float: left;
+		margin-left: 10px;
+		background-image: url(../images/index_12-08.png);
+		background-size: 40px 40px;
+		background-repeat: no-repeat;
+		background-position: 0 0;
+		cursor: pointer;
+	}
+	#songplay_bg .control_bg .control .annius_ps:hover{
+		background-image: url(../images/index_12-14.png);
+	}
+	#songplay_bg .control_bg .control .annius_next{
+		width: 25px;
+		height: 25px;
+		float: left;
+		margin-left: 10px;
+		margin-top:8px;
+		background-image: url(../images/index_12-11.png);
+		background-size: 25px 25px;
+		background-repeat: no-repeat;
+		background-position: 0 0;
+		cursor: pointer;
+	}
+	#songplay_bg .control_bg .control .annius_next:hover{
+		background-image: url(../images/index_12-17.png);
+	}
+	#songplay_bg .control_bg .control .voice{
+		width: 10px;
+		height: 10px;
+		float: left;
+		margin-left: 30px;
+		margin-top:15px;
+		background-image: url(../images/index_43.png);
+		background-size: 10px 10px;
+		background-repeat: no-repeat;
+		background-position: 0 0;
+	}
+	
+	#songplay_bg .control_bg .progressbar_bg{
+		width: 240px;
+		height: 40px;
+		
+	}
+	#songplay_bg .control_bg .progressbar_bg .jindu_t{
+		width: 198px;
+		height: 1px;
+		background: rgba(194,193,193,0.3);
+		float: left;
+		margin-top:20px;
+		margin-left: 0px;
+		position: relative;
+		cursor: pointer;
+		border:solid 1px rgba(255,255,255,0.3);
+	}
+	#songplay_bg .control_bg .progressbar_bg .jindu_t .nowjindu{
+		width: 0px;
+		height: 1px;
+		background: rgba(41,201,113,0.7);
+		position: absolute;
+		top:0px;
+	}
+	#songplay_bg .control_bg .progressbar_bg .songtime{
+		width: 40px;
+		height: 30px;
+		float: left;
+		font-family: 'Microsoft YaHei', sans-serif;
+		font-size: 12px;
+		line-height: 30px;
+		color: #246AAF;
+		text-align: center;
+		line-height: 30px;
+		margin-top: 5px;
+	}
+
+
+
+
+
+	#songplay_bg .songlrc_bg{
+		width: 300px;
+		height: 394px;
+		border-right:dashed 1px #cccccc;
+		
+		float: left;
+		position: relative;
+	}
+	#songplay_bg .songlrc_bg .lrc_bg{
+		width: 300px;
+		height:367px;
+		
+		position: absolute;
+		top:14px;
+		z-index: 20;
+	}
+	#songplay_bg .songlrc_bg .zhezhao{
+		width: 300px;
+		height:367px;
+		background-image:url(../images/play_05.png);
+		position: absolute;
+		top:14px;
+		z-index: 21;
+	}
+	/*search song*/
+	#songplay_bg .songlist_bg{
+		width: 411px;
+		height: 394px;
+		
+		float: left;
+	}
+	#songplay_bg .songlist_bg .searchsong_bg{
+		width:400px;
+		height: 45px;
+		
+	}
+	#songplay_bg .songlist_bg .searchsong_bg .songkeyword{
+		outline: none;
+		display: block;
+		float: left;
+		width: 250px;
+		height: 30px;
+		border:solid 1px #29C971;
+		background: none;
+		margin-left: 5px;
+		margin-top: 5px;
+		text-indent: 15px;
+		
+	}
+	#songplay_bg .songlist_bg .searchsong_bg .sousuo,
+	#songplay_bg .songlist_bg .searchsong_bg .randsong{
+		outline: none;
+		display: block;
+		float: left;
+		width: 60px;
+		height: 32px;
+		border:none;
+		margin-left: 10px;
+		margin-top: 5px;
+		cursor: pointer;
+		background: #29C971;
+		color:#ffffff;
+		font-size: 15px;
+		box-shadow:0px 1px 2px rgba(41, 201, 113,0.4);
+	}
+
+	#songplay_bg .songlist_bg .searchsong_bg .sousuo:hover,
+	#songplay_bg .songlist_bg .searchsong_bg .randsong:hover{
+		box-shadow:1px 2px 3px rgba(41, 201, 113,0.8);
+	}
+	#songplay_bg .songlist_bg .songlist{
+		width: 390px;
+		height: 330px;
+		padding: 5px;
+		border-top:dashed 1px #ccc;
+		overflow-x:hidden;
+		overflow-y:auto;
+	}
+	#songplay_bg .songlist_bg .songlist .songs{
+		width: 380px;
+		height: 30px;
+		background: #eee;
+		margin-top: 5px;
+		border:solid 1px #cccccc;
+		cursor: pointer;
+	}
+	#songplay_bg .songlist_bg .songlist .songs:hover{
+		background: rgba(26,103,180,0.5);
+	}
+	#songplay_bg .songlist_bg .songlist .songs .song_name{
+		width: 220px;
+		height: 30px;
+		text-indent: 10px;
+		text-align: left;
+		float: left;
+		font-family: 'Microsoft YaHei', sans-serif;
+		font-size: 13px;
+		line-height: 30px;
+		color:#242424;
+		white-space: nowrap;
+		text-overflow:ellipsis;
+		overflow: hidden;
+		
+	}
+	#songplay_bg .songlist_bg .songlist .songs .song_long,
+	#songplay_bg .songlist_bg .songlist .songs .song_size{
+		width:40px;
+		height: 30px;
+		text-align: center;
+		float: left;
+		font-family: 'Microsoft YaHei', sans-serif;
+		font-size: 11px;
+		line-height: 30px;
+		color:#6F6F6F;
+	}
+	#songplay_bg .songlist_bg .songlist .songs .singer_name{
+		width: 80px;
+		height: 30px;
+		text-indent: 10px;
+		text-align: center;
+		float: right;
+		font-family: 'Microsoft YaHei', sans-serif;
+		font-size: 12px;
+		line-height: 30px;
+		color:#347EC6;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+		overflow: hidden;
+		
+	}
+	</style>
+</head>
+<body>
+	<div class="content"><!--start play-->
+				<div id="songplay_bg"><!--start songplay-->
+						<audio  controls="controls" src="" id="play" style="position:absolute;display:none;"></audio>
+					<div class="control_bg">
+						<div class="songheader">
+							<img src="./images/play_03.png" class="songpic">
+							<div class="playb1"></div>
+						</div>
+						<div class="songmessage">
+							<div class="songname">歌曲：</div>
+							<div class="songer">歌手：</div>
+						</div>
+						<div class="progressbar_bg">
+							<div class="jindu_t"><div class="nowjindu"></div></div>
+							<div class="songtime"></div>
+						</div>
+						<div class="control">
+							<div class="annius_last"></div>
+							<div class="annius_ps"></div>
+							<div class="annius_next"></div>
+							<div class="voice"></div>
+						</div>
+					</div>
+					<div class="songlrc_bg">
+						<div class="lrc_bg">
+							未找到歌词
+						</div>
+						<div class="zhezhao"></div>
+					</div>
+					<div class="songlist_bg">
+						<div class="searchsong_bg">
+							<input type="text" class="songkeyword" value="">
+							<input type="button" class="sousuo" value="搜索" title="点击搜索歌曲">
+							<input type="button" class="randsong" value="换一批" title="点击换一批热歌">
+						</div>
+						<div class="songlist">
+							<!--<div class="songs">
+								<div class="song_name">天使的翅膀</div>
+								<div class="song_long">04:30</div>
+								<div class="song_size">30.5M</div>
+								<div class="singer_name">安琥</div>
+							</div>
+							<div class="songs">
+								<div class="song_name">天使的翅膀天使的翅膀天使的翅膀天使的翅膀翅膀天使的翅膀天使的翅膀</div>
+								<div class="singer_name">安琥安琥安琥安琥</div>
+							</div>-->
+						</div>
+					</div>
+			</div>
+</body>
+
+<script type="text/javascript" src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.js"></script>
+<script type="text/javascript">
+	$(document).ready(function(){
+	var searchsongw=$("#songplay_bg .songlist_bg .searchsong_bg .songkeyword");
+	var searchsongt=$("#songplay_bg .songlist_bg .searchsong_bg .sousuo");
+	var randsong=$("#songplay_bg .songlist_bg .searchsong_bg .randsong");
+	var playb1=$("#songplay_bg .control_bg .songheader .playb1");
+	var playq=$("#songplay_bg #play")[0];//js操作获得的是audio对象，jquery选择器获得的是jquery对象，0对象的才是对应的节点对象。
+	var last=$("#songplay_bg .control_bg .control .annius_last");
+	var playb2=$("#songplay_bg .control_bg .control .annius_ps");
+	var next=$("#songplay_bg .control_bg .control .annius_next");
+	var jindu=$("#songplay_bg .control_bg .progressbar_bg .jindu_t");
+	var now_jindu=$("#songplay_bg .control_bg .progressbar_bg .jindu_t .nowjindu");
+	var header_img=$("#songplay_bg .control_bg .songheader .songpic");
+	playb1.click(function(){
+		
+		playmp3();
+		
+	});
+	playb2.click(function(){
+		
+		playmp3();
+	});
+	next.click(function(){
+		add_num();
+	});
+	last.click(function(){
+		sub_num();
+	});
+	jindu.click(function(e){
+		change_time((e.pageX-$(this).offset().left));
+	});
+	//监控音乐播放完成
+	playq.addEventListener("ended",function(){
+		add_num();//跳到下一首
+	});
+	//监控播放开始
+	playq.addEventListener("play",function(){
+		header_img.addClass("rotate");
+		playb1.css({
+					"background-image":"url(./images/index_12.png)"
+		});
+		playb2.css({
+			"background-image":"url(./images/index_12-12.png)"
+		});
+	});
+	/*playq.addEventListener("pause",function(){
+		alert("停止了");
+	});*/
+	searchsongw.keydown(function(event){
+		if(event.which==13){
+			if(searchsongw.val()==""){
+				alert("输入框不能为空哦！");
+				return;
+			}
+			get_song_json(searchsongw.val());
+		}
+			
+	});
+	searchsongt.click(function(){
+		if(searchsongw.val()==""){
+				alert("输入框不能为空哦！");
+				return;
+			}
+		get_song_json(searchsongw.val());
+
+	});
+	randsong.click(function(){
+		getrand_host_songs();//换一批热歌
+	});
+	$("#songplay_bg").mousedown(function(e){
+		e.stopPropagation();//阻止事件冒泡(函数里返回假也可以达到效果)
+		if(e.button==2){
+			$(this).contextmenu(function(event){//禁用右键菜单
+				
+				return false;
+			});
+			alert("you and me 欢迎你的静听\n作者:bluemoon\n联系:QQ:1752295326\n邮箱:1752295326@qq.com");
+		}
+	});
+	//get_song_json("dj");//初始化音乐
+	//get_song_json("舞曲");
+	getrand_host_songs();//初始化时加载热门歌曲
+	//play(0);
+});
+
+  var result=null;//用于存储每次搜到数据
+  var num_type=1;//用来规定取歌曲类型数据 0压缩 1标准 2高品质
+  var num_song=0;//用来规定播放第几首歌
+  var getpic=null;
+  var play_now_data={//定义存储当前播放的音乐资料
+		song_name:"unkown",
+		singer_name:"未知",
+		song_size:"未知",
+		song_long:"00:00",
+		song_url:"",
+		singer_pic:"",
+		song_lrc:"",
+	}
+
+	//按钮监控
+	function playmp3(){
+debugger
+		var ve=null;
+		var ve2=null;
+		var playb1=$("#songplay_bg .control_bg .songheader .playb1");
+		var playq=$("#songplay_bg #play")[0];//js操作获得的是audio对象，jquery选择器获得的是jquery对象，0对象的才是对应的节点对象。
+		
+		var playb2=$("#songplay_bg .control_bg .control .annius_ps");
+		
+		var header_img=$("#songplay_bg .control_bg .songheader .songpic");
+		
+		if(playq.paused){//如果暂停
+			if(playq.src==window.location||playq.src==""){//为什么playq.src!='' ???
+				play(0);//播放第一首
+			}else{
+				playq.play();
+				playb1.css({
+					"background-image":"url(./images/index_12.png)"
+				});
+				playb2.css({
+					"background-image":"url(./images/index_12-12.png)"
+				});
+				playq.volume=0;
+				var v=0;
+				ve=setInterval(function(){
+					playq.volume=v.toFixed(3);
+					v+=0.005;
+					if(v.toFixed(3)>=1.000){
+						 ve=clearInterval(ve);
+					}
+				},10);
+				updata_progressbar();//触发监控进度
+				//header_img.attr("class":"")
+				header_img.addClass("rotate");
+			}
+		}else{
+			//getpic=clearInterval(getpic);//停止ajax获取singer_pic
+			playq.pause();
+			playb1.css({
+				"background-image":"url(./images/index_10.png)"
+			});
+			playb2.css({
+				"background-image":"url(./images/index_12-14.png)"
+			});
+			header_img.removeClass("rotate");
+		}
+	}
+//搜索歌曲请求
+function get_song_json(keyword){
+	$.ajax({
+			url:"http://so.ard.iyyin.com/s/song_with_out",
+			type:"GET",
+			dataType:"jsonp",
+			jsonp: 'jsoncallback',
+			async: false,
+			timeout: 5000,//请求超时
+			data:{
+				"q":keyword,
+				"page":1,//第一页
+				"size":100,//加载100
+				"callback":"ttpodsdata",//回调函数名
+			},
+			success: function (json) {
+	        },
+	        error: function (xhr) {
+	        }
+		});
+}
+function ttpodsdata(tdata){
+	//alert(tdata.data.length);//
+	result=tdata;//结果集赋值全局变量
+	display(tdata);
+}
+
+function getrand_host_songs(){
+	debugger
+	$.ajax({
+		url:"http://v1.ard.h.itlily.com/plaza/newest/200/jsonp_plaza",//可以通过改变中间数字得到更多歌曲
+		tpye:"GET",
+		data:{"callback":"jsonp_plaza"},
+		dataType:"jsonp",
+		jsonp: 'jsoncallback',
+		async: false,
+		timeout: 5000,//请求超时
+
+		success: function (json) {
+        },
+        error: function (xhr) {
+        }
+	});
+}
+//数据源返回函数（固定？？）
+function jsonp_plaza(rand_song_data){
+	debugger
+	if(rand_song_data.msg=="ok"){
+		result=rand_song_data;//结果集赋值全局变量
+		display(rand_song_data);
+	}else{
+		alert("抱歉，没有搜到歌曲！");
+	}
+}
+//打印随机获取的热歌
+function display(rdata){
+
+	var song=$("#songplay_bg .songlist_bg .songlist");
+	var datalen=rdata.data.length;
+	var str="";
+	for(var i=0;i<datalen;i++)
+	{			
+		str+="<div class='songs'>";
+		str+="<div class='song_name'><span>"+(i+1)+". </span>"+rdata.data[i].song_name+"</div>";
+		str+="<div class='song_long'>"+rdata.data[i].pick_count+"</div>";
+		str+="<div class='song_size'>人气</div>";
+		str+="<div class='singer_name'>"+rdata.data[i].singer_name+"</div>";
+		str+="</div>";	
+	}
+	debugger
+	song.html(str);
+	song_list=$("#songplay_bg .songlist_bg .songlist .songs");//需要重新获取对象
+	song_list.click(function(){
+	num_song=$(this).index();//赋值全局变量目前播放第几首歌
+	play($(this).index());
+
+	});
+}
+//指定播放第几首歌曲
+function play(num){
+	debugger
+	getsong_url(result.data[num].song_id);//获取歌曲详细
+	//getsinger_pic(result.data[num].singer_name);//获取图片
+	//alert(play_now_data.singer_pic);
+	//playnow(play_now_data);//传入播放数据*/
+};
+
+function getsong_url(song_id){
+	debugger
+	$.ajax({
+		url:"http://ting.hotchanson.com/website/ting",
+		type:"GET",
+		data:{
+			"song_id":song_id,
+			"code":getkey(song_id),
+			"callback":"get_song_detail",
+		},
+		dataType:"jsonp",
+		jsonp: 'jsoncallback',
+		async: true,
+		timeout: 5000,//请求超时
+		success: function (json) {
+        },
+        error: function (xhr) {
+        }
+	});
+}
+function get_song_detail(song_dateil_data){
+	
+	play_now_data.song_name=song_dateil_data.data[0].song_name,
+	play_now_data.singer_name=song_dateil_data.data[0].singer_name,
+	play_now_data.song_size=song_dateil_data.data[0].url_list[num_type].size,
+	play_now_data.song_long=song_dateil_data.data[0].url_list[num_type].duration,
+	play_now_data.song_url=song_dateil_data.data[0].url_list[num_type].url,
+	getsinger_pic(play_now_data.singer_name);//第一次设置时存在问题？？
+	//getsong_lrc(song_dateil_data.data[0].song_name,song_dateil_data.data[0].singer_name,song_dateil_data.data[0].song_id);
+	//alert(play_now_data.singer_name);
+	playnow(play_now_data);//传入播放数据*/
+}
+function getsinger_pic(singer_name){
+	$.ajax({
+		url:"http://lp.music.ttpod.com/pic/down",
+		type:"GET",
+		data:{
+			"artist":singer_name,
+			"callback":"returnsinger_pic",
+		},
+		dataType:"jsonp",
+		jsonp: 'jsoncallback',
+		async: true,
+		timeout: 2000,//请求超时
+		success: function (json) {
+        },
+        error: function (xhr) {
+        }
+	});
+}
+//获取图片返回函数
+function returnsinger_pic(singer_pic_data){
+	if(singer_pic_data.code==2){
+		play_now_data.singer_pic=2;//获取图片失败
+	}else{
+		play_now_data.singer_pic=singer_pic_data.data.singerPic;
+	}
+
+};
+//获取歌词
+function getsong_lrc(song_name,singer_name,song_id){
+	$.ajax({
+		url:"http://lp.music.ttpod.com/lrc/down",
+		type:"GET",
+		data:{
+			"lrcid":"",
+			"artist":singer_name,//歌手
+			"title":song_name,//歌名
+			"song_id":song_id,//歌曲id
+			"code":getkey(song_id),//歌曲key
+			"callback":"return_song_lrc",//回调函数名
+		},
+		dataType:"jsonp",
+		jsonp: 'jsoncallback',
+		async: true,
+		timeout: 2000,//请求超时
+		success: function (json) {
+        },
+        error: function (xhr) {
+        }
+	});
+}
+//获取歌词
+function return_song_lrc(song_lrc_data){
+	var now_song_lrc=$("#songplay_bg .songlrc_bg .lrc_bg");
+	now_song_lrc.html(song_lrc_data.data.lrc);
+	alert(song_lrc_data.data.lrc);
+}
+
+//改变播放进度
+function change_time(time){
+	var playq=$("#songplay_bg #play")[0];
+	var play_now_jindu=$("#songplay_bg .control_bg .progressbar_bg .jindu_t .nowjindu");
+	var play_all_jindu=$("#songplay_bg .control_bg .progressbar_bg .jindu_t").width();
+	var mp3_t_long=playq.duration;//音乐时长
+	if(time>=play_all_jindu)
+		time=play_all_jindu;
+	if(time<=0)
+		time=0;
+	time=Math.ceil((time/play_all_jindu)*mp3_t_long);
+	playq.currentTime=time;
+	//playq.play();
+}
+//上一首
+function sub_num(){
+	if(result==null){
+		alert("I am sorry 没找到音乐！");
+		return;
+	}
+	var nums=result.data.length;//获取结果集总歌曲数
+	num_song--;
+	if(num_song==-1)
+	{
+		num_song=nums-1;
+	}
+	play(num_song);
+}
+//上一首
+function add_num(){
+	if(result==null){
+		alert("I am sorry 没找到音乐！");
+		return;
+	}
+	var nums=result.data.length;//获取结果集总歌曲数
+	num_song++;
+	if(num_song==nums)
+	{
+		num_song=0;
+	}
+	play(num_song);
+}
+
+//当前播放数据
+function playnow(data){
+	var playq=$("#songplay_bg #play")[0];
+	var now_song_name=$("#songplay_bg .control_bg .songmessage .songname");
+	var now_song_singer=$("#songplay_bg .control_bg .songmessage .songer");
+	var now_song_time=$("#songplay_bg .control_bg .progressbar_bg .songtime");
+	var now_singer_pic=$("#songplay_bg .control_bg .songheader .songpic");
+	now_song_name.html("歌曲："+data.song_name);
+	now_song_singer.html("歌手："+data.singer_name);
+	now_song_time.html(data.song_long);
+	getpic=setTimeout(function(){
+		getsinger_pic(data.singer_name);//获取图片
+		if(data.singer_pic==2){//play_03.png
+			//now_singer_pic.attr("src",data.singer_pic);
+		}else{
+			now_singer_pic.attr("src",play_now_data.singer_pic);
+		}
+
+	},10000);
+	
+	
+	playq.src=data.song_url;
+	playq.play();//开启播放
+	updata_progressbar();//触发监控进度
+	//playmp3();//触发按钮监控
+}
+
+//更新进度条
+function updata_progressbar(){
+	var playq=$("#songplay_bg #play")[0];
+	var play_now_jindu=$("#songplay_bg .control_bg .progressbar_bg .jindu_t .nowjindu");
+	var play_all_jindu=$("#songplay_bg .control_bg .progressbar_bg .jindu_t").width();
+	var efface_line=setInterval(function(){
+		if(playq.paused){
+			efface_line=clearInterval(efface_line);
+		}
+			var p_time=playq.currentTime;//当前播放时间
+			var mp3_t_long=playq.duration;//音乐时长
+			play_now_jindu.css({
+				width:Math.ceil((p_time/mp3_t_long)*play_all_jindu)
+			});
+	},1000);
+}
+//获取songkey
+function getkey(song_id){
+		var d = new Array(256);  
+		var e, c;  
+		var b;  
+		for (e = 0; e < 256; e++) {  
+			b = e;  
+			for (c = 0; c < 8; c++) {  
+				if (b & 1) {  
+					b = ((b >> 1) & 2147483647) ^ 3988292384;
+				} else {  
+					b = ((b >> 1) & 2147483647);
+				}  
+			}  
+			d[e] = b;  
+		}  
+		if (typeof song_id != "string") {  
+			song_id = "" + song_id;
+		}  
+		b = 4294967295;  
+		for (e = 0; e < song_id.length; e++) {  
+			b = ((b >> 8) & 16777215) ^ d[(b & 255) ^ song_id.charCodeAt(e)]; 
+		}  
+		b ^= 4294967295;  
+		return (b >> 3).toString(16);
+}
+</script>
+
+</html>

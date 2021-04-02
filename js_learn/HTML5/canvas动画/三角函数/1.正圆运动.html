@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>1.正圆运动</title>
+    <meta id="viewport-content" name="viewport" content="width=640,user-scalable=no">
+</head>
+
+<body>
+<canvas id="canvas" width="500" height="500" style="background-color: #000;">
+</canvas>
+
+<script src="../js/ball.js"></script>
+<script src="../js/utils.js"></script>
+
+<script>
+    window.onload = function(){
+        var canvas = document.getElementById('canvas'),
+                context = canvas.getContext('2d');
+
+        var ball = new Ball();
+
+        var angle = 0, // 旋转的角度
+                centerX = canvas.width/2,
+                centerY = canvas.height/2,
+                radius = 100, // 定义半径
+                speed = 0.05; // 每帧旋转角度的增加值
+
+        (function drawFrame(){
+            window.requestAnimationFrame(drawFrame, canvas);
+            context.clearRect(0,0,canvas.width, canvas.height);
+
+            //centerX, centerY 的作用是让球绕画布中心旋转
+            ball.x = centerX + Math.sin(angle) * radius;
+            ball.y = centerY + Math.cos(angle) * radius;
+
+            //角度增加
+            angle += speed;
+            ball.draw(context);
+        }());
+    }
+</script>
+
+</body>
+</html>

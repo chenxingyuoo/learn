@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>postMessage</title>
+    <style>
+        iframe {
+            width: 100%;
+            border: 2px solid #ccc;
+        }
+    </style>
+</head>
+
+<body>
+
+
+
+<h1><font><font class="">postMessage的（同一域）</font></font></h1>
+
+<article>
+    <form>
+        <p><label for="message"><font><font>信息</font></font></label> <input type="text" name="message" value="my message" id="message"> <input type="submit">
+        </p>
+        <h2><font><font>目标的iframe：</font></font></h2>
+        <iframe id="iframe" src="postmessage-target.html"></iframe>
+    </form>
+</article>
+
+<script>
+
+    var addEvent = (function () {
+        if (document.addEventListener) {
+            return function (el, type, fn) {
+                if (el && el.nodeName || el === window) {
+                    el.addEventListener(type, fn, false);
+                } else if (el && el.length) {
+                    for (var i = 0; i < el.length; i++) {
+                        addEvent(el[i], type, fn);
+                    }
+                }
+            };
+        } else {
+            return function (el, type, fn) {
+                if (el && el.nodeName || el === window) {
+                    el.attachEvent('on' + type, function () { return fn.call(el, window.event); });
+                } else if (el && el.length) {
+                    for (var i = 0; i < el.length; i++) {
+                        addEvent(el[i], type, fn);
+                    }
+                }
+            };
+        }
+    })();
+
+    var win = document.getElementById("iframe").contentWindow;
+
+    addEvent(document.getElementsByTagName('form')[0], 'submit', function (e) {
+
+        if (e.preventDefault)
+            e.preventDefault();
+
+
+        win.postMessage(
+                document.getElementById("message").value,
+                "http://127.0.0.1/my_learn/Me/JS%20learn/HTML5%20API/postMessage/postmessage-target.html"
+        );
+
+        // otherwise set the returnValue property of the original event to false (IE)
+        e.returnValue = false;
+        return false;
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>抢单</title>
+  <style>
+    .order-item{
+      height: 40px;
+      line-height: 40px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      margin-bottom: 8px;
+      padding: 8px;
+    }
+    .order-btn {
+      height: 100%;
+      float: right;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <button id="test-btn">测试批量抢单</button>
+  <div id="order-list">
+
+  </div>
+
+  <script>
+
+    function guid() {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+            var r = Math.random() * 16 | 0,
+                v = c == 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        })
+    }
+
+    let websocket
+    const wsInit = () => {
+      const token = Math.r
+      const wsUri = `ws://localhost:8080/ws/${guid()}`
+
+      websocket = new WebSocket(wsUri)
+      websocket.onopen = (evt) => {
+        console.log('Connection open ...')
+
+        websocket.send(JSON.stringify({
+          type: 'testMessage',
+          data: 'test data'
+        }))
+      }
+      websocket.onclose = (evt) => {
+        console.log('Connection close !!!')
+        alert('Connection close !!!')
+      }
+      websocket.onmessage = (evt) => {
+        console.log('onmessage', evt)
+        try {
+          const jsonData = JSON.parse(evt.data)
+          console.log('jsonData', jsonData)
+          if (jsonData.type && jsonData.type === 'add-order') {
+            const div = document.createElement('div')
+            const name = document.createElement('span')
+            const money = document.createElement('span')
+            const button = document.createElement('button')
+            name.innerText = `名称：${jsonData.data.name}`
+            money.innerText = `金额：${jsonData.data.money}`
+            button.className = 'order-btn'
+            button.uuid = jsonData.data.uuid
+            button.onclick = grabOrder
+            button.innerText = '立即抢单'
+            div.className = 'order-item'
+            div.appendChild(name)
+            div.appendChild(money)
+            div.appendChild(button)
+
+            document.querySelector('#order-list').appendChild(div)
+          }
+        } catch (e) {
+          console.log(e)
+        }
+      }
+      websocket.onerror = (evt) => {
+        console.log('Connection onerror !!!')
+      }
+    }
+
+    wsInit()
+
+    function grabOrder (e) {
+      console.log('e', e)
+      fetchOrder(e.target.uuid)
+    }
+
+    function fetchOrder (uuid, index) {
+      fetch(`http://localhost:8080/order/grab?uuid=${uuid}&index=${index}`).then((result) => {
+        return result.json()
+      }).then((data) => {
+        console.log('data', data)
+      }).catch((err) => {
+
+      });
+    }
+
+    window.onload = () => {
+      document.getElementById('test-btn').addEventListener('click', () => {
+        const uuid = document.querySelector('.order-btn').uuid
+        fetchOrder(uuid, 1)
+        fetchOrder(uuid, 2)
+        fetchOrder(uuid, 3)
+      })
+    }
+    
+  </script>
+</body>
+</html>

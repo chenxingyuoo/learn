@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+
+
+<script src="../three.js"></script>
+<script src="../loaders/MTLLoader.js"></script>
+<script src="../loaders/OBJLoader.js"></script>
+<script>
+
+
+  window.onload = init;
+  var timer;
+
+  function init() {
+    //渲染器
+    var renderer = new THREE.WebGLRenderer();
+    renderer.setSize(400, 300);
+    renderer.setClearColor(0x000000);
+    document.getElementsByTagName('body')[0].appendChild(renderer.domElement);
+
+    //场景
+    var scene = new THREE.Scene();
+
+    // camera
+    var camera = new THREE.OrthographicCamera(-5, 5, 3.75, -3.75, 0.1, 100);
+    camera.position.set(15, 25, 25);
+    camera.lookAt(new THREE.Vector3(0, 2, 0));
+    scene.add(camera);
+
+
+    var light = new THREE.DirectionalLight(0xffffff);
+    light.position.set(20, 10, 5);
+    scene.add(light);
+
+
+
+    //// model
+    var onProgress = function ( xhr ) {
+      if ( xhr.lengthComputable ) {
+        var percentComplete = xhr.loaded / xhr.total * 100;
+        console.log( Math.round(percentComplete, 2) + '% downloaded' );
+      }
+    };
+    var onError = function ( xhr ) { };
+
+    var mtlLoader = new THREE.MTLLoader();
+    mtlLoader.setPath( '../module/' );
+    mtlLoader.load( 'port.mtl', function( materials ) {
+      materials.preload();
+      var objLoader = new THREE.OBJLoader();
+      objLoader.setMaterials( materials );
+      objLoader.setPath( '../module/' );
+      objLoader.load( 'port.obj', function ( object ) {
+        object.position.y = - 95;
+//        scene.add( object );
+        if (object.children.length > 0) {
+          scene.add( object.children[0] );
+        }
+
+        draw();
+      }, onProgress, onError );
+    });
+
+
+    function draw() {
+      renderer.render( scene, camera );
+      timer = requestAnimationFrame(draw);
+    }
+
+  }
+
+</script>
+
+
+</body>
+</html>

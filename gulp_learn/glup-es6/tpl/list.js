@@ -1,0 +1,1 @@
+export  const tpl  =  `<div class="list">${name}</div><div class="div"></div>`;

@@ -1,0 +1,90 @@
+<HTML>
+<HEAD>
+    <TITLE>较完美的圆形球体碰撞检测</TITLE>
+    <META http-equiv='Content-Type' content='text/html;charset=gb2312'>
+    <style>
+        td,p,li,div,span,a {font-family:宋体;font-size:12pt;color:#FFFFFF;}
+    </style>
+</HEAD>
+<BODY text="#FFFFFF" bgcolor=#000000 topmargin=0 leftmargin=0 scroll=no>
+<div id=imgdiv style="width:100%;height:100%;"></div>
+<SCRIPT language=JavaScript>
+    var $=function(obj){return typeof(obj)=="string"?document.getElementById(obj):obj;};
+    var imgs=40;
+    var imgn=20;
+    var s=2;
+    var sm=imgs*2;
+    var runi;
+    window.onload=function(){
+        moveTo(0,0);focus();
+        resizeTo(2000,2000);
+        w=document.body.clientWidth;
+        h=document.body.clientHeight;
+        $("imgdiv").style.width =w+"px";
+        $("imgdiv").style.height=h+"px";
+        var d='';
+        x=[];
+        y=[];
+        mr=[];
+        xs=[];
+        ys=[];
+        var wr=w-imgs*3;
+        var hr=h-imgs*3;
+        for(var i=0;i<imgn;i++){
+            var xr=Math.round(Math.random()*wr);
+            var yr=Math.round(Math.random()*hr);
+            mr[i]=Math.round(Math.random()*2*Math.PI);
+            xs[i]=Math.round(Math.random()*10+3);
+            ys[i]=Math.round(Math.random()*10+3);
+            x[i]=xr;
+            y[i]=yr;
+            d+="<img id='img"+i+"' src='#' style='position:absolute;left:"+xr+"px;top:"+yr+"px;z-index:10;width:0px;height:0px;border:0px;overflow:hidden;'>";
+        }
+        $("imgdiv").innerHTML+=d;
+        runi=0;
+        runInterval();
+    };
+    function runInterval(){
+        $("img"+runi).src="http://img0.imgtn.bdimg.com/it/u=7065115,2775626573&fm=21&gp=0.jpg";
+        $("img"+runi).style.width =imgs*2+"px";
+        $("img"+runi).style.height=imgs*2+"px";
+        setInterval("runmove('"+runi+"');",30+(runi*5));
+        runi++;
+        var timer=setTimeout("runInterval()",500);
+        if(runi>imgn-1){clearTimeout(timer);}
+    }
+    onresize=function(){
+        w=document.body.clientWidth;
+        h=document.body.clientHeight;
+        $("imgdiv").style.width =w+"px";
+        $("imgdiv").style.height=h+"px";
+    };
+    function runmove(n){
+        x[n]+=xs[n]*Math.cos(mr[n]);
+        y[n]+=ys[n]*Math.sin(mr[n]);
+        $("img"+n).style.left=x[n];
+        $("img"+n).style.top =y[n];
+        for(var i=0;i<imgn;i++){
+            if(i!=n){
+                if(Math.sqrt((y[n]-y[i])*(y[n]-y[i])+(x[n]-x[i])*(x[n]-x[i]))<=sm) {
+                    mr[n]=Math.atan2(y[n]-y[i],x[n]-x[i]);
+                    xs[n]=5;
+                    ys[n]=5;
+                    x[n]+=xs[n]*Math.cos(mr[n]);
+                    y[n]+=ys[n]*Math.sin(mr[n]);
+                    $("img"+n).style.left=x[n];
+                    $("img"+n).style.top =y[n];
+                    break;
+                }
+            }
+        }
+        switch(true){
+            case (x[n]<=s):                x[n]=s+.1;xs[n]*=-1;        break;
+            case (x[n]>=w-sm):        x[n]=w-sm-.1;xs[n]*=-1;        break;
+            case (y[n]<=s):                y[n]=s+.1;ys[n]*=-1;        break;
+            case (y[n]>=h-sm):        y[n]=h-sm-.1;ys[n]*=-1;        break;
+        }
+    }
+</SCRIPT>
+</BODY>
+</HTML>

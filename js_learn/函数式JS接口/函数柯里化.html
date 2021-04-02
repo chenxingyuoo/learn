@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>函数柯里化</title>
+</head>
+
+<body>
+<script>
+
+    var ArrayProto = Array.prototype, ObjProto = Object.prototype;
+
+    // 创建速度接入到核心的原型快速参考变量。
+    var push = ArrayProto.push,
+            slice = ArrayProto.slice,
+            toString = ObjProto.toString,
+            hasOwnProperty = ObjProto.hasOwnProperty;
+
+    function isType(type) {
+        return function(obj) {
+            return {}.toString.call(obj) == "[object " + type + "]"
+        }
+    }
+    var isFunction = isType("Function");
+    /**
+     * 函数柯里化
+     * @param fn 输入函数
+     * @return 柯里化后的函数
+     */
+    var curry = function (fn) {
+        if (!isFunction(fn)) {
+            return;
+        }
+
+        //在 curryApply函数中 ， 用分布应用执行当前这个 curry 函数 ， 第一个参数传的的一个 fun， 第二个参数传的是arr 参数列表
+        //这一步取出arr参数列表
+        var args = slice.call(arguments, 1);
+
+
+        return function () {
+                   //利用分布应该执行传进来的 fn
+        return fn.apply(this, args.concat(slice.call(arguments, 0)));
+        }
+    };
+
+    // curry 返回一个函数
+   /* var fn = curry(function(x){
+        console.log(x);  // [1, 2, 3, 4]
+    });
+
+
+    // 执行 curry 返回的函数 。
+    console.log(fn([1,2,3,4]))*/
+
+
+
+    /*function add(a, b) {
+        return a + b;
+    }
+
+    var addOne = curry(add, 1);
+
+    console.log(addOne(2)); // return 3*/
+
+
+    //有时候我们需要输入的部分实参是数组列表形式，所以我们包装一下刚才的 curry 函数：
+
+    /**
+     * 函数柯里化
+     * @param fn 输入函数
+     * @param arr 参数列表
+     * @return 柯里化后的函数
+     */
+    var curryApply = function (fn, arr) {
+        if (!isFunction(fn)) {
+            return;
+        }
+
+        //arr 参数列表传
+        var args = arr.slice(0);
+        args.unshift(fn);
+               //curry 用分布应用执行 。 传arr 参数列表 和 函数过去
+        return curry.apply(this, args);
+    };
+
+    //上面的 curry 函数有个问题，就是连续多次补充实参，我们还需要封装一个支持连续调用的版本：
+
+    /**
+     * 自动柯里化
+     * @param fn 输入函数
+     * @param n 输入函数参数个数
+     * @return 柯里化后的函数
+     */
+    var autoCurry = function (fn, n) {
+        if (!isFunction(fn)) {
+            return;
+        }
+
+        function retFn() {
+            var len = arguments.length;
+            var args = slice.call(arguments, 0);
+            var nextn = n - len;
+
+            if (nextn > 0) {
+                                 //传retFn函数过去 curryApply 的返回值又用分布应用执行 retFn ，函数
+                return autoCurry(curryApply(retFn, args), nextn);
+            }
+
+            return fn.apply(this, args);
+        }
+
+        return retFn;
+    };
+
+    //autoCurry 使用的递归的方法，输出函数可以可以通过简单调用的方式连续补充实参，当实参和预设的参数数量相等时，执行输入函数。使用方法如下：
+
+    function compute(a, b, c) {
+        return (a + b) * c;
+    }
+
+    var curryedCompute = autoCurry(compute, 3);
+
+    compute(1, 2, 3); // return 9
+    console.log(curryedCompute(1)(2)(3)) // return 9
+
+</script>
+</body>
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>迭代数组</title>
+</head>
+
+<body>
+<script>
+    var arr = [1,2,3,4,5,4,3,2,1];
+    var every = arr.every(function(item, index, array){
+        return (item > 2);
+    });
+    var some = arr.some(function(item, index, array){
+        return (item > 2);
+    });
+    var filter = arr.filter(function(item, index, array){
+        return (item > 2);
+    });
+    var map = arr.map(function(item, index, array){
+        return (item * 2);
+    });
+    var reduce = arr.reduce(function(item, index, initial){
+        return (item * index);
+    });
+
+
+    console.log(reduce);    // 2880  1 * 2 = 2 , 2* 3 = 6 , 6 * 4 = 24
+    console.log(every);    //false 每一项都返回true则返回true
+    console.log(some);    //true 有一项返回true则返回true
+    console.log(filter);    //[3, 4, 5, 4, 3] 筛选返回true的项
+    console.log(map);    //[2, 4, 6, 8, 10, 8, 6, 4, 2] 返回对每一项操作后的数组
+
+    arr.forEach(function(item, index, array){    //对每一项进行操作
+        console.log(item + ' : ' + index);
+    });
+
+</script>
+</body>
+</html>

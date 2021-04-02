@@ -1,0 +1,8 @@
+{
+  "name": "DemoApp",
+  "displayName": "DemoApp",
+  "splash": {
+    "image": "./app/imgs/splash.png",
+    "resizeMode": "cover"
+  }
+}

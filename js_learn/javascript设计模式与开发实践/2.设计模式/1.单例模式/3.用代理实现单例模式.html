@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+
+<script>
+
+    var CreateDiv = function (html) {
+        this.html = html;
+        this.init();
+    }
+
+    CreateDiv.prototype.init = function () {
+        var div = document.createElement('div');
+        div.innerHTML = this.html;
+        document.body.appendChild(div);
+    }
+
+    //代理类 proxySingletonCreateDiv 
+    var proxySingletonCreateDiv = (function () {
+        var instance;
+        return function (html) {
+            if (!instance) {
+                instance = new CreateDiv(html);
+            }
+            return instance;
+        }
+    });
+
+    var a = proxySingletonCreateDiv()('sven1');
+    var b = proxySingletonCreateDiv()('sven2');
+    console.log(a === b); //false
+
+
+    //代理获取id
+    var proxyGetId = function (){
+        var instance;
+        
+        return function (id){
+            if (!instance) {
+                instance = document.querySelector(id);
+            }
+
+            return instance;
+        };
+    };
+
+</script>
+
+</body>
+</html>

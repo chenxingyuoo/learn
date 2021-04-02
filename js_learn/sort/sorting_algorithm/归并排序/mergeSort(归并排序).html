@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MergeSort(归并排序)</title>
+</head>
+
+<body>
+
+
+<!--归并排序是建立在归并操作上的一种有效的排序算法。该算法是采用分治法（Divide and Conquer）的一个非常典型的应用。归并排序是一种稳定的排序方法。将已有序的子序列合并，得到完全有序的序列；即先使每个子序列有序，再使子序列段间有序。若将两个有序表合并成一个有序表，称为2-路归并。-->
+
+<!--
+- 把长度为n的输入序列分成两个长度为n/2的子序列；
+
+- 对这两个子序列分别采用归并排序；
+
+- 将两个排序好的子序列合并成一个最终的排序序列。
+-->
+
+<script>
+
+
+    //JavaScript合并排序（归并排序）实现，递归算法
+    function merges(left, right) {
+        var result = [];
+        while (left.length > 0 && right.length > 0) {
+            if (left[0] < right[0]) {
+                result.push(left.shift());
+            } else {
+                result.push(right.shift());
+            }
+
+        }
+        return result.concat(left).concat(right);
+    }
+
+    function mergeSorts(items) {
+        //数值的长度为1的时候 ， 退出递归
+        if (items.length == 1) {
+            return items;
+        }
+        var middle = Math.floor(items.length / 2),
+                left = items.slice(0, middle),
+                right = items.slice(middle);
+
+        //递归 mergeSort 函数 ， 先算完左边所有 ， 再算右边所有
+        return merges(mergeSorts(left), mergeSorts(right));
+    }
+
+
+    function merge(left, right) {
+        var result = [];
+        while (left.length > 0 && right.length > 0) {
+            if (left[0] < right[0]) {
+                result.push(left.shift());
+            } else {
+                result.push(right.shift());
+            }
+        }
+        return result.concat(left).concat(right);
+    }
+
+
+    var arrs = [12,3,43,11,56,90,7,66,82];
+    console.log(mergeSorts(arrs));
+    //[3, 7, 11, 12, 43, 56, 66, 82, 90]
+
+
+    //JavaScript合并排序（归并排序）实现，迭代算法
+    function mergeSort(items) {
+        if (items.length == 1) {
+            return items;
+        }
+        var work = [];
+        for (var i = 0, len = items.length; i < len; i++) {
+            work.push([items[i]]);
+        }
+        work.push([]);  //如果数组长度为奇数
+        for (var lim = len; lim > 1; lim = (lim + 1) / 2) {
+            for (var j = 0, k = 0; k < lim; j++, k += 2) {
+                work[j] = merge(work[k], work[k + 1]);
+            }
+            work[j] = [];
+        }
+        return work[0];
+    }
+
+    var a = [43, 27, 39, 17, 32, 21, 14, 42, 22, 15, 18, 12, 46, 1, 16, 10, 4, 29, 3, 23, 24, 49, 0, 5, 36, 13, 34, 6, 19, 47, 9, 33, 31, 20, 28, 44, 38, 37, 41, 40, 8, 35, 30, 7, 11, 45, 2, 25, 48, 26];
+    console.log(mergeSort(a));
+    //[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 45, 46, 47, 48, 49]
+
+</script>
+</body>
+</html>

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+
+<script>
+
+    var performanceS = function (salary) {
+        return salary * 4;
+    };
+    var performanceA = function (salary) {
+        return salary * 3;
+    };
+    var performanceB = function (salary) {
+        return salary * 2;
+    };
+
+    var calculateBonus = function (performanceLevel, salary) {
+        if (performanceLevel === 'S') {
+            return performanceS(salary);
+        }
+        if (performanceLevel === 'A') {
+            return performanceA(salary);
+        }
+        if (performanceLevel === 'B') {
+            return performanceB(salary);
+        }
+    };
+
+    calculateBonus('A', 10000); //    30000
+
+
+
+    //策略模式
+
+    var performanceS = function(){};
+
+    performanceS.prototype.calculate  = function (salary){
+        return salary * 4;
+    };
+
+    var performanceA = function(){};
+
+    performanceA.prototype.calculate = function (salary){
+        return salary * 3;
+    }
+
+    var performanceB = function(){};
+
+    performanceB.prototype.calculate = function (salary){
+        return salary * 2;
+    }
+
+
+    //奖金类
+    var Bonus = function(){
+        this.salary = null;
+        this.strategy = null;
+    };
+
+    Bonus.prototype.setSalary = function( salary ){
+        this.salary = salary; //
+    };
+
+    Bonus.prototype.setStrategy = function( strategy ){
+        this.strategy = strategy; //
+    };
+
+    Bonus.prototype.getBonus = function(){ //
+        return console.log(this.strategy.calculate( this.salary )); //
+    };
+
+    var bonus = new Bonus()
+
+    //计算S
+    bonus.setSalary(1000);
+    bonus.setStrategy( new performanceS() );
+    bonus.getBonus();
+
+    //计算B
+    bonus.setSalary(1000);
+    bonus.setStrategy( new performanceB() );
+    bonus.getBonus();
+
+    //计算A
+    bonus.setSalary(1000);
+    bonus.setStrategy( new performanceA() );
+    bonus.getBonus();
+
+
+    //策略模式
+
+    var calculateBonus  = function (strategy){
+        var bonus = strategy.calculateBonus(strategy.salary);
+        console.log(bonus);
+    };
+
+    var performanceA = {
+        calculateBonus : function (salary){
+            return salary * 3
+        },
+        salary : 10000
+    };
+
+    var performanceB = {
+        calculateBonus : function (salary){
+            return salary * 2
+        },
+        salary : 10000
+    };
+
+    var performanceS = {
+        calculateBonus : function (salary){
+            return salary * 4
+        },
+        salary : 10000
+    };
+
+    calculateBonus(performanceA);
+
+    calculateBonus(performanceB);
+
+    calculateBonus(performanceS);
+
+
+    //策略模式
+    var strategies = {
+        'S' : function calculate(salary){
+            return salary * 4;
+        },
+        'A' : function calculate(salary){
+            return salary * 3;
+        },
+        'B' : function calculate(salary){
+            return salary * 2;
+        }
+    }
+
+    var calculateBonus = function( level, salary ){
+        console.log(strategies[ level ]( salary ));
+        return strategies[ level ]( salary );
+    };
+
+    calculateBonus('S' , 1000);
+    calculateBonus('A' , 1000);
+    calculateBonus('B' , 1000);
+
+
+</script>
+
+</body>
+</html>

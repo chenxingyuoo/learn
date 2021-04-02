@@ -1,0 +1,343 @@
+<html>
+<head>
+    <title>原创JS连锁泡泡 v1.1</title>
+    <style>
+        body{
+            margin: 0px;
+            padding: 0px;
+            background-color: #000;
+        }
+        #main{
+            border: solid red 0px;
+            width: 800px;
+            height: 600px;
+            font-size: 48px;
+            position: absolute;
+            background-color: #fff;
+        }
+        .little{
+            height: 15px;
+            width: 15px;
+            font-size: 1px;
+            border: solid #ccc 0px;
+            position: absolute;
+            left: 100px;
+            top: 100px;
+            background: url(http://p.blog.csdn.net/images/p_blog_csdn_net/sunxing007/EntryImages/20090927/little.gif) no-repeat;
+            filter: alpha(opacity=30);
+        }
+        .big{
+            height: 61px;
+            width: 61px;
+            font-size: 9pt;
+            border: solid #ccc 0px;
+            position: absolute;
+            left: 0px;
+            top: 0px;
+            background: url(http://p.blog.csdn.net/images/p_blog_csdn_net/sunxing007/EntryImages/20090927/big.gif) no-repeat;
+            /**使显示的分数居中**/
+            line-height: 61px;
+            color: #fff;
+            filter: alpha(opacity=30);
+        }
+        #info{
+            position: absolute;
+            left: 820px;
+            top 20px;
+            border: solid #fff 1px;
+            height: 600px;
+            width: 300px;
+            color: #fff;
+            padding: 5px;
+        }
+        #score{
+            float: right;
+            border: solid #ccc 1px;
+            height: 10px;
+            width: 80px;
+            margin: 5px;
+            font-size: 30px;
+        }
+    </style>
+</head>
+<body>
+<div id="main">
+    <div id="score">0</div>
+</div>
+<div id="info">
+    原创JS连锁泡泡 v1.1<br>
+    原创作者 sunxing007<br>
+    转载请务必注明来自：<br>
+    <a href="http://blog.csdn.net/sunxing007">http://blog.csdn.net/sunxing007</a><br>
+    开发环境：IE8 暂时没有考虑兼容性 <br>
+
+</div>
+</body>
+</html>
+<script type="text/javascript">
+    /*******************************************************
+     * JS连锁泡泡 v1.1
+     *******************************************************/
+    var doc = document;
+    function $(id){return doc.getElementById(id)};
+    var container = $('main');
+    var score_ele = $('score');
+    try{
+        //针对ie6缓存背景图
+        document.execCommand("BackgroundImageCache", false, true);
+    }catch(e){alert(e)};
+    /*******************************************************/
+    //系统参数   
+    //小泡泡半径  
+    var little_radius = 7;
+    //爆炸后的泡泡半径  
+    var big_radius = 30;
+    //半径差  
+    var delta_radius = big_radius - little_radius;
+    //容器宽度  
+    var container_width = 800;
+    //容器高度  
+    var container_height = 600;
+    //与定义的泡泡移动的4个方向  
+    //[x,y]代表x方向的增量和y方向的增量，也就确定了移动方向  
+    var direct = [[1,1],[1,-1],[-1,1],[-1,-1]];
+    //爆炸后的泡泡集合  
+    var chained_bubbles = [];
+    //所有的泡泡 方便管理  
+    var all_bubbles = [];
+    /*****************************************************/
+    //泡泡模型  
+    function Bubble(left, top, bgPos, score, dirIndex){
+        var ele = doc.createElement('div');
+        ele.align = 'center';
+        ele.className = 'little';
+        ele.style.left = left + 'px';
+        ele.style.top = top + 'px';
+        this.bgPos = bgPos;
+        ele.style.backgroundPositionX = -bgPos*(little_radius*2+1);
+        this.element = ele;
+        ele.bubble = this;
+        this.score = score;
+        this.exploded = false;
+        this.dirIndex = dirIndex;
+        this.container.appendChild(ele);
+        this.container.onclick = function(){
+            if(window.curBubble){
+                //curBubble.distroy.apply(curBubble);
+                chained_bubbles.push(curBubble);
+                curBubble.explode.apply(curBubble);
+                curBubble.container.onclick = null;
+            }
+        }
+        ele.onmouseover = function(){
+            this.style.filter = 'alpha(opacity=100)';
+            window.curBubble = ele.bubble;
+
+        }
+        ele.onmouseout = function(){
+            this.style.filter = 'alpha(opacity=30)';
+        }
+    }
+    Bubble.prototype = {
+        //容器的引用
+        container: $('main'),
+        //移动泡泡
+        move: function(){
+            if(chained_bubbles.length>0){
+                for(var i=0; i<chained_bubbles.length; i++){
+                    if(this.crushed(chained_bubbles[i])){
+                        this.explode();
+                    }
+                }
+            }
+            var _self = this;
+            //连续移动泡泡的函数，因为要用到setInterval,  
+            //所以这个函数作成闭包  
+            var _f = function(){
+                if(chained_bubbles.length>0){
+                    for(var i=0; i<chained_bubbles.length; i++){
+                        if(this.crushed(chained_bubbles[i])){
+                            this.explode();
+                            break;
+                        }
+                    }
+                }
+                var l = parseInt(this.element.style.left) + direct[this.dirIndex][0];
+                var t = parseInt(this.element.style.top) + direct[this.dirIndex][1];
+                //status = 'l:' + l + "  t:" + t;
+                if(this.checkBorder(l, t)){
+                    this.element.style.left = l;
+                    this.element.style.top = t;
+                }
+                else{
+                    //this.stop();
+                    this.changeDirect();
+                }
+            }
+            this.timer = setInterval(function(){
+                _f.apply(_self);
+                //移动速度
+            }, 10)
+        },
+        //停止移动  
+        stop: function(){
+            clearInterval(this.timer);
+        },
+        //边界检查 看泡泡有没有超出容器  
+        checkBorder: function(l, t){
+            if(l>(container_width-big_radius-1-little_radius)||l<(big_radius-little_radius)||t>(container_height-big_radius-1-little_radius)||t<(big_radius-little_radius)){
+                return false;
+            }
+            return true;
+        },
+        //碰壁后改变泡泡的移动方向  
+        changeDirect: function(){
+            var _l = parseInt(this.element.style.left);
+            var _t = parseInt(this.element.style.top);
+            for(var i=1; i<=4; i++){
+                if(direct[this.dirIndex][0]==-direct[(i+this.dirIndex)%4][0]&&direct[this.dirIndex][1]==-direct[(i+this.dirIndex)%4][1]){
+                    continue;
+                }
+                var l = _l + direct[(i+this.dirIndex)%4][0];
+                var t = _t + direct[(i+this.dirIndex)%4][1];
+                if(this.checkBorder(l, t)){
+                    this.dirIndex = (i+this.dirIndex)%4;
+                    break;
+                }
+                else{
+                    continue;
+                }
+            }
+        },
+        //泡泡爆炸  
+        explode: function(){
+            this.stop();
+            this.element.style.left = parseInt(this.element.style.left) - delta_radius;
+            this.element.style.top = parseInt(this.element.style.top) - delta_radius;
+            this.element.className = 'big';
+            this.element.style.backgroundPositionX = - this.bgPos*(big_radius*2+1);
+            this.element.innerText = this.score;
+            this.exploded = true;
+            score_ele.innerText = parseInt(score_ele.innerText) + this.score;
+            chained_bubbles.push(this);
+            this.fade.apply(this);
+        },
+        /**是否和另外一个已经爆炸的泡泡碰撞了**/
+        crushed: function(other){
+            if(!other.exploded){
+                return false;
+            }
+            if(!other.element) return false;
+            var l = parseInt(other.element.style.left);
+            var t = parseInt(other.element.style.top);
+            var w = big_radius*2-8;//big_radius*2+1;
+            var h = w;
+            var pt = [,,,];
+            pt[0] = [parseInt(this.element.style.left) - delta_radius, parseInt(this.element.style.top) - delta_radius];
+            pt[1] = [pt[0][0]+w,pt[0][1]];
+            pt[2] = [pt[0][0]+w,pt[0][1]+h];
+            pt[3] = [pt[0][0],pt[0][1]+h];
+            for(var i=0; i<4; i++){
+                if(pt[i][0]>l&&pt[i][1]>t&&pt[i][0]<=(l+w)&&pt[i][1]<=(t+h)){
+                    return true;
+                }
+            }
+            return false;
+        },
+        //爆炸的泡泡逐渐消失  
+        fade: function(){
+            var _self = this;
+            var opacity = 28;
+            var _f = function(){
+                this.element.style.filter = 'alpha(opacity=' + (opacity-2) + ')';
+                opacity -=2;
+                if(opacity==0){
+                    this.distroy();
+                }
+            };
+            this.timer = setInterval(function(){
+                _f.apply(_self);
+            }, 200);
+        },
+        //析构方法 因为对象中很多地方涉及对象相互引用  
+        //需要在析构函数中消除环形引用，以防内存泄露  
+        distroy: function(){
+            if(this.timer){
+                clearInterval(this.timer);
+            }
+            for(var j=0; j<chained_bubbles.length; j++){
+                //if(chained_bubbles[j]==null) continue;
+                if(chained_bubbles[j]===this){
+                    chained_bubbles.splice(j, 1);
+                    //chained_bubbles[j] = null;
+                    status = 'distroyed from chained_bubbles[' + j + ']';
+                    break;
+                }
+            }
+            for(var i=0; i<all_bubbles.length; i++){
+                if(!all_bubbles[i].element){
+                    all_bubbles.splice(i, 1);
+                }
+                if(all_bubbles[i]===this){
+                    all_bubbles.splice(i, 1);
+                    status = 'distroyed from all_bubbles[' + i + ']';
+                    break;
+                }
+            }
+            var _e = this.element;
+            this.element = null;
+            _e.onclick = null;
+            _e.onmouseover = null;
+            _e.onmouseout = null;
+            _e.bubble = null;
+            var _c = this.container;
+            this.container = null;
+            _c.removeChild(_e);
+
+        }
+
+    }
+    //工厂方法 创造泡泡  
+    function createBubble(){
+        var left = Math.floor(Math.random()*710) + 31;
+        var top = Math.floor(Math.random()*510) + 31;
+        var bgIndex = Math.floor(Math.random()*6);
+        var score = Math.floor(Math.random()*10) * 50;
+        var dirIndex = Math.floor(Math.random()*4)
+        var b = new Bubble(left, top, bgIndex, score, dirIndex);
+        all_bubbles.push[b];
+        return b;
+    }
+    createBubble().move();
+    createBubble().move();
+    createBubble().move();
+
+    createBubble().move();
+    createBubble().move();
+    createBubble().move();
+    createBubble().move();
+    createBubble().move();
+    createBubble().move();
+    createBubble().move();
+    createBubble().move();
+    createBubble().move();
+    createBubble().move();
+    createBubble().move();
+    createBubble().move();
+    createBubble().move();
+    createBubble().move();
+    createBubble().move();
+    createBubble().move();
+    createBubble().move();
+    createBubble().move();
+    createBubble().move();
+    createBubble().move();
+    createBubble().move();
+    createBubble().move();
+
+    /*******************************************************
+     * 原创JS连锁泡泡 v1.1
+     * 原创作者 sunxing007
+     * 转载请务必注明来自：http://blog.csdn.net/sunxing007
+     *******************************************************/
+</script>  

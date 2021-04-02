@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "babel-preset-env": "^1.5.1",
+    "babel-register": "^6.24.1",
+    "koa": "^2.2.0",
+    "koa-bodyparser": "^4.2.0",
+    "koa-router": "^7.0.0",
+    "nunjucks": "^3.0.1"
+  }
+}

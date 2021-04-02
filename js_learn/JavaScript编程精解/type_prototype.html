@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>类型原型</title>
+</head>
+<body>
+<script>
+    //将几个简单的辅助方法添加到Object.prototype上 ， 可以创建一种方式的对象和继承， 在这种方式中， 类型由其原型进行描述，我们将用大写变量来储存这些原型， 当需要做’构建工作时‘ ， 由 construct 函数完成 ， 我们为Object原型添加一个create方法。用于代替new关键字 ， 它克隆了该对象 （new ？ ） 。 然后调用自己的 construct 方法 。 如果有这样的方法， 我们就将传给 create 的参数 传给 apply。
+
+    function clone(object) {
+        function OneShotConstructor() {
+        };
+        OneShotConstructor.prototype = object;
+        return new OneShotConstructor();
+    }
+
+    function forEachIn(obj, action) {
+        //枚举对象 ， 满足条件就执行 action 函数 ， 实参是 prototype, obj[prototype]
+        for (var prototype in obj) {
+            if (Object.prototype.hasOwnProperty.call(obj, prototype)) {
+                action(prototype, obj[prototype]);
+            }
+        }
+    }
+
+
+    //继承可以通过克隆一个原型对象 ， 然后添加或者替换掉一些属性 ， 一个简单的方法 extend。
+    Object.prototype.extend = function (properties) {
+
+        var result = clone(this);
+        forEachIn(properties, function (name, value) {
+            result[name] = value;
+        })
+        return result;
+    }
+
+
+    Object.prototype.create = function () {
+
+        var object = clone(this);
+
+        if (object.construct != undefined) {
+            object.construct.apply(object, arguments);
+        }
+        return object;
+    }
+
+
+    var Item = {
+        construct: function (name, value) {
+            this.name = name;
+            this.values = value || {};
+        },
+        inspet: function () {
+            console.log('is it' + this.name + '.');
+        },
+        kick: function () {
+            console.log('哈哈哈')
+        },
+        take: function () {
+            console.log('you cannot life ' + this.name + '.')
+        }
+    }
+
+
+    var lantern = Item.create('陈星宇',
+            {
+                sayHello: function (name) {
+                    console.log('hello '+ name + '.')
+                },
+                sayHi: function () {
+                    console.log('hi ' + this.name + '.')
+                }
+            });
+
+    console.log(lantern); // lantern 继承了 Item 所有的对象和属性（共享）。而且它又拥有自己的属性和方法
+
+    console.log(lantern.inspet());  // is it 陈星宇.
+
+    Item.see = function () {
+       var self = this;
+       console.log(this.values.sayHello(self.name));  //hello 陈星宇
+       console.log(this.values.sayHi());  //hi undefined ? 访问不到this变量
+    }
+    console.log(lantern.see());
+    // hello 陈星宇
+    //hi undefined ? 访问不到this变量
+
+
+    //然后也可以向下面这样继承它
+    var  DetailItem = Item.extend({
+        construct : function (name, details ,values) {
+            Item.construct.call(this,name);
+            this.details = details;
+        },
+        inspect : function () {
+            console.log('you see ' + this.name + '. ' + this.details + '.')
+        }
+    });
+
+    var gaintSloth = DetailItem.create('陈星宇s', 'is it good');
+   ;
+    console.log( gaintSloth.inspect())  // you see 陈星宇s. is it good
+    console.log(gaintSloth.take())  //you cannot life 陈星宇s.
+    console.log(gaintSloth)  //DetailItem 继承了 Item 对象的所有方法 和 属性
+
+    //忽略强制性的 prototype , 例如在 DetailItem 构造函数里调用 Item.construct ， 而不是 DetailItem.construct 里面调用this.name = name。 这是重复代码行 ， 虽然重复代码行要比 调用 Item.construct  要短 ， 但是后期要在构造函数里添加额外的代码 ， 就必须在两个地方添加。
+
+
+    //很多时候 ，在子类的构造函数执行之前 ， 应该调用父类的的构造函数 ， 这种情况 ， 先有一个有效的父类对象， 然后再进行扩展 。 在这种创建原型的新方式中 ， 不需要构造函数的类型可以忽略 。它们会自动继承父类的构造函数 。例如
+    var SmallItem = Item.extend({
+        kick : function () {
+            console.log(this.name + ' is it')
+        },
+        take : function () {
+            console.log('the take ' + this.name);
+        }
+    })
+
+    var smallitem = SmallItem.create('chen');
+    console.log(smallitem.take())  // the take chen
+    console.log(smallitem)
+
+    //尽管SmallItem 没有定义自己的构造函数. 但也通过name 参数 创建成功了 ， 因为它继承了 Item 原型的构造函数
+
+
+
+    //instanceof 操作符
+    //该操作符k可用于确定一个对象 是否 基于 一个 指定的原型 ， 例 [] instanceof Array => true;
+    //如果没有使用常规的构造函数 ， 使用该操作符就会变得非常笨拙-- 该操作符需要一个构造函数作为第二个参数  ， 但是我们只有原型 。一个和clone函数类似的技巧可用于解决这个问题 ，使用 ’ 伪造‘ 构造函数 ， 将它应用到instanceof上。
+    Object.prototype.isA = function (prototype) {
+        function DummyConstructor(){};
+        DummyConstructor.prototype = prototype;
+        return this instanceof  DummyConstructor;
+    }
+
+    smallitem.isA(Item); //true
+    console.log(smallitem.isA(Item));
+    smallitem.isA(DetailItem);  // false
+    console.log(smallitem.isA(DetailItem));
+
+
+
+
+
+
+</script>
+</body>
+</html>

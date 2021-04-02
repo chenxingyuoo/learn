@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+
+<script>
+
+    var State = function(){};
+    State.prototype.buttonWasPressed = function(){
+        throw new Error( '  必须重写 buttonWasPressed   方法    ' );
+    };
+
+
+    var SuperStrongLightState = function( light ){
+        this.light = light;
+    }
+
+    SuperStrongLightState.prototype = new State(); //继承抽象类
+
+    SuperStrongLightState.prototype.buttonWasPressed = function(){ //重写父类方法
+        console.log( '关灯' );
+        this.light.setState( this.light.offLightState );
+    };
+
+
+    var OffLightState = function (light) {
+        this.light = light;
+    };
+
+    OffLightState.prototype = new State(); //继承抽象类
+
+    OffLightState.prototype.buttonWasPressed = function () {
+        console.log('弱光'); // offLightState 对应的行为
+        this.light.setState(this.light.superStrongLightState);  //切换状态到
+    };
+
+
+
+    //灯类
+    var Light = function () {
+        this.offLightState = new OffLightState(this);
+        this.superStrongLightState = new SuperStrongLightState(this);
+        this.button = null;
+    };
+
+    Light.prototype.init = function () {
+        var button = document.createElement('button'),
+            self = this;
+
+
+        this.button = document.body.appendChild(button);
+        this.button.innerHTML = '开关';
+
+        this.currState = this.offLightState;
+
+        this.button.onclick = function () {
+            self.currState.buttonWasPressed();
+        }
+    };
+
+    Light.prototype.setState = function( newState ){
+        this.currState = newState;
+    };
+
+    (new Light()).init()
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <!--link(rel='stylesheet', href='/stylesheets/style.css')-->
+    <link href="/build/css/style.css" rel="stylesheet">
+  </head>
+  <body>
+    <div class="container">
+      <div class="row">
+        <div class="page-header">
+          <h1></h1><small>重度科幻迷</small>
+        </div>
+      </div>
+    </div>
+    <div class="navbar navbar-default navbar-fixed-bottom">
+      <div class="container">
+        <div class="navbar-header"><a href="/" class="navbar-brand">重度科幻迷</a></div>
+        <p class="navbar-text navbar-right"><a href="#" data-toggle="modal" data-target="#signinModal" class="navbar-link">登录</a><span>&nbsp;|&nbsp;</span><a href="#" data-toggle="modal" data-target="#signupModal" class="navbar-link">注册</a></p>
+      </div>
+    </div>
+    <!--bootstrap注册弹框-->
+    <div id="signupModal" class="modal fade">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <form method="POST" action="/user/signup">
+            <div class="modal-header">注册</div>
+            <div class="modal-body">
+              <div class="form-group">
+                <label for="signupName">用户名</label>
+                <input id="signupName" name="user[name]" type="text" class="form-control">
+              </div>
+              <div class="form-group">
+                <label for="signupPassword">密码</label>
+                <input id="signupPassword" name="user[password]" type="password" class="form-control">
+              </div>
+              <div role="alert" class="alert alert-danger hides"><span aria-hidden="true" class="glyphicon glyphicon-exclamation-sign"></span><span class="sr-only">Error:</span><span class="alert-text">Enter a valid email address</span></div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" data-dismiss="modal" class="btn btn-default">关闭</button>
+              <button type="submit" class="btn btn-success user-signup-btn">提交</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <!--bootstrap登录弹框-->
+    <div id="signinModal" class="modal fade">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <form method="POST" action="/user/signin">
+            <div class="modal-header">登录</div>
+            <div class="modal-body">
+              <div class="form-group">
+                <label for="signinName">用户名</label>
+                <input id="signinName" name="user[name]" type="text" class="form-control">
+              </div>
+              <div class="form-group">
+                <label for="signinPassword">密码</label>
+                <input id="signinPassword" name="user[password]" type="password" class="form-control">
+              </div>
+              <div role="alert" class="alert alert-danger hides"><span aria-hidden="true" class="glyphicon glyphicon-exclamation-sign"></span><span class="sr-only">Error:</span><span class="alert-text">Enter a valid email address</span></div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" data-dismiss="modal" class="btn btn-default">关闭</button>
+              <button type="submit" class="btn btn-success user-signin-btn">提交</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <!--bootstrap退出登录弹框-->
+    <div id="logOutModal" class="modal fade">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <form method="get" action="/user/logout">
+            <div class="modal-header">登录</div>
+            <div class="modal-body">
+              <div class="form-group">
+                <label for="signinName">您确定要退出登录吗?</label>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" data-dismiss="modal" class="btn btn-default">关闭</button>
+              <button type="submit" class="btn btn-success">确定</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <script src="/build/js/app.js"></script>
+  </body>
+</html>

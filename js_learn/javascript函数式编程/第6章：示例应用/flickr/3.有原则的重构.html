@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<script src="js/ramda.js"></script>
+<script>
+
+    var trace = _.curry(function(tag, x) {
+        console.log(tag, x);
+        return x;
+    });
+
+
+    //两个不纯的动作，即从 flickr 的 api 获取数据和在屏幕上放置图片这两件事。我们先来定义这两个动作，这样就能隔离它们了。
+    var Impure = {
+        getJSON: _.curry(function(callback, url) {
+            $.getJSON(url, callback);
+        }),
+
+        setHtml: _.curry(function(sel, html) {
+            $(sel).html(html);
+        })
+    };
+
+    var img = function (url) {
+        debugger;
+        return $('<img src="'+url+'"/>');
+    };
+
+
+    //构造 url 传给 Impure.getJSON 函数。
+    var url = function (term) {
+        debugger;
+        return 'http://127.0.0.1/my_learn/flickr/json/' + term +'.json';
+
+        // return 'https://api.flickr.com/services/feeds/photos_public.gne?tags=' + term + '&format=json&jsoncallback=?';
+    };
+
+    //让我们写一个 app 函数发送请求并把内容放置到屏幕上。
+
+    // var app = _.compose(Impure.getJSON(trace("response")), url);
+
+    // app("flickr");
+
+
+    // 这会调用 url 函数，然后把字符串传给 getJSON 函数。
+    // getJSON 已经局部应用了 trace，加载这个应用将会把请求的响应显示在 console 里。
+
+
+    //不管怎样，我们可以使用 ramda 的一个通用 getter 函数 prop() 来获取这些嵌套的属性。
+    // 不过为了让你明白这个函数做了什么事情，我们自己实现一个 prop 看看：
+    var prop = _.curry(function(property, object){
+        debugger;
+        return object[property];
+    });
+
+
+    //上面的代码是有优化空间的——我们获取 url map 了一次，把这些 url 变为 img 标签又 map 了一次。关于 map 和组合是有定律的：
+
+
+    // map 的组合律
+    var law = compose(_.map(f), _.map(g)) == _.map(compose(f, g));
+
+
+    var mediaUrl = _.compose(prop('src'), prop('media'));
+
+//    var images = _.compose(_.map(img), _.compose(_.map(mediaUrl), prop('items')));
+
+    var mediaToImg = _.compose(img, mediaUrl);
+
+    var images = _.compose(_.map(mediaToImg), prop('items'));
+
+    //渲染图片
+    var renderImages = _.compose(Impure.setHtml("body"), images);
+
+    //发起http 请求 ， 传回调函数
+    var app = _.compose(Impure.getJSON(renderImages), url);
+
+    app('flickr');
+
+
+    // 我们已经见识到如何在一个小而不失真实的应用中运用新技能了，也已经使用过函数式这个“数学框架”来推导和重构代码了。
+    // 但是异常处理以及代码分支呢？如何让整个应用都是函数式的，而不仅仅是把破坏性的函数放到命名空间下？
+    // 如何让应用更安全更富有表现力？这些都是本书第 2 部分将要解决的问题。
+
+
+
+
+
+
+
+
+
+</script>
+
+</body>
+</html>

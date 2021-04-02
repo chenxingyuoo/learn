@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>demos</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no" charset="utf-8">
+    <style>
+        *{
+            padding: 0;
+            margin: 0;
+        }
+        html,body{
+            height: 100%;
+            overflow: hidden;
+        }
+
+        #container, .sections, .section {
+            height: 100%;
+            position: relative;
+        }
+        .sections{
+            /*transition : all 800ms ease-in-out;
+            -webkit-transition : all 800ms ease-in-out;
+            -moz-transition : all 800ms ease-in-out;
+            -o-transition : all 800ms ease-in-out;*/
+        }
+
+        #section0,
+        #section1,
+        #section2,
+        #section3 {
+            background-color: #000;
+            background-size: cover;
+            background-position: 50% 50%;
+
+        }
+        #section0{
+            background-image: url('1.jpg');
+        }
+        #section1{
+            background-image: url('2.jpg');
+        }
+        #section2{
+            background-image: url('3.jpg');
+        }
+        #section3{
+            background-image: url('4.jpg');
+        }
+
+        .left{
+            float: left;
+            width: 25%;
+        }
+
+        .pages {
+            position: fixed;
+            right: 10px;
+            top: 50%;
+            list-style: none;
+        }
+
+        .pages li {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #fff;
+            margin: 15px 0 0 6px;
+        }
+        .pages li.active {
+            width: 10px;
+            height: 10px;
+            border: 4px solid #FFFFFF;
+            margin-left: 0;
+        }
+
+
+        .section > .intro {
+            color: #fff;
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            /*-webkit-transform: translatEY(-50%);
+            -moz-transform: translateY(-50%);
+            -o-transform: translateY(-50%);
+            -ms-transform: translateY(-50%);
+            transform: translateY(-50%);*/
+            text-align: center;
+            text-shadow: 10px 10px 10px #333;
+        }
+
+
+
+
+
+        /*下面的内容只是用于第一页加载时，文本从两侧飘进来的动画*/
+        #section0.active p {
+            /*-webkit-transition: all 1s ease-in-out 100ms;*/
+            /*transition: all 1s ease-in-out 300ms;*/
+            /*-webkit-transform: translateX(100%);*/
+            /*transform: translateX(100%);*/
+            -webkit-animation: secpX 1s ease-in-out 100ms forwards;
+            animation: secpX 1s ease-in-out 100ms forwards;
+        }
+
+        #section0.active .title {
+            /*transition: all 1s ease-in-out 100ms;*/
+            /*-webkit-transition: all 1s ease-in-out 300ms;*/
+            /*-webkit-transform: translateX(-100%);*/
+            /*transform: translateX(-100%);*/
+            -webkit-animation: sectitleX 1s ease-in-out 100ms forwards;
+            animation: sectitleX 1s ease-in-out 100ms forwards;
+            margin-bottom: 20px;
+        }
+
+
+        #section1.active p {
+            -webkit-animation: secpY 1s ease-in-out 100ms forwards;
+            animation: secpY 1s ease-in-out 100ms forwards;
+        }
+
+        #section1.active .title {
+            -webkit-animation: sectitleY 1s ease-in-out 100ms forwards;
+            animation: sectitleY 1s ease-in-out 100ms forwards;
+            margin-bottom: 20px;
+        }
+
+        #section2.active p {
+            -webkit-animation: secpX 1s ease-in-out 100ms forwards;
+            animation: secpX 1s ease-in-out 100ms forwards;
+        }
+
+        #section2.active .title {
+            -webkit-animation: sectitleX 1s ease-in-out 100ms forwards;
+            animation: sectitleX 1s ease-in-out 100ms forwards;
+            margin-bottom: 20px;
+        }
+
+        #section3.active p {
+            -webkit-animation: secpY 1s ease-in-out 100ms forwards;
+            animation: secpY 1s ease-in-out 100ms forwards;
+        }
+
+        #section3.active .title {
+            -webkit-animation: sectitleY 1s ease-in-out 100ms forwards;
+            animation: sectitleY 1s ease-in-out 100ms forwards;
+            margin-bottom: 20px;
+        }
+
+
+
+        @keyframes secpX {
+            0% {
+                -webkit-transform: translateX(100%);
+                transform: translateX(100%);
+            }
+            100% {
+                -webkit-transform: translateX(0);
+                transform: translateX(0);
+            }
+        }
+
+        @-webkit-keyframes secpX {
+            0% {
+                -webkit-transform: translateX(100%);
+                transform: translateX(100%);
+            }
+            100% {
+                -webkit-transform: translateX(0);
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes secpY {
+            0% {
+                -webkit-transform: translateY(100%);
+                transform: translateY(100%);
+            }
+            100% {
+                -webkit-transform: translateY(0);
+                transform: translateY(0);
+            }
+        }
+
+        @-webkit-keyframes secpY {
+            0% {
+                -webkit-transform: translateY(100%);
+                transform: translateY(100%);
+            }
+            100% {
+                -webkit-transform: translateY(0);
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes sectitleX {
+            0% {
+                -webkit-transform: translateX(-100%);
+                transform: translateX(-100%);
+            }
+            100% {
+                -webkit-transform: translateX(0);
+                transform: translateX(0);
+            }
+        }
+
+        @-webkit-keyframes sectitleX {
+            0% {
+                -webkit-transform: translateX(-100%);
+                transform: translateX(-100%);
+            }
+            100% {
+                -webkit-transform: translateX(0);
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes sectitleY {
+            0% {
+                -webkit-transform: translateY(-500%);
+                transform: translateY(-500%);
+            }
+            100% {
+                -webkit-transform: translateY(0);
+                transform: translateY(0);
+            }
+        }
+
+        @-webkit-keyframes sectitleY {
+            0% {
+                -webkit-transform: translateY(-500%);
+                transform: translateY(-500%);
+            }
+            100% {
+                -webkit-transform: translateY(0);
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<!--<div class="container" id="container">
+    <div class="sections">
+        <div class="section" id="section0">
+            <h3>this is the page</h3>
+        </div>
+        <div class="section" id="section1">
+            <h3>this is the page</h3>
+        </div>
+        <div class="section" id="section2">
+            <h3>this is the page</h3>
+        </div>
+        <div class="section" id="section3">
+            <h3>this is the page</h3>
+        </div>
+    </div>
+</div>-->
+
+<div class="container" id="container">
+    <div class="sections">
+        <div class="section active" id="section0">
+            <div class="intro">
+                <h1 class="title">switchPage</h1>
+
+                <p>Create Beautiful Fullscreen Scrolling Websites</p>
+            </div>
+        </div>
+        <div class="section" id="section1">
+            <div class="intro">
+                <h1 class="title">switchPage</h1>
+
+                <p>Create Beautiful Fullscreen Scrolling Websites</p>
+            </div>
+        </div>
+        <div class="section" id="section2">
+            <div class="intro">
+                <h1 class="title">switchPage</h1>
+
+                <p>Create Beautiful Fullscreen Scrolling Websites</p>
+            </div>
+        </div>
+        <div class="section" id="section3">
+            <div class="intro">
+                <h1 class="title">switchPage</h1>
+
+                <p>Create Beautiful Fullscreen Scrolling Websites</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="jquery-1.12.1.js"></script>
+<script src="demo.js"></script>
+<script>
+    $(function () {
+        $("#container").PageSwitch({
+            loop : true,
+            vertical : false
+        });
+    });
+</script>
+
+</body>
+</html>

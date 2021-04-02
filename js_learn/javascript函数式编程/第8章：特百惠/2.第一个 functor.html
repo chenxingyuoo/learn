@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+
+<script src="../ramda.js"></script>
+<script>
+
+    //一旦容器里有了值，不管这个值是什么，我们就需要一种方法来让别的函数能够操作它。
+
+    var Container = function(x) {
+        this.__value = x;
+    }
+
+    Container.of = function(x) { return new Container(x); };
+
+
+    // (a -> b) -> Container a -> Container b
+    Container.prototype.map = function(f){
+        return Container.of(f(this.__value))
+    }
+
+
+    //这个 map 跟数组那个著名的 map 一样，除了前者的参数是 Container a 而后者是 [a]。它们的使用方式也几乎一致：
+
+    Container.of(2).map(function (two){
+        return two + 2;
+    });
+
+    //=> Container(4)
+
+
+    Container.of("flamethrowers").map(function(s){ return s.toUpperCase() })
+    //=> Container("FLAMETHROWERS")
+
+
+    var concat = R.curry(function (str2,str1){
+        return str1 + str2;
+    });
+
+    var t = Container.of("bombs").map(concat(' away')).map(R.prop('length'))
+    //=> Container(10)
+    console.log(t);
+
+
+
+    // 为什么要使用这样一种方法？因为我们能够在不离开 Container 的情况下操作容器里面的值。
+    // 这是非常了不起的一件事情。Container 里的值传递给 map 函数之后，就可以任我们操作；
+    // 操作结束后，为了防止意外再把它放回它所属的 Container。
+    // 这样做的结果是，我们能连续地调用 map，运行任何我们想运行的函数。
+    // 甚至还可以改变值的类型，就像上面最后一个例子中那样。
+
+
+    // 等等，如果我们能一直调用 map，那它不就是个组合（composition）么！
+    // 这里边是有什么数学魔法在起作用？是 functor。各位，这个数学魔法就是 functor。
+
+
+    //没错，functor 就是一个签了合约的接口。我们本来可以简单地把它称为 Mappable，但现在为时已晚，哪怕 functor 一点也不 fun。
+    // functor 是范畴学里的概念，我们将在本章末尾详细探索与此相关的数学知识；
+    // 暂时我们先用这个名字很奇怪的接口做一些不那么理论的、实用性的练习。
+
+
+    //把值装进一个容器，而且只能使用 map 来处理它，这么做的理由到底是什么呢？
+    // 如果我们换种方式来问，答案就很明显了：让容器自己去运用函数能给我们带来什么好处？
+    // 答案是抽象，对于函数运用的抽象。当 map 一个函数的时候，我们请求容器来运行这个函数。不夸张地讲，这是一种十分强大的理念。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</script>
+
+</body>
+</html>

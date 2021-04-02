@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+	<title>validate</title>
+	<style type="text/css">
+    body{
+    	font-size: 36px;
+    	line-height: 1.6;
+    }
+    p{
+    	margin: 10px 0;
+    }
+    label{
+    	display: inline-block;
+    	min-width: 140px;
+    }
+    label.error{
+    	margin-left: 10px;
+    	color: red;
+    }
+    input,button{
+    	font-size: 36px;
+    	line-height: 35px;
+    	border: 1px solid #999;
+    	min-width: 180px;
+    }
+    input.error{
+    	border: 1px solid red;
+    }
+    input[type=submit],button{
+    	padding: 10px 0;
+    	font-size: 36px;
+    	margin-top: 20px;
+    }
+	</style>
+	<script  src="jquery-1.11.3.min.js"></script>
+	<script type="text/javascript" src="jquery.validate.min.js"></script>
+	<script type="text/javascript">
+       $(function(){
+       	  $('#demoForm').validate({
+       	  	  rules : {
+       	  	  	 username : {
+       	  	  	 	required:true,
+       	  	  	 	minlength:2,
+       	  	  	 	maxlength:16
+       	  	  	 },
+       	  	  	 password : {
+       	  	  	 	required:true,
+       	  	  	 	minlength:2,
+       	  	  	 	maxlength:16
+       	  	  	 }
+       	  	  },messages:{
+       	  	  	 username:{
+       	  	  	 	required:"必须填写字符",
+       	  	  	 	minlength:"最少填写2个字符",
+       	  	  	 	maxlength:"不能超过16个字符"
+       	  	  	 },
+       	  	  	 password:{
+       	  	  	 	required:"必须填写字符",
+       	  	  	 	minlength:"最少填写2个字符",
+       	  	  	 	maxlength:"不能超过16个字符"
+       	  	  	 }
+       	  	  }
+       	  })
+       })
+	</script>
+</head>
+
+<body>
+   <form id="demoForm">
+	<fieldset>
+		<legend>用户登录</legend>
+		<p>
+			<label for="username">用户名</label>
+			<input type="text" id="username" name="username" />
+		</p>
+
+		<p>
+			<label for="password">用户密码</label>
+			<input type="password" id="password" name="password" />
+		</p>
+
+		<p>
+			<input type="submit" value="登录" />
+		</p>
+	</fieldset>
+</form>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=320, user-scalable=no">
+  <title>Title</title>
+</head>
+<body>
+
+<div>
+  测试webview
+</div>
+
+<p id="p1"></p>
+<p id="p2"></p>
+
+<button>发送</button>
+
+<script>
+  var messagesReceivedFromReactNative = 0
+  document.addEventListener('message', function(e) {
+    debugger;
+    messagesReceivedFromReactNative += 1;
+    document.getElementById('p1').innerHTML =
+        '从React Native接收的消息: ' + messagesReceivedFromReactNative;
+    document.getElementById('p2').innerHTML = e.data;
+  });
+
+
+  document.getElementsByTagName('button')[0].addEventListener('click', function() {
+    window.postMessage('这是html发送到RN的消息');
+  });
+
+</script>
+
+</body>
+</html>

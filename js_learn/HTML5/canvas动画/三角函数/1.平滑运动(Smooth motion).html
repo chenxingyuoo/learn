@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>1.平滑运动(Smooth motion)</title>
+</head>
+
+<body>
+
+<canvas id="canvas" width="500" height="500" style="background-color: #000;">
+</canvas>
+
+<script src="../js/ball.js"></script>
+<script src="../js/utils.js"></script>
+
+<script>
+    window.onload = function(){
+        var canvas = document.getElementById("canvas");
+        var context = canvas.getContext("2d");
+
+        var ball = new Ball();
+        ball.x = canvas.width/2;
+        ball.y = canvas.height/2;
+
+        var angle = 0,
+                range = 50; //振幅
+
+        (function drawFram(){
+            window.requestAnimationFrame(drawFram,canvas);
+            context.clearRect(0,0,canvas.width,canvas.height);
+
+            ball.x = canvas.width / 2 + Math.sin(angle) * range; //核心
+            ball.y = canvas.height / 2 + Math.sin(angle) * range; //核心
+            angle += 0.1;
+
+            ball.draw(context);
+        })();
+    }
+</script>
+</body>
+</html>

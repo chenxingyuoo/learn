@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<form id="example_form">
+    <div>
+        <label for="email">邮箱验证</label>
+        <input type="email" name="email" id="email" class="form-control" placeholder="Email">
+    </div>
+    <div id="submit">submit</div>
+</form>
+
+<script src="vaildator.js"></script>
+<script type="text/javascript">
+
+    console.log(Validator.prototype)
+
+    document.getElementById('submit').addEventListener('click', function () {
+        var validator = new Validator('example_form',[
+            {
+                //name 字段
+                name: 'email',
+                display:"你输入的不{{email}}是合法邮箱|不能为空|太长|太短",
+                // 验证条件
+                rules: 'is_email|max_length(12)'
+                // rules: 'valid_email|required|max_length(12)|min_length(2)'
+            },{
+                //name 字段
+                name: 'sex',
+                display:"请你选择性别{{sex}}",
+                // 验证条件
+                rules: 'required'
+            }
+        ],function(obj,evt){
+            console.log(obj)
+            if(obj.errors){
+                // 判断是否错误
+                console.log(obj.errors)
+            }
+        });
+        validator.validate();
+    },false);
+
+
+
+</script>
+</body>
+</html>

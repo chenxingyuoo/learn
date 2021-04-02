@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!--<meta name="viewport" content="initial-scale=1, maximum-scale=3, minimum-scale=1, user-scalable=no">-->
+    <meta name="viewport" content="width=640, user-scalable=no">
+    <title>Title</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        #my-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+    </style>
+</head>
+
+<body>
+<canvas id="my-canvas"></canvas>
+<script>
+
+    window.requestAnimFrame = (function () {
+        return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame ||
+            function (callback, element) {
+                return window.setTimeout(callback, 1000 / 60);
+            };
+    })();
+
+
+    window.onload = function () {
+        var myCanvas = document.querySelector('#my-canvas');
+        var context = myCanvas.getContext('2d');
+
+        debugger;
+        myCanvas.width = 640;
+        myCanvas.height = document.documentElement.clientHeight;
+
+        var canWidth = myCanvas.width;
+        var canHeight = myCanvas.height;
+
+        //背景
+        function DrawBackGround() {
+            this.bgPic = new Image();
+            this.init();
+        }
+
+        DrawBackGround.prototype.init = function () {
+            this.bgPic.src = './img/bg.png';
+        };
+        DrawBackGround.prototype.draw = function () {
+            context.drawImage(this.bgPic, 0, 0, canWidth, canHeight);     //向画布上绘制图像、画布或视频
+        };
+
+        //路
+        function DrawRoad() {
+            this.index = 0; //保存index ， 用来切换动画
+            this.roadPic = new Image();
+            this.init();
+        }
+
+        DrawRoad.prototype.init = function () {
+            this.roadPic.src = './img/road.png';
+        };
+
+        DrawRoad.prototype.draw = function () {
+            this.index = (this.index + 1) % 6;
+
+            context.save();
+            //偏移
+            context.translate(0, canHeight - 780);
+            //绘制图片
+            context.drawImage(this.roadPic, (this.index * canWidth), 0, 640, 780, 0, 0, 640, 780);
+            context.restore();
+        };
+
+
+        //跑男
+        function DrawGuy() {
+            this.index = 0;  //保存index ， 用来切换动画
+            this.guyPic = new Image();
+            this.init();
+        }
+
+        DrawGuy.prototype.init = function () {
+            this.guyPic.src = './img/guy.png';
+        };
+
+        DrawGuy.prototype.draw = function () {
+
+            this.index = (this.index + 1) % 8;
+
+            context.save();
+            //偏移
+            context.translate((canWidth - 176) / 2, canHeight - 377 - 150);
+            //绘制图片
+            context.drawImage(this.guyPic, this.index * 176, 0, 176, 377, 0, 0, 176, 377);
+            context.restore();
+        };
+
+        var mouse = {x: 0, y: 0};
+
+        //为元素绑定click事件
+        myCanvas.addEventListener('click', function (event) {
+            var x, y;
+            //获取鼠标位于当前屏幕的位置， 并作兼容处理
+            if (event.pageX || event.pageY) {
+                x = event.pageX;
+                y = event.pageY;
+            } else {
+                x = event.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
+                y = event.clientY + document.body.scrollTop + document.documentElement.scrollTop;
+            }
+            //将当前的坐标值减去元素的偏移位置，即为鼠标位于当前canvas的位置
+            x = x - myCanvas.offsetLeft;
+            y = y - myCanvas.offsetTop;
+
+            mouse.x = x;
+            mouse.y = y;
+
+            console.log(mouse);
+        }, false);
+
+
+        var drawBackGround;
+        var drawRoad;
+        var drawGuy;
+        (function init() {
+            //初始化背景
+            drawBackGround = new DrawBackGround();
+
+            //初始化路
+            drawRoad = new DrawRoad();
+
+            //初始化跑男
+            drawGuy = new DrawGuy();
+        })();
+
+
+        //速度
+        var speed = 500;
+
+        setTimeout(function () {
+            speed = 300;
+        }, 2000);
+
+//        setTimeout(function(){
+//            speed = 200;
+//        },5000);
+//
+//        setTimeout(function(){
+//            speed = 100;
+//        },10000);
+//
+//        setTimeout(function(){
+//            speed = 50;
+//        },13000);
+
+
+        (function road() {
+            window.setTimeout(road, speed);
+            context.clearRect(0, 0, canWidth, canHeight);
+
+            //绘制背景
+            drawBackGround.draw();
+
+            //绘制公路
+            drawRoad.draw();
+
+            //绘制跑男
+            drawGuy.draw();
+        })()
+    }
+
+
+</script>
+
+</body>
+</html>

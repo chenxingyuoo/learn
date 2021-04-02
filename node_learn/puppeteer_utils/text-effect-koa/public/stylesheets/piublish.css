@@ -1,0 +1,38 @@
+/* 庞门正道 */
+@font-face {
+  font-family: 'pmzdbtt';
+  src: url('fonts/pmzdbtt.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* 庞门正道 */
+@font-face {
+  font-family: 'pangmenzhengdao';
+  src: url('fonts/pangmenzhengdao.ttf') format('ttf');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'aliHYAiHei';
+  src: url('fonts/aliHYAiHei.ttf') format('ttf');
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* 思源宋体 */
+@font-face {
+  font-family: 'fnsyhtHeavy';
+  src: url('fonts/fnsyhtHeavy.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* 站酷快乐体 */
+@font-face {
+  font-family: 'zankukuaile';
+  src: url('fonts/zankukuaile.otf') format('otf');
+  font-weight: normal;
+  font-style: normal;
+}

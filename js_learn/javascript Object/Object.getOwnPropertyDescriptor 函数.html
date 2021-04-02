@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Object.getOwnPropertyDescriptor 函数 </title>
+</head>
+
+<body>
+<script>
+    //获取指定对象的自身属性描述符。自身属性描述符是指直接在对象上定义（而非从对象的原型继承）的描述符。
+
+    //数据属性示例
+    //以下示例获取数据属性描述符，并用它将属性设为只读。
+    // Create a user-defined object.
+    var obj = {};
+
+    // Add a data property.
+    obj.newDataProperty = "abc";
+
+    // Get the property descriptor.
+    var descriptor = Object.getOwnPropertyDescriptor(obj, "newDataProperty");
+
+    // Change a property attribute.
+    descriptor.writable = false;
+    Object.defineProperty(obj, "newDataProperty", descriptor);
+
+    //若要列出属性特性，可将以下代码添加到此示例中。
+    // Get the descriptor from the object.
+    var desc2 = Object.getOwnPropertyDescriptor(obj, "newDataProperty");
+
+    // List the descriptor attributes.
+    for (var prop in desc2) {
+        document.write(prop + ': ' + desc2[prop]);
+        document.write("<br />");
+    }
+
+    // Output:
+    // value: abc
+    // writable: false
+    // enumerable: true
+    // configurable: true
+</script>
+</body>
+</html>

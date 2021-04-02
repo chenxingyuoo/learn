@@ -1,0 +1,16 @@
+{
+  "name": "@chenxingyu_o/apollo-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "chenxingyu <2731173104@qq.com> (https://github.com/chenxingyuoo)",
+  "license": "MIT",
+  "dependencies": {
+    "apollo-server-koa": "^2.8.0",
+    "graphql": "^14.4.2"
+  }
+}

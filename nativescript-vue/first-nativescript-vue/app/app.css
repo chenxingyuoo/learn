@@ -1,0 +1,74 @@
+/*@import 'nativescript-theme-core/css/core.light.css';*/
+
+
+/* Your CSS goes here */
+.home-coming-title {
+    height: 40;
+    font-size: 16;
+}
+
+
+.coming-list-wrapper {
+    height: 220;
+    margin-bottom: 20;
+}
+.coming-item {
+    height: 220
+}
+.coming-Font {
+    font-size: 14;
+    font-weight: bold;
+    margin-left: 10;
+}
+.coming-image {
+    width: 140;
+    height: 180;
+    margin-bottom: 10
+}
+
+
+.col-list-image {
+    height: 120;
+    width: 100;
+    margin-left: 10;
+    margin-right: 6;
+}
+.col-list-image-more {
+    height: 160;
+    width: 120;
+    margin-left: 10;
+    margin-right: 6;
+}
+.col-list-wrapper {
+    height: 140;
+    padding: 10 10 10 0;
+    border-bottom-width: 1;
+    border-bottom-color: rgba(155,155,155,0.3)
+}
+.col-list-wrapper-more {
+    height: 180;
+    padding: 10 10 10 0;
+    border-bottom-width: 1;
+    border-bottom-color: rgba(155,155,155,0.3)
+}
+
+.Redbutton {
+    padding: 0;
+    color: #ff4500;
+    color: #ff4500;
+    height: 32;
+    width:70;
+    border-width:1;
+    border-color: #ff4500;
+    border-radius: 4
+}
+
+.cinema-item {
+    height: 120;
+    background-color: #fff;
+    padding-bottom: 10;
+    border-bottom-width: 0.3;
+    border-bottom-color: rgba(155,155,155,0.4);
+    padding-left: 20;
+    padding-top: 10;
+}

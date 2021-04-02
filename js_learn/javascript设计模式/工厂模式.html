@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>工厂模式</title>
+</head>
+
+<body>
+<script>
+    //工厂（Factory）模式：提供一个创建一系列相关或相互依赖对象的接口，而无需指定他们具体的类。
+
+    //工厂就是把成员对象的创建工作转交给一个外部对象，好处在于消除对象之间的耦合(何为耦合？就是相互影响)。通过使用工厂方法而不是new关键字及具体类，可以把所有实例化的代码都集中在一个位置，有助于创建模块化的代码，这才是工厂模式的目的和优势。
+
+    // 举个例子：你有一个大的功能要做，其中有一部分是要考虑扩展性的，那么这部分代码就可以考虑抽象出来，当做一个全新的对象做处理。好处就是将来扩展的时候容易维护 - 只需要操作这个对象内部方法和属性，达到了动态实现的目的。非常有名的一个示例 - XHR工厂：
+
+
+    var XMLHttpFactory = function () {
+    };　　　　　　//这是一个简单工厂模式
+    XMLHttpFactory.createXMLHttp = function () {
+        var XMLHttp = null;
+        if (window.XMLHttpRequest) {
+            XMLHttp = new XMLHttpRequest()
+        } else if (window.ActiveXObject) {
+            XMLHttp = new ActiveXObject("Microsoft.XMLHTTP")
+        }
+        return XMLHttp;
+    };
+    //XMLHttpFactory.createXMLHttp()这个方法根据当前环境的具体情况返回一个XHR对象。
+    var AjaxHander = function () {
+        var XMLHttp = XMLHttpFactory.createXMLHttp();
+        // 　　　　...
+    };
+
+    //工厂模式又区分简单工厂模式和抽象工厂模式，上面介绍的是简单工厂模式，这种模式用的更多也更简单易用。抽象工厂模式的使用方法就是 - 先设计一个抽象类，这个类不能被实例化，只能用来派生子类，最后通过对子类的扩展实现工厂方法。 示例：
+
+    var XMLHttpFactory = function () {
+    };　     //这是一个抽象工厂模式
+    XMLHttpFactory.prototype = {
+        ////如果真的要调用这个方法会抛出一个错误，它不能被实例化，只能用来派生子类
+        createFactory: function () {
+            throw new Error('This is an abstract class');
+        }
+    }
+
+    //派生子类，文章开始处有基础介绍那有讲解继承的模式，不明白可以去参考原理
+    var XHRHandler = function () {
+        XMLHttpFactory.call(this);
+    };
+    XHRHandler.prototype = new XMLHttpFactory();
+    XHRHandler.prototype.constructor = XHRHandler;
+    //重新定义createFactory 方法
+    XHRHandler.prototype.createFactory = function () {
+        var XMLHttp = null;
+        if (window.XMLHttpRequest) {
+            XMLHttp = new XMLHttpRequest()
+        } else if (window.ActiveXObject) {
+            XMLHttp = new ActiveXObject("Microsoft.XMLHTTP")
+        }
+        return XMLHttp;
+    }
+
+
+
+    //汤姆大叔
+
+    //与创建型模式类似，工厂模式创建对象（视为工厂里的产品）时无需指定创建对象的具体类。
+
+    //工厂模式定义一个用于创建对象的接口，这个接口由子类决定实例化哪一个类。该模式使一个类的实例化延迟到了子类。而子类可以重写接口方法以便创建的时候指定自己的对象类型。
+
+    //这个模式十分有用，尤其是创建对象的流程赋值的时候，比如依赖于很多设置文件等。并且，你会经常在程序里看到工厂方法，用于让子类类定义需要创建的对象类型。
+
+    //下面这个例子中，是应用了工厂方法对第26章构造函数模式代码的改进版本：
+
+    var Car = (function () {
+        var Car = function (model, year, miles) {
+            this.model = model;
+            this.year = year;
+            this.miles = miles;
+        };
+        return function (model, year, miles) {
+            return new Car(model, year, miles);
+        };
+    })();
+
+    var tom = new Car("Tom", 2009, 20000);
+    console.log(tom)
+    //Car
+    /*{
+    miles:20000
+    model:"Tom"
+    year:2009
+    }*/
+    var dudu = new Car("Dudu", 2010, 5000);
+    /*{
+     miles:5000
+     model:"Dudu"
+     year:2010
+     }*/
+    console.log(dudu)
+
+
+    //不好理解的话，我们再给一个例子：
+    var productManager = {};
+
+    productManager.createProductA = function () {
+        console.log('ProductA');
+    }
+
+    productManager.createProductB = function () {
+        console.log('ProductB');
+    }
+
+    productManager.factory = function (typeType) {
+        return new productManager[typeType];
+    }
+
+    var factory = productManager.factory("createProductA");
+
+
+    //如果还不理解的话，那我们就再详细一点咯，假如我们想在网页面里插入一些元素，而这些元素类型不固定，可能是图片，也有可能是连接，甚至可能是文本，根据工厂模式的定义，我们需要定义工厂类和相应的子类，我们先来定义子类的具体实现（也就是子函数）：
+
+    var page = page || {};
+    page.dom = page.dom || {};
+    //子函数1：处理文本
+    page.dom.Text = function () {
+        this.insert = function (where) {
+            var txt = document.createTextNode(this.url);
+            where.appendChild(txt);
+        };
+    };
+
+    //子函数2：处理链接
+    page.dom.Link = function () {
+        this.insert = function (where) {
+            var link = document.createElement('a');
+            link.href = this.url;
+            link.appendChild(document.createTextNode(this.url));
+            where.appendChild(link);
+        };
+    };
+
+    //子函数3：处理图片
+    page.dom.Image = function () {
+        this.insert = function (where) {
+            var img = document.createElement('img');
+            img.src = this.url;
+            where.appendChild(img);
+        };
+    };
+
+    //那么我们如何定义工厂处理函数呢？其实很简单：
+    page.dom.factory = function (type) {
+        return new page.dom[type];
+    };
+
+    //使用方式如下：
+
+    var o = page.dom.factory('Link');
+    o.url = 'http://www.cnblogs.com';
+    o.insert(document.body);
+
+
+    //总结
+
+    //什么时候使用工厂模式
+
+   // 以下几种情景下工厂模式特别有用：
+
+    // 对象的构建十分复杂
+    //需要依赖具体环境创建不同实例
+    //处理大量具有相同属性的小对象
+    //什么时候不该用工厂模式
+
+    //不滥用运用工厂模式，有时候仅仅只是给代码增加了不必要的复杂度，同时使得测试难以运行下去。
+
+
+</script>
+</body>
+</html>

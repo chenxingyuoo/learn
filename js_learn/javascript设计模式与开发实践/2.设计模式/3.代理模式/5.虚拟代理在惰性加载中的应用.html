@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+
+<script>
+
+    //未加载真正的 miniConsole.js 之 的代码如下
+//    var cache = [];
+//    var miniConsole = {
+//        log: function () {
+//            var args = arguments;
+//            cache.push(function () {
+//                return miniConsole.log.apply(miniConsole, args);
+//            });
+//        }
+//    };
+//
+//    //按下enter加载真正的 miniConsole.js 代码
+//    var handler = function (ev) {
+//        if (ev.keyCode === 13) {
+//            var script = document.createElement('script');
+//            script.onload = function () {
+//                for (var i = 0, fn; fn = cache[i++];) {
+//                    fn();
+//                }
+//            };
+//            script.src = 'miniConsole.js';
+//            document.getElementsByTagName('head')[0].appendChild(script);
+//        }
+//
+//
+//    };
+//
+//    document.body.addEventListener( 'keydown', handler, false );
+//
+//    miniConsole.log(1)
+
+
+
+    //封装
+    var miniCon = (function (){
+        var cache = [];
+
+        //按下enter加载真正的 miniConsole.js 代码
+        var handler = function (ev) {
+            if (ev.keyCode === 13) {
+                var script = document.createElement('script');
+                script.onload = function () {
+                    for (var i = 0, fn; fn = cache[i++];) {
+                        fn();
+                    }
+                };
+                script.src = 'miniConsole.js';
+                document.getElementsByTagName('head')[0].appendChild(script);
+                document.body.removeEventListener( 'keydown', handler );// 只加载一次miniConsole.js
+            }
+
+        };
+
+        document.body.addEventListener( 'keydown', handler, false );
+
+        return {
+            log: function () {
+                var args = arguments;
+                cache.push(function () {
+                    return window.miniConsole.log.apply(window.miniConsole, args);
+                });
+            },
+            test : function (){
+            
+            }
+        }
+    })();
+
+    miniCon.log( 11 );
+
+    miniCon.log('chen')
+
+
+</script>
+
+</body>
+</html>

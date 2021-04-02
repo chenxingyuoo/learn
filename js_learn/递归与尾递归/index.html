@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+
+
+
+<script>
+
+    // 当编译器检测到一个函数调用是尾递归的时候，
+    // 它就覆盖当前的活动记录而不是在栈中去创建一个新的。
+    // 编译器可以做到这点，因为递归调用是当前活跃期内最后一条待执行的语句，
+    // 于是当这个调用返回时栈帧中并没有其他事情可做，因此也就没有保存栈帧的必要了。
+    // 通过覆盖当前的栈帧而不是在其之上重新添加一个，这样所使用的栈空间就大大缩减了，
+    // 这使得实际的运行效率会变得更高。
+
+
+    //尾递归就是把当前的运算结果（或路径）放在参数里传给下层函数
+
+    //线性递归
+    function Rescuvie(n) {
+        return (n == 1) ? 1 : n * Rescuvie(n - 1);
+    }
+
+    Rescuvie(5) //120
+
+    //尾递归
+    function TailRescuvie(n, a) {
+        return (n == 1) ? a : TailRescuvie(n - 1, a * n);
+    }
+
+    TailRescuvie(5, 1) //120
+
+
+
+
+
+ function trampoline(f) {
+        while (f && f instanceof Function) {
+            f = f();
+        }
+        return f;
+    }
+
+    function sum2(x, y) {
+        if (y > 0) {
+            return sum2.bind(null, x + 1, y - 1);
+        } else {
+            return x;
+        }
+    }
+
+    console.time('test2');
+    trampoline(sum2(1, 100000))
+    console.timeEnd('test2');
+    
+
+    //尾递归优化
+    function tco(f) {
+        var value;
+        var active = false;
+        var accumulated = [];
+
+        return function accumulator() {
+            accumulated.push(arguments);
+            if (!active) {
+                active = true;
+                while (accumulated.length) {
+                    value = f.apply(this, accumulated.shift());
+                }
+                active = false;
+                return value;
+            }
+        };
+    }
+
+
+    var sum = tco(function(x, y) {
+        if (y > 0) {
+            return sum(x + 1, y - 1)
+        }
+        else {
+            return x
+        }
+    });
+
+    console.time('test');
+    sum(1, 100000);
+    console.timeEnd('test');
+
+
+    function sum1(x, y) {
+        if (y > 0) {
+            return sum1(x + 1, y - 1);
+        } else {
+            return x;
+        }
+    }
+
+    console.time('test1');
+//    sum1(1, 100000);  // Uncaught RangeError: Maximum call stack size exceeded(…)
+    console.timeEnd('test1');
+
+    //如果不是计算大数据导致堆栈溢出 ， 还是用为递归比较快 。
+
+    //如果计算大数据导致堆栈溢出 ， 那么就要用 尾递归优化 （循环代替）;
+
+    
+
+    //递归
+    function Fibonacci (n) {
+        if ( n <= 1 ) {
+            return 1
+        };
+
+
+        return Fibonacci(n - 1) + Fibonacci(n - 2);
+    }
+
+    console.log(Fibonacci(5));
+    Fibonacci(10) // 89
+    Fibonacci(100) // 堆栈溢出
+    Fibonacci(500) // 堆栈溢出
+
+
+    //尾递归
+    function Fibonacci2 (n , ac1 = 1 , ac2 = 1) {
+        if( n <= 1 ) {
+            return ac2
+        };
+
+        return Fibonacci2 (n - 1, ac2, ac1 + ac2);
+    }
+
+    console.log(Fibonacci2(5));
+    Fibonacci2(100) // 573147844013817200000
+    Fibonacci2(1000) // 7.0330367711422765e+208
+    Fibonacci2(10000) // Infinity
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>创建一个AudioContext：</title>
+</head>
+<body>
+
+<script>
+    var context;
+    window.addEventListener('load', init, false);
+    function init() {
+        try {
+            // Fix up for prefixing
+            window.AudioContext = window.AudioContext||window.webkitAudioContext;
+            context = new AudioContext();
+        }
+        catch(e) {
+            alert('Web Audio API is not supported in this browser');
+        }
+    }
+</script>
+
+</body>
+</html>

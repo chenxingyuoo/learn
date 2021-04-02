@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+
+<script src="js/three.js"></script>
+<script>
+  function init() {
+    // 获取浏览器窗口的宽高，后续会用
+    var width = window.innerWidth
+    var height = window.innerHeight
+
+    // 创建一个场景
+    var scene = new THREE.Scene()
+
+    // 创建一个具有透视效果的摄像机
+    var camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 800)
+
+    // 设置摄像机位置，并将其朝向场景中心
+    camera.position.x = 0
+    camera.position.y = 10
+    camera.position.z = 200
+    camera.lookAt(scene.position)
+
+    // 创建一个 WebGL 渲染器，Three.js 还提供 <canvas>, <svg>, CSS3D 渲染器。
+    var renderer = new THREE.WebGLRenderer({
+      antialias: true
+    })
+
+    // 设置渲染器的清除颜色（即绘制下一帧前填充的颜色）和输出的 canvas 的尺寸
+    renderer.setClearColor(0x000000)
+    renderer.setSize(width, height)
+
+    // 将渲染器的输出（此处是 canvas 元素）插入到 body
+    document.body.appendChild(renderer.domElement)
+
+    // 初始化摄像机插件（用于拖拽旋转摄像机，产生交互效果）
+    var orbitControls = new THREE.OrbitControls(camera)
+    orbitControls.autoRotate = true
+
+    function createPoints(name, texture, size, transparent, opacity, sizeAttenuation, color) {
+      var geom = new THREE.Geometry()
+
+      // var color = new THREE.Color(color);
+      // color.setHSL(color.getHSL().h,
+      //         color.getHSL().s,
+      //         (Math.random()) * color.getHSL().l);
+
+      var material = new THREE.PointsMaterial({
+        size: size,
+        transparent: transparent,
+        opacity: opacity,
+        map: texture,
+        // 设置元素与背景的融合模式
+        blending: THREE.AdditiveBlending,
+        // // 用于去除纹理的黑色背景，关于 depthTest 和 depthWrite 的详细解释，请查看https://stackoverflow.com/questions/37647853/three-js-depthwrite-vs-depthtest-for-transparent-canvas-texture-map-on-three-p
+        depthWrite: false,
+        // 粒子的大小是否和其与摄像机的距离有光，默认值 true
+        sizeAttenuation: sizeAttenuation,
+        color: color
+      })
+
+      var range = 500;
+      for (var i = 0; i < 200; i++) {
+        var particle = new THREE.Vector3(
+          Math.random() * range - range / 2,
+          Math.random() * range * 1.5,
+          Math.random() * range - range / 2)
+        particle.velocityY = 0.1 + Math.random() / 5
+        particle.velocityX = (Math.random() - 0.5) / 3
+        particle.velocityZ = (Math.random() - 0.5) / 3
+        geom.vertices.push(particle)
+      }
+
+      var points = new THREE.Points(geom, material)
+      points.name = name
+      points.sortParticles = true
+      return points
+    }
+
+    var texture1 = new THREE.TextureLoader().load('http://omwfrl50f.bkt.clouddn.com/points-texture-o2.jpg')
+    var texture2 = new THREE.TextureLoader().load('http://omwfrl50f.bkt.clouddn.com/points-texture-joy.png')
+
+    // 对于 THREE.Points，由于其一个实例只是设置一种纹理，因此对于多个纹理，需要创建相应个数的 THREE.Points
+    var points1 = createPoints('aotu', texture1, 20, true, .8, true, 0xffffff)
+    var points2 = createPoints('joy', texture2, 20, true, .8, true, 0xffffff)
+
+    scene.add(points1)
+    scene.add(points2)
+
+
+    render()
+
+
+    function render() {
+      // 渲染，即摄像机拍下此刻的场景
+      renderer.render(scene, camera)
+
+      scene.children.forEach(function (child) {
+        if (child instanceof THREE.Points) {
+          var vertices = child.geometry.vertices
+          // 由于 Three.js 默认认为几何体的顶点在整个生命周期不会改变，因此，若有改变，需要主动告诉 Three.js。更多关于更新的事项，请查看 https://threejs.org/docs/index.html#manual/introduction/How-to-update-things
+          child.geometry.verticesNeedUpdate = true
+          vertices.forEach(function (v) {
+            v.y = v.y - (v.velocityY)
+            v.x = v.x - (v.velocityX)
+            v.z = v.z - (v.velocityZ)
+
+            if (v.y <= -height / 2) v.y = height / 2
+            if (v.x <= -width / 2 || v.x >= width / 2) v.velocityX = v.velocityX * -1
+            if (v.z <= -60 || v.z >= 60) v.velocityZ = v.velocityZ * -1
+          })
+        }
+      })
+      requestAnimationFrame(render)
+    }
+  }
+  init()
+</script>
+</body>
+</html>

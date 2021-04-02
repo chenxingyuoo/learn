@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+
+<script>
+
+    function Player(name) {
+        this.name = name;
+        this.enemy = null; //敌人
+    }
+    Player.prototype.win = function () {
+        console.log(this.name + ' won ');
+    };
+    Player.prototype.lose = function () {
+        console.log(this.name + ' lost');
+    };
+    Player.prototype.die = function () {
+        this.lose();
+        this.enemy.win();
+    };
+
+    var player1 = new Player('皮蛋');
+    var player2 = new Player('小乖');
+
+    player1.enemy = player2;
+    player2.enemy = player1;
+
+    //当玩家1被泡泡炸死的时候调用
+    player1.die();
+
+
+    //为游戏增加队伍
+    function Player(name, teamColor) {
+        this.partners = []; //队友队列
+        this.enemies = []; //敌人队列
+        this.state = 'live'; //玩家状态
+        this.name = name; //角色名字
+        this.teamColor = teamColor; //队伍颜色
+    }
+    ;
+
+    Player.prototype.win = function () { //玩家团队胜利
+        console.log('winner: ' + this.name);
+    };
+    Player.prototype.lose = function () { //玩家团队失败
+        console.log('loser: ' + this.name);
+    };
+
+    Player.prototype.die = function () { //     玩家死亡
+        var all_dead = true;
+        this.state = 'dead'; //设置玩家状态为死亡
+
+        for (var i = 0, partner; partner = this.partners[i++];) { //遍历队友列表
+            if (partner.state !== 'dead') { //如果还有一个队友还没死亡 ， 则游戏还没结束
+                all_dead = false;
+                break;
+            }
+        }
+
+        //如果队友全部死亡
+        if (all_dead === true) {
+            this.lose(); //通知自己游戏失败
+            for (var i = 0, partner; partner = this.partners[i++];) { //通知所有队友玩家游戏失败
+                partner.lose();
+            }
+
+            for (var i = 0, enemy; enemy = this.enemies[i++];) { //通知所有敌人游戏胜利
+                enemy.win();
+            }
+        }
+    }
+
+    //定义一个工厂来创建玩家
+    var playerFactory = function () {
+        var players = [];
+
+        return function (name, teamColor){
+            var newPlayer = new Player(name, teamColor); //创建新玩家
+            for (var i = 0, player; player = players[i++];) { //
+                if (player.teamColor === newPlayer.teamColor) { //
+                    player.partners.push(newPlayer);
+                    newPlayer.partners.push(player);
+                } else {
+                    player.enemies.push(newPlayer);
+                    newPlayer.enemies.push(player);
+                }
+            }
+            players.push(newPlayer);
+            return newPlayer;
+        }
+    }();
+
+    //  红队
+    var player1 = playerFactory( '皮蛋', 'red' ),
+        player2 = playerFactory( '小乖', 'red' ),
+        player3 = playerFactory( '宝宝', 'red' ),
+        player4 = playerFactory( '小强', 'red' );
+
+    //  蓝队
+    var player5 = playerFactory( '彭牛', 'blue' ),
+        player6 = playerFactory( '眼睛', 'blue' ),
+        player7 = playerFactory( '蚊子', 'blue' ),
+        player8 = playerFactory( '黑妞', 'blue' );
+
+
+
+    player1.die();
+    player2.die();
+    player4.die();
+    player3.die();
+
+    //    player1.partners = [player1, player2, player3, player4];
+//    player1.enemies = [player5, player6, player7, player8];
+
+
+//    Player5.partners = [player5, player6, player7, player8];
+//    Player5.enemies = [player1, player2, player3, player4];
+
+</script>
+
+</body>
+</html>

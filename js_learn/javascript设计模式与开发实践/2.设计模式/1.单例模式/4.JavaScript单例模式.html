@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+
+<button id="loginBtn">登录</button>
+<button id="createIframe">创建Iframe</button>
+
+<script>
+
+    //单例模式的核心是确保只有一个类 ， 并提供全局访问
+    var MyApp = {
+        event: {},
+        dom: {
+            style: {}
+        }
+    };
+
+    //使用闭包封装私有变量
+    var user = (function () {
+        var _name = 'chen';
+        var _age = 22;
+        return {
+            getUserInfo: function () {
+                return _name + '-' + _age;
+            }
+        }
+    })();
+
+
+    //惰性单例
+    var createLoginLayer = (function () {
+        var div;
+        return function () {
+            if (!div) {
+                div = document.createElement('div');
+                div.innerHTML = '我是登录浮窗';
+                div.style.display = 'none';
+                document.body.appendChild(div);
+            }
+            return div;
+        }
+    })();
+
+    //    document.getElementById('loginBtn').addEventListener('click',function (){
+    //        var loginLayer = createLoginLayer();
+    //        loginLayer.style.display = 'block';
+    //    }, false);
+
+    //通用的惰性单例
+    var getSingle = function (fn) {
+        var result;
+        return function () {
+            debugger;
+            return result || ( result = fn.apply(this, arguments) );
+        }
+    }
+
+    var createLoginLayer = function () {
+        var div = document.createElement('div');
+        div.innerHTML = '我是登录浮窗';
+        div.style.display = 'none';
+        document.body.appendChild(div);
+        return div;
+    };
+
+
+    var createSingleLoginLayer = getSingle(createLoginLayer);
+    document.getElementById('loginBtn').addEventListener('click', function () {
+        debugger;
+        var loginLayer = createSingleLoginLayer();
+        loginLayer.style.display = 'block';
+    }, false);
+
+    var createSingleIframe = getSingle(function () {
+        var iframe = document.createElement('iframe');
+        document.body.appendChild(iframe);
+        return iframe;
+    });
+
+    document.getElementById('createIframe').addEventListener('click', function () {
+        debugger;
+        var loginLayer = createSingleIframe();
+        loginLayer.style.display = 'block';
+    }, false);
+
+
+    var bindEvent = getSingle(function () {
+        debugger;
+        document.querySelector('div').onclick = function () {
+            alert('click');
+        }
+        return true;
+    });
+
+    var createSingleLoginLayer = getSingle(createLoginLayer);
+    var render = function () {
+        var div = createSingleLoginLayer();
+        div.style.display = 'block';
+        bindEvent();
+    };
+
+    render();
+    render();
+
+
+</script>
+
+</body>
+</html>

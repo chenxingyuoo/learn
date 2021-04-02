@@ -1,0 +1,156 @@
+@border-color : #b5bcc7;
+
+.clas{
+  border : 1px solid @border-color;
+}
+
+@width : 20px;
+.clas1 {
+  @width : 30px;
+  .clas1_in{
+    width : @width;// 此处应该取最近定义的变量 width 的值 30px
+  }
+}
+.clas1 {
+  width : @width; // 此处应该取最上面定义的变量 width 的值 20px
+
+}
+
+//Mixins（混入）
+//Mixins（混入）功能对用开发者来说并不陌生，很多动态语言都支持 Mixins（混入）特性，它是多重继承的一种实现，在 //LESS 中，混入是指在一个 CLASS 中引入另外一个已经定义的 CLASS，就像在当前 CLASS 中增加一个属性一样。
+
+// 定义一个样式选择器
+.roundedCorners(@radius:5px) {
+  -moz-border-radius: @radius;
+  -webkit-border-radius: @radius;
+  border-radius: @radius;
+  border : 1px solid @border-color;
+}
+
+.clas2{
+ .roundedCorners;  //取默認的5px
+}
+.clas3{
+  .roundedCorners(10px);  // 把 10px 作为参数传递给样式选择器
+}
+
+.roundedCorners1(@radius) {   //这样就没有默认的参数
+  -moz-border-radius: @radius;
+  -webkit-border-radius: @radius;
+  border-radius: @radius;
+  border : 1px solid @border-color;
+}
+
+.clas4{
+  .roundedCorners1(5px);
+}
+
+
+//像 JavaScript 中 arguments一样，Mixins 也有这样一个变量：@arguments。@arguments 在 Mixins 中具是一个很特别的参数，当 Mixins 引用这个参数时，该参数表示所有的变量，很多情况下，这个参数可以省去你很多代码。
+
+.boxShadow(@x:0,@y:0,@blur:1px,@color:#000){
+  -moz-box-shadow: @arguments;
+  -webkit-box-shadow: @arguments;
+  box-shadow: @arguments;
+}
+
+.clas5{
+  .boxShadow(2px,2px,3px,#f36); //传参数可以覆盖默认的
+}
+
+//命名空间
+//Mixins 是 LESS 中很重要的特性之一，我们这里也写了很多例子，看到这些例子你是否会有这样的疑问：当我们拥有了大量选择器的时候，特别是团队协同开发时，如何保证选择器之间重名问题？如果你是 java 程序员或 C++ 程序员，我猜你肯定会想到命名空间 Namespaces，LESS 也采用了命名空间的方法来避免重名问题，于是乎 LESS 在 mixins 的基础上扩展了一下，看下面这样一段代码：
+
+#mychenxingyu{
+  .boxShadow(@x:0,@y:0,@blur:1px,@color:#000){
+    -moz-box-shadow: @arguments;
+    -webkit-box-shadow: @arguments;
+    box-shadow: @arguments;
+  }
+}
+
+.clas6{
+  #mychenxingyu > .boxShadow(2px,2px,3px,#f36); //传参数可以覆盖默认的
+}
+
+//16. HTML 片段
+//嵌套的规则
+//在我们书写标准 CSS 的时候，遇到多层的元素嵌套这种情况时，我们要么采用从外到内的选择器嵌套定义，要么采用给特定元素加 CLASS 或 ID 的方式。在 LESS 中我们可以这样写：
+
+/*
+<div id="home">
+<div id="top">top</div>
+<div id="center">
+<div id="left">left</div>
+<div id="right">right</div>
+</div>
+</div>*/
+
+#home{
+  color : blue;
+  width : 600px;
+  height : 500px;
+  border:outset;
+  #top{
+    border:outset;
+    width : 90%;
+  }
+  #center{
+    border:outset;
+    height : 300px;
+    width : 90%;
+    #left{
+      border:outset;
+      float : left;
+      width : 40%;
+    }
+    #right{
+      border:outset;
+      float : left;
+      width : 40%;
+    }
+  }
+}
+
+//从上面的代码中我们可以看出，LESS 的嵌套规则的写法是 HTML 中的 DOM 结构相对应的，这样使我们的样式表书写更加简洁和更好的可读性。同时，嵌套规则使得对伪元素的操作更为方便。
+
+a {
+  color: red;
+  text-decoration: none;
+  &:hover {// 有 & 时解析的是同一个元素或此元素的伪类，没有 & 解析是后代元素
+    color: black;
+    text-decoration: underline;
+  }
+}
+
+//运算及函数
+//在我们的 CSS 中充斥着大量的数值型的 value，比如 color、padding、margin 等，这些数值之间在某些情况下是有着一定关系的，那么我们怎样利用 LESS 来组织我们这些数值之间的关系呢？我们来看这段代码：
+
+
+@init: #111111;
+@transition: @init*2;
+.switchColor {
+  color: @transition;  //输出  #222222
+}
+
+
+
+//函数报错了 ？
+
+//上面的例子中使用 LESS 的 operation 是 特性，其实简单的讲，就是对数值型的 value（数字、颜色、变量等）进行加减乘除四则运算。同时 LESS 还有一个专门针对 color 的操作提供一组函数。下面是 LESS 提供的针对颜色操作的函数列表：
+/*
+@color : #f00;
+lighten(@color, 10%); // return a color which is 10% *lighter* than @color
+darken(@color, 10%); // return a color which is 10% *darker* than @color
+saturate(@color, 10%); // return a color 10% *more* saturated than @color
+desaturate(@color, 10%);// return a color 10% *less* saturated than @color
+fadein(@color, 10%); // return a color 10% *less* transparent than @color
+fadeout(@color, 10%); // return a color 10% *more* transparent than @color
+spin(@color, 10); // return a color with a 10 degree larger in hue than @color
+//spin(@color, -10); // return a color with a 10 degree smaller hue than @color
+
+//使用这些函数和 JavaScript 中使用函数一样。
+@init: #f04615;
+#body {
+  background-color: fadein(@init, 10%);
+}*/

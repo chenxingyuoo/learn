@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+
+<script src="../three.js"></script>
+<script>
+
+    //场景
+    var scene = new THREE.Scene();
+
+
+    var renderer = new THREE.WebGLRenderer();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+
+    var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 500);
+    camera.position.set(0, 0, 100);
+    camera.lookAt(new THREE.Vector3(0, 0, 0));
+
+    //画线材料
+    var material = new THREE.LineBasicMaterial({ color: 0x0000ff });
+
+    //使用一个Geometry ， 保存顶点
+    var geometry = new THREE.Geometry();
+    geometry.vertices.push(new THREE.Vector3(-10, 0, 0));
+    geometry.vertices.push(new THREE.Vector3(0, 10, 0));
+    geometry.vertices.push(new THREE.Vector3(10, 0, 0));
+
+    //两条线(三个顶点)和一条材料，我们可以把它们放在一起形成一条线
+    var line = new THREE.Line(geometry, material);
+
+    //添加到场景
+    scene.add(line);
+
+    //渲染
+    renderer.render(scene, camera)
+</script>
+
+</body>
+</html>

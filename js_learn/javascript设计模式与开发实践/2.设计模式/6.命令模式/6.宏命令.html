@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+
+<script>
+
+    var closeDoorCommand = {
+        execute: function () {
+            console.log('关灯');
+        }
+    };
+
+    var openPcCommand = {
+        execute: function () {
+            console.log('开电脑');
+        }
+    };
+
+    var openQQCommand = {
+        execute: function () {
+            console.log('打开QQ');
+        }
+    }
+
+    var MacroCommand = function () {
+        return {
+            commandsList: [],
+            add: function (command) {
+                this.commandsList.push(command);
+            },
+            execute: function () {
+                for (var i = 0, command; command = this.commandsList[i++];) {
+                    console.log(command.execute());
+                }
+            },
+            undo : function (){
+                var command;
+                //从栈堆依次取出命令并执行
+                while(command = this.commandsList.pop() ){
+                    console.log(command.execute());
+                }
+            }
+        }
+    };
+
+    var macroCommand = MacroCommand();
+    macroCommand.add( closeDoorCommand );
+    macroCommand.add( openPcCommand );
+    macroCommand.add( openQQCommand );
+
+    macroCommand.execute();
+
+    macroCommand.undo();
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+
+<body>
+<canvas id="canvas" width="1000" height="1000" style="border: 1px solid #ddd;display: block;margin: 50px">
+    您的浏览器不支持 HTML5 canvas 标签。
+</canvas>
+
+<script>
+    window.onload = function(){
+    //translate() 偏移 在位置 (10,10) 处绘制一个矩形，将新的 (0,0) 位置设置为 (70,70)。再次绘制新的矩形（请注意现在矩形从位置 (80,80) 开始绘制）：
+    var c=document.getElementById("canvas");
+    var ctx=c.getContext("2d");
+    ctx.fillRect(10,10,100,50);
+    ctx.translate(70,70);
+    ctx.fillRect(10,10,100,50);
+
+     //transform() 绘制一个矩形，通过 transform() 添加一个新的变换矩阵，再次绘制矩形，添加一个新的变换矩阵，然后再次绘制矩形。请注意，每当您调用 transform() 时，它都会在前一个变换矩阵上构建：
+        var c=document.getElementById("canvas");
+        var ctx=c.getContext("2d");
+
+        ctx.fillStyle="yellow";
+        ctx.fillRect(0,100,250,100)
+
+        ctx.transform(1,0.5,-0.5,1,30,10);
+        ctx.fillStyle="red";
+        ctx.fillRect(0,100,250,100);
+
+        ctx.transform(1,0.5,-0.5,1,30,10);
+        ctx.fillStyle="blue";
+        ctx.fillRect(0,100,250,100);
+
+
+    }
+</script>
+</body>
+</html>

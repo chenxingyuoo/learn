@@ -1,0 +1,50 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>js实现拖动div块</title>
+    <style>
+        #img-box{
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            border: 1px solid #000;
+            top:0;
+            left: 0;
+        }
+        img{
+            height: 100%;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+<div style="width:500px;height:300px;border:2px solid #ccc; position:absolute; left: 500px;top:100px;" id="div">
+    <div id="img-box">
+        <img src="../../test_pic/A.jpg" alt="">
+    </div>
+</div>
+<script type="text/javascript">
+    var px;
+    var py;
+    var div = document.getElementById("div");
+    div.onmousedown = function(e){
+        if(!e) e = window.event;//if不是firefox等浏览器，那么e为IE浏览器
+        px = e.clientX - parseInt(div.style.left);
+        py = e.clientY - parseInt(div.style.top);
+        document.ondragstart =function() {return false;}
+        div.onmousemove = mousemove;
+    }
+    div.onmouseup = function()
+    {
+        div.onmousemove = null;
+    }
+    function mousemove(em){
+        if(!em) em = window.event;//if不是firefox等浏览器，那么e为IE浏览器
+        em.stopPropagation();
+        div.style.left = (em.clientX-px)+'px';
+        div.style.top = (em.clientY-py)+'px';
+    }
+</script>
+</body>
+</html>

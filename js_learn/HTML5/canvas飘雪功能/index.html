@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1 user-scalable=0"/>
+    <title>Title</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+        }
+
+        #my-canvas {
+            /*width: 100%;*/
+            /*height: 100%;*/
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+    </style>
+</head>
+
+<body>
+
+<canvas id="my-canvas"></canvas>
+
+<script>
+
+    //执行
+    window.onload = loop;
+
+    window.requestAnimFrame = (function () {
+        return window.requestAnimationFrame || window.webkitRequestAnimationFrame || function (callback, /* DOMElement Element */ element) {
+                    return window.setTimeout(callback, 1000 / 60);
+                };
+    })();
+
+    window.cancelAnimFrame = (function () {
+        return window.cancelAnimationFrame || window.webkitCancelAnimationFrame || clearTimeout;
+    })();
+
+
+    var myCanvas = document.querySelector('#my-canvas');
+    var ctx = myCanvas.getContext("2d");
+    myCanvas.width = document.documentElement.clientWidth;
+    myCanvas.height = document.documentElement.clientHeight;
+    var canvasW = myCanvas.width;
+    var canvasH = myCanvas.height;
+
+    function Blessing() {
+        this.alive = []; //布尔值
+        this.x = [];  //x坐标
+        this.y = [];  //y坐标
+        this.speed = 3; //速度
+        this.len = []; //长度
+        this.angle = [];
+        this.image = new Image();
+    }
+
+    //福的个数
+    Blessing.prototype.num = 10;
+
+    //最大数
+    Blessing.prototype.maxNumber = 10;
+
+    //初始化
+    Blessing.prototype.init = function () {
+        for (var i = 0; i < this.num; i++) {
+            this.alive[i] = false;
+            this.x[i] = 0;
+            this.y[i] = 0;
+            this.len[i] = 0;
+        }
+
+        this.image.src = './img/1.png';
+    };
+
+    //绘制
+    Blessing.prototype.draw = function () {
+        var self = this;
+        for (var i = 0; i < this.num; i++) {
+            if (this.alive[i]) {
+                self.y[i] = self.y[i] + self.speed;
+
+                //利用 translate 旋转图像
+                ctx.save();
+                ctx.translate((self.x[i] + (self.len[i] / 2)), (self.y[i] + (self.len[i] / 2)));
+                ctx.rotate(this.angle[i]); //旋转当前绘图
+                ctx.translate(-(self.x[i] + (self.len[i] / 2)), (-self.y[i] + (self.len[i] / 2)));
+                ctx.drawImage(self.image, self.x[i], self.y[i], self.len[i], self.len[i]);
+                ctx.restore();
+
+                //离开屏幕
+                if (self.y[i] > canvasH) {
+                    self.alive[i] = false;
+                    console.log(self.alive[i]);
+                }
+            }
+        }
+    };
+
+    //出生
+    Blessing.prototype.bron = function (i) {
+        //恢复状态
+        this.len[i] = Math.floor(Math.random() * 40) + 20;
+        this.x[i] = Math.random() * (canvasW - this.len[i]);
+        this.y[i] = -(Math.random() * 800);
+        this.alive[i] = true;
+        this.angle[i] = (Math.floor(Math.random() * 200) ) * Math.PI / 180;
+
+        //不可以靠边绘画
+        if (this.x[i] < this.len[i]) {
+            this.x[i] = this.len[i];
+        }
+
+    };
+
+    //发送
+    Blessing.prototype.send = function () {
+        var self = this;
+        for (var i = 0; i < this.num; i++) {
+            if (!self.alive[i]) {
+                self.bron(i);
+            }
+        }
+    };
+
+    //控制出生
+    Blessing.prototype.monitor = function (number) {
+        var num = 0;
+        var maxNum = number || this.maxNumber;
+        for (var i = 0; i < this.num; i++) {
+            //果实出生 ， this.alive[i] == true
+            if (this.alive[i]) {
+                num = num + 1;
+            }
+        }
+
+        //如果小于15 ， 就发送果实
+        if (num < maxNum) {
+            this.send();
+        }
+
+    };
+
+    //实例化
+    var blessing = new Blessing();
+    //初始化
+    blessing.init();
+
+    //循环调用
+    function loop() {
+        window.requestAnimFrame(loop);
+
+        ctx.clearRect(0, 0, canvasW, canvasH);  //在给定的矩形内清除指定的像素
+
+        //监控出生
+        blessing.monitor();
+        //绘制
+        blessing.draw();
+    }
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+
+<input type="text" id="input" value="">
+<div id="msg">{{ msg }}</div>
+
+<script>
+    var msg = document.querySelector('#msg')
+    var input = document.querySelector('#input')
+
+    var regTag = /{{([^{}]+)}}/g
+
+    //解析 {{ }} 文本
+    function parseText(text){
+        debugger;
+        //正则表达式匹配
+        if (!regTag.test(text)) {
+            return
+        }
+
+        var tokens = []
+        var lastIndex = regTag.lastIndex = 0
+        var match, index, value
+
+        while ((match = regTag.exec(text))) {
+
+            index = match.index
+
+            // push text token
+            if (index > lastIndex) {
+                tokens.push({
+                    value : text.slice(lastIndex, index)
+                });
+            }
+
+            value = match[1]
+
+            tokens.push({
+                tag: true,
+                value: value.trim()
+            })
+
+            lastIndex = index + match[0].length
+        }
+
+        if (lastIndex < text.length) {
+            tokens.push(JSON.stringify(text.slice(lastIndex)));
+        }
+
+        // debugger;
+
+        return tokens
+    }
+
+
+    // var tag = parseText(msg.innerHTML).value
+
+
+    var o = {}; // 创建一个新对象
+
+    var bValue;
+    Object.defineProperty(o, "msg", {
+        get : function(){
+            return bValue;
+        },
+        set : function(newValue){
+            bValue = newValue;
+
+            msg.innerHTML = newValue;
+        },
+        enumerable : true,
+        configurable : true
+    });
+    o.msg = '';
+
+    input.addEventListener('keyup',function(event){
+        o.msg = event.currentTarget.value;
+    },false);
+
+</script>
+
+</body>
+</html>

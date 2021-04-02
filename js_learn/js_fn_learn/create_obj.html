@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>js创建对象的几种模式</title>
+</head>
+
+<body>
+<script>
+    //1.工厂模式
+    function createPerson(){
+        var o = new Object();
+        o.name = 'abc';
+        o.age = '18';
+        o.sayName = function () {
+            console.log(this.name)
+        }
+        return o;
+    }
+
+    var person1 = createPerson("EvanChen",18,"Software Engineer");//创建一个对象
+    console.log(person1.sayName()); // abc
+
+    //问题：没有解决对象识别问题
+    console.log(person1 instanceof createPerson)  //false
+
+
+    //2.构造函数模式
+    function Person(name,age){
+        this.name = name;
+        this.age = age;
+        this.sayName = function () {
+            console.log(this.name);
+        }
+    }
+
+    var p1 = new Person('EvanChen',18);//创建一个Person类
+
+    /*用new操作符调用构造函数经历了以下4个步骤：
+
+    (1)创建一个新对象
+    (2)将构造函数的作用域赋给新对象
+    (3)执行构造函数中的代码
+    (4)返回新对象
+    解决了工厂模式兑现识别问题：*/
+
+    console.log(typeof(p1));// Person
+    console.log(p1 instanceof Person);// true
+
+
+    //3.原型模式
+
+    function Personp(name){
+        if(name && typeof name == 'string') this.name = name
+    }
+    Personp.prototype.name = 'EvanChen';
+    Personp.prototype.age = '18';
+    Personp.prototype.sayName = function () {
+        console.log(this.name);
+    }
+
+    var p1s = new Personp('chen');
+    console.log(p1s.sayName()); //"chen"
+
+    var p2s = new Personp();
+    console.log(p2s.sayName()); //"EvanChen"
+
+    console.log(p1s.sayName == p2s.sayName); //true
+
+    //将所有属性和方法都加在Person的prototype属性中，因此新对象具有相同的属性和方法。 如果自己有同名属性，就使用自己的，不再往上查找原型
+
+
+
+    //4.组合使用构造函数模式和原型模式（推荐）
+    function Person(name, age){
+        this.name = name;
+        this.age = age;
+        this.friends = ['Shelby' , 'Court']
+    }
+
+    //Person 的原型指向 Person构造函数
+    Person.prototype = {
+        constructor:Person,
+        sayName : function () {   //sayName方法在Person构造函数的原型上
+            console.log(this.name)
+        }
+    }
+
+
+    //  此时只有Person的原型才有公用方法 ，new 两个相同的构造函数 ， 其实它们是不相等的 ，各自是一个新对象
+
+    // 所以 p1 不等以 person2
+
+    var p1 = new Person('chenxingyu', 18);
+    console.log(p1)
+
+    console.log(p1.sayName())  //chenxingyu
+
+    //向p1的friends数组增加元素
+    p1.friends.push("Van");
+    console.log(p1.friends);  // ['Shelby' , 'Court' , 'Van']
+
+
+    var person2 = new Person("Greg",16);
+    console.log(person2.sayName())  //Greg
+    console.log(person2.friends); // ['Shelby' , 'Court' ]
+    console.log(person2)
+
+    console.log(person1.friends == person2.friends);  //false
+    console.log(person1.sayName == person2.sayName ); //true
+
+    console.log(p1 instanceof Person , person2 instanceof Person)  //true  true
+
+
+
+    //5.动态原型模式（推荐）
+    function Persono(name, age){
+        this.name = name;
+        this.age = age;
+        //如果自有方法不存在sayName（）方法 ， 就把sayName（）方法添加到原型上
+        if( typeof this.sayName !== 'function'){
+            Persono.prototype.sayName = function () {
+                console.log(this.name);
+            }
+        }
+    }
+
+    var person = new Persono('xiaohua', 19);
+    console.log(person)
+    //在sayName()方法不存在的情况下，才会将它添加到原型中，当原型完成初始化后，能够立即在所有实例中得到共享。
+
+
+    //6.寄生构造函数模式
+    //基本思想是：创建一个函数，该函数的作用仅仅是封装对象的代码，然后再返回新构建函数的对象
+    function SpecialArray(){
+        var values = new Array();
+        console.log(arguments)
+        values.push.apply(values, arguments);
+        values.toPipedString = function () {
+            return this.join('|')
+        }
+        return values;
+    }
+
+    var colors = new SpecialArray('chen' , 'feng' , 'lin')
+    console.log(colors.toPipedString())  // chen|feng|lin
+
+    //构造函数返回的对象与构造函数外部创建的对象没有什么不同，因此不能依赖instanceof操作符来确定对象类型。
+
+
+    //7.稳妥构造函数模式
+    //稳妥对象指的是没有公共属性，而且其方法也不再引用this的对象。稳妥对象最适合在一些安全的环境中，或者防止数据被其他应用程序删改时使用。
+
+    function Personco(name, age) {
+        //创建要返回的对象
+        var o = new Object();
+        //定义私有变量和函数
+        o.sayName = function (){
+            alert(name);
+        }
+        return o;
+    }
+
+    var personoo = Personco("EvanChen", 18);
+    personoo.sayName();//"EvanChen"
+
+    //在这种模式创建的对象中，除了使用sayName()方法外，没有其他方法访问name的值。
+
+
+</script>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+
+<script src="../three.js"></script>
+<script>
+  window.onload = init;
+
+  function init() {
+    //渲染器
+    var renderer = new THREE.WebGLRenderer();
+    renderer.setSize(400, 300);
+    renderer.setClearColor(0x000000);
+    document.getElementsByTagName('body')[0].appendChild(renderer.domElement);
+
+    //场景
+    var scene = new THREE.Scene();
+
+    // camera
+    var camera = new THREE.OrthographicCamera(-5, 5, 3.75, -3.75, 0.1, 100);
+    camera.position.set(25, 25, 25);
+    camera.lookAt(new THREE.Vector3(0, 0, 0));
+    scene.add(camera);
+
+    // light
+    var light = new THREE.PointLight(0xffffff, 1, 100);
+    light.position.set(10, 15, 5);
+    scene.add(light);
+
+//    var material = new THREE.MeshLambertMaterial({
+//      color: 0xffff00
+//    });
+
+    var material= new THREE.MeshLambertMaterial({
+      color: 0xffff00,
+      emissive: 0xff0000
+    });
+
+
+//    var sphere = new THREE.Mesh(new THREE.SphereGeometry(3, 50, 50), material);
+//    scene.add(sphere);
+
+    var cube = new THREE.Mesh(new THREE.CubeGeometry(5, 5, 5), material);
+    scene.add(cube);
+
+    renderer.render(scene, camera);
+
+  }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>像素处理</title>
+</head>
+
+<body>
+
+<!--获取像素颜色数组： var imagedata=context.getImageData(sx,sy,sw,sh)
+
+sx:cavas的x轴坐标点
+
+sy:canvas的y轴坐标点
+
+sw:距离x的宽度
+
+sh:距离y的高度
+
+可以利用context.getImageData返回的一个像素颜色数组，顺序是所取像素范围的从左到右，从上到下，数组的元素是（所有图形，包括图片，和绘制的图形）每个像素的rgba
+
+[r1,g1,b1,a1,r2,g2,b2,a2...]
+
+
+
+设置像素颜色：context.putImageData(imagedata,dx,dy,dirtyX,dirtyY,dirtyWidth,dirtyHeight)
+对imagedata数组中的各个像素的r、g、b、a值进行修改，再调用putImageData方法进行绘制
+
+imagedata:修改后的imagedata
+
+dx:重绘图像的起点横坐标（重绘的起点和原来的图像一致的话就会把原来的图形覆盖掉，看起来就像是原来的图像变成现在的图像一样）
+
+dy:重绘图像的起点纵坐标
+
+//以下可选参数，设置重绘的矩形范围，如果缺省，默认会重绘所有的imegedata
+
+dirtyX:矩形左上角x轴坐标
+
+dirtyY:矩形左上角y轴坐标
+
+dirtyWidth:矩形长度
+
+dirtyHeight:矩形高度-->
+
+<canvas id="canvas" width="800" height="600"></canvas>
+
+<script>
+
+    document.body.onload = draw16('canvas');
+
+    function draw16(id) {
+        var canvas = document.getElementById(id);
+        if (canvas == null)
+            return false;
+        var context = canvas.getContext("2d");
+        context.fillStyle = 'red'
+        //在右下角画一个正方形
+        context.fillRect(250,250,150,50);
+        var image = new Image();
+        image.src = "1.jpg";
+
+        image.onload = function () {
+            //在左上角画一幅图片
+            context.drawImage(image, 0, 0,200,200);
+
+            //实验证明imagedata取的是canvas所在范围画的图形，不止是图片
+            //不会取该区域内是空白的canvas的像素
+            var imagedata = context.getImageData(0, 0, 400, 300);
+
+            //修改imagedata
+            for (var i = 0, n = imagedata.data.length; i < n; i += 4) {
+
+                imagedata.data[i + 0] = 255 - imagedata.data[i + 0]; //red;
+                imagedata.data[i + 1] = 255 - imagedata.data[i + 1]; //green
+                imagedata.data[i + 2] = 255 - imagedata.data[i + 2]; //blue
+                //imagedata.data[i + 3] = 255 - imagedata.data[i + 3]; //a
+            }
+            context.putImageData(imagedata, 0, 0);
+        }
+    }
+
+</script>
+</body>
+</html>

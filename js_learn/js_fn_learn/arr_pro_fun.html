@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>array processing functions</title>
+</head>
+
+<body>
+<script>
+
+    //计算这些元素的平均值和标准差 , 可以使用map和reduce处理，及其简介
+    var sum = function (x, y) {
+        return x + y;
+    }
+    
+    var square = function (x) {
+        return x * x;
+    }
+
+    var data = [1,32,33,67,5,2];
+    var mean = data.reduce(sum)/data.length; //总和 / 个数  -> 23.3333333333333
+    var deviations = data.map(function (x) {
+        return  x - mean; //每一个减去平局值
+    })
+    var stddev = Math.sqrt(deviations.map(square).reduce(sum)/(data.length-1))  //计算标准差 ， 先计算每个数据减去平局数之后偏差的平方然后求和
+    console.log(stddev)
+
+
+    //自定义map() 和 reduce()函数
+    var map =  Array.prototype.map ? function (a, f) {   //如果存在map方法就使用它
+        return a.map(f)
+    } : function (a, f) {    //否则自己实现
+        var arr = [];
+        for (var i = 0; i < a.length; i++) {
+            if(i in a) arr[i] = f.call(null , a[i] , i , a);
+        }
+        return arr;
+    }
+
+    var sum = [1,2,3,4,5].map(function (x) {
+                return x + x
+            })
+    console.log(sum)
+
+
+
+    //reduce()
+    var reduce = Array.prototype.reduce ? function (a, f, initail) {  //reduce()方法存在
+        if(arguments.length > 2){
+            return a.reduce(f, initail)   //有一个初始值
+        }else{
+            return a.reduce(f)   //没有初始值
+        }
+    } : function (a, f, initial) {  //自己定义
+        var i = 0, len = a.length, accaulator;
+
+        //yi以特定的初始值开始 ， 否则第一个值取a
+        if(arguments.length > 2) accaulator = initail
+        else{
+            //找到数组中第一个已定义的索引
+            if(len === 0) throw TypeError();
+            while(i < len){
+                if(i in a){
+                    accaulator = a[i++];
+                    break;
+                }else{
+                    i++
+                }
+            }
+            if( i == len ) throw TypeError();
+        }
+
+        //对数组中s剩下的元素依次调用f函数
+        while(i < len){
+            if(i in a){
+                accaulator = f.call(undefined , accaulator , a[i] , i, a)
+                i++;
+            }
+        }
+        return accaulator;
+    }
+
+    // 第二种写法
+    Array.prototype.reduce = null ; //清空测试
+    if (!Array.prototype.reduce)
+    {
+        Array.prototype.reduce = function(fun /*, initial*/)
+        {
+            debugger
+            var len = this.length,rv;
+            if (typeof fun != "function")
+                throw new TypeError();
+
+            // no value to return if no initial value and an empty array
+            if (len == 0 && arguments.length == 1)
+                throw new TypeError();
+
+            var i = 0;
+            if (arguments.length >= 2)
+            {
+                 rv = arguments[1];
+            }
+            else
+            {
+                do
+                {
+                    if (i in this)
+                    {
+                        rv = this[i++];
+                        break;
+                    }
+
+                    // if array contains no values, no initial value to return
+                    if (++i >= len)
+                        throw new TypeError();
+                }
+                while (true);
+            }
+
+            for (; i < len; i++)
+            {
+                if (i in this)                       //fun只接收两个实参 ， 所以 i 和 this有 是undefined
+                    rv = fun.call(null, rv, this[i], i, this); //fun里面的实参 ， 超出是undefined
+            }
+
+            return rv;
+        };
+    }
+                                                                     //第二个参数可以指定a的初始值的多少，传
+    var total = [0, 1, 2, 3].reduce(function(a, b){ return a + b; }/*,1*/);
+    document.write("total is : " + total );
+
+
+</script>
+</body>
+</html>

@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+
+<div id="div1">点我绑定事件</div>
+<div id="div2">点我绑定事件</div>
+
+<script>
+    // 高阶函数是指至少满足下列条件之一的函数。
+    // 1函数可以作为参数被传递;
+    // 2函数可以作为返回值输出。
+
+    var getSingle = function (fn) {
+        var ret;
+        return function () {
+            return ret || (ret = fn.apply(this, arguments));
+        }
+    }
+
+    var getScript = getSingle(function createScript() {
+        return document.createElement('script');
+    });
+
+    var script1 = getScript();
+    var script2 = getScript();
+
+    console.log(script1 === script2);
+
+
+    //高阶函数实现AOP
+    //AOP(面向切面编程)的主要作用是把一些跟核心业务逻辑模块无关的功能抽离出来，这些 跟业务逻辑无关的功能通常包括日志统计
+    // 、安全控制、异常处理等。把这些功能抽离出来之后， 再通过“动态织入”的方式掺入业务逻辑模块中。
+    // 这样做的好处首先是可以保持业务逻辑模块的纯净和高内聚性，其次是可以很方便地复用日志统计等功能模块。
+
+    Function.prototype.before = function (beforefn) {
+        var self = this;
+        return function () { // 返回包含了原函数和新函数的"代理"函数
+            beforefn.apply(this, arguments);
+            return self.apply(this, arguments);
+        }
+    }
+
+    Function.prototype.after = function (afterfn) {
+        var self = this;
+        return function () { // 返回包含了原函数和新函数的"代理"函数
+            var ret = self.apply(this, arguments);
+            afterfn.apply(this, arguments);
+            return ret;
+        }
+    }
+
+    var func = function () {
+        console.log(2);
+    };
+
+
+    // 1.执行 before 函数返回一个函数 。this 是func函数
+    // 2.执行 after  函数返回一个函数 。this 是执行 before 返回的函数
+    func = func.before(function beforeFn() {
+        console.log(1);
+    }).after(function afterFn() {
+        console.log(3);
+    });
+
+    func();
+
+    //这种使用 AOP 的方式来给函数添加职责，也是 JavaScript 语言中一种非常特别和巧妙的装饰
+    //者模式实现。这种装饰者模式在实际开发中非常有用，
+
+
+    //curry化函数
+
+    var currying = function (fn) {
+        var args = [];
+        return function () {
+            if (arguments.length === 0) {
+                return fn.apply(this, args);
+            } else {
+                [].push.apply(args, arguments);
+                return arguments.callee;
+            }
+        }
+    };
+
+    var cost = (function () {
+        var money = 0;
+        return function () {
+            for (var i = 0, l = arguments.length; i < l; i++) {
+                money += arguments[i];
+            }
+            return money;
+        }
+    })();
+
+
+    var cost = currying(cost)
+
+    cost(100);
+    cost(200);
+
+    console.log(cost()); //300
+
+    //uncurrying
+    Function.prototype.uncurrying = function () {
+        var self = this;
+        return function() {
+            var obj = Array.prototype.shift.call( arguments );
+            return self.apply( obj, arguments );
+        }
+    }
+
+    //在类数组对象 arguments 借用 Array.prototype 的方法之前，先把 Array.prototype.push.call
+    // 这句代码转换为一个通用的 push 函数:
+    var push = Array.prototype.push.uncurrying();
+    (function(){
+        push( arguments, 4 );
+        console.log( arguments ); // 输出:[1, 2, 3, 4]
+    })( 1, 2, 3 );
+
+    //我们还可以一次性地把 Array.prototype 上的方法“复制”到 array 对象上，同样这些方法可 操作的对象也不仅仅只是 array 对象:
+    for ( var i = 0, fn, ary = [ 'push', 'shift', 'forEach' ]; fn = ary[ i++ ]; ){
+        Array[ fn ] = Array.prototype[ fn ].uncurrying();
+    }
+
+    var obj = {
+        length : 2,
+        '0' : 'a',
+        '1' : 'b'
+    }
+    Array.push(obj,3);
+
+
+    Array.forEach( obj, function( i, n ){
+        console.log( n ); // 分别输出:0, 1, 2
+    });
+
+    //除了刚刚提供的代码实现，下面的代码是 uncurrying 的另外一种实现方式:
+    Function.prototype.uncurrying = function(){
+        var self = this;
+        return function(){
+            return Function.prototype.call.apply( self, arguments );
+        }
+    }
+
+    //3. 函数节流
+    var throttle = function ( fn, interval ) {
+        var __self = fn, // 保存需要被延迟执行的函数引用
+            timer, // 定时器
+            firstTime = true; // 是否是第一次调用
+
+        return function (){
+            var args = arguments,
+                __me = this;
+
+            if ( firstTime ) { // 如果是第一次调用，不需延迟执行 __self.apply(__me, args);
+                return firstTime = false;
+            }
+
+            if ( timer ) { // 如果定时器还在，说明前一次延迟执行还没有完成
+                return false;
+            }
+
+            timer = setTimeout(function () { // 延迟一段时间执行
+                clearTimeout(timer);
+                timer = null;
+                __self.apply(__me, args);
+            }, interval || 50);
+
+        }
+    }
+
+
+    window.onresize = throttle(function(){
+        console.log( 1 );
+    }, 500 );
+
+
+    //4. 分时函数
+    //在短时间内往页面中大量添加 DOM 节点显然也会让浏览器吃不消，我们看到的结果往往就 是浏览器的卡顿甚至假死。代码如下:
+    var ary = [];
+    for ( var i = 1; i <= 1000; i++ ){
+        ary.push( i ); // 假设 ary 装载了 1000 个好友的数据
+    };
+
+    var renderFriendList = function( data ){
+        for ( var i = 0, l = data.length; i < l; i++ ){
+            var div = document.createElement( 'div' );
+            div.innerHTML = i;
+            document.body.appendChild( div );
+        }
+    };
+
+//    renderFriendList( ary );
+
+    //这个问题的解决方案之一是下面的 timeChunk 函数，timeChunk 函数让创建节点的工作分批进
+    //行，比如把 1 秒钟创建 1000 个节点，改为每隔 200 毫秒创建 8 个节点。
+
+    var timeChunk = function( ary, fn, count , time){
+        var obj, timer;
+        var len = ary.length;
+
+        var start = function(){
+            for ( var i = 0; i < Math.min( count || 1, ary.length ); i++ ){
+                var obj = ary.shift();
+                fn( obj );
+            }
+        }
+        
+        return function (){
+            timer = setInterval(function(){
+                if ( ary.length === 0 ){ // 如果全部节点都已经被创建好
+                    return clearInterval( timer );
+                }
+                start();
+            }, time || 200);
+        }
+    }
+
+    //最后我们进行一些小测试，假设我们有 1000 个好友的数据，我们利用 timeChunk 函数，每一 批只往页面中创建 8 个节点:
+
+    var ary = [];
+    for ( var i = 1; i <= 1000; i++ ){
+        ary.push( i );
+    }
+    var renderFriendList = timeChunk( ary, function( n ){
+        var div = document.createElement( 'div' );
+        div.innerHTML = n;
+        document.body.appendChild( div );
+    }, 8 );
+
+//    renderFriendList();
+
+
+    //5. 惰性加载函数
+
+    var addEvent = function( elem, type, handler ){
+        if ( window.addEventListener ) {
+            return elem.addEventListener(type, handler, false);
+        }
+        if ( window.attachEvent ){
+            return elem.attachEvent( 'on' + type, handler );
+        }
+    };
+
+    //有一些方法可以让程序避免这些重复的执行条件过程。
+    var addEvent = function(){
+        if ( window.addEventListener ) {
+            return function (elem, type, handler ){
+                elem.addEventListener(type, handler, false);
+            }
+        }
+        if ( window.attachEvent ){
+            return function (elem, type, handler ){
+                elem.attachEvent( 'on' + type, handler );
+            }
+        }
+    }();
+
+    //目前的 addEvent 函数依然有个缺点，也许我们从头到尾都没有使用过 addEvent 函数，这样看
+    //来，前一次的浏览器嗅探就是完全多余的操作，而且这也会稍稍延长页面 ready 的时间。
+
+
+    //第三种方案即是我们将要讨论的惰性载入函数方案
+    var addEvent = function( elem, type, handler ){
+        debugger;
+        if ( window.addEventListener ) {
+            addEvent = function (elem, type, handler ){
+                debugger;
+                elem.addEventListener(type, handler, false);
+            }
+        }
+        if ( window.attachEvent ){
+            addEvent = function (elem, type, handler ){
+                elem.attachEvent( 'on' + type, handler );
+            }
+        }
+
+        addEvent(elem, type, handler );
+    };
+
+    var div = document.getElementById( 'div1' );
+    var div2 = document.getElementById( 'div2' );
+    addEvent( div, 'click', function(){
+        alert (1);
+    });
+
+    addEvent( div2, 'click', function(){
+        alert (2);
+    });
+
+</script>
+
+</body>
+</html>

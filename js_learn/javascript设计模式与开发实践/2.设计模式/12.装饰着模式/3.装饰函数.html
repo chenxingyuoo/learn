@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+
+<script>
+    var a = function () {
+        alert(1);
+    }
+
+    a = function () {
+        alert(1);
+        alert(2);
+    }
+
+
+    //在不改变函数的源代码的情况下 ， 给函数增加功能 。 这正是开放-封闭原则。
+    var a = function () {
+        alert(1);
+    }
+    var _a = a;
+
+    a = function () {
+        _a();
+        alert(2);
+    }
+    a();
+
+
+    //这种做法维护中间变量成本高
+    //this被劫持的问题
+
+    var _getElementById = document.getElementById;
+    document.getElementById = function () {
+        alert(1);
+        return _getElementById.apply(document, arguments);
+    }
+    var button = document.getElementById('button');
+</script>
+
+</body>
+</html>

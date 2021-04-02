@@ -1,0 +1,153 @@
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html;charset=gb2312;"/>
+    <title>拖拽，按等比例放大，缩小，任意修改图片大小</title>
+    <meta name="Keywords" content="图片拖拽，图片扥等比缩放"/>
+    <meta name="Description" content="在页面上实现图片拖拽并可以随意调整图片大小。 但如果按住Ctrl键之后，当再调整图片大小的时候需要按照比例进行调整。"/>
+</head>
+<body>
+<style type="text/css">
+    .chr {
+        cursor: e-resize;
+    }
+
+    .cvr {
+        cursor: s-resize;
+    }
+
+    .cner {
+        cursor: ne-resize;
+    }
+
+    .cnwr {
+        cursor: nw-resize;
+    }
+
+    .cdft {
+        cursor: default;
+    }
+
+    .cmove {
+        cursor: move;
+    }
+</style>
+<input type="button" onclick="javascript:makeWord();" value="导出页面到Word">
+<img src="../test_pic/A.jpg" alt="PS梦幻效果" style="width:300px;position:absolute;left:100;top:100px;" id="imgsrc" class="cdft"/>
+<script type="text/javascript">
+    var img = document.getElementById('imgsrc');
+    var span = 10;
+    var isDrag = null;
+    var isIE = !!document.all;
+    var ox, oy, ex, ey, ow, oh, chrPosX = false, chrPosY = false;
+    var percent = img.offsetHeight / img.offsetWidth;
+    function mouseMove(e) {
+        e = e || event;
+        var x = e.offsetX || e.layerX, y = e.offsetY || e.layerY, imgW = img.offsetWidth, imgH = img.offsetHeight;
+        if ((x <= span && y <= span) || (x >= imgW - span && y >= imgH - span))img.className = 'cnwr';
+        else if ((x <= span && y >= imgH - span) || (y <= span && x >= imgW - span))img.className = 'cner';
+        else if (x <= span || x >= imgW - span)img.className = 'chr';
+        else if (y <= span || y >= imgH - span)img.className = 'cvr';
+        else img.className = 'cdft';
+
+    }
+    function mouseDown(e) {
+        e = e || event;
+        ex = e.clientX;//保存当前鼠标X轴的坐标
+        ey = e.clientY;//保存当前鼠标y轴的坐标
+        ox = parseInt(img.style.left);
+        oy = parseFloat(img.style.top);
+        if (img.className == 'cdft') {
+            isDrag = true;
+            img.className = 'cmove';
+        }
+        else {
+            isDrag = false;
+            oh = img.offsetHeight;//获取对象相对于版面或由父坐标 offsetParent 属性指定的父坐标的高度
+            ow = img.offsetWidth;
+            var x = e.offsetX || e.layerX, y = e.offsetY || e.layerY;//相对容器的水平坐标,相对容器的垂直坐标
+            chrPosX = x <= span;
+            chrPosY = y <= span;
+            if (e.ctrlKey) {//事件属性可返回一个布尔值，指示当事件发生时，Ctrl 键是否被按下并保持住
+                ow = oh / percent;//根据比例计算出宽度
+                img.style.width = ow;//更新图片宽度
+            }
+        }
+        if (isIE)img.setCapture();
+        document.onmousemove = mouseDownAndMove;
+        img.onmousemove = null;
+        return false;
+    }
+    function mouseDownAndMove(e) {
+        e = e || event;
+        if (isDrag === true) {
+            img.style.left = ox + e.clientX - ex + 'px';
+            img.style.top = oy + e.clientY - ey + 'px';
+        }
+        else if (isDrag === false) {
+            var x = e.clientX - ex, y = e.clientY - ey;
+            switch (img.className) {
+                case 'chr':
+                    x = chrPosX ? -x : x;
+                    y = e.ctrlKey ? percent * x + oh : oh;
+                    img.style.width = ow + x + 'px';
+                    img.style.height = y + 'px';
+                    if (chrPosX)img.style.left = ox - x + 'px';
+                    break;
+                case 'cvr':
+                    y = chrPosY ? -y : y;
+                    x = e.ctrlKey ? y / percent + ow : ow;
+                    img.style.width = x + 'px';
+                    img.style.height = oh + y + 'px';
+                    if (chrPosY)img.style.top = oy - y + 'px';
+                    break;
+                case 'cnwr':
+                case 'cner':
+                    x = chrPosX ? -x : x;
+                    if (e.ctrlKey) {//按宽等比
+                        y = e.ctrlKey ? percent * x + oh : oh;
+                        img.style.width = ow + x + 'px';
+                        img.style.height = y + 'px';
+                        if (chrPosX)img.style.left = ox - x + 'px';
+                    }
+                    else {
+                        y = chrPosY ? -y : y;
+                        img.style.width = ow + x + 'px';
+                        img.style.height = oh + y + 'px';
+                        if (chrPosX)img.style.left = ox - x + 'px';
+                        if (chrPosY)img.style.top = oy - y + 'px';
+                    }
+                    break;
+            }
+        }
+    }
+    img.onmousemove = mouseMove;
+    img.onmousedown = mouseDown;
+    document.onmouseup = function () {
+        if (typeof isDrag == "boolean") {
+            if (isIE)img.releaseCapture();//函数的作用就是将后续的mouse事件都发送给这个对象
+        }
+        isDrag = null;
+        img.className = 'cdft';
+        img.onmousemove = mouseMove;
+        document.onmousemove = null;
+    }
+
+    function makeWord() {
+        var word = new ActiveXObject("Word.Application");
+        // var doc = word .documents.open("c:\test.doc"); //此处为打开已有的模版
+        var doc = word.Documents.Add("", 0, 1);//不打开模版直接加入内容
+        //var Range=doc.Range();
+        //var sel = document.body.createTextRange();
+        //sel.moveToElementText(img);
+        //sel.select();
+        //sel.execCommand("Copy");
+        //Range.Paste();
+        word.Application.Visible = true;
+        var pricture = word.Application.Selection.InlineShapes.AddPicture(img.src);
+        pricture.width = img.style.width.replace('px', '');
+        pricture.height = img.style.height.replace('px', '');
+        doc.saveAs("f:\\ba.doc"); //存放到指定的位置注意路径一定要是“\\”不然会报错
+    }
+</script>
+</body>
+</html>

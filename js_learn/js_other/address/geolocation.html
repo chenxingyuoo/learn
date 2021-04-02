@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title></title>
+  <meta charset="utf-8"/>
+</head>
+
+<body>
+<div id="location"></div>
+
+<script type="text/javascript" src="../jquery-2.2.1.js"></script>
+<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=71709218d45a706b9c7e3abc2f037b23&callback"></script>
+<script type="text/javascript">
+  if (navigator.geolocation)
+        {
+        navigator.geolocation.getCurrentPosition(showPosition, showErr);
+        }
+
+        var addressComponent = {city: "广州市", district: "天河区", province: "广东省", street: "广州大道", street_number: "中922号-之101-128"}
+    function showPosition(position){
+        //alert(position.coords.latitude+','+position.coords.longitude);
+        // ak = appkey 访问次数流量有限制
+        $.getJSON('http://api.map.baidu.com/geocoder/v2/?ak=71709218d45a706b9c7e3abc2f037b23&callback=?&location='+position.coords.latitude+','+position.coords.longitude+'&output=json&pois=1', function(res){
+            debugger
+                //addressComponent => {city: "广州市", district: "天河区", province: "广东省", street: "广州大道", street_number: "中922号-之101-128"} 
+                $("#location").html(res.result.addressComponent.city);
+                //alert(111)
+        });
+    }
+    function show(msg){
+        alert(msg)
+    }
+    function showErr(error){
+        var result;
+        switch(error.code) 
+        {
+        case error.PERMISSION_DENIED:
+          result="User denied the request for Geolocation."
+          break;
+        case error.POSITION_UNAVAILABLE:
+          result="Location information is unavailable."
+          break;
+        case error.TIMEOUT:
+          result="The request to get user location timed out."
+          break;
+        case error.UNKNOWN_ERROR:
+          result="An unknown error occurred."
+          break;
+        }
+        alert(result);
+    }
+</script>
+</body>
+</html>

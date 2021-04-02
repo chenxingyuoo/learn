@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+
+
+<script src="../three.js"></script>
+<script>
+  window.onload = init;
+
+  function init() {
+    //渲染器
+    var renderer = new THREE.WebGLRenderer();
+    renderer.setSize(400, 300);
+    renderer.setClearColor(0x000000);
+    document.getElementsByTagName('body')[0].appendChild(renderer.domElement);
+
+    //场景
+    var scene = new THREE.Scene();
+
+    var camera = new THREE.PerspectiveCamera(75, 400 / 300, 1, 10);
+    camera.position.set(0, 0, 5);
+    scene.add(camera);
+
+
+    //立方体 (CubeGeometry)
+    //THREE.CubeGeometry(width, height, depth, widthSegments, heightSegments, depthSegments)
+    var cube = new THREE.Mesh(new THREE.CubeGeometry(1, 2, 3),
+      new THREE.MeshBasicMaterial({
+        color: 0xff0000,
+        wireframe: true
+      })
+    );
+    scene.add(cube);
+
+
+    //平面(PlaneGeometry)
+//    THREE.PlaneGeometry(width, height, widthSegments, heightSegments)
+//    var plane = new THREE.Mesh(new THREE.PlaneGeometry(2, 4),
+//      new THREE.MeshBasicMaterial({
+//        color: 0xff0000,
+//        wireframe: true
+//      })
+//    );
+//    scene.add(plane);
+
+    //球体(SphereGeometry)
+//    THREE.SphereGeometry(radius, segmentsWidth, segmentsHeight, phiStart, phiLength, thetaStart, thetaLength)
+//    new THREE.SphereGeometry(3, 8, 6)
+//    new THREE.SphereGeometry(3, 8, 6, Math.PI / 6, Math.PI / 3)  //改变经度起始，结束弧度
+//    new THREE.SphereGeometry(3, 8, 6, 0, Math.PI * 2, Math.PI / 6, Math.PI / 3) //改变维度起始，结束弧度
+//    var sphere = new THREE.Mesh(new THREE.SphereGeometry(3, 8, 6, Math.PI / 2, Math.PI, Math.PI / 6, Math.PI / 2),
+//      new THREE.MeshBasicMaterial({
+//        color: 0xff0000,
+//        wireframe: true
+//      })
+//    );
+//    scene.add(sphere);
+
+
+    //圆形(CircleGeometry）
+//    new THREE.CircleGeometry(radius, segments, thetaStart, thetaLength)
+//    var circle = new THREE.Mesh(new THREE.CircleGeometry(3, 18, Math.PI / 3, Math.PI / 3 * 4), //60° - 240°
+//      new THREE.MeshBasicMaterial({
+//        color: 0xff0000,
+//        wireframe: true
+//      })
+//    );
+//    scene.add(circle);
+
+    //圆柱体(CylinderGeometry）
+    //THREE.CylinderGeometry(radiusTop, radiusBottom, height, radiusSegments, heightSegments, openEnded)
+//    var circle = new THREE.Mesh(new THREE.CylinderGeometry(2, 2,4, 18, 3),
+//      new THREE.MeshBasicMaterial({
+//        color: 0xff0000,
+//        wireframe: true
+//      })
+//    );
+//    scene.add(circle);
+
+    //圆台
+//    var circle = new THREE.Mesh(new THREE.CylinderGeometry(2, 3,4, 18, 3),
+//      new THREE.MeshBasicMaterial({
+//        color: 0xff0000,
+//        wireframe: true
+//      })
+//    );
+//    scene.add(circle);
+
+    //无顶面底面
+//    var circle = new THREE.Mesh(new THREE.CylinderGeometry(2, 3,4, 18, 3, true),
+//      new THREE.MeshBasicMaterial({
+//        color: 0xff0000,
+//        wireframe: true
+//      })
+//    );
+//    scene.add(circle);
+
+    //正四面体、正八面体、正二十面体
+    //正四面体（TetrahedronGeometry）、正八面体（OctahedronGeometry）、正二十面体（IcosahedronGeometry）的构造函数较为类似，分别为：
+//    THREE.TetrahedronGeometry(radius, detail)
+//    THREE.OctahedronGeometry(radius, detail)
+//    THREE.IcosahedronGeometry(radius, detail)
+
+
+    //正四面体
+//    var tetrahedronGeometry = new THREE.Mesh(new THREE.TetrahedronGeometry(3),
+//      new THREE.MeshBasicMaterial({
+//        color: 0xff0000,
+//        wireframe: true
+//      })
+//    );
+//    scene.add(tetrahedronGeometry);
+
+
+    //正八面体
+//    var octahedronGeometry = new THREE.Mesh(new THREE.OctahedronGeometry(3),
+//      new THREE.MeshBasicMaterial({
+//        color: 0xff0000,
+//        wireframe: true
+//      })
+//    );
+//    scene.add(octahedronGeometry);
+
+    //正12面体
+//    var icosahedronGeometry = new THREE.Mesh(new THREE.IcosahedronGeometry(3),
+//      new THREE.MeshBasicMaterial({
+//        color: 0xff0000,
+//        wireframe: true
+//      })
+//    );
+//    scene.add(icosahedronGeometry);
+
+
+    //圆环面（TorusGeometry）就是甜甜圈的形状，其构造函数是：
+    //THREE.TorusGeometry(radius, tube, radialSegments, tubularSegments, arc)
+
+    //new THREE.TorusGeometry(3, 1, 12, 18) 精细圆环
+    //new THREE.TorusGeometry(3, 1, 4, 8, Math.PI / 3 * 2)  部分圆环
+//    var torusGeometry = new THREE.Mesh(new THREE.TorusGeometry(3, 1, 4, 8),
+//      new THREE.MeshBasicMaterial({
+//        color: 0xff0000,
+//        wireframe: true
+//      })
+//    );
+//    scene.add(torusGeometry);
+
+
+    //圆环结, 如果说圆环面是甜甜圈，那么圆环结（TorusKnotGeometry）就是打了结的甜甜圈，其构造参数为：
+    //THREE.TorusKnotGeometry(radius, tube, radialSegments, tubularSegments, p, q, heightScale)
+
+//    var torusKnotGeometry = new THREE.Mesh(new THREE.TorusKnotGeometry(2, 0.5, 32, 8),
+//      new THREE.MeshBasicMaterial({
+//        color: 0xff0000,
+//        wireframe: true
+//      })
+//    );
+//    scene.add(torusKnotGeometry);
+
+
+    //渲染
+    renderer.render(scene, camera);
+  }
+</script>
+
+
+</body>
+</html>

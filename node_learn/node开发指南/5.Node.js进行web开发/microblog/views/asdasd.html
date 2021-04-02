@@ -1,0 +1,15 @@
+<% if( !user ){ %>
+<a href="/login" class="login">登录</a>
+<a href="/reg" class="register">立即注册</a>
+<% } else {%>
+<a href="/users/<%= user %>" class="register">发表文章</a>
+<% } %>
+
+
+
+<% if( !user ){ %>
+<li class=""><a href="/login">登录</a></li>
+<li><a href="/reg">注册</a></li>
+<% } else { %>
+<li class=""><a href="/logout">退出登录</a></li>
+<% } %>

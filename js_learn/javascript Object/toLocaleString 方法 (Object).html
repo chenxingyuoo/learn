@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>toLocaleString 方法 (Object)</title>
+</head>
+
+<body>
+<script>
+    //返回使用当前区域设置转换为字符串的日期。
+
+    /*备注
+    所需的 dateObj 是任意 Date 对象。
+    toLocaleString 方法返回一个 String 对象，此对象包含以当前区域设置的长默认格式编写的日期。
+    对于公元 1601 和 1999 之间的日期，其格式将根据用户在“控制面板”中选择的“区域设置”确定。
+    对于此范围之外的日期，将使用 toString 方法的默认格式。
+    例如，在美国，toLocaleString 为 1 月 5 日返回“01/05/96 00:00:00”。在欧洲，它将为同一日期返回“05/01/96 00:00:00”，因为欧洲惯例是将日置于月份之前。*/
+
+    //toLocaleString 应当仅用于向用户显示结果；决不可将它用作脚本中计算的基础，因为返回的结果因计算机而异。
+
+    function toLocaleStrDemo(){
+        var d, s;                      //Declare variables.
+        d = new Date();                //Create Date object.
+        s = "Current setting is ";
+        s += d.toLocaleString();       //Convert to current locale.
+        return(s);                     //Return converted date
+    }
+
+    console.log(toLocaleStrDemo())  //Current setting is 2016/6/23 上午10:02:34
+</script>
+</body>
+</html>

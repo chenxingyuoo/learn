@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+
+<script>
+    //chenxingyu_o@icloud.com
+
+    //Reflect.apply(target,thisArg,args)
+    //Reflect.construct(target,args)
+    //Reflect.get(target,name,receiver)
+    //Reflect.set(target,name,value,receiver)
+    //Reflect.defineProperty(target,name,desc)
+    //Reflect.deleteProperty(target,name)
+    //Reflect.has(target,name)
+    //Reflect.ownKeys(target)
+    //Reflect.isExtensible(target)
+    //Reflect.preventExtensions(target)
+    //Reflect.getOwnPropertyDescriptor(target, name)
+    //Reflect.getPrototypeOf(target)
+    //Reflect.setPrototypeOf(target, prototype)
+
+    //上面这些方法的作用，大部分与Object对象的同名方法的作用都是相同的，而且它与Proxy对象的方法是一一对应的。下面是对它们的解释。
+
+
+    //1.
+
+    //Reflect.get方法查找并返回target对象的name属性，如果没有该属性，则返回undefined。
+    var myObject = {
+        foo: 1,
+        bar: 2,
+        get baz() {
+            return this.foo + this.bar;
+        },
+    }
+
+    Reflect.get(myObject, 'foo') // 1
+    Reflect.get(myObject, 'bar') // 2
+    Reflect.get(myObject, 'baz') // 3
+
+
+    //如果name属性部署了读取函数（getter），则读取函数的this绑定receiver。
+    var myObject = {
+        foo: 1,
+        bar: 2,
+        get baz() {
+            return this.foo + this.bar;
+        },
+    };
+
+    var myReceiverObject = {
+        foo: 4,
+        bar: 4,
+    };
+
+    Reflect.get(myObject, 'baz', myReceiverObject) // 8
+
+    //如果第一个参数不是对象，Reflect.get方法会报错。
+
+    Reflect.get(1, 'foo') // 报错
+    Reflect.get(false, 'foo') // 报错
+
+    //2.
+
+    //Reflect.set方法设置target对象的name属性等于value。
+
+    var myObject = {
+        foo: 1,
+        set bar(value) {
+            return this.foo = value;
+        },
+    }
+
+    myObject.foo // 1
+
+    Reflect.set(myObject, 'foo', 2);
+    myObject.foo // 2
+
+    Reflect.set(myObject, 'bar', 3)
+    myObject.foo // 3
+
+    //如果name属性设置了赋值函数，则赋值函数的this绑定receiver。
+
+    var myObject = {
+        foo: 4,
+        set bar(value) {
+            return this.foo = value;
+        },
+    };
+
+    var myReceiverObject = {
+        foo: 0,
+    };
+
+    Reflect.set(myObject, 'bar', 1, myReceiverObject);
+    myObject.foo // 4
+    myReceiverObject.foo // 1
+
+    //如果第一个参数不是对象，Reflect.set会报错。
+    Reflect.set(1, 'foo', {}) // 报错
+    Reflect.set(false, 'foo', {}) // 报错
+
+    //注意，Reflect.set会触发Proxy.defineProperty拦截。
+
+    let p = {
+        a: 'a'
+    };
+
+    let handler = {
+        set(target,key,value,receiver) {
+            console.log('set');
+            Reflect.set(target,key,value,receiver)
+        },
+        defineProperty(target, key, attribute) {
+            console.log('defineProperty');
+            Reflect.defineProperty(target,key,attribute);
+        }
+    };
+
+    let obj = new Proxy(p, handler);
+    obj.a = 'A';
+    // set
+    // defineProperty
+
+    //上面代码中，Proxy.set拦截中使用了Reflect.set，导致触发Proxy.defineProperty拦截。
+
+
+    //3.
+
+    //Reflect.has方法对应name in obj里面的in运算符
+
+    var myObject = {
+        foo: 1,
+    };
+
+    // 旧写法
+    'foo' in myObject // true
+
+    // 新写法
+    Reflect.has(myObject, 'foo') // true
+
+    //如果第一个参数不是对象，Reflect.has和in运算符都会报错。
+
+    //4.
+    //Reflect.deleteProperty方法等同于delete obj[name]，用于删除对象的属性。
+
+    const myObj = { foo: 'bar' };
+
+    // 旧写法
+    delete myObj.foo;
+
+    // 新写法
+    Reflect.deleteProperty(myObj, 'foo');
+
+    //该方法返回一个布尔值。如果删除成功，或者被删除的属性不存在，返回true；删除失败，被删除的属性依然存在，返回false。
+
+
+    //5.
+    //Reflect.construct方法等同于new target(...args)，这提供了一种不使用new，来调用构造函数的方法。
+
+    function Greeting(name) {
+        this.name = name;
+    }
+
+    // new 的写法
+    const instance = new Greeting('张三');
+
+    // Reflect.construct 的写法
+    const instance = Reflect.construct(Greeting, ['张三']);
+
+    //6.
+    //Reflect.getPrototypeOf方法用于读取对象的__proto__属性，对应Object.getPrototypeOf(obj)。
+    const myObj = new FancyThing();
+
+    // 旧写法
+    Object.getPrototypeOf(myObj) === FancyThing.prototype;
+
+    // 新写法
+    Reflect.getPrototypeOf(myObj) === FancyThing.prototype;
+
+    //Reflect.getPrototypeOf和Object.getPrototypeOf的一个区别是，如果参数不是对象，Object.getPrototypeOf会将这个参数转为对象，然后再运行，而Reflect.getPrototypeOf会报错。
+
+    Object.getPrototypeOf(1) // Number {[[PrimitiveValue]]: 0}
+    Reflect.getPrototypeOf(1) // 报错
+
+
+    //7.
+    //Reflect.setPrototypeOf方法用于设置对象的__proto__属性，返回第一个参数对象，对应Object.setPrototypeOf(obj, newProto)。
+
+    const myObj = new FancyThing();
+
+    // 旧写法
+    Object.setPrototypeOf(myObj, OtherThing.prototype);
+
+    // 新写法
+    Reflect.setPrototypeOf(myObj, OtherThing.prototype);
+
+    //如果第一个参数不是对象，Object.setPrototypeOf会返回第一个参数本身，而Reflect.setPrototypeOf会报错。
+
+
+    Object.setPrototypeOf(1, {})
+    // 1
+
+    Reflect.setPrototypeOf(1, {})
+    // TypeError: Reflect.setPrototypeOf called on non-object
+
+    //如果第一个参数是undefined或null，Object.setPrototypeOf和Reflect.setPrototypeOf都会报错。
+    Object.setPrototypeOf(null, {})
+    // TypeError: Object.setPrototypeOf called on null or undefined
+
+    Reflect.setPrototypeOf(null, {})
+    // TypeError: Reflect.setPrototypeOf called on non-object
+
+
+    //8.
+    // Reflect.apply方法等同于Function.prototype.apply.call(func, thisArg, args)，用于绑定this对象后执行给定函数。
+
+    // 一般来说，如果要绑定一个函数的this对象，可以这样写fn.apply(obj, args)，但是如果函数定义了自己的apply方法，
+    // 就只能写成Function.prototype.apply.call(fn, obj, args)，采用Reflect对象可以简化这种操作。
+
+    const ages = [11, 33, 12, 54, 18, 96];
+
+    // 旧写法
+    debugger;
+    const youngest = Math.min.apply(Math, ages);
+    const oldest = Math.max.apply(Math, ages);
+    const type = Object.prototype.toString.call(youngest);
+
+    // 新写法
+    const youngest1 = Reflect.apply(Math.min, Math, ages);
+    const oldest1 = Reflect.apply(Math.max, Math, ages);
+    const type1 = Reflect.apply(Object.prototype.toString, youngest1, []);
+
+    //9.
+    //Reflect.defineProperty方法基本等同于Object.defineProperty，用来为对象定义属性。未来，后者会被逐渐废除，请从现在开始就使用Reflect.defineProperty代替它。
+    function MyDate() {
+        /*…*/
+    }
+
+
+    // 旧写法
+    Object.defineProperty(MyDate, 'now', {
+        value: () => Date.now()
+    });
+
+    // 新写法
+    Reflect.defineProperty(MyDate, 'now', {
+        value: () => Date.now(),
+
+    });
+
+
+    //如果Reflect.defineProperty的第一个参数不是对象，就会抛出错误，比如Reflect.defineProperty(1, 'foo')。
+
+
+    //10.
+    //Reflect.getOwnPropertyDescriptor基本等同于Object.getOwnPropertyDescriptor，用于得
+     var myObject = {};
+    Object.defineProperty(myObject, 'hidden', {
+        value: true,
+        enumerable: false,
+    });
+
+    // 旧写法
+    var theDescriptor = Object.getOwnPropertyDescriptor(myObject, 'hidden');
+
+    // 新写法
+    var theDescriptor = Reflect.getOwnPropertyDescriptor(myObject, 'hidden');到指定属性的描述对象，将来会替代掉后者。
+
+    // Reflect.getOwnPropertyDescriptor和Object.getOwnPropertyDescriptor的一个区别是，如果第一个参数不是对象，
+    // Object.getOwnPropertyDescriptor(1, 'foo')不报错，返回undefined，而Reflect.getOwnPropertyDescriptor(1, 'foo')会抛出错误，表示参数非法。
+
+    //11.
+    //Reflect.isExtensible方法对应Object.isExtensible，返回一个布尔值，表示当前对象是否可扩展。
+
+    const myObject = {};
+
+    // 旧写法
+    Object.isExtensible(myObject) // true
+
+    // 新写法
+    Reflect.isExtensible(myObject) // true
+
+    //如果参数不是对象，Object.isExtensible会返回false，因为非对象本来就是不可扩展的，而Reflect.isExtensible会报错。
+
+    Object.isExtensible(1) // false
+    Reflect.isExtensible(1) // 报错
+
+    //12.
+
+    //Reflect.preventExtensions对应Object.preventExtensions方法，用于让一个对象变为不可扩展。它返回一个布尔值，表示是否操作成功。
+    var myObject = {};
+
+    // 旧写法
+    Object.isExtensible(myObject) // true
+
+    // 新写法
+    Reflect.preventExtensions(myObject) // true
+
+    //// ES5
+    Object.preventExtensions(1) // 报错
+
+    // ES6
+    Object.preventExtensions(1) // 1
+
+    // 新写法
+    Reflect.preventExtensions(1) // 报错
+
+    //13.
+
+    //Reflect.ownKeys方法用于返回对象的所有属性，基本等同于Object.getOwnPropertyNames与Object.getOwnPropertySymbols之和。
+
+    var myObject = {
+        foo: 1,
+        bar: 2,
+        [Symbol.for('baz')]: 3,
+        [Symbol.for('bing')]: 4,
+    };
+
+    // 旧写法
+    Object.getOwnPropertyNames(myObject)
+    // ['foo', 'bar']
+
+    Object.getOwnPropertySymbols(myObject)
+    //[Symbol.for('baz'), Symbol.for('bing')]
+
+    // 新写法
+    Reflect.ownKeys(myObject)
+    // ['foo', 'bar', Symbol.for('baz'), Symbol.for('bing')]
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,32 @@
+syntax = "proto3"; // 语法版本
+
+package xgtmp.srv.app; // 生成的 go 文件会是怎样的 package name
+
+// 定义 RPC 接口
+service App {
+    // 创建APP信息
+    rpc CreateAppInfo (MobileApplication) returns (AppResponse) {}
+    // 更新APP信息
+    rpc UpdateAppInfo (MobileApplication) returns (AppResponse) {}
+    // 删除App信息
+    rpc DeleteAppInfo (MobileApplication) returns (AppResponse) {}
+    // 查询APP信息
+    rpc QueryAppInfo (AccessId) returns (AppResponse) {}
+}
+// 类似于声明一个类
+message AccessId {
+    uint32 accessId = 1; // app 的ID，后面的数字需要唯一，是在序列化/反序列化时候的顺序
+}
+
+message MobileApplication {
+    string appName = 1;    // app名称
+    string otherInfo = 2;  // 其它信息
+}
+
+message AppResponse {
+    string errMsg = 1;
+    int32 retCode = 2;
+    MobileApplication app= 3; // 意思是 AppResponse 里面会包含一个 MobileApplication 的值，
+    // 这里也可以像下面一样用引用，虽然序列化/反序列化的时候都是 deep-copy，但是其它代码中的行为会不一样，比如赋值/读值
+    // MobileApplicaion* app = 4;
+}

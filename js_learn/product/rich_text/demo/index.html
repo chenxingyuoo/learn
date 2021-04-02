@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style type="text/css">
+        #rRightDown,#rLeftDown,#rLeftUp,#rRightUp,#rRight,#rLeft,#rUp,#rDown{
+            position:absolute;
+            background:#FFF;
+            border: 1px solid #333;
+            width: 6px;
+            height: 6px;
+            z-index:500;
+            font-size:0;
+            opacity: 0.5;
+            filter:alpha(opacity=50);
+        }
+
+        #rLeftDown,#rRightUp{cursor:ne-resize;}
+        #rRightDown,#rLeftUp{cursor:nw-resize;}
+        #rRight,#rLeft{cursor:e-resize;}
+        #rUp,#rDown{cursor:n-resize;}
+
+        #rLeftDown{left:-4px;bottom:-4px;}
+        #rRightUp{right:-4px;top:-4px;}
+        #rRightDown{right:-4px;bottom:-4px;background-color:#00F;}
+        #rLeftUp{left:-4px;top:-4px;}
+        #rRight{right:-4px;top:50%;margin-top:-4px;}
+        #rLeft{left:-4px;top:50%;margin-top:-4px;}
+        #rUp{top:-4px;left:50%;margin-left:-4px;}
+        #rDown{bottom:-4px;left:50%;margin-left:-4px;}
+
+        #bgDiv{width:300px; height:400px; border:1px solid #666666; position:relative;background-color: rgb(0, 0, 0);}
+        #dragDiv{border:1px dashed #fff; width:100px; height:60px; top:50px; left:50px; cursor:move; }
+    </style>
+</head>
+<body>
+
+<table width="700" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+        <td width="300">
+            <div id="bgDiv">
+                <div id="dragDiv">
+                    <div id="rRightDown"> </div>
+                    <div id="rLeftDown"> </div>
+                    <div id="rRightUp"> </div>
+                    <div id="rLeftUp"> </div>
+                    <div id="rRight"> </div>
+                    <div id="rLeft"> </div>
+                    <div id="rUp"> </div>
+                    <div id="rDown"></div>
+                </div>
+
+            </div>
+        </td>
+        <td align="center"><div id="viewDiv" style="width:300px; height:300px;"> </div></td>
+    </tr>
+</table>
+
+<script type="text/javascript">
+
+    var $ = function (id) {
+        return "string" == typeof id ? document.getElementById(id) : id;
+    };
+
+    var Extend = function(destination, source) {
+        for (var property in source) {
+            destination[property] = source[property];
+        }
+    };
+
+    var Bind = function(object, fun) {
+        return function() {
+            return fun.apply(object, arguments);
+        }
+    };
+
+    var BindAsEventListener = function(object, fun) {
+        var args = Array.prototype.slice.call(arguments).slice(2);
+        return function(event) {
+            return fun.apply(object, [event || window.event].concat(args));
+        }
+    };
+
+
+</script>
+</body>
+</html>

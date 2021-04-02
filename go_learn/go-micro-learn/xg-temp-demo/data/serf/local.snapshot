@@ -1,0 +1,8 @@
+alive: consul 172.19.0.3:8301
+event-clock: 1
+alive: consul 172.19.0.2:8301
+event-clock: 2
+alive: consul 172.19.0.2:8301
+event-clock: 3
+alive: consul 172.19.0.2:8301
+event-clock: 4

@@ -1,0 +1,57 @@
+#!/usr/bin/env node
+ 
+/**
+ * Module dependencies.
+ */
+ 
+const path = require('path')
+const home = require('user-home')
+const program = require('commander')
+
+
+/**
+ * Usage.
+ */
+
+program
+  .usage('<template-name> [project-name]')
+  .option('-c, --clone', 'use git clone')
+  .option('--offline', 'use cached template')
+
+
+/**
+ * Help.
+ */
+
+function help () {
+  program.parse(process.argv)
+  if (program.args.length < 1) return program.help()
+}
+help()
+
+/**
+ * Settings.
+ */
+
+let template = program.args[0]
+const hasSlash = template.indexOf('/') > -1
+const rawName = program.args[1]
+const inPlace = !rawName || rawName === '.'
+const name = inPlace ? path.relative('../', process.cwd()) : rawName
+const to = path.resolve(rawName || '.')
+const clone = program.clone || false
+
+
+console.log('template', template);
+
+const tmp = path.join(home, '.vue-templates', template.replace(/[\/:]/g, '-'))
+
+console.log('template', tmp);
+
+if (program.offline) {
+  console.log(`> Use cached template at ${chalk.yellow(tildify(tmp))}`)
+  template = tmp
+}
+
+console.log('program.args', program.args);
+console.log('template', template);

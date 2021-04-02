@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+
+<img class="img1" src="" alt="">
+<img class="img2" src="" alt="">
+<script>
+    var myImage = document.querySelector('.img1');
+
+    fetch('C.jpg')
+        .then(function (response) {
+            return response.blob();
+        })
+        .then(function (myBlob) {
+            var objectURL = URL.createObjectURL(myBlob);
+            myImage.src = objectURL;
+        });
+
+
+    var myImage2 = document.querySelector('.img2');
+
+    var myHeaders = new Headers();
+
+    var myInit = {
+        method: 'GET',
+        headers: myHeaders,
+        mode: 'cors',
+        cache: 'default'
+    };
+
+    fetch('C.jpg', myInit)
+        .then(function (response) {
+
+            //检测请求是否成功
+            if (response.ok) {
+                return response.blob().then(function (myBlob) {
+                    var objectURL = URL.createObjectURL(myBlob);
+                    myImage2.src = objectURL;
+                });
+            } else {
+                console.log('Network response was not ok.');
+            }
+
+        })
+        .catch(function (error) {
+            console.log('There has been a problem with your fetch operation: ' + error.message);
+        });
+
+
+    //自定义请求对象
+    //除了传给 fetch() 一个资源的地址，你还可以通过使用 Request() 构造函数来创建一个 request 对象，然后再作为参数传给 fetch()：
+    var myHeaders = new Headers();
+
+    var myInit = { method: 'GET',
+        headers: myHeaders,
+        mode: 'cors',
+        cache: 'default' };
+
+    var myRequest = new Request('flowers.jpg',myInit);
+
+    fetch(myRequest,myInit)
+        .then(function(response) {
+            return response.blob();
+        })
+        .then(function(myBlob) {
+            var objectURL = URL.createObjectURL(myBlob);
+            myImage.src = objectURL;
+        });
+</script>
+
+</body>
+</html>

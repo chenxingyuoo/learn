@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+
+<div id="Stats-output">
+</div>
+<!-- Div which will hold the Output -->
+<div id="WebGL-output">
+</div>
+
+<script src="js/three.js"></script>
+<script src="js/stats.min.js"></script>
+<script src="js/dat.gui.min.js"></script>
+<script>
+  // once everything is loaded, we run our Three.js stuff.
+  function init() {
+    // 初始化 stats
+    var stats = initStats();
+
+    // 创建一个场景，它能放置我们的元素，如 网格对象、摄像机和灯光等
+    var scene = new THREE.Scene();
+
+    // 创建 雾化效果
+    // scene.fog=new THREE.FogExp2( 0xffffff, 0.015 );
+    scene.fog = new THREE.Fog(0xffffff, 0.015, 100);
+
+    // 创建一个摄像机
+    var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+    // 创建一个渲染器并设置其背景颜色和尺寸
+    var renderer = new THREE.WebGLRenderer();
+
+    renderer.setClearColor(0xeeeeee);
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    // 开启渲染器的阴影
+    renderer.shadowMapEnabled = true;
+
+    // 创建一个平面几何体
+    var planeGeometry = new THREE.PlaneGeometry(60, 40, 1, 1);
+    var planeMaterial = new THREE.MeshLambertMaterial({color: 0xffffff});
+    var plane = new THREE.Mesh(planeGeometry, planeMaterial);
+    // 平面接受别的物体产生的阴影
+    plane.receiveShadow = true;
+
+    // 旋转并设置平面的位置
+    plane.rotation.x = -0.5 * Math.PI;
+    plane.position.x = 0;
+    plane.position.y = 0;
+    plane.position.z = 0;
+
+    // 添加平面至场景中
+    scene.add(plane);
+
+    // 设置摄像机位置和其朝向
+    camera.position.x = -30;
+    camera.position.y = 40;
+    camera.position.z = 30;
+    camera.lookAt(scene.position);
+
+    // 添加环境光，提高场景亮度
+    var ambientLight = new THREE.AmbientLight(0x0c0c0c);
+    scene.add(ambientLight);
+
+    // 添加聚光灯，以产生阴影
+    var spotLight = new THREE.SpotLight(0xffffff);
+    spotLight.position.set(-40, 60, -10);
+    spotLight.castShadow = true;
+    scene.add(spotLight);
+
+    // 将渲染器的输出（canvas）插入至特定 DOM 元素中
+    document.getElementById("WebGL-output").appendChild(renderer.domElement);
+
+    // 设置 dat.gui 参数
+    var controls = new function () {
+      this.rotationSpeed = 0.02;
+      this.numberOfObjects = scene.children.length;
+
+      this.removeCube = function () {
+        var allChildren = scene.children;
+        var lastObject = allChildren[allChildren.length - 1];
+        if (lastObject instanceof THREE.Mesh) {
+          scene.remove(lastObject);
+          this.numberOfObjects = scene.children.length;
+        }
+      };
+
+      this.addCube = function () {
+
+        var cubeSize = Math.ceil((Math.random() * 3));
+        var cubeGeometry = new THREE.BoxGeometry(cubeSize, cubeSize, cubeSize);
+        var cubeMaterial = new THREE.MeshLambertMaterial({color: Math.random() * 0xffffff});
+        var cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
+        cube.castShadow = true;
+
+        // position the cube randomly in the scene
+        cube.position.x = -30 + Math.round((Math.random() * planeGeometry.parameters.width));
+        cube.position.y = Math.round((Math.random() * 5));
+        cube.position.z = -20 + Math.round((Math.random() * planeGeometry.parameters.height));
+
+        // add the cube to the scene
+        scene.add(cube);
+        this.numberOfObjects = scene.children.length;
+      };
+
+      this.outputObjects = function () {
+        console.log(scene.children);
+      }
+
+    };
+
+    // 初始化 dat.gui
+    var gui = new dat.GUI();
+    gui.add(controls, 'rotationSpeed', 0, 0.5);
+    gui.add(controls, 'addCube');
+    gui.add(controls, 'removeCube');
+    gui.add(controls, 'outputObjects');
+    gui.add(controls, 'numberOfObjects').listen();
+
+    render();
+
+    function render() {
+      stats.update();
+
+      // 立方体自转
+      scene.traverse(function (e) {
+        if (e instanceof THREE.Mesh && e != plane) {
+
+          e.rotation.x += controls.rotationSpeed;
+          e.rotation.y += controls.rotationSpeed;
+          e.rotation.z += controls.rotationSpeed;
+        }
+      });
+
+      // render using requestAnimationFrame
+      requestAnimationFrame(render);
+      renderer.render(scene, camera);
+    }
+
+    // 初始化 stats
+    function initStats() {
+
+      var stats = new Stats();
+
+      stats.setMode(0); // 0: fps, 1: ms
+
+      // Align top-left
+      stats.domElement.style.position = 'absolute';
+      stats.domElement.style.left = '0px';
+      stats.domElement.style.top = '0px';
+
+      document.getElementById("Stats-output").appendChild(stats.domElement);
+
+      return stats;
+    }
+  }
+  window.onload = init
+</script>
+</body>
+</html>

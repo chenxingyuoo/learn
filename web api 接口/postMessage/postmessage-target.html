@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+<strong><font><font>这IFRAME位于同一个域</font></font></strong>
+
+<p id="test"><font><font>http://127.0.0.1 说：</font></font></p>
+<script>
+
+    var addEvent = (function () {
+        if (document.addEventListener) {
+            return function (el, type, fn) {
+                if (el && el.nodeName || el === window) {
+                    el.addEventListener(type, fn, false);
+                } else if (el && el.length) {
+                    for (var i = 0; i < el.length; i++) {
+                        addEvent(el[i], type, fn);
+                    }
+                }
+            };
+        } else {
+            return function (el, type, fn) {
+                if (el && el.nodeName || el === window) {
+                    el.attachEvent('on' + type, function () { return fn.call(el, window.event); });
+                } else if (el && el.length) {
+                    for (var i = 0; i < el.length; i++) {
+                        addEvent(el[i], type, fn);
+                    }
+                }
+            };
+        }
+    })();
+
+    addEvent(window, "message", function(e){
+        if ( e.origin !== "http://127.0.0.1" ) {
+            document.getElementById("test").innerHTML = 'Ignoring message from ' + e.origin;
+        } else {
+            document.getElementById("test").innerHTML = e.origin + " 说: " + e.data;
+        }
+    });
+</script>
+
+</body>
+
+</html>

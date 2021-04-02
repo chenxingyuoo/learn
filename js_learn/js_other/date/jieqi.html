@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>节气</title>
+	<meta charset='utf-8'/>
+</head>
+
+<body>
+<script type="text/javascript">
+
+
+
+
+var solarTerm = new Array("小寒","大寒","立春","雨水","惊蛰","春分","清明","谷雨","立夏","小满","芒种","夏至","小暑","大暑","立秋","处暑","白露","秋分","寒露","霜降","立冬","小雪","大雪","冬至");
+var sTermInfo = new Array(0,21208,42467,63836,85337,107014,128867,150921,173149,195551,218072,240693,263343,285989,308563,331033,353350,375494,397447,419210,440795,462224,483532,504758);
+
+	//返回某年的第n个节气为几日(从0小寒起算)
+ function sTerm(y,n) {
+    var offDate = new Date((31556925974.7*(y-1900)+sTermInfo[n]*60000)+Date.UTC(1900,0,6,2,5));
+    return(offDate.getUTCDate())
+ }
+
+var cld;
+ function drawCld(SY,SM) {
+    var p1=p2="";
+    var i,sD,s,size;
+    
+    for(i=0;i<42;i++) {
+       
+
+      
+          /*if(cld[sD].lDay==1){ //显示农历月
+            lObj.innerHTML = '<b>'+(cld[sD].isLeap?'闰':'') + cld[sD].lMonth + '月' + (monthDays(cld[sD].lYear,cld[sD].lMonth)==29?'小':'大')+'</b>';
+          }
+          else{lObj.innerHTML = cDay(cld[sD].lDay);}    //显示农历日
+
+         var Slfw=Ssfw=null;
+         s=cld[sD].solarFestival;
+         for (var ipp=0;ipp<lFtv.length;ipp++){    //农历节日
+             if (parseInt(lFtv[ipp].substr(0,2))==(cld[sD].lMonth)){
+                 if (parseInt(lFtv[ipp].substr(2,4))==(cld[sD].lDay)){
+                     lObj.innerHTML=lFtv[ipp].substr(5);
+                     Slfw=lFtv[ipp].substr(5);
+                 }
+             }
+             if (12==(cld[sD].lMonth)){    //判断是否为除夕
+                 if (eve==(cld[sD].lDay)){lObj.innerHTML="除夕";Slfw="除夕";}
+             }
+         }
+         for (var ipp=0;ipp<sFtv.length;ipp++){    //公历节日
+             if (parseInt(sFtv[ipp].substr(0,2))==(SM+1)){
+                 if (parseInt(sFtv[ipp].substr(2,4))==(sD+1)){
+                     lObj.innerHTML=sFtv[ipp].substr(5);
+                     Ssfw=sFtv[ipp].substr(5);
+                 }
+             }
+         }*/
+         
+          if(s.length>0) {lObj.innerHTML=s;Slfw=s;}    //节气
+          if ((Slfw!=null)&&(Ssfw!=null)){
+             lObj.innerHTML=Slfw+"/"+Ssfw;
+          }                        
+       
+       else { //非日期
+          sObj.innerHTML = '';
+          lObj.innerHTML = '';
+       }
+    }
+ }
+
+     var Today = new Date(2016,04,04);
+	 var y = Today.getFullYear();
+	 var m = Today.getMonth();
+	 var d = Today.getDate();
+
+
+drawCld(y,m)
+
+   var solarTerms =''; //节气
+   //节气
+    var tmp1=sTerm(y,m*2)-1;
+    var tmp2=sTerm(y,m*2+1)-1;
+    solarTerms = solarTerm[m*2];
+    solarTerms = solarTerm[m*2+1];
+    debugger
+
+</script>
+</body>
+</html>

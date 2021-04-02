@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+
+<script>
+    var Beverage = function () {
+    };
+    Beverage.prototype.boilWater = function () {
+        console.log('把水煮沸');
+    };
+    Beverage.prototype.brew = function () {
+        throw new Error('子类必须重写该方法');
+    };
+    Beverage.prototype.pourInCup = function () {
+        throw new Error('子类必须重写该方法');
+    };
+    Beverage.prototype.addCondiments = function () {
+        throw new Error('子类必须重写该方法');
+    };
+    Beverage.prototype.customerWantsCondiments = function () {
+        throw new Error('子类必须重写该方法');
+    };
+    Beverage.prototype.init = function () {
+        this.boilWater();
+        this.brew();
+        this.pourInCup();
+        if (this.customerWantsCondiments()) {
+            this.addCondiments();
+        }
+    };
+
+
+    //创建 coffee 和 tea 类
+    var Coffee = function(){};
+    Coffee.prototype = new Beverage();
+
+    Coffee.prototype.brew = function(){
+        console.log( '用沸水冲咖啡' );
+    };
+
+    Coffee.prototype.pourInCup = function(){
+        console.log( '把咖啡倒进杯子' );
+    }
+
+    Coffee.prototype.addCondiments = function(){
+        console.log( '加糖和牛奶' );
+    };
+    Coffee.prototype.customerWantsCondiments = function(){
+        return window.confirm('是否需要添加调料')
+    };
+
+
+    var coffee = new Coffee();
+    coffee.init();
+</script>
+
+</body>
+</html>

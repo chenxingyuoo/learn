@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>快速排序</title>
+</head>
+
+<div class="sort" id="sort">
+    <div class="item">1</div>
+    <div class="item">5</div>
+    <div class="item">2</div>
+    <div class="item">4</div>
+    <div class="item">10</div>
+    <div class="item">3</div>
+</div>
+<body>
+<script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.js"></script>
+<script>
+
+    var sort = [ 4.5 , 5.5, 5, 3.6, 7.8, 6.6]
+
+
+    function SortHtml(array, wrapper,child){
+        this.array = array;
+        this.ui = {columns:[], wrapper:wrapper || $('body'), child : child };
+        this.index = -1;
+        this.sortHtml = [];
+        this.html = "";
+       // this.init();
+        console.log(this);
+    }
+
+    SortHtml.prototype =  {
+        //初始化
+        init:function(){
+            var html = "";
+            for(var i=0; i<this.array.length; i++){
+                html += this.setDom(this.array[i]);
+            }
+            //console.log(this.ui.wrapper.find(".column"))
+            this.html = html;
+            this.ui.wrapper.innerHTML = this.html;
+            this.ui.columns = this.ui.wrapper.find(".column");
+        },
+
+
+        //获取数组的总数
+        setDom:function( domArray ){
+
+            console.log(domArray.className,domArray.innerHTML)
+           // parentNode.className += ' column' + number.innerHTML;
+            //console.log(parentNode)
+            //return parentNode.innerHTML;
+
+        },
+
+
+
+        exchange:function(index1, index2){
+            console.log(index1,index2)
+            /* this.highlight(index1, index2);
+             this.unHighlight(index1, index2);*/
+
+        },
+
+        /*activeFragment:function(startIndex, endIndex){
+         startIndex = startIndex < 0 ? 0 : startIndex;
+         this.animte.push({
+         type:"uiActiveFragment",
+         data:[startIndex, endIndex]
+         });
+         },*/
+        /*
+
+         blurFragment:function(startIndex, endIndex){
+         startIndex = startIndex < 0 ? 0 : startIndex;
+         this.animte.push({
+         type:"uiBlurFragment",
+         data:[startIndex, endIndex]
+         });
+         },
+         */
+
+
+        /*play:function( speed ){
+
+         this.speed = speed || this.speed;
+         var animate = this.animte;
+         var len = animate.length;
+         var self = this;
+         self.index++
+         if(self.index<len){
+         self[animate[self.index].type].apply( self, animate[self.index].data);
+         }else{
+         clearInterval( SortAnimate.interid );
+         }
+         }*/
+
+
+    };
+
+
+
+    var htmlArr = document.querySelectorAll('.item');
+    console.log(htmlArr)
+    var arrays = [];
+    var sortHtml = new SortHtml(htmlArr , $('#sort'));
+    console.log(sortHtml)
+
+    for (var i = 0; i < htmlArr.length; i++) {
+        arrays[i] = htmlArr[i].innerHTML;
+    }
+
+    console.log(arrays)
+    console.log(quickSort(arrays, sortHtml));
+
+
+
+    function quickSort(array, srothtml){
+        if(array.length == 0){
+            return array;
+        }
+        var i = 0;
+        var j = array.length - 1;
+        var newArray = [];
+        var Sort = function(i, j){
+
+            // 结束条件
+            if(i == j ){
+                return;
+            };
+
+            //数组第一个开始 ， 到数组结束
+            // srotanimte.activeFragment(i, j)
+
+            var key = array[i];
+            var starti = i; // 记录开始位置
+            var endj = j; // 记录结束位置
+            //数组长度大于 i 的情况
+
+
+            while(j > i){
+
+                //srotanimte.activeOne(j);
+                // j <<-------------- 向前查找
+
+                //数组最后一位大于 i 的情况
+                if(array[j] >= key){
+                    /*srothtml.array[j].*/
+                    newArray[i] = srothtml.array[j]
+                    j--;
+                }else{
+                    srothtml.exchange(i, j);
+                    array[i] = array[j]
+                    //i++ ------------>>向后查找
+                    while(j > ++i){
+                        //srotanimte.activeOne(i);
+                        if(array[i] > key){
+                            srothtml.exchange(i, j);
+                            //srotanimte.exchange(i, j);
+                            //srotanimte.blurOne(i);
+                            array[j] = array[i];
+                            break;
+                        }
+                        //srotanimte.blurOne(i);
+                    }
+                }
+            }
+
+            // 如果第一个取出的 key 是最小的数
+
+            if(starti == i){
+                Sort(++i, endj);
+                return ;
+            }
+
+            // 最后一个空位留给 key
+            array[i] = key;
+
+
+            // 递归
+            Sort(starti, i);
+            Sort(j, endj);
+        };
+
+        Sort(i, j);
+
+        console.log(newArray)
+        return array;
+    }
+</script>
+</body>
+</html>

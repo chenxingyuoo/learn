@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1 user-scalable=0"/>
+    <title>旋转木马</title>
+    <style>
+        /*
+        QQ:1159037199
+        */
+        html {
+            font-family: "微软雅黑";
+            -ms-text-size-adjust: 100%;
+            -webkit-text-size-adjust: 100%;
+            overflow-y: scroll;
+            -webkit-overflow-scrolling: touch;
+            -moz-osx-font-smoothing: grayscale;
+            -webkit-font-smoothing: antialiased;
+            text-rendering: optimizeLegibility;
+            box-sizing: border-box;
+        }
+
+        a:active,
+        a:hover {
+            outline: 0
+        }
+        a:hover {
+            color: #006699;
+        }
+        img {
+            border: none;
+            vertical-align: middle;
+            -ms-interpolation-mode: bicubic
+        }
+        ul,
+        ol {
+            list-style: none outside none;
+            margin: 0px;
+            padding: 0px;
+        }
+
+
+        .carrousel-main{
+            position: relative;
+            width:1000px;
+            height:400px;
+        }
+        .carrousel-main .carrousel-list{
+            width:inherit;
+            height:inherit;
+        }
+        .carrousel-main .carrousel-list a,.carrousel-main .carrousel-list a img{
+            display: block;
+            width:inherit;
+            height:inherit;
+        }
+        .carrousel-btn{
+            position: absolute;
+            top:0px;
+            width:100px;
+            height:400px;
+            cursor: pointer;
+            opacity: 0.5;
+            z-index: 10;
+            background-repeat: no-repeat;
+            background-position: center center;
+        }
+        /*左右按钮*/
+        .carrousel-btn-pre{
+            left:0px;
+            background-image: url('../img/btn_l.png');
+            background-color: yellow;
+        }
+        .carrousel-btn-next{
+            right:0px;
+            background-image: url('../img/btn_r.png');
+            background-color: yellow;
+        }
+        /*列表*/
+        .carrousel-main .carrousel-list .carrousel-item{
+            position: absolute;
+            top:0px;
+            left: 0px;
+        }
+    </style>
+</head>
+<body>
+<div class="carrousel-main" data-setting='{"width":1000,"height":400,
+    "carrouselWidth":750,
+    "carrouselHeight":400,
+    "scale":0.9,
+    "verticalAlign":"middle"}'>
+    <div class="carrousel-btn carrousel-btn-pre"></div>
+    <ul class="carrousel-list">
+        <li class="carrousel-item">
+            <a href="#"><img src="img/A.jpg"></a>
+        </li>
+        <li class="carrousel-item">
+            <a href="#"><img src="img/B.jpg"></a>
+        </li>
+        <li class="carrousel-item">
+            <a href="#"><img src="img/C.jpg"></a>
+        </li>
+        <li class="carrousel-item">
+            <a href="#"><img src="img/D.jpg"></a>
+        </li>
+        <li class="carrousel-item">
+            <a href="#"><img src="img/E.jpg"></a>
+        </li>
+        <li class="carrousel-item">
+            <a href="#"><img src="img/A.jpg"></a>
+        </li>
+        <li class="carrousel-item">
+            <a href="#"><img src="img/B.jpg"></a>
+        </li>
+        <li class="carrousel-item">
+            <a href="#"><img src="img/C.jpg"></a>
+        </li>
+        <li class="carrousel-item">
+            <a href="#"><img src="img/D.jpg"></a>
+        </li>
+        <li class="carrousel-item">
+            <a href="#"><img src="img/E.jpg"></a>
+        </li>
+    </ul>
+    <div class="carrousel-btn carrousel-btn-next"></div>
+</div>
+
+<script src="js/index.js"></script>
+<script>
+    window.onload=function(){
+        Carrousel.init(document.querySelectorAll('.carrousel-main'));
+    }
+</script>
+</body>
+</html>

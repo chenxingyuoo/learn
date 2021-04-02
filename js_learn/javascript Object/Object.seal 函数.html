@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Object.seal 函数</title>
+</head>
+
+<body>
+<script>
+    //阻止修改现有属性的特性，并阻止添加新属性。
+
+    /*备注
+    Object.seal 函数执行以下两项操作：
+    使对象不可扩展，这样便无法向其添加新属性。
+    为对象的所有属性将 configurable 特性设置为 false。
+    在 configurable 特性为 false 时，无法更改属性的特性且无法删除属性。在 configurable 为 false 且 writable 为 true 时，可以更改 value 和 writable 特性。
+    Object.seal 函数不更改 writable 特性。*/
+
+    // Create an object that has two properties.
+    var obj = { pasta: "spaghetti", length: 10 };
+    // Seal the object.
+    Object.seal(obj);
+    document.write(Object.isSealed(obj));
+    document.write("<br/>");
+
+    // Try to add a new property, and then verify that it is not added.
+    obj.newProp = 50;
+    document.write(obj.newProp);
+    document.write("<br/>");
+
+    // Try to delete a property, and then verify that it is still present.
+    delete obj.length;
+    document.write(obj.length);
+
+    // Output:
+    // true
+    // undefined
+    // 10
+
+
+    //该Object.seal（）方法密封的对象，
+    // 防止被添加到其新的属性和标志认证的所有现有属性不可配置。本属性的值仍然可以改变，只要它们是可写
+    var obj = {
+        prop: function() {},
+        foo: 'bar'
+    };
+
+    // New properties may be added, existing properties may be changed or removed.
+    obj.foo = 'baz';
+    obj.lumpy = 'woof';
+    delete obj.prop;
+
+    var o = Object.seal(obj);
+
+    o === obj; // true
+    Object.isSealed(obj); // === true
+
+    // 更改属性值在一个密封的对象仍然有效
+    obj.foo = 'quux';
+
+    // 但你不能转换数据的属性来访问，反之亦然
+    Object.defineProperty(obj, 'foo', { get: function() { return 'g'; } }); // throws a TypeError
+
+    //现在，任何的变化，而不是属性值等，将失败。
+    obj.quaxxor = 'the friendly duck'; // silently doesn't add the property
+    delete obj.foo; // silently doesn't delete the property
+
+    // ...在严格模式下这样的尝试都将抛出类型错误
+    function fail() {
+        'use strict';
+        delete obj.foo; // throws a TypeError
+        obj.sparky = 'arf'; // throws a TypeError
+    }
+    fail();
+
+    //试图通过增加也Object.defineProperty将抛出。
+    Object.defineProperty(obj, 'ohai', { value: 17 }); // throws a TypeError
+    Object.defineProperty(obj, 'foo', { value: 'eit' }); // changes existing property value
+</script>
+</body>
+</html>

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>test_zepto</title>
+</head>
+
+<body>
+
+<style>
+    .zepto{
+        color: antiquewhite;
+    }
+</style>
+
+<div class="zepto" title="tttttttt" id="firstdiv">
+    <p class="testDiv toggleClass">testDiv</p>
+</div>
+<div class="zepto" title="tttttttt" id="firstd"></div>
+<div class="zepto" title="tttttttt" id="second"></div>
+<div class="zepto" title="tttttttt" id="thirddiv" name="test"></div>
+
+<div class="test-show" style="display: none">test-show</div>
+
+<div class="test-append">test-append</div>
+
+<script src="./js/zepto_learn.js"></script>
+<script>
+
+    var filter = [].filter;
+    //传进一个数组 ， 去除null
+    function compact(array) {
+        return filter.call(array, function (item) {
+            return item !== null;
+        })
+    }
+
+    console.time('compact');
+    compact(['a',null,'b']);
+    console.timeEnd('compact');
+
+    function compact1(array){
+        return array.filter(function (item){
+            return item !== null;
+        })
+    }
+
+    console.time('compact');
+    compact1(['a',null,'b']);
+    console.timeEnd('compact');
+
+
+    function type1(obj){
+        return {}.toString.call(obj)
+    }
+
+    console.log(type1(1));
+
+
+    console.log($.type(1));
+
+    console.log($.type('sdsd'));
+
+    console.log($.type(['sdsd','sdsd']));
+
+    console.log($.type({ a : 1}));
+
+   /* console.log($.map([1,2,3,4,5], function (item, i){
+        console.log(item, i);
+        return item + 1;
+    }));*/
+
+    //[2, 3, 4, 5, 6]
+
+    var grep = function (elements, callback) {
+        return [].filter.call(elements, callback);
+    };
+
+    console.time('grep');
+    grep([1,2,3],function (item,i){
+        console.log(item);
+        return item !== undefined;
+    });
+    console.timeEnd('grep');
+
+    var greps = function (elements, callback){
+        return elements.filter(callback);
+    };
+
+    console.time('greps');
+    greps([1,2,3],function (item,i){
+        console.log(item);
+        return item !== undefined;
+    });
+    console.timeEnd('greps');
+
+    /*$(function ($){
+        debugger;
+    });*/
+
+//    $('<text>');
+    console.log($('.zepto').attr({
+        'title':'changeAttr',
+        'age' : 20
+    }));
+
+//    console.log($('.zepto').remove());
+
+//   console.log( $('.zepto').filter("div[name=test]"));
+//   console.log( $('.zepto').filter(function (index){}));
+//    console.log( $('.zepto').not("div[name=test]"));
+//    console.log($('.zepto').get(1));
+//    console.log($('.zepto').eq(1));
+//    console.log($('.zepto').find('.testDiv'));
+//    console.log($('.testDiv').closest('.zepto'));
+
+//    console.log($('.testDiv').parents('.zepto'));
+
+//    console.log($('.testDiv').parent());
+
+//    console.log($('body').children('div'));
+
+//    console.log($('.zepto').contents());
+
+//    console.log($('.zepto').eq(1).siblings());
+
+//    console.log($('.test-show').show());
+
+//    console.log($('.test-append').append('<div class="2222">asdasd</div>'));
+//    console.log($('.test-append').prepend('<div class="asdasd">asdasdasd</div>'));
+
+
+//    console.log($('.zepto').css({
+//        'color':'#000',
+//        'backgroundColor' : '#ddd'
+//    }));
+
+//    console.log($('.zepto').eq(2).index());
+
+//    console.log($('.zepto').addClass('eeeee'))
+
+//    console.log($('.testDiv').removeClass('testDiv'));
+
+
+//    console.log($('.testDiv').toggleClass('toggleClass'));
+//    console.log($('.testDiv').toggleClass('toggleClass'));
+
+
+
+//    console.log($('.zepto').removeAttr('title'));
+
+//    console.log($('.zepto').prop('hh','ssdsasa'));
+
+//    $('.zepto').toggle()
+
+//    console.log($('.testDiv').wrap('<from></from>'));
+//    console.log($('.testDiv').unwrap('<from></from>'))
+
+//    $('.testDiv').width(300);
+
+    var obj = {
+        name : 'chen',
+        age : 20,
+        clothes : {
+            coat : 'coat',
+            underClothing : 'Under clothing',
+            Shoes : 'Shoes'
+        }
+    };
+
+    console.log($.isPlainObject(obj));
+
+//    var testExtend1 = $.extend(true, {}, obj);
+//    console.log(testExtend1);
+
+
+//    $('.zepto').on('click',function (e){
+//        debugger;
+//    });
+
+//    $(document).on('click','.zepto', obj, function (e){
+//        debugger;
+//    })
+
+
+//    $('.zepto').trigger('click');
+
+    //自定义事件
+//    $(document).on('chen',function (e){
+//        debugger;
+//    });
+//
+//    $(document).trigger('chen');
+
+   $.ajax({
+       url : './test_http/user_info.json',
+       type : 'get',
+       dataType : 'jsonp',
+       data : {
+           username : 'chenxingyu'
+       },
+//        jsonpCallback : 'jsonpCallback',
+       success : function (data){
+           console.log(data);
+       },
+       error : function (data){
+           console.log(data);
+       }
+   })
+
+</script>
+
+</body>
+</html>

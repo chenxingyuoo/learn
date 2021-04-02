@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>proto_inherit</title>
+	<meta charset='utf-8' />
+</head>
+
+<body>
+
+<script type="text/javascript">
+ 	
+   function Student (props) {
+   	  this.name = props.name || '匿名';
+	   this.studentName = props.name || '匿名';
+   }
+
+   Student.prototype.hello = function(){
+   	 alert('hello, ' + this.name ); 
+   }
+
+   Student.prototype.exprots = function(){
+   	  return this;
+   }
+
+   
+   //我们可以借助一个中间对象来实现正确的原型链，这个中间对象的原型要指向Student.prototype。为了实现这一点，参考道爷（就是发明JSON的那个道格拉斯）的代码，中间对象可以用一个空函数F来实现：
+
+   // PrimaryStudent构造函数:
+	function PrimaryStudent(props) {
+	   	// 调用Student构造函数，绑定this变量:
+	    Student.call(this, props);
+	    this.grade = props.grade || 1;
+	}
+
+	// 空函数F:
+	function F() {
+	}
+
+	// 把F的原型指向Student.prototype:
+	F.prototype = Student.prototype;
+
+    // 把PrimaryStudent的原型指向一个新的F对象，F对象的原型正好指向Student.prototype:
+	PrimaryStudent.prototype = new F();
+
+	// 把PrimaryStudent原型的构造函数修复为PrimaryStudent:
+	PrimaryStudent.prototype.constructor = PrimaryStudent;
+
+	// 继续在PrimaryStudent原型（就是new F()对象）上定义方法：
+    PrimaryStudent.prototype.getGrade = function(){
+    	 return this.grade;
+    }
+
+    //创建小军
+   var xiaojun = new PrimaryStudent({
+   	   name : '小军',
+   	   grade : 6
+   })
+
+   console.log(xiaojun.name);  //小军
+   console.log(xiaojun.grade);  //6
+   console.log(xiaojun.getGrade()); //6
+   console.log(xiaojun.exprots());
+   debugger
+
+    // 验证原型:
+    xiaojun.__proto__ === PrimaryStudent.prototype;  //true
+    xiaojun.__proto__.__proto__ === Student.prototype; //true 
+
+    // 验证继承关系: 
+    xiaojun instanceof PrimaryStudent; //true
+    xiaojun instanceof Student; //true
+
+
+
+    //注意，函数F仅用于桥接，我们仅创建了一个new F()实例，而且，没有改变原有的Student定义的原型链。
+
+    //如果把继承这个动作用一个inherits()函数封装起来，还可以隐藏F的定义，并简化代码：
+   function inherits(Child,Parent){
+    debugger
+   	  var F = function () {};
+   	  F.prototype = Parent.prototype;   //父函数是Student
+   	  Child.prototype = new F();        //子函数是PrimaryStudent  
+   	  Child.prototype.constructor = Child;
+   }
+
+
+   function Student(props) {
+     this.name = props.name || 'Unnamed';
+   }
+
+   Student.prototype.hello = function(){
+   	 alert('Hello, ' + this.name + '!');
+   }
+
+   function PrimaryStudent (props) {
+   	 Student.call(this,props);
+   	 this.grade = props.grade || 1 ;
+   }
+
+   // 实现原型继承链:
+   inherits(PrimaryStudent,Student);
+
+   // 绑定其他方法到PrimaryStudent原型:
+   PrimaryStudent.prototype.getGrade = function  () {
+   	 return this.grade;
+   }
+
+   //创建小军
+   var xiaojun = new PrimaryStudent({
+   	   name : '小军',
+   	   grade : 6
+   })
+
+   console.log(xiaojun.name);  //小军
+   console.log(xiaojun.grade);  //6
+   console.log(xiaojun.getGrade()); //6
+
+    // 验证原型:
+    xiaojun.__proto__ === PrimaryStudent.prototype;  //true
+    xiaojun.__proto__.__proto__ === Student.prototype; //true 
+
+    // 验证继承关系: 
+    xiaojun instanceof PrimaryStudent; //true
+    xiaojun instanceof Student; //true
+
+   debugger
+</script>
+</body>
+</html>

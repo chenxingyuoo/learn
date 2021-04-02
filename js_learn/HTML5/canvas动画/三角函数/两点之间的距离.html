@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>两点之间的距离</title>
+</head>
+
+<body>
+
+<canvas id="canvas" width="500" height="500" style="background:#000;">
+    your browser not support canvas!
+</canvas>
+<p id="log"></p>
+<script src="../js/utils.js"></script>
+<script>
+
+    //公式
+    /*dx = x2 - x1;
+     dy = y2 - y1;
+     distance = Math.sqrt(dx*dx + dy*dy); //这不就是勾股定理*/
+
+    window.onload = function(){
+        var canvas = document.getElementById('canvas');
+        var log = document.getElementById('log');
+        var mouse = utils.captureMouse(canvas);
+        var context = canvas.getContext('2d');
+
+        //中心位置创建一个方块
+        var rect = {
+            x:canvas.width/2,
+            y:canvas.height/2
+        };
+
+        (function drawFrame(){
+            window.requestAnimationFrame(drawFrame,canvas);
+            context.clearRect(0,0,canvas.width,canvas.height);
+
+            var dx = mouse.x - rect.x;
+            var dy = mouse.y - rect.y;
+            var dis = Math.sqrt(dx*dx + dy*dy);
+
+            //画方块
+            context.fillStyle = '#ffffff';
+            context.fillRect(rect.x-2,rect.y-2,4,4);
+            //画线
+            context.save();
+            context.strokeStyle = '#ffffff';
+            context.beginPath();
+            //从中心方块开始画
+            context.moveTo(rect.x,rect.y);
+            //画到鼠标的位置
+            context.lineTo(mouse.x,mouse.y);
+            context.closePath();
+            context.stroke();
+            context.restore();
+            //显示距离
+            log.style.left = (mouse.x + rect.x)/2 + 'px';
+            log.style.top = (mouse.y + rect.y)/2 + 'px';
+            log.innerHTML = dis;
+        })();
+    }
+</script>
+
+</body>
+</html>

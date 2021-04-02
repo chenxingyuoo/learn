@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>气泡三角形</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        .bubbly {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%,-50%);
+            background: #00aabb;
+            border-radius: .4em;
+            width: 260px;
+            padding: 60px 20px;
+            text-align: center;
+            color: white;
+            font-size: 200%;
+        }
+        .bubbly:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            border: 34px solid transparent;
+            border-top-color: #00aabb;
+            border-bottom: 0;
+            border-left: 0;
+            margin: 0 0 -34px -17px;
+        }
+    </style>
+</head>
+
+<body>
+<hgroup class="bubbly">
+    <h1>.bubbly</h1>
+</hgroup>
+</body>
+</html>

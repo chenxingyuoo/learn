@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>javascript 求一元二次方程</title>
+</head>
+
+    <script type="text/javascript">
+        function compute() {
+            var a = parseInt(document.getElementById("a").value);
+            var b = parseInt(document.getElementById("b").value);
+            var c = parseInt(document.getElementById("c").value);
+            var x1 = document.getElementById("x1");
+            var x2 = document.getElementById("x2");
+            var inf = document.getElementById("inf");
+            inf.value = "小提示:此方程的解应经求出";
+            var xx1 = (-b - Math.pow(b * b - 4 * a * c, 0.5)) / (2 * a);
+            var xx2 = (-b + Math.pow(b * b - 4 * a * c, 0.5)) / (2 * a);
+            x1.value = "x1= " + xx1;
+            x2.value = "x2= " + xx2;
+            if (x1.value == "x1= NaN") {
+                inf.value = "小提示:此方程无解";
+            }
+            if (a + b + c != a + b + c) {
+                inf.value = "小提示:a,b,c只能是数字";
+            }
+        }
+
+
+        // 1x * x + 2x + 1 = 0;
+        //result : x1= -1 , x2= -1
+    </script>
+
+</head>
+<body>
+<form>
+    <input id="a" type="text" value="a" size="3"/>x*x+
+    <input id="b" type="text" value="b" size="3"/>x+
+    <input id="c" type="text" value="c" size="3"/>=0<br/><br/>
+    <input id="do" type="button" value="解" onclick="compute()"/>
+    <input id="x1" type="text" value="x1=" size="17"/>
+    <input id="x2" type="text" value="x2=" size="17"/><br/><br/>
+    <input id="inf" type="text" value="小提示:请分别填入a,b,c的值" size="36"/>
+    <input type="reset" value="清除"/>
+</form>
+</body>
+</html>

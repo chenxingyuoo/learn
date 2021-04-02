@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+
+
+<script>
+
+    var fileElem = document.getElementById('fileElem');
+
+    //构造函数
+    function PicUpload($root,file){
+        var that = this;
+        that.$root = $($root);
+        that.file = file
+    }
+
+    //计算文件大小
+    PicUpload.prototype.checkSize = function(maxStr){
+        var size = Math.floor(this.file.size / 1024);
+        if (size > maxStr.match(/\d+/)) {
+            common.alert("上传图片文件不得超过"+maxStr+"!");
+            return false;
+        };
+    };
+
+    //检测图片类型
+    PicUpload.prototype.isCheckType = function(){
+        if (!/\/(?:jpeg|jpg|png|gif)/i.test(this.file.type)) {
+            common.alert("请确保文件为图像类型");
+            return false;
+        }
+    };
+
+    //图片上传成功
+    PicUpload.prototype.addPic = function(self, _data){
+        console.log(self)
+        self.$root.append('<div class="lc-img-item"><span class="wif iw-error lc-img-remove"></span><img class="lc-img-val" src="'+_data.url+'" alt=""><input type="hidden" value="'+_data.md5+'"></div>');
+    };
+
+    //图片删除
+    PicUpload.prototype.removePic = function(){
+        'lc-img-remove'
+    };
+
+
+    //图片上传方法
+    PicUpload.prototype.picUploadMethon = function(files,calback){
+        var self = this;
+        net.upload({
+            hasUri: false,
+            url: '/upload',
+            type: 'post',
+            cache: 0,
+            //concurrent: concurrent,
+            data: {
+                file: files,
+            },
+            stopAllStart: true,
+            onSuccess: function (xhr) {
+                var _data = xhr.data;
+                if(_data.sta == '1'){
+                    //上传成功回调
+                    calback ? calback(self,_data) : '';
+                    alert('图片上传成功');
+                }else{
+                    alert(_data.msg || '图片上传失败');
+                }
+            }
+        });
+    };
+
+    //监听文件控件改变
+    fileElem.addEventListener('change',function(e){
+        var that = this;
+        var files = Array.prototype.slice.call(that.files);
+        fileChange(files[0]);
+    },false);
+
+    //监听文件控件改变成功执行函数
+    function fileChange(files){
+        var _file = new PicUpload('.lc-img-box',files);
+        if(_file.$root.find('.lc-img-item').length < 3){
+
+            return false;
+        }
+        if(_file.checkSize('120KB') == false) return false;
+        if(_file.isCheckType() == false) return false ;
+        _file.picUploadMethon(files,_file.addPic);
+
+    }
+
+</script>
+</body>
+</html>

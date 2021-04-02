@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>2.速度的合成与分解</title>
+</head>
+<body>
+
+
+<canvas id="canvas" width="500" height="500" style="background-color: #000;">
+</canvas>
+<script type="text/javascript" src="../js/utils.js"></script>
+<script type="text/javascript" src="../js/ball.js"></script>
+<script>
+
+    window.onload = function () {
+
+        var canvas = document.getElementById('canvas'),
+                context = canvas.getContext('2d');
+
+        var speed = 5;
+        var angle = 30;
+        var ball = new Ball(5);
+        ball.x = canvas.width/2;
+        ball.y = canvas.height/2;
+
+        (function drawFrame(){
+            window.requestAnimationFrame(drawFrame, canvas);
+            context.clearRect(0, 0, canvas.width, canvas.height);
+
+            //将速度分解到X轴和Y轴，注意这里用的是弧度制，要乘上Math.PI/180
+            var vx = Math.cos(angle * Math.PI/180) * speed;
+            var vy = Math.sin(angle * Math.PI/180) * speed;
+
+            //坐标位置每一帧都加上速度
+            ball.x += vx;
+            ball.y += vy;
+            console.log(vx)
+            console.log(vy)
+            ball.draw(context);
+        }());
+    }
+
+</script>
+</body>
+</html>

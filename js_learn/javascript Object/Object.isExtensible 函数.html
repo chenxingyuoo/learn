@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Object.isExtensible 函数 </title>
+</head>
+
+<body>
+<script>
+    //返回一个值，该值指示是否可向对象添加新属性。
+    //该Object.isExtensible（）方法，确定某个对象是可扩展的（是否可以添加到它的新特性）。
+
+    /*相关函数
+    以下相关函数可阻止修改对象的特性。
+    函数
+    对象已设置为不可扩展的
+    为每个属性将 configurable 设置为 false
+    为每个属性将 writable 设置为 false
+    Object.preventExtensions
+    是
+    否
+    否
+    Object.seal
+    是
+    是
+    否
+    Object.freeze
+    是
+    是
+    是
+    如果满足下表中标记的所有条件，则以下函数返回 true。
+    函数
+    对象是否可扩展
+    为所有属性将 configurable 设置为 false
+    为所有数据属性将 writable 设置为 false
+    Object.isExtensible
+    是
+    否
+    否
+    Object.isSealed
+    否
+    是
+    否
+    Object.isFrozen
+    否
+    是
+    是
+*/
+
+
+    // Create an object that has two properties.
+    var obj = { pasta: "spaghetti", length: 10 };
+
+    // Make the object non-extensible.
+    Object.preventExtensions(obj);
+
+    // Try to add a new property, and then verify that it is not added.
+    obj.newProp = 50;
+    document.write(obj.newProp);
+
+    // Output:
+//    undefined
+
+
+    // New objects are extensible.
+    var empty = {};
+    Object.isExtensible(empty); // === true
+
+    // ...but that can be changed.
+    Object.preventExtensions(empty);
+    Object.isExtensible(empty); // === false
+
+    // Sealed objects are by definition non-extensible.
+    var sealed = Object.seal({});
+    Object.isExtensible(sealed); // === false
+
+    // Frozen objects are also by definition non-extensible.
+    var frozen = Object.freeze({});
+    Object.isExtensible(frozen); // === false
+
+
+    Object.isExtensible(1);
+    // TypeError: 1 is not an object (ES5 code)
+
+    Object.isExtensible(1);
+    // false                         (ES6 code)
+
+
+</script>
+</body>
+</html>

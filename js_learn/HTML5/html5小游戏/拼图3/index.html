@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>pingtu.html</title>
+
+    <meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+    <meta http-equiv="description" content="this is my page">
+    <meta http-equiv="content-type" content="text/html; charset=gb2312">
+
+    <!--<link rel="stylesheet" type="text/css" href="./styles.css">-->
+
+    <style type="text/css">
+        *{ margin-bottom:0px;
+            margin-top: 0px;
+            margin-left: 0px;
+            margin-right: 0px;
+            padding-right: 0px;
+            padding-left: 0px;
+            padding-top: 0px;
+            padding-bottom: 0px;
+            border: 0px;
+        }
+
+        #box{
+
+            position:absolute;
+            top:0px;
+            left:0px;
+            width: 300px;
+            height: 300px;
+            border: 1px solid red;
+        }
+
+        #box img{
+            float:left;
+            width: 100px;
+            height: 100px;
+        }
+
+
+        #box .pj,#box .p2,#box .p3,#box .p4,#box .p5,#box .p6,#box .p7,#box .p8,#box .p9{
+            position: absolute;
+        }
+
+        #box .pj,#box .p2,#box .p3{
+            top:0px;
+        }
+
+        #box .p4,#box .p5,#box .p6{
+            top:100px;
+        }
+
+        #box .p7,#box .p8,#box .p9{
+            top:200px;
+        }
+
+        #box .pj,#box .p4,#box .p7{
+            left:0px;
+        }
+
+        #box .p2,#box .p5,#box .p8{
+            left:100px;
+        }
+
+        #box .p3,#box .p6,#box .p9{
+            left:200px;
+        }
+
+        #button{
+            font-size:25px;
+            font-weight:20px;
+            float: left;
+            position: absolute;
+            top:400px;
+            left:100px;
+        }
+
+        #output{
+            position:absolute;
+            width: 270px;
+            height: 170px;
+            top:130px;
+            left: 350px;
+        }
+
+        #output img{
+            height: 170px;
+            width:170px;
+            float: right;
+        }
+
+        #notice{
+            position: absolute;
+            left: 650px;
+            top:150px;
+            width: 150px;
+            height: 120px;
+            border: 1px solid blue;
+            font-size: 15px;
+        }
+
+    </style>
+</head>
+
+<body>
+<div id="box">
+
+    <img class="pj" src="img/1.jpg">
+    <img class="p2" src="img/2.jpg">
+    <img class="p3" src="img/3.jpg">
+    <img class="p4"  src="img/4.jpg">
+    <img class="p5" src="img/5.jpg">
+    <img class="p6" src="img/6.jpg">
+    <img class="p7" src="img/7.jpg">
+    <img class="p8" src="img/8.jpg">
+</div>
+
+<div id="output">
+    目标图形：
+    <img alt="" src="img1/output.jpg">
+</div>
+
+<div id="notice">
+    游戏提示：<br>
+    <br>
+    点击“开始新游戏”开始游戏。鼠标点击黑色方块周围的方块时，即可移动方块。。
+</div>
+
+
+<input type="button" id="button" value="开始新游戏">
+
+
+
+<script type="text/javascript">
+    var times=0;
+    var src= Array();
+    src.push("img/1.jpg");
+    src.push("img/2.jpg");
+    src.push("img/3.jpg");
+    src.push("img/4.jpg");
+    src.push("img/5.jpg");
+    src.push("img/6.jpg");
+    src.push("img/7.jpg");
+    src.push("img/8.jpg");
+
+
+    function addLoadEvent(func) {
+
+        //为window添加新事件函数
+        var oldonload = window.onload;
+        if (typeof window.onload != 'function') {
+            window.onload = func;
+        } else {
+            window.onload = function() {
+                oldonload();
+                func();
+            };
+        }
+    }
+
+    function getInfor(){
+        var ps=document.getElementById("box");
+        var Arrps=ps.getElementsByTagName("img");
+
+        for(var i=0;i<Arrps.length;i++){
+            Arrps[i].onclick=function(){
+                if (this.getAttribute("src")=="img1/pj.jpg");
+                changeP(this,Arrps);
+            };
+        }
+    }
+
+
+    function tostar(){
+        var butt=document.getElementById("button");
+        butt.onclick=function(){
+            toST();
+            times=0;
+            getInfor();
+        };
+    }
+
+
+    function changeP(ob,Arrps){
+        var Ni=0;
+        var Nj=0;
+        for(var i=0;i<Arrps.length;i++){
+            if(Arrps[i]==ob)
+                Ni=i;
+            if(Arrps[i].getAttribute("src")=="img1/pj.jpg")
+                Nj=i;
+        }
+
+        if(Math.abs(Ni-Nj)==3)
+        {
+            var temperOb=ob.getAttribute("src");
+            ob.setAttribute("src","img1/pj.jpg");
+            Arrps[Nj].setAttribute("src",temperOb);
+            times++;
+            ifright();
+
+        }else if((Ni-Nj)==1&&(Ni%3)!=0){
+            var temperOb=ob.getAttribute("src");
+            ob.setAttribute("src","img1/pj.jpg");
+            Arrps[Nj].setAttribute("src",temperOb);
+            times++;
+            ifright();
+
+        }else if((Ni-Nj)==-1&&(Ni%3)!=2){
+            var temperOb=ob.getAttribute("src");
+            ob.setAttribute("src","img1/pj.jpg");
+            Arrps[Nj].setAttribute("src",temperOb);
+            times++;
+            ifright();
+        }
+
+
+
+    }
+
+    function ifright(){
+
+        var ps=document.getElementById("box");
+        var Arrps=ps.getElementsByTagName("img");
+        for(var i=0;i<src.length;i++){
+            if(src[i]!=Arrps[i].getAttribute("src")) return;
+        }
+
+        if(times<50)
+
+            alert("恭喜，你成功了。。"+"\n"+"仅用了"+times+"步哦");
+        else  alert("恭喜，你成功了。。"+"\n"+"用了"+times+"步");
+    }
+
+    function toST(){
+
+        var srcUsing= new Array();
+        for(var p=0; p<src.length;p++){
+            srcUsing[p]=src[p];
+        }
+        var ps=document.getElementById("box");
+        var Arrps=ps.getElementsByTagName("img");
+
+
+        var newArry= new Array();
+        for(var i=0;i<Arrps.length;i++){
+            newArry.push(srcUsing.splice(Math.floor(Math.random()*srcUsing.length), 1));
+        }
+
+
+        for(var j=0;j<newArry.length;j++) {
+
+
+            //var newarrValue=newArry[j];
+            Arrps[j].setAttribute("src",String(newArry[j]));
+
+        }
+
+    }
+
+    addLoadEvent(tostar);
+</script>
+</body>
+</html>

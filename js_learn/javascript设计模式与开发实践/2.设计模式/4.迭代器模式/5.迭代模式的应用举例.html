@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+
+<script>
+    var getUploadObj = function () {
+        try {
+            return new ActiveXObject("TXFTNActiveX.FTNUpload"); // ie
+        } catch (e) {
+            if (supportFlash()) { // supportFlash
+                var str = '<object type="application/x-shockwave-flash"></object>';
+                return $(str).appendTo($('body'));
+            } else {
+                var str = '<input name="file" type="file"/>'; //
+                return $(str).appendTo($('body'));
+            }
+        }
+    }
+
+    //使用迭代器模式
+
+    var getActiveUploadObj = function () {
+        try {
+            return new ActiveXObject("TXFTNActiveX.FTNUpload"); // ie
+        } catch (e) {
+            return false;
+        }
+    }
+
+    var getFlashUploadObj = function () {
+        if (supportFlash()) { // supportFlash
+            var str = '<object type="application/x-shockwave-flash"></object>';
+            return $(str).appendTo($('body'));
+        }
+        return false;
+    }
+
+    var getFormUploadObj = function () {
+        var str = '<input name="file" type="file"/>'; //
+        return $(str).appendTo($('body'));
+    }
+
+
+    var iteratorUploadObj = function () {
+        for (var i = 0, fn; fn = arguments[i++];) {
+            var uploadObj = fn();
+            if (uploadObj !== false) {
+                return uploadObj;
+            }
+        }
+    }
+
+    var uploadObj = iteratorUploadObj( getActiveUploadObj, getFlashUploadObj, getFormUploadObj );
+
+</script>
+
+</body>
+</html>

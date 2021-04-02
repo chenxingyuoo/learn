@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>函数式 js 接口</title>
+</head>x2
+
+<body>
+<script>
+    // 传统接口
+    _.map([1, 2, 3], function (el) {return el * 2}); // return [2, 4, 6]
+
+    // 函数式接口
+    var fn = _.map([1, 2, 3]); // return a function
+    fn(function (el) {return el * 2}); // return [2, 4, 6];
+
+    // 或者
+    _.map([1, 2, 3])(function (el) {return el * 2}); // return [2, 4, 6];
+</script>
+</body>
+</html>

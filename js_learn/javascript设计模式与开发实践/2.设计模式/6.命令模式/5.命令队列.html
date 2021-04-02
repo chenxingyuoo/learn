@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+
+<div id="ball1" style="position:absolute;background:#000;width:50px;height:50px"></div>
+<div id="ball2" style="position:absolute;background:#f00;width:50px;height:50px;top:100px"></div>
+
+<button id="move" style="position:absolute;top: 150px;">开始移动</button>
+
+<script>
+
+    var Event = (function () {
+        var global = this;
+        var Event;
+        var _default = 'default';
+
+        Event = function () {
+            var _listen;
+            var _trigger;
+            var _remove;
+            var _slice = Array.prototype.slice;
+            var _shift = Array.prototype.shift;
+            var _unshift = Array.prototype.unshift;
+            var namespaceCache = {};
+            var _create;
+            var find;
+            var each = function (arr, fn) {
+                var ret;
+                for (var i = 0, len = arr.length; i < len; i++) {
+                    var n = arr[i];
+                    ret = fn.call(n, i, n);
+                }
+                return ret;
+            };
+
+            //监听
+            _listen = function (key, fn, cache) {
+                if (!cache[key]) {
+                    cache[key] = [];
+                }
+                cache[key].push(fn);
+            };
+
+            //删除
+            _remove = function (key, cache, fn) {
+                if (cache[key]) {
+                    if (fn) {
+                        for (var len = cache[key].length; len >= 0; len--) {
+                            if (cache[key][i] === fn) {
+                                cache[key].splice(i, 1);
+                            }
+                        }
+
+                    } else {
+                        cache[key] = [];
+                    }
+                }
+            };
+
+            //触发
+            _trigger = function () {
+                var cache = _shift.call(arguments);
+                var key = _shift.call(arguments);
+                var args = arguments;
+                var _self = this;
+                var ret;
+                var stack = cache[key];
+
+                if (!stack || !stack.length) {
+                    return;
+                }
+
+                return each(stack, function () {
+                    return this.apply(_self, args);
+                })
+            };
+
+            _create = function (namespace) {
+                var namespace = namespace || _default;
+                var cache = {};
+                var offlineStack = []; //离线事件
+                var ret = {
+                    listen: function (key, fn, last) {
+                        _listen(key, fn, cache);
+
+                        if (offlineStack === null) {
+                            return;
+                        }
+
+                        if (last === 'last') {
+                            offlineStack.length && offlineStack.pop()();
+                        } else {
+                            if (offlineStack.length > 0) {
+                                each(offlineStack, function () {
+                                    this();
+                                });
+                            }
+                        }
+                        //如果是先监听 ，离线事件栈则为null
+                        offlineStack = null;
+                    },
+                    one: function (key, fn, last) {
+                        _remove(key, cache);
+                        this.listen(key, fn, cache);
+                    },
+                    remove: function (key, fn) {
+                        _remove(key, cache, fn);
+                    },
+                    trigger: function () {
+                        var fn;
+                        var _self = this;
+                        var args;
+
+                        _unshift.call(arguments, cache);
+                        args = arguments;
+                        fn = function () {
+                            return _trigger.apply(_self, args);
+                        };
+
+                        //如果存在离线事件
+                        if (offlineStack) {
+                            //添加当前函数进入离线事件 ， 并返回
+                            return offlineStack.push(fn);
+                        }
+
+                        return fn();
+                    }
+                };
+
+                var result;
+                if (namespace) {
+                    if (namespaceCache[namespace]) {
+                        result = namespaceCache[namespace];
+                    } else {
+                        result = namespaceCache[namespace] = ret;
+                    }
+                } else {
+                    result = ret;
+                }
+
+                return result;
+            };
+
+
+            return {
+                create: _create,
+                one: function (key, fn, last) {
+                    var event = this.create();
+                    event.one(key, fn, last);
+                },
+                remove: function (key, fn) {
+                    var event = this.create();
+                    event.remove(key, fn);
+                },
+                listen: function (key, fn, last) {
+                    var event = this.create();
+                    event.listen(key, fn, last);
+                },
+                trigger: function () {
+                    var event = this.create();
+                    event.trigger.apply(this, arguments);
+                }
+            }
+
+        }();
+
+        return Event;
+
+    })();
+
+    var tween = {
+        linear: function (t, b, c, d) {
+            return c * t / d + b;
+        },
+        easeIn: function (t, b, c, d) {
+            return c * (t /= d) * t + b;
+        },
+        strongEaseIn: function (t, b, c, d) {
+            return c * (t /= d) * t * t * t * t + b;
+        },
+        strongEaseOut: function (t, b, c, d) {
+            return c * ((t = t / d - 1) * t * t * t * t + 1) + b;
+        },
+        sineaseIn: function (t, b, c, d) {
+            return c * (t /= d) * t * t + b;
+        },
+        sineaseOut: function (t, b, c, d) {
+            return c * ((t = t / d - 1) * t * t + 1) + b;
+        }
+    }
+
+    var Animate = function (dom) {
+        this.dom = dom;
+        this.startTime = 0;
+        this.startPos = 0;
+        this.endPos = 0;
+        this.propertyName = null;
+        this.easing = null;
+        this.duration = null;
+    };
+
+    Animate.prototype.start = function (propertyName, endPos, duration, easing) {
+        this.startTime = +new Date; //开始时间
+        this.startPos = this.dom.getBoundingClientRect()[propertyName]; // dom
+        this.propertyName = propertyName; //dom        CSS
+        this.endPos = endPos; //dom
+        this.duration = duration; //
+        this.easing = tween[easing]; //
+
+        var self = this;
+        var timeId = setInterval(function () { //
+            if (self.step() === false) { //
+                clearInterval(timeId);
+            }
+        }, 19);
+    }
+
+    Animate.prototype.step = function () {
+        var t = +new Date; //    前
+        if (t >= this.startTime + this.duration) { // (1)
+            this.update(this.endPos); //       CSS
+            return false;
+        }
+        var pos = this.easing(t - this.startTime, this.startPos,
+            this.endPos - this.startPos, this.duration);
+        console.log(pos);
+        this.update(pos); //       CSS
+    }
+
+    Animate.prototype.update = function( pos ){
+        this.dom.style[ this.propertyName ] = pos + 'px';
+    };
+
+
+    var moveBtn = document.querySelector('#move');
+    var ball1 = document.querySelector('#ball1');
+    var ball2 = document.querySelector('#ball2');
+
+
+    var isMove = true;
+
+    //监听
+    Event.listen('moveTrue', function (a) {
+        setTimeout(function(){
+            isMove = true;
+        },1000);
+    });
+
+    //创建命令
+    var makeCommand = function( receiver, obj ){
+        return function(){
+            var animate = new receiver(obj);
+            animate.start('left', 1000, 1000, 'strongEaseOut' );
+            //触发
+            Event.trigger('moveTrue')
+        }
+    };
+
+    var commandStack = []; //保存命令的栈堆
+
+    commandStack.push( makeCommand(Animate , ball1) );  //将刚刚执行的命令保存到栈堆
+    commandStack.push( makeCommand(Animate , ball2) );  //将刚刚执行的命令保存到栈堆
+
+    //点击移动
+    moveBtn.onclick = function (){
+        if (isMove === true) {
+            isMove = false;
+
+            if (commandStack.length > 0) {
+                commandStack.shift()();
+            }
+
+        }
+    };
+
+</script>
+
+</body>
+</html>

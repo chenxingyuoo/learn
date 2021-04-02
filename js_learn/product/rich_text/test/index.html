@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>富文本编辑器</title>
+    <link href="assets/css/bootstrap-combined.min.css" rel="stylesheet">
+    <link href="assets/css/font-awesome.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #333;
+            color: #fff;
+        }
+
+        .content {
+            margin: 100px;
+        }
+
+        .container-fluid.full-screen-active {
+            position: absolute;
+            left: 0;
+            top: 0;
+            background-color: #333;
+            z-index: 2;
+        }
+
+        #editor {
+            resize: vertical; /*可拉动宽高*/
+            /*resize :none;    /!*不可拉动宽高*!/*/
+            overflow: auto;
+            border: 1px solid silver;
+            border-radius: 5px;
+            min-height: 200px;
+            box-shadow: inset 0 0 10px silver;
+            padding: 1em;
+            position: relative;
+        }
+
+        #switchBox {
+            display: none;
+        }
+
+        #editControls .btn-group {
+            margin-bottom: 10px;
+        }
+
+        :-webkit-full-screen {
+            /* properties */
+        }
+
+        :-moz-full-screen {
+            /* properties */
+        }
+
+        :-ms-fullscreen {
+            /* properties */
+        }
+
+        :full-screen {
+            /*pre-spec */
+            /* properties */
+        }
+
+        :fullscreen {
+            /* spec */
+            /* properties */
+        }
+
+        /* deeper elements */
+        :-webkit-full-screen video {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* styling the backdrop*/
+        ::backdrop {
+            /* properties */
+        }
+
+        ::-ms-backdrop {
+            /* properties */
+        }
+
+        *, :after, :before {
+            box-sizing: border-box;
+        }
+
+        .note-table{
+            min-width: 0;
+            padding: 5px;
+        }
+        .note-dimension-picker {
+            font-size: 18px;
+        }
+
+
+        .note-dimension-picker-mousecatcher{
+            position: absolute !important;
+            z-index: 3;
+            width: 1em;
+            height: 1em;
+            cursor: pointer;
+        }
+
+
+        .note-dimension-picker-highlighted {
+            position: absolute !important;
+            z-index: 2;
+            width: 1em;
+            height: 1em;
+            background: url(assets/2.png);
+        }
+
+        .note-dimension-picker-unhighlighted{
+            position: relative !important;
+            z-index: 1;
+            width: 10em;
+            height: 10em;
+            background: url(assets/1.png);
+        }
+
+        .note-popover .popover {
+            max-width: none;
+        }
+        #editControls{
+            position: relative;
+        }
+
+        #editor img[img-active="active"]{
+            border: 1px solid #009de9;
+        }
+
+        .img-thumbnail {
+            height: 50px;
+            padding: 4px;
+            line-height: 1.42857143;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            transition: all .2s ease-in-out;
+            display: inline-block;
+            max-width: 100%;
+            /* height: auto; */
+        }
+        .img-rounded {
+            border-radius: 6px;
+        }
+        .img-circle {
+            border-radius: 50%;
+        }
+
+    </style>
+</head>
+
+
+<body>
+
+<div class="content">
+    <div class="container-fluid">
+        <div id='pad-wrapper'>
+            <div id="editparent">
+
+                <div id='editControls' class='' style=' padding:5px;'>
+                    <div class='btn-group'>
+                        <div class='btn' id="printDoc">打印</div>
+                    </div>
+                    <div class='btn-group'>
+                        <a class='btn' data-role='undo' href='#'><i class='icon-undo'></i></a>
+                        <a class='btn' data-role='redo' href='#'><i class='icon-repeat'></i></a>
+                    </div>
+
+                    <div class='btn-group'>
+                        <a class='btn' data-role='cut' href='#'><i class='icon-cut'></i></a>
+                        <a class='btn' data-role='copy' href='#'><i class='icon-copy'></i></a>
+                        <a class='btn' data-role='paste' href='#'><i class='icon-paste'></i></a>
+                    </div>
+
+                    <div class='btn-group'>
+                        <a class='btn' data-role='bold' href='#'><b>Bold</b></a>
+                        <a class='btn' data-role='italic' href='#'><em>Italic</em></a>
+                        <a class='btn' data-role='underline' href='#'><u><b>U</b></u></a>
+                        <a class='btn' data-role='strikeThrough' href='#'><strike>abc</strike></a>
+                    </div>
+
+                    <div class='btn-group'>
+                        <a class='btn' data-role='justifyLeft' href='#'><i class='icon-align-left'></i></a>
+                        <a class='btn' data-role='justifyCenter' href='#'><i class='icon-align-center'></i></a>
+                        <a class='btn' data-role='justifyRight' href='#'><i class='icon-align-right'></i></a>
+                        <a class='btn' data-role='justifyFull' href='#'><i class='icon-align-justify'></i></a>
+                    </div>
+
+                    <div class='btn-group'>
+                        <a class='btn' data-role='indent' href='#'><i class='icon-indent-right'></i></a>
+                        <a class='btn' data-role='outdent' href='#'><i class='icon-indent-left'></i></a>
+                    </div>
+
+                    <div class='btn-group'>
+                        <a class='btn' data-role='insertUnorderedList' href='#'><i class='icon-list-ul'></i></a>
+                        <a class='btn' data-role='insertOrderedList' href='#'><i class='icon-list-ol'></i></a>
+                    </div>
+
+                    <div class='btn-group'>
+                        <a class='btn' data-role='h1' href='#'>h<sup>1</sup></a>
+                        <a class='btn' data-role='h2' href='#'>h<sup>2</sup></a>
+                        <a class='btn' data-role='h3' href='#'>h<sup>3</sup></a>
+                        <a class='btn' data-role='h4' href='#'>h<sup>4</sup></a>
+                        <a class='btn' data-role='h5' href='#'>h<sup>5</sup></a>
+                        <a class='btn' data-role='h6' href='#'>h<sup>6</sup></a>
+                        <a class='btn' data-role='p' href='#'>p</a>
+                    </div>
+
+                    <div class='btn-group'>
+                        <a class='btn' data-role='subscript' href='#'><i class='icon-subscript'></i></a>
+                        <a class='btn' data-role='superscript' href='#'><i class='icon-superscript'></i></a>
+                    </div>
+
+                    <div class="btn-group">
+                        <button type="button" class="table-btn btn btn-deiconult btn-sm btn-small dropdown-toggle"
+                                data-toggle="dropdown" title="" tabindex="-1" data-name="table" data-original-title="表格"
+                                aria-expanded="false"><i class="icon-table"></i> <span class="caret"></span></button>
+                        <ul class="note-table dropdown-menu" data-name="table" id="note-table">
+                            <div class="note-dimension-picker" id="note-dimension-picker">
+                                <div class="note-dimension-picker-mousecatcher" data-event="insertTable"
+                                     data-value="10x10" style="width: 10em; height: 10em;"></div>
+                                <div class="note-dimension-picker-highlighted"></div>
+                                <div class="note-dimension-picker-unhighlighted"></div>
+                            </div>
+                            <div class="note-dimension-display">10 x 10</div>
+                        </ul>
+                    </div>
+
+
+                    <div class='btn-group'>
+                        <div class='btn' id="editMode">
+                            <input type="checkbox" name="switchMode" id="switchBox"/>
+                            HTML
+                        </div>
+
+                    </div>
+
+                    <div class='btn-group'>
+                        <div class="btn pic-show" title="">图片</div>
+                        <input type="file" id="pic-file" name="file" multiple style="display: none;"/>
+                    </div>
+
+
+                    <div class='btn-group'>
+                        <div class='btn' id="fullScreen">
+                            全屏
+                        </div>
+                    </div>
+
+
+
+                    <div class="note-popover">
+                        <!--  <div class="note-link-popover popover bottom in" style="display: none;">
+                              <div class="arrow"></div>
+                              <div class="popover-content"><a href="http://www.google.com"
+                                                              target="_blank">www.google.com</a>&nbsp;&nbsp;
+                                  <div class="note-insert btn-group">
+                                      <button type="button" class="btn btn-deiconult btn-sm btn-small" title=""
+                                              data-event="showLinkDialog" data-hide="true" tabindex="-1"
+                                              data-original-title="编辑链接 (⌘+K)"><i class="icon-edit"></i></button>
+                                      <button type="button" class="btn btn-deiconult btn-sm btn-small" title=""
+                                              data-event="unlink" tabindex="-1" data-original-title="去除链接"><i
+                                              class="icon-unlink"></i></button>
+                                  </div>
+                              </div>
+                          </div>-->
+                        <div class="note-image-popover popover bottom in"
+                             style="/* display: none; */left: 10px;top: 142px;">
+                            <div class="arrow"></div>
+                            <div class="popover-content">
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-deiconult btn-sm btn-small" title=""
+                                            data-event="resize" data-value="1" tabindex="-1"
+                                            data-original-title="缩放至 100%"><span class="note-fontsize-10">100%</span>
+                                    </button>
+                                    <button type="button" class="btn btn-deiconult btn-sm btn-small" title=""
+                                            data-event="resize" data-value="0.5" tabindex="-1"
+                                            data-original-title="缩放至 50%"><span class="note-fontsize-10">50%</span>
+                                    </button>
+                                    <button type="button" class="btn btn-deiconult btn-sm btn-small" title=""
+                                            data-event="resize" data-value="0.25" tabindex="-1"
+                                            data-original-title="缩放至 25%"><span class="note-fontsize-10">25%</span>
+                                    </button>
+                                </div>
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-deiconult btn-sm btn-small" title=""
+                                            data-event="floatMe" data-value="left" tabindex="-1"
+                                            data-original-title="靠左浮动"><i class="icon-align-left"></i></button>
+                                    <button type="button" class="btn btn-deiconult btn-sm btn-small" title=""
+                                            data-event="floatMe" data-value="right" tabindex="-1"
+                                            data-original-title="靠右浮动"><i class="icon-align-right"></i></button>
+                                    <button type="button" class="btn btn-deiconult btn-sm btn-small active" title=""
+                                            data-event="floatMe" data-value="none" tabindex="-1"
+                                            data-original-title="取消浮动"><i class="icon-align-justify"></i></button>
+                                </div>
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-deiconult btn-sm btn-small" title=""
+                                            data-event="imageShape" data-value="img-rounded" tabindex="-1"
+                                            data-original-title="形状: 圆角"><i class="icon-foursquare"></i></button>
+                                    <button type="button" class="btn btn-deiconult btn-sm btn-small" title=""
+                                            data-event="imageShape" data-value="img-circle" tabindex="-1"
+                                            data-original-title="形状: 圆"><i class="icon-circle"></i></button>
+                                    <button type="button" class="btn btn-deiconult btn-sm btn-small" title=""
+                                            data-event="imageShape" data-value="img-thumbnail" tabindex="-1"
+                                            data-original-title="形状: 缩略图"><i class="icon-picture"></i></button>
+                                    <button type="button" class="btn btn-deiconult btn-sm btn-small active" title=""
+                                            data-event="imageShape" data-value="" tabindex="-1" data-original-title="形状: 无"><i
+                                            class="icon-remove-circle"></i></button>
+                                </div>
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-deiconult btn-sm btn-small" title=""
+                                            data-event="removeMedia" data-value="none" tabindex="-1"
+                                            data-original-title="移除图片"><i class="icon-trash"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+
+                <!--编辑区域-->
+                <div id='editor' class='' style='' contenteditable='true'>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script src="assets/js/jquery.min.js"></script>
+<script>
+
+    var oDoc,
+            sDefTxt,
+            $doc = $(document),
+            $switchBox = $('#switchBox');
+
+
+    $doc.on('click', '.pic-show', function () {
+//        SaveCusorPos();
+        $('#pic-file').click();
+    });
+    $doc.on('change', '#pic-file', function () {
+        readAsDataURL();
+    });
+
+    function readAsDataURL() {
+        var i = 0;
+        var func = function () {
+            var result = document.getElementById("editor");
+
+            var file = document.getElementById("pic-file");
+            //检验是否为图像文件
+            var files = file.files[i];
+            var fileLen = file.files.length;
+            var reader = new FileReader();
+
+
+            if (!/image\/\w+/.test(files.type)) {
+                alert("图片格式不正确");
+                return false;
+            }
+
+            //将文件以Data URL形式读入页面
+            reader.readAsDataURL(files);
+            reader.onload = function (e) {
+                //SetCusorPos()
+                //显示文件
+                result.innerHTML += '<img src="' + this.result + '" file-name="' + files.name + '" alt="" />';
+
+                i++;
+
+                if (i < fileLen) {
+                    func();
+                }
+            };
+
+        };
+        func();
+    }
+
+
+    /*function SetCusorPos() {
+        //获取编辑器对象焦点
+        var wobj = document.getElementById("editor");
+        wobj.focus();
+        if (wobj.document.body.setSelectionRange) {
+            //firefox,直接通过函数定位光标
+            wobj.document.body.setSelectionRange(LastPos, LastPos);
+        }
+        else if (wobj.document.selection.createRange()) {
+            //ie,用selection对象进行选择
+            var range = wobj.document.selection.createRange();
+            range.collapse(true);
+            //将选择区域的开始位置和结束位置都移动到之前保存的点
+            range.moveEnd('character', LastPos);
+            range.moveStart('character', LastPos);
+            //定位光标的位置
+            range.select();
+        }
+    }
+
+
+    var ieSelectionBookMark = null;
+    //保存当前光标的位置
+    function SaveCusorPos() {
+        //debugger
+        //编辑器获取焦点
+        var wobj = document.getElementById("editor");
+        wobj.focus();
+        if (document.selection) {
+            //获取当前光标的位置
+            var rangeObj = wobj.document.selection.createRange();
+            ieSelectionBookMark = rangeObj.getBookmark();
+        }
+    }
+    //把光标还原到之前保存的位置
+    function SetCusorPos() {
+        //编辑器获取焦点
+        var wobj = document.getElementById("editor");
+        wobj.focus();
+        if (ieSelectionBookMark) {
+            //还原光标的位置
+            var rangeObj = wobj.document.selection.createRange();
+            rangeObj.moveToBookmark(ieSelectionBookMark);
+            rangeObj.select();
+            ieSelectionBookMark = null;
+        }
+    }*/
+
+    /*function insertImage(html) {
+        restoreSelection();
+        if (document.selection)
+            currentRange.pasteHTML(html);
+        else {
+            $('post_input').focus();
+            document.execCommand("insertImage", false, html);
+            currentRange.collapse();
+        }
+        saveSelection();
+    }*/
+
+
+    //点击显示html代码
+    $doc.on('click', '#editMode', function () {
+        var $that = $(this);
+        if (!$that.hasClass('active')) {
+            $that.addClass('active');
+            $switchBox[0].checked = true;
+            setDocMode(true);  //显示文本或者html代码
+        } else {
+            $that.removeClass('active');
+            $switchBox[0].checked = false;
+            setDocMode(false); //显示文本或者html代码
+        }
+    });
+
+    //检测checked是否是选中状态 ， 是的话就显示HTML代码
+    function initDoc() {
+        oDoc = document.getElementById("editor");
+        sDefTxt = oDoc.innerHTML;
+        if ($switchBox[0].checked) {
+            setDocMode(true);
+        }
+    }
+
+    initDoc();
+
+    //显示隐藏html代码
+    function setDocMode(bToSource) {
+        var oContent;
+        if (bToSource) {
+            oContent = document.createTextNode(oDoc.innerHTML);
+            oDoc.innerHTML = "";
+            var oPre = document.createElement("pre");
+            oDoc.contentEditable = false;
+            oPre.id = "sourceText";
+            oPre.contentEditable = true;
+            //设置样式
+            with (oPre.style) {
+                backgroundColor = '#333';
+                color = '#fff';
+                border = 'none'
+            }
+            oPre.appendChild(oContent);
+            oDoc.appendChild(oPre);
+        } else {
+            if (document.all) {
+                oDoc.innerHTML = oDoc.innerText;
+            } else {
+                //ie不支持该方法
+                if (document.implementation && document.implementation.hasFeature && document.implementation.hasFeature("Range", "2.0")) {
+                    oContent = document.createRange();
+                    oContent.selectNodeContents(oDoc.firstChild);
+                    oDoc.innerHTML = oContent.toString();
+                } else {
+                    //不支持
+                }
+            }
+            oDoc.contentEditable = true;
+        }
+        oDoc.focus();
+    }
+
+    //检测是否显示HTML代码
+    function validateMode() {
+        if (!$switchBox[0].checked) {
+            return true;
+        }
+        alert("请取消选中HTML");
+        oDoc.focus();
+        return false;
+    }
+
+    //打印文档
+    function printDoc() {
+        if (!validateMode()) {
+            return;
+        }
+        var oPrntWin = window.open("", "_blank", "width=450,height=470,left=400,top=100,menubar=yes,toolbar=no,location=no,scrollbars=yes");
+        oPrntWin.document.write("<!doctype html><html><head><title>Print<\/title><\/head><body onload=\"print();\">" + oDoc.innerHTML + "<\/body><\/html>");
+        oPrntWin.document.close();
+    }
+
+    //点击打印
+    $doc.on('click', '#printDoc', function (e) {
+        printDoc()
+    });
+
+
+    //浏览器全屏模式
+    /* function launchFullScreen(element) {
+     if(element.requestFullscreen) {
+     element.requestFullscreen();
+     } else if(element.mozRequestFullScreen) {
+     element.mozRequestFullScreen();
+     } else if(element.webkitRequestFullscreen) {
+     element.webkitRequestFullscreen();
+     } else if(element.msRequestFullscreen) {
+     element.msRequestFullscreen();
+     }
+     }
+
+     // 启动全屏!
+     //launchFullScreen(document.documentElement); // 整个网页
+     launchFullScreen(document.getElementById("pad-wrapper")); // 某个页面元素
+
+
+     // 判断浏览器种类 ， 退出全屏
+     function exitFullscreen() {
+     if(document.exitFullscreen) {
+     document.exitFullscreen();
+     } else if(document.mozCancelFullScreen) {
+     document.mozCancelFullScreen();
+     } else if(document.webkitExitFullscreen) {
+     document.webkitExitFullscreen();
+     }
+     }*/
+
+
+    //点击全屏
+    var is_full_screen = false;
+    $doc.on('click', '#fullScreen', function () {
+        var $that = $(this);
+        var $container_fluid = $('.container-fluid');
+        var controls = $('#editControls').height();
+        var $editor = $('#editor');
+        var win_h = $(window).height();
+        var h = win_h - controls - 50;
+
+        if (!is_full_screen) {
+            $that.text('退出全屏');
+            $container_fluid.addClass('full-screen-active');
+            $editor.css({
+                'height': h,
+                'resize': 'none'
+            });
+        } else {
+            $that.text('全屏');
+            $container_fluid.removeClass('full-screen-active');
+            $editor.css({
+                'height': 230,
+                'resize': 'vertical'
+            });
+        }
+        is_full_screen = !is_full_screen;
+
+    });
+
+
+
+    //点击显示table选择
+    $doc.on('click','.table-btn',function(){
+       var $that = $(this),
+           aria_expanded = $that.attr('aria-expanded'),
+           $note_table = $that.closest('.btn-group').find('.note-table');
+        console.log(aria_expanded == 'false')
+        if(aria_expanded == 'false' ){
+            $note_table.show();
+            $that.attr('aria-expanded','true');
+        }else{
+            $note_table.hide();
+            $that.attr('aria-expanded','false');
+        }
+    });
+
+    $doc.on('mousemove','.note-table',function(e){
+        var $that = $(this);
+        var point = positionObj(e , 'note-table');
+        $that.find('.note-dimension-picker-mousecatcher').attr('data-value',point.x + 'x' + point.y);
+        $that.find('.note-dimension-picker-highlighted').css({
+            'width' : point.x + 'em',
+            'height' : point.y + 'em'
+        })
+
+    });
+
+    //当需求为获得的坐标值相对于某一对象时，用：
+    function positionObj(event,id){
+
+        //获得对象相对于页面的横坐标值；id为对象的id
+        var thisX = document.getElementById(id).offsetParent.offsetLeft;
+
+        //获得对象相对于页面的横坐标值；
+        var thisY = document.getElementById(id).offsetParent.offsetTop + document.getElementById(id).offsetParent.offsetHeight;
+
+        //获得页面滚动的距离；
+        //注：document.documentElement.scrollTop为支持非谷歌内核；document.body.scrollTop为谷歌内核
+        var thisScrollTop = document.documentElement.scrollTop + document.body.scrollTop;
+
+        event = event||window.event;
+        //获得相对于对象定位的横标值 = 鼠标当前相对页面的横坐标值 - 对象横坐标值；
+
+        var x = event.clientX - thisX;
+
+        //获得相对于对象定位的纵标值 = 鼠标当前相对页面的纵坐标值 - 对象纵坐标值 + 滚动条滚动的高度；
+        var y = event.clientY - thisY + thisScrollTop;
+
+        var _x = Math.ceil( x  / 18 );
+        var _y = Math.ceil( y / 18);
+
+        return {
+             x : _x > 10 ? 10 : _x,
+             y : _y > 10 ? 10 : _y
+        }
+
+    }
+
+
+    function getTable(x , y){
+        var table = '<table class="table table-bordered"><tbody>';
+        var tr ='';
+        for (var i = 0; i < y; i++) {
+            tr += '<tr>';
+            for (var j = 0; j < x; j++) {
+                tr += '<td><br></td>'
+            }
+            tr +=  '</tr>'
+        }
+
+        return table += ( tr + '</tbody></table>');
+
+    }
+
+    function setTable(where,aims){
+        where.append(aims);
+    }
+
+
+    //点击添加表格到编辑器
+    $doc.on('click','.note-dimension-picker-mousecatcher',function(){
+        var $that = $(this),
+             $note_table =  $that.closest('.note-table'),
+            data_value = $that.attr('data-value'),
+            _value = data_value.split('x');
+        var table = getTable(_value[0], _value[1]);
+        setTable($('#editor'), table);
+        $note_table.hide();
+        $note_table.closest('.btn-group').find('.table-btn').attr('aria-expanded','false');
+        $note_table.find('.note-dimension-picker-mousecatcher').attr('data-value',1 + 'x' + 1);
+        $note_table.find('.note-dimension-picker-highlighted')[0].style = '';
+
+    });
+
+
+    //点击设置图片样式
+    $doc.on('click','.popover-content .btn-deiconult',function(){
+        var $that = $(this);
+        var $that_img = $('#editor img[img-active="active"]');
+        var index = $that_img.index();
+        var $popover = $('.note-image-popover');
+        $that.addClass('active').siblings().removeClass('active');
+        //设置图片宽高比例
+        if($that.attr('data-event') == 'resize'){
+            $that_img.width($that.attr('data-value') * 100 + '%');
+        }
+
+        //浮动状态
+        if($that.attr('data-event') == 'floatMe'){
+            $that_img.css('float' , $that.attr('data-value'));
+        }
+
+        //圆 ，圆角等状态
+        if($that.attr('data-event') == 'imageShape'){
+            $that_img.attr('class',$that.attr('data-value'));
+        }
+
+        //移除图片
+        if($that.attr('data-event') == 'removeMedia'){
+            //隐藏设置图片样式的div
+            $that_img.remove();
+        }
+
+        //设置了样式 ， 这个队列也要改变
+        if(initImgContent['img'+ index].imgIndex == index){
+            //这里清空了队列再插进去 ？ 性能不好 ？
+            initImgContent['img'+ index].initImgStyle = [];
+            buttonStyArr(initImgContent['img'+ index].initImgStyle);
+        }
+
+
+        //隐藏div
+        $popover.hide();
+        //样式回到初始状态
+        $popover.find('button').removeClass('active');
+        $popover.find('button[data-value="none"]').addClass('active');
+
+    });
+
+
+    var initImgContent = {};
+
+    //点击图片，操作图片样式
+    $doc.on('click','#editor img',function(e){
+        e.stopPropagation();
+        var $that = $(this);
+        var index = $that.index();
+        var $popover = $('.note-image-popover');
+        var target = e.target || e.srcElement;
+        var top = target.offsetTop + target.clientHeight + 85 ;
+        var left = target.offsetLeft;
+        popoverPos(top , left);  //设置图片按钮的位置
+        //图片高亮样式
+        $that.attr('img-active','active').siblings('img').attr('img-active','');
+
+
+        //如果没有这个队列，就插进去
+        if(!initImgContent['img'+ index]){
+            initImgContent['img'+ index] = {};
+            initImgContent['img'+ index].imgIndex = index;
+            initImgContent['img'+ index].initImgStyle = [];
+            buttonStyArr(initImgContent['img'+ index].initImgStyle);
+        }else{
+            //否则拿当前的样式 跟 队列中对应的样式比较 ， 不等于队列中的样式 ， 就设置为队列中的样式
+            $popover.find('button').each(function(k,v){
+                var $v = $(v);
+                if($v.attr('class') != initImgContent['img'+ index].initImgStyle[k]){
+                    $v.attr('class',initImgContent['img'+ index].initImgStyle[k]);
+                }
+
+            });
+        }
+
+    });
+
+    //插进队列函数
+    function buttonStyArr(queue){
+        var $popover = $('.note-image-popover');
+        $popover.find('button').each(function(k,v){
+            var $v = $(v);
+            queue.push($v.attr('class'));
+        });
+    }
+
+    //设置图片按钮的位置
+    function popoverPos(top , left){
+        var $popover = $('.note-image-popover');
+        $popover.css({
+            display: 'block',
+            top : top,
+            left : left
+        })
+    }
+
+
+    $doc.on('click',function(){
+        var active_img = $('#editor img[img-active="active"]');
+        var $popover = $('.note-image-popover');
+        active_img.attr('img-active')
+        $popover.hide();
+    });
+
+
+
+  $(function () {
+        //富文本编辑主要
+        $doc.on('click', '#editControls a', function (e) {
+            debugger
+            e.preventDefault();
+            var $that = $(this),
+                    role = $that.data('role'),
+                    sValue = null;
+            formatDoc(role, sValue)
+        });
+
+        function formatDoc(role, sValue) {
+            debugger
+            switch (role) {
+                case 'h1' :
+                case 'h2':
+                case 'h3':
+                case 'h4':
+                case 'h5':
+                case 'h6':
+                case 'p':
+                    document.execCommand('formatBlock', false, '<' + role + '>');
+                    break;
+                default:
+                    document.execCommand(role, false, sValue);
+                    break;
+            }
+            oDoc.focus();
+        }
+
+    })
+</script>
+</body>
+</html>

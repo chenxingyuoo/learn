@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>沿坐标轴的加速度</title>
+</head>
+
+<body>
+<canvas id="canvas" width="500" height="500" style="background:#000;">
+    your browser not support canvas
+</canvas>
+<script src="../js/ball.js"></script>
+<script src="../js/utils.js"></script>
+<script>
+    window.onload = function(){
+        var canvas = document.getElementById("canvas");
+        var context = canvas.getContext("2d");
+
+        var ball = new Ball(20);
+        ball.x = canvas.width/6;
+        ball.y = canvas.height/6;
+
+        var vx = 0, ax = 0.1; //定义初始速度vx, 定义加速度a
+        (function drawFrame(){
+            window.requestAnimationFrame(drawFrame, canvas);
+            context.clearRect(0,0,canvas.width,canvas.height);
+
+            vx += ax; //速度每一帧都加上加速度的值
+            ball.x += vx;
+            ball.draw(context);
+        }());
+    }
+</script>
+
+</body>
+</html>

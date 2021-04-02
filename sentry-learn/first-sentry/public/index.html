@@ -1,0 +1,68 @@
+<!--
+ * @Description: 这是***页面（组件）
+ * @Date: 2020-07-13 17:56:39
+ * @Author: chenxingyu
+ * @LastEditors: chenxingyu
+ * @LastEditTime: 2020-07-17 20:02:42
+--> 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <div id="app"></div>
+  <!-- 生产环境版本，优化了尺寸和速度 -->
+  <!-- <script src="https://cdn.jsdelivr.net/npm/vue"></script> -->
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <!-- Note that we now also provide a es6 build only -->
+  <!-- <script src="https://browser.sentry-cdn.com/5.19.1/bundle.es6.min.js" integrity="sha384-ANLME5H29kJHTmQL8puury5rX/aVyOT7B+zNq8181MpYlV2dErr5fHbBdwwCJO+a" crossorigin="anonymous"></script> -->
+  <script src="https://browser.sentry-cdn.com/5.19.1/bundle.min.js" integrity="sha384-ibWewy8LWP0FdvEBD3iLjNmbFkkh/FKtOz8GR9C8ZBWjDTbjbdIDpa4nc/AasWns" crossorigin="anonymous"></script>
+
+  <!-- If you include the integration it will be available under Sentry.Integrations.Vue -->
+  <script src="https://browser.sentry-cdn.com/5.19.1/vue.min.js" crossorigin="anonymous"></script>
+
+  <script>
+    Sentry.init({
+      dsn: 'http://1f3291a52f2947629cec47dc5f064fda@192.168.10.208:9000/2',
+      // dsn: 'http://aff332421f0b47eca7c5c53d497ca5e5@192.168.198.166:9000/2',
+      // dsn: 'https://4129b90d04f04b76badd5c1bd93e0d90@o419615.ingest.sentry.io/5334189',
+      integrations: [new Sentry.Integrations.Vue({Vue, attachProps: true})],
+      debug: true,
+      logErrors: true
+    });
+
+    // Vue.config.errorHandler = function (err, vm, info) {
+    //   console.log('error', err)
+    //   // handle error
+    //   // `info` 是 Vue 特定的错误信息，比如错误所在的生命周期钩子
+    //   // 只在 2.2.0+ 可用
+    // }
+
+    Vue.config.errorHandler = (err, vm, info) => {
+      console.log('err', err, vm, info)
+    }
+    
+    window.onerror = (v) => {
+      console.log('v', v)
+    }
+
+    var app = new Vue({
+      el: '#app',
+      data: {
+        message: 'Hello Vue!'
+      },
+      render(h) {
+        console.log(a.a.a)
+        return h('div', this.message)
+      },
+    })
+    
+
+   
+    
+  </script>
+</body>
+</html>

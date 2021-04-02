@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+
+
+<script src="js/three.js"></script>
+<script>
+
+  window.onload = init;
+
+  function init(){
+    //渲染器
+    var renderer = new THREE.WebGLRenderer();
+    renderer.setSize(400, 300);
+    renderer.setClearColor(0x000000);
+    document.getElementsByTagName('body')[0].appendChild(renderer.domElement);
+
+    //场景
+    var scene = new THREE.Scene();
+
+    //相机
+    var camera = new THREE.PerspectiveCamera(75, 4 / 3, 1, 1000);
+    camera.position.set(0, 0, 100);
+    scene.add(camera);
+
+    //默认情况下，点是一个正方形，当然，也可以使用材质，改变点的形状，如下：
+//    function createShapePoints(){
+//      //创建一个圆形的材质，记得一定要加上texture.needsUpdate = true;
+//      let canvas = document.createElement("canvas");
+//      canvas.width = 100;
+//      canvas.height = 100;
+//      let context = canvas.getContext("2d");
+//      context.fillStyle = "#ffff00";
+//      context.arc(50,50,45,0,2*Math.PI);;
+//      context.fill();
+//      let texture = new THREE.Texture(canvas);
+//      texture.needsUpdate = true;
+//      //创建点，是用PointsMaterial的map属性来设置材质
+//      let geometry = new THREE.Geometry();
+//      geometry.vertices.push(new THREE.Vector3(0,0,0));
+//      geometry.vertices.push(new THREE.Vector3(15,15,0));
+//      geometry.vertices.push(new THREE.Vector3(-15,2,0));
+//      let material = new THREE.PointsMaterial({color:0xff0000,size:4,map:texture});
+//      let points = new THREE.Points(geometry,material);
+//      return points;
+//    }
+//
+//    scene.add(createShapePoints());
+
+
+    //可以使用Line创建线
+//    function createLine(){
+//      let geometry = new THREE.Geometry();
+//      geometry.vertices.push(new THREE.Vector3(15,15,0));
+//      geometry.vertices.push(new THREE.Vector3(-15,2,0));
+//      let material = new THREE.LineBasicMaterial({color:0xff0000}); //注意这里使用的是LineBasicMaterial
+//      let line = new THREE.Line(geometry,material);
+//      return line;
+//    }
+//
+//    scene.add(createLine());
+
+
+    //使用LineSegments创建虚线：
+//    function createDashedLine(){
+//      let geometry = new THREE.Geometry();
+//      geometry.vertices.push(new THREE.Vector3(15,15,0));
+//      geometry.vertices.push(new THREE.Vector3(-15,2,0));
+//      geometry.computeLineDistances();  //注意加上这句
+//      let material = new THREE.LineDashedMaterial({color:0xff0000,dashSize:3,gapSize:2,lineWidth:1 });
+//      let line = new THREE.LineSegments(geometry,material);
+//      return line;
+//    }
+//
+//    scene.add(createDashedLine());
+
+
+    //创建面
+
+//    function createArc(){
+//      //通过Shape来创建圆弧这个形状，而Shape是通过定义路径来定义形状的
+//      let shape = new THREE.Shape();
+//      shape.absarc( 0, 0, 40, 0/180*Math.PI ,45/180*Math.PI, false );
+//      //做为ShapeGeometry的参数
+//      let arcGeometry = new THREE.ShapeGeometry(shape);
+//      let arcMaterial = new THREE.LineBasicMaterial({color:0xff0000});
+//      let arc = new THREE.Line(arcGeometry,arcMaterial);
+//      return arc;
+//    }
+//
+//    scene.add(createArc());
+
+//    function createArc(){
+//      let shape = new THREE.Shape();
+//      shape.absarc( 0, 0, 40, 0/180*Math.PI ,45/180*Math.PI, false );
+//      shape.lineTo(0,0); //（1）做一条线到圆心
+//      let arcGeometry = new THREE.ShapeGeometry(shape);
+//      //（2）使用网格模型来表示
+//      let arcMaterial = new THREE.MeshBasicMaterial({color:0xff0000});
+//      let arc = new THREE.Mesh(arcGeometry,arcMaterial);
+//      return arc ;
+//    }
+//    scene.add(createArc());
+
+    //CircleGeometry  创建2维的圆形或扇形
+
+//    function createArc(){
+//      let geometry = new THREE.CircleGeometry(30,10,0,45/180*Math.PI);
+//      geometry.vertices.shift(); //添加这句
+//      let material = new THREE.LineBasicMaterial({color:0xff0000});
+//      let arc = new THREE.Line(geometry,material);
+//      return arc;
+//    }
+//    scene.add(createArc());
+
+    //PlaneGeometry 创建2维矩形：
+    function createRect(){
+      let geometry = new THREE.PlaneGeometry(10,10);
+      let material = new THREE.MeshBasicMaterial({color:0x00ff00});
+      let rect = new THREE.Mesh(geometry,material);
+      return rect;
+    }
+    scene.add(createRect());
+
+
+
+    //渲染
+    renderer.render(scene, camera);
+  }
+
+</script>
+</body>
+</html>

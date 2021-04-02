@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>更逼真的模拟生态圈</title>
+</head>
+<body>
+<script>
+
+
+    //想法 ：
+    //为了使生态圈的生活更加有趣 ， 我们为其添加食物和繁殖的概念，生态圈里的每个生物都有一个新属性energy（能量），执行动作时能量减少 ， 吃东西能量增加 。 当有足够的能量时，就可以繁殖下一代，产生一个同类型的生物，为了简单化，生态圈的生物均是无性繁殖。
+    //如果生态圈只有k昆虫，他们通过来回移动吃掉对方来消耗能源，那么这个生态圈很快就熵态。耗尽能量。变成一片毫无生机的荒地 。为了防止这种情况发生 ， 至少防止这种情况太快发生 ，在生态圈里面添加了青苔， 青苔不会移动 ， 它们只是利用光合作用来收集能量并帮助昆虫进行繁殖。
+    //为了做到这一点 ， 我们需要一个带有不同 processCreature 方法的生态圈 可以替换Terrarium.prototype.processCreature方法。但是我们非常习惯来回跳和走不稳的昆虫 ， 不想破坏现有的生态圈。
+    //解决办法就是创建一个新的构造函数 LifeLikeTerrarium 。其原型基于 Terrarium 的原型 ， 但拥有不同的 processCreature 方法
+
+
+    //高阶函数
+    function foreach(array, action) {
+        //执行 step 函数的步骤 4 , 这里action是bind函数返回的分布函数 ，  依次 执行 array 每一个数组元素 ， 返回一个数组
+        for (var i = 0; i < array.length; i++) {
+
+            //action 可以是声明函数 ， 也可以是匿名函数 ， 括号里面就是传的实参
+            action(array[i]);  //这里是bind函数返回的结果 依次 执行 array 每一个数组元素 ， 返回一个数组
+
+        }
+
+    }
+
+    //词典 ， 查阅此属性是否为该对象拥有；
+    function Dictionary(startValues) {
+        this.values = startValues || {};
+    }
+
+    //添加key / value
+    Dictionary.prototype.store = function (name, value) {
+
+        this.values[name] = value;
+    };
+
+    //查阅key
+    Dictionary.prototype.lookup = function (name) {
+
+        return this.values[name]
+    };
+
+    //是用来判断一个对象是否有你给出名称的属性或对象，检测所指定的属性是否为一个对象的一部分以及该属性是否是可枚举的
+    Dictionary.prototype.contains = function (name) {
+
+        return Object.prototype.propertyIsEnumerable.call(this.values, name)
+    }
+
+
+    Dictionary.prototype.each = function (action) {
+
+        //谁调用this变量就执行该对象   ,   例： 下面实例了Directions函数 ，构造函数里面的 this.values 变量是等于传进来的所有值 ， 这里是一个对象 , 它的values值就是下面的值
+        /* {     'n' : new Point(0 , -1),
+         'ne' : new  Point(1, -1),
+         'e' : new Point(1, 0),
+         'se' : new Point(1, 1),
+         's' : new Point(0, 1),
+         'sw' : new Point(-1 , 1),
+         'w' : new Point(-1, 0),
+         'nw' : new Point(-1, -1)
+         }*/
+
+        forEachIn(this.values, action);
+    }
+
+    //但是我们发现hasOwnProperty属性怎么办 ，调用obj.hasOwnProperty 将会失败 ， 我们可以这样做
+    function forEachIn(obj, action) {
+
+        //枚举对象 ， 满足条件就执行 action 函数 ， 实参是 prototype, obj[prototype]
+        for (var prototype in obj) {
+            if (Object.prototype.hasOwnProperty.call(obj, prototype)) {
+                action(prototype, obj[prototype]);
+            }
+        }
+    }
+
+
+    //1. 定义生态圈 ， 二维网格， 在这个网格里面有很多昆虫 ， 当生态圈被激活时 ， 所有昆虫都有机会做一个改变生态圈状态的动作 ， 比如移动；
+
+    var thePlan =
+            ["############################",
+                "#     #  #     o          ##",
+                "#           %              #",
+                "#       ####          ~    #",
+                "##      #  #    # #        #",
+                "###       ##      #        #",
+                "#        ###      #        #",
+                "#   ###        %      ~    #",
+                "#   ##       o      ~      #",
+                "# o  #          o      ### #",
+                "#    #                     #",
+                "############################"
+            ];
+
+    //thePlan创建一个生态圈对象 ， 该对象跟踪生态圈的形状和内容。允许昆虫在内部移动 ， 它有两个方法， ： toString ， 用于生态圈转回与q其基于 plan l类似的字符串 ， 以便看到内部发生的情况 : step 允许生态圈里的所有昆虫都移动一步 ，只要它们愿意。
+
+
+    //2. 空间里的点。point , 接收x,y坐标 ， 返回拥有x和y属性的对象该构造函数有一个add方法
+    function Point(x, y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    //接收另一个point作为参数，并且返回一个新point ，新point的x，y值 ，是给定的两个point点x ， 点y 相加的和
+    Point.prototype.add = function (other) {
+
+        return new Point(this.x + other.x, this.y + other.y);
+    }
+
+
+    Point.prototype.toString = function () {
+        return "(" + this.x + "," + this.y + ")";
+    }
+    //console.log(Point.toString());
+
+
+    //ren任何时候都不要讲数据程显示 和 解决问题的代码混在一个数据类型里， 把它们分开更为清晰有条理
+
+    //3 chen呈现网格 ， 生态圈对象负责存储值 ， 而且询问昆虫要做什么
+
+    //定义Grid对象。包含一些方法
+    function Grid(width, height) {
+        this.width = width;
+        this.height = height;
+        this.cells = new Array(width * height);
+    }
+
+    //读取数组 ， 查找这个坐标位置对应的 字符串 是  ‘#’、‘o (o = stupidBug 对象) ’%‘，‘~’，‘undefined’
+    Grid.prototype.valueAt = function (point) {
+        return this.cells[point.x + point.y * this.width];
+    }
+
+    //设置数组
+    Grid.prototype.setValueAt = function (point, value) {
+        return this.cells[point.x + point.y * this.width] = value;
+    }
+
+
+    //判断是否在网格范围内
+    Grid.prototype.isInside = function (point) {
+        return point.x >= 0 && point.y >= 0
+                && point.x < this.width && point.y < this.height;
+    }
+
+    //昆虫移动
+    Grid.prototype.moveValue = function (from, to) {
+
+        //  因为是昆虫 ， 所以 是 stupidBug 对象 ，stupidBug 对象是初始化网格条用 elementFromCharacter返回的
+        this.setValueAt(to, this.valueAt(from));
+        //移动之后 ， 原来的点变成undefined ， 移动后的点就是这只昆虫 stupidBug 对象
+        this.setValueAt(from, undefined);
+    }
+
+    //var Grids = new Grid(3, 5);
+    //console.log(Grids)
+
+    //还要遍历网格里的所有元素 ， 找出需要移动的昆虫或者将整个网格转成字符串
+    Grid.prototype.each = function (action) {
+        for (var y = 0; y < this.height; y++) {
+            for (var x = 0; x < this.width; x++) {
+
+                var point = new Point(x, y);
+                //console.log(point.toString())
+                action(point, this.valueAt(point));
+                //console.log(action)
+
+            }
+
+        }
+    }
+
+
+    //4. 昆虫的编程接口
+    //在编写生态圈构造函数之前 ， 先将生态圈内部的昆虫具体化， 前面提到 ， 生态圈将询问昆虫想做什么样的活动 ，
+    //实现方式如下 ： 每一个昆虫都有一个act方法 ， 调用的时候返回action。 action是一个带有type属性的对象 ， 表示昆虫想要采取的举动类型 ， 比如move ， 绝大多数action也会包含额外的信息 ， 比如昆虫要移动的方向。。
+
+    //返回的方向 ， 表示从上方 n 开始 ， 到右上 。 类推。。
+    var directions = new Dictionary({
+        'n': new Point(0, -1),
+        'ne': new Point(1, -1),
+        'e': new Point(1, 0),
+        'se': new Point(1, 1),
+        's': new Point(0, 1),
+        'sw': new Point(-1, 1),
+        'w': new Point(-1, 0),
+        'nw': new Point(-1, -1)
+    });
+
+
+    //5、 生态圈对象。
+    //现在开始编写生态圈对象类型 ， 下面是生态圈对象的构造函数 ， 接收plan参数（字符串数组） ， 并初始化网格。
+
+
+
+    var wall = {};
+    function elementFromCharacter(character) {
+
+        if (character == ' ') {
+            return undefined;
+        } else if (character == '#') {
+            return wall;
+        } else if (curetureTypes.contains(character)) {  //r如果是生物对象 ， 就新增一个生物对象。
+           return new (curetureTypes.lookup(character))();
+        } else {
+            throw new Error('unkonw character:' + character);
+        }
+        //console.log(curetureTypes.contains(character));
+    }
+
+
+    //10. 多态性 ， 可以说它是面向对象编程最强大的地方 ， 不用改变生态圈的任何代码就可以用拥有各种各样的昆虫。
+    //多态性的基本思想是，当编写特定接口对象的代码时，任何支持该接口的对象代码插件式的放在这个代码里。
+    //创建一个词典 ，用于将 '字符串' 及其对应的昆虫的 '构造函数' 存储于一个字典中。
+    var curetureTypes = new Dictionary();
+    curetureTypes.register = function (consturstor, character) {
+        //在合格构造函数上面添加属性
+        consturstor.prototype.character = character;
+        //在词典对象中添加 key / value
+        this.store(character, consturstor);
+    }
+
+
+    //啊、如果一只昆虫决定移动 ， 它会通过给定action结果的directions方向 ， 可以编写一个总是向南的笨昆虫，'向着阳光的方向'；
+    function stupidBug() {
+    }
+    ;
+
+    stupidBug.prototype.act = function (surrounding) {
+        return {type: 'move', direction: 's'};
+    }
+    //将 '字符串' 及其对应的昆虫的 '构造函数' 存储于一个字典中。
+    curetureTypes.register(stupidBug, 'o');
+
+
+    //以下是新的昆虫以及他在 curetureTypes 里注册字符串的调用
+    function BouncingBug() {
+        this.direction = 'ne'
+    }
+
+    //检测昆虫前方的空间是否为空（this.directions决定） ， 不为空就昆虫就会转身向斜对角方向移动，直到遇到障碍物 。
+    BouncingBug.prototype.act = function (surroundings) {
+
+        if (surroundings[this.direction] != ' ') {
+            this.directions = (this.direction == 'ne' ? 'sw' : 'ne');
+        }
+        return {type: 'move', direction: this.direction}
+    }
+    //将 '字符串' 及其对应的昆虫的 '构造函数' 存储于一个字典中。
+    curetureTypes.register(BouncingBug, '%');
+
+
+    //朝随机方向移动的昆虫
+    function DrunkBug() {
+    }
+    DrunkBug.prototype.act = function (surroundings) {
+
+        return {type: 'move', direction: randomElement(directions.names())}
+    };
+    //将 '字符串' 及其对应的昆虫的 '构造函数' 存储于一个字典中。
+    curetureTypes.register(DrunkBug, '~');
+
+    function randomInteger(below) {
+        return Math.floor(Math.random() * below);
+    }
+
+    //console.log(randomInteger(2))  // 0 or 1
+
+    //选择一个随机方向 , 放在词典方法储存起来 ， 利用词典方法中的each
+    Dictionary.prototype.names = function () {
+        var names = [];
+        this.each(function (name, value) {
+            names.push(name)
+        })
+        return names;
+    };
+
+    console.log(directions.names());  //['n', 'ne', 'e', 'se','s', 'sw',  'w', 'nw']
+
+
+    //从一个数组获取随机元素的方式
+    function randomElement(array) {
+       // console.log(array)
+        if (array.length == 0) {
+            throw new Error('the array is empty')
+        }
+        return array[Math.floor(Math.random() * array.length)]
+    }
+
+    //randomElement(['heads', 'tails']);  // 返回 '???'  ,因为各个元素都有 50% 的几率
+
+
+    //并初始化网格 , this指的是Terrarium函数 ， 每次调用一个函数，就会创建一个新的this变量
+    function Terrarium(plan) {
+        var grid = new Grid(plan[0].length, plan.length);
+        for (var y = 0; y < plan.length; y++) {
+            var line = plan[y];
+            for (var x = 0; x < line.length; x++) {
+                grid.setValueAt(new Point(x, y), elementFromCharacter(line.charAt(x)));
+            }
+        }
+        this.grid = grid;
+    }
+
+    //生态圈对象最简单的方法是toString , 它将整个生态圈转化为字符串 ， 为了使它更加简单 ， 可以为wall 和 stupidBug 原型添加一个 character属性。
+    wall.character = '#';
+    stupidBug.prototype.character = 'o';
+
+    //如果是undefined ，单纯的将undefined的值转换为空字符串 , 否则返回仅有一个字符的字符串
+    function characterFromElement(element) {
+        if (element == undefined) {
+            return ' ';
+        } else {
+            return element.character;
+        }
+    }
+
+
+    //现在可以用 Grid 的each 方法构建字符串了 ， 为了易于读懂 ， 在每行结束的位置添加换行符 ,
+    Terrarium.prototype.toString = function () {
+        var characters = [];
+        var endOfLine = this.grid.width - 1;
+        this.grid.each(function (point, value) {
+            characters.push(characterFromElement(value));
+
+            //在每行结束的位置添加换行符
+            if (point.x == endOfLine) {
+                characters.push('\n');
+            }
+        })
+        return characters.join('');
+    }
+
+
+    //6 this ji及其作用域 ,  toString方法 ， 可能某一时刻要访问this变量 ， 可惜这样不起作用 ， 调用一个新的函数 ， 它总会创建一个新的this变量 ， 因此 ， 函数外部的this都不可见 。 如果需要访问整个this对象 ， 可以将它 保存到一个变量 ， 然后到这里访问 ， var that = this ; 不过为了代码不混乱 ， 可以使用分布函数解决 。 将this作为apply 的第一个参数
+
+    function bind(func, object) {
+        //执行 step 函数的步骤 3 , 执行了bind ，把返回的匿名函数传给 foreach 函数 。
+        return function () {
+
+            //执行 step 函数的步骤 5 ， 依次执行分布函数 ，利用foreach函数依次执行这里， arguments 是foreach函数执行时 ，也就是执行这个匿名函数 ， 传递进来的 ， func 是刚开始bin函数执行时传进来的 processCreature 函数
+            return func.apply(object, arguments);
+
+        }
+    }
+
+    /* var x = [];
+     var pushX = bind(x.push, x);
+     pushX('A');
+     pushX('B');
+     console.log(x)  // ['A' , 'B']*/
+
+
+    //通过这种方式 ， 可以将内部函数bind 到 this 上 ， 它拥有与外部函数同样的this对象 ， 在bind(x,push,x)上，x名称依然使用了两次 ， 下面有个更简洁的方式。
+    function method(object, name) {
+        return function () {
+            object[name].apply(object, arguments);
+        }
+    }
+
+    //var pushs = method(x, 'push');
+
+
+    //7 有活力的生命。
+    //实现生态圈的step方法时， 需要使用bing 或者 method 方法  ， step方法遍历网格上所有昆虫 ， 询问每个昆虫的动作 ， 并且执行它们的动作 。 可能想在网格上使用each ， 并且只处理遇到的昆虫 。 但是这样做 ， 当昆虫向南或者向东移动之后 ， 在相同的方向会再次遇到它 ， 并且允许它再次移动 。
+    //因此 ， 首先将昆虫对象收集到一个数组里 ， 然后再进行处理 ， 该方法收集昆虫对象和其他拥有act方法的对象 ， 并且将其保存在包含昆虫当前位置的对象里 。
+    Terrarium.prototype.listActingCreatures = function () {
+
+        //执行 step 函数的步骤 2
+        var found = [];
+        //之所有这里有this.grid.each的方法是实例Terrarium函数的时候 ， this变量指向了grid。
+
+        this.grid.each(function (point, value) {  //如果遍历到是昆虫 ， 就new一个昆虫对象 ， 它的原型上就有 act 方法 和 character 属性 ’o‘ ，‘%’ ， ‘~’ , push进 found 数组 ， 返回这个有关方向等属性的对象的数组,再进行foreach高阶函数调用
+
+            if (value != undefined && value.act) {
+                // 返回该昆虫对象 ， 坐标 ， 能量
+                found.push({object: value, point: point /*, energy : randomInteger(20)*/});
+            }
+        })
+        return found;
+    }
+
+    //当让昆虫行动时 ， 必须传一个带有环境信息的对象给它 ， 该对象就是之前的方向名称等属性 ，每个属性有一个characterFromElement方法返回的仅有的一个字符串，表明那个昆虫在那个方向可以看到什么 。
+
+
+    //接收一个参数是每只昆虫处在该点的 方向信息 ， 返回一个带有当前环境信息的对象，八个方向 ， 当处于边缘的时候 ， 返回 ’#‘
+    Terrarium.prototype.listSurroundings = function (center) {
+
+        var result = {};
+        var grid = this.grid;
+
+        directions.each(function (name, direction) {
+            //创建一个新的坐标, center 是每只昆虫处在该点的坐标 ，direction 是方向坐标
+            var place = center.add(direction);
+            //判断新坐标是否在网格范围内
+            if (grid.isInside(place)) {
+                // result[name] == 相对昆虫的每个方向新坐标对应的字符串
+
+                result[name] = characterFromElement(grid.valueAt(place));  //‘#’、‘o (昆虫对象) ’%(昆虫对象)‘，‘~(昆虫对象)’，‘ ’
+            } else {
+                result[name] = '#'; //# 代表墙壁
+            }
+        })
+        return result;
+    }
+
+
+    //上面两个方法不是Terrarium对象外部接口的一部分 ， 而是内部细节 ， 有些语言可以显示的将方法和属性定义为私有的 ， 并且当尝试从对象外部访问他们会报错 ，javascript 却 不然 ，因此内部属性和私有方法可以使用_下划线命名 。
+
+
+    //还有另外一个辅助方法 ，该方法向昆虫要求一个行为并且执行该行为  ， 它接收生物以及该生物所在位置的点作为参数，到现在为止 ， 它只知道move行为
+    Terrarium.prototype.processCreature = function (creature) {
+
+        //通过执行step到foreach 。 creature 是 foreach 传进来的数组-> 每个昆虫对象
+
+        var point = creature.point;
+        console.log(creature.object, point)
+
+        //point 是坐标 ， 原型上带有add方法  . //this.listSurroundings(point)返回该昆虫看到的八个方向的方向信息，每个方向对应一个字符串
+        //返回移动的信息，如移动方式 ， 移动方向
+        var action = creature.object.act(this.listSurroundings(point));
+
+        //类型是移动 并且 action返回的方向在 directions 包含该方向
+        if (action.type == 'move' && directions.contains(action.direction)) {
+            //创建一个新的坐标   ， directions.lookup(action.directions) = 查看这个方向的坐标
+            var to = point.add(directions.lookup(action.direction));
+
+            //如果 新创建的 to 坐标 是在这个网格内， 并且没有被占用位置 ， 是undefined （也就是实例化Terrarium函数，并初始化网格的时候条用elementFromCharacter函数 ， 如果是空字符串就返回了undefined ）。
+            // 那么这只昆虫就移动到这个点上
+            if (this.grid.isInside(to) && this.grid.valueAt(to) == undefined) {
+                this.grid.moveValue(point, to);
+
+                // 此时 this.grid.valueAt(point) 这个位置上的昆虫移动到 this.grid.valueAt(to) 上 ，this.grid.valueAt(point) 变成undefined
+                console.log(this.grid.valueAt(point), this.grid.valueAt(to))
+            }
+        } else {
+            throw new Error('unsupported action:' + action.type)
+        }
+
+    }
+
+
+    //该方法检测s所选择的方向是否在网格中并且无阻碍 ， 否则就忽略它 ， 通过这种方式， 昆虫可以向任何方向移动 ， 只要该方向是可以移动的 。 这个方法担当昆虫与生态圈之间的隔离层 ，并允许降低编写昆虫actf方法的精确度 ， 例如 ，stupidBug总是z尝试向南移动 ， 而不管是否全面有墙壁的阻碍 。
+
+    //利用z这三种内部 , 最终可以编写step方法 ， 它为所有的昆虫提供了一次做某件事(所有带有act方法的元素--如果希望墙也可以移动 ， 可以为wall对象添加act方法。)的机会。
+
+    Terrarium.prototype.step = function () {
+        // this.listActingCreatures() 返回4个数组 ， thePlan网格中有4个昆虫 ，所以是对的
+        // bind 分布函数
+        //执行 step 函数的步骤 1
+
+        foreach(this.listActingCreatures(), bind(this.processCreature, this));
+    }
+
+
+
+
+    //继承
+    //实现这种功能有很多种方式 ， 可以遍历Terrarium.prototype的所提属性 ， 然后将这些属性逐个添加到LifeLikeTerrarium.prototype上 ， 在某种情况下也是最好的方式 ， 但在这里有个更加简洁的方式
+
+
+    // LifeLikeTerrarium构造函数:
+    function LifeLikeTerrarium(plan) {
+        // 调用Terrarium构造函数，绑定this变量:
+        Terrarium.call(this, plan);
+        //this.grade = props.grade || 1;
+    }
+
+
+    //方式一：
+
+    // 该函数使用了一个空的一次性的构造函数 ， 其原型是给定的对象 ， 使用new关键字时 ， 它会基于参数对象创建一个新的对象
+    /*function clone(object){
+     function OneShotConstructor(){};
+     OneShotConstructor.prototype = object;
+     return new OneShotConstructor();
+     }
+
+     //与旧构造函数相比 ， 新构造函数不需要做任何事情 ， 它仅需要在this对象上调用旧构造函数即可。我们也必须恢复新原型的constructor属性。否则它会将新构造函数视为Terrarium（当然，只是在使用该属性的时候才与它相关 ，现在我们没有使用 constructor 属性）
+     LifeLikeTerrarium.prototype = clone(Terrarium.prototype);
+     //因为上一步的操作 LifeLikeTerrarium.prototype.constructor 指向了 OneShotConstructor ， 现在修复回自己本身
+     LifeLikeTerrarium.prototype.constructor = LifeLikeTerrarium ;*/
+
+
+    //方式二：
+    /*function clone(object){
+        function F(){};
+        F.prototype = object.prototype;
+        return new F();
+    }
+    Object.prototype.inherit  = function (baseConstructor) {
+        // 相当于是 this.prototype = new F();
+        this.prototype = clone(baseConstructor);
+        //修复该构造函数
+        this.prototype.constructor = this
+    }
+    //在使用这个方法的函数的原型上定义方法
+    Object.prototype.method = function (name, func) {
+        this.prototype[name] = func
+    }
+    //有了这些信息 ， 就可以像下面这样编写代码
+
+    //继承
+    LifeLikeTerrarium.inherit(Terrarium);
+    //在使用这个方法的函数的原型上定义方法
+    LifeLikeTerrarium.method('sayHello', function (name) {
+        console.log(111)
+    })*/
+
+    // 示例
+    /*function StrangeArray(){};
+    //继承数组
+    StrangeArray.inherit(array);
+    StrangeArray.method('push', function (value) {
+        Array.prototype.push.call(this, value);
+        Array.prototype.push.call(this, value);
+    })
+    var Strange = new StrangeArray();
+    console.log(Strange)
+    Strange.push(4); // [4, 4]*/
+
+
+    //方式三：  个人觉得方式三更加简洁
+
+    //也可以通过这种简洁的方式来继承
+    function inherits(Child, Parent) {
+        var F = function () {};
+        F.prototype = Parent.prototype;   //父函数是Terrarium
+        Child.prototype = new F();        //子函数是LifeLikeTerrarium
+        Child.prototype.constructor = Child;
+    }
+
+    inherits(LifeLikeTerrarium, Terrarium);
+
+
+    //新的  processCreature  方法要比原来的复杂得多 ， 它并非只支持一种行为，而是支持五中不同类型的行为，使用一些辅助的方法，它才不会变成一个庞大的方法。
+
+    //Terrarium的processCreature函数可以注释
+    LifeLikeTerrarium.prototype.processCreature = function (creature) {
+
+        var energy, action, self = this,
+                point = creature.point;
+
+        //局部函数 ， 使用 self变量 访问 this 变量。用于从行为中提取方向 ， 并进行一些错误的检查，编写该辅助函数的目的是为了检查参数 ，因此就可以忽略掉带有不合法方向的行为
+        function dir() {
+
+            if (!directions.contains(action.direction)) return null;
+            //创建新的坐标
+            var target = point.add(directions.lookup(action.direction));
+            if (!self.grid.isInside(target)) return null;
+            return target;
+        }
+
+
+
+        //this.listSurroundings(point) 返回该 生物对象八个方向的环境信息、
+        // creature.object.act(this.listSurroundings(point)) 返回 该生物对象的类型 ， 方向
+        action = creature.object.act(this.listSurroundings(point));
+
+
+        if (action.type == 'move') {
+            energy = this.creatureMove(creature, point, dir());
+        } else if (action.type == 'eat') {
+            energy = this.creatureEat(creature, dir());
+        } else if (action.type == 'photosynthesize'/*(光合作用)*/) {
+            energy = -1;
+        } else if (action.type == 'reproduce') {
+            energy = this.creatureReproduce(creature, dir());
+        } else if (action.type == 'wait') {
+            energy = 0.2;
+        } else {
+            throw new Error('unsupported action:' + action.type)
+        }
+
+        creature.object.energy -= energy;
+        //没有了能源，就说明不存在了
+        if (creature.object.energy <= 0) {
+            this.grid.setValueAt(point, undefined);
+        }
+
+    }
+
+
+    //像 creatureMove 这类的辅助函数 ， 返回此次需要消耗的能量 ， 在获得能量之后返回一个负数 ，processCreature 函数在结尾处的代码更新了生物的能量分数 ，并在能量分数没有了的时候删除该生物
+
+
+    //像以往一样 ， 这段代码检查所选择的方向是否正确 ， 是否无障碍， 然后进行移动， 它的弊端是必须更新from对象 ， 否则processCreature 里删除死亡的生物的代码就再也无法获知在哪里能找到该生物了。
+    LifeLikeTerrarium.prototype.creatureMove = function (creature, from, to) {
+
+        if (to != null && this.grid.valueAt(to) == undefined) {
+            this.grid.moveValue(from, to);
+            from.x = to.x;
+            from.y = to.y;
+        }
+        return 1;
+    }
+
+    //进食 ， 它查找该生物所选择的食物 ， 检查是否有正真的食物，并且检查食物是否有能量（以便不让生物去啃墙壁）。然后将食物从网格里删除 ， 再将食物的能量转移给生物
+    LifeLikeTerrarium.prototype.creatureEat = function (creature, source) {
+        var energy = 1;
+
+        if (source != null) {
+            //找到 source 该坐标对应的 生物 。
+            var meal = this.grid.valueAt(source);
+            //该 source 坐标 是 青苔 ， 并且有能量
+            if (meal != undefined && meal.energy) {
+                //被吃掉就把这个网格变成undefined
+                this.grid.setValueAt(source, undefined);
+                energy -= meal.energy;
+            }
+        }
+
+        return energy;
+    }
+
+
+    //最后 ， 在繁殖方面 ， 需要再次检查选择的位置是否有效并且是空位值（生物需要选择一个地方来放置它们的后代） ， 如果是空的并且有效 ， 那么就可以创建出与生物亲体同样类型的新生物，生物亲体由于繁殖所消耗的能量数是新生生物能量数的两倍 （生育是很不容易的） ， 如果生物亲体没有足够的能量 ， 则无法将后代放在网格上。
+    LifeLikeTerrarium.prototype.creatureReproduce = function (creature, target) {
+        var energy = 1;
+        if (target != null && this.grid.valueAt(target) == undefined) {
+            // 返回该生物对象代表的字符串
+            var species = characterFromElement(creature.object);
+            // 返回该生物对象的构造函数 , 繁殖就会创建一个同类型的生物对象
+            var baby = elementFromCharacter(species);
+            energy = baby.energy * 2;
+
+            if (creature.object.energy >= energy) {
+                this.grid.setValueAt(target, baby);
+            }
+        }
+        return energy;
+    }
+
+
+    //昆虫移动
+    //创建一个生态圈，看看是否有事情发生。
+    /*var terrarium = new LifeLikeTerrarium(thePlan);
+     for (var i = 0; i < 10; i++) {
+     terrarium.step();
+     console.log(terrarium.toString())
+     }*/
+    //结果发现 ，执行多几遍 ， 生态圈的植物就渐渐消失了 ， 因为它们现在只要移动类型  ， 每走一步就要耗一点能量 ， 没有能量就消失了。
+
+
+    //添加植物
+    //我们现在有了这些更逼真的生物框架 ， 可以将生物从旧生物里添加到该框架中 ， 但运行几次他们就会死去,因此我们需要编写一些新的东西 ， 首先 ， 我们创建青苔 ， 用 * 代替
+
+    //用来枚举生物看到的特定自字符代表的方向
+    function findDirections(surroundings, wanted) {
+        var found = [];
+        directions.each(function (name) {
+            if (surroundings[name] == wanted) {
+                found.push(name);
+            }
+        })
+        return found;
+    }
+
+    function liChen() {
+        this.energy = 5;
+    }
+
+    liChen.prototype.act = function (surroundings) {
+
+        //返回空的空间的方向。
+        var emptySpace = findDirections(surroundings, ' ');
+        if (this.energy >= 13 && emptySpace.length > 0) {
+            return {type: 'reproduce', direction: randomElement(emptySpace)}
+        } else if (this.energy < 20) {
+            return {type: 'photosynthesize'}
+        } else {
+            return {type: 'wait'}
+        }
+    }
+    curetureTypes.register(liChen, '*');
+
+    //青苔增长的能量不能超过20 ， 否则就会被其他青苔包围而变得更大 ， 这样就会挤掉繁殖的空间。
+
+
+    //添加食草动物 liChenEater ， 它的开始能量是10 ， 其行为可以这样形容 。
+    // 1. 当期能量超过或者 = 30  ，并且附件有空间时 ， 他就会进行繁殖 。
+    // 2. 如果周围有青苔，它就随便吃掉一个 。
+    // 3. 如果有地方可以移动 ， 它就随机移动到可以移动的地方 。
+    // 4. 否则 ， 它将待在原地等待。
+    //我们将它用 字符 c 表示。
+
+    /*function liChenEater() {
+     this.energy = 10;
+     }
+
+     liChenEater.prototype.act = function (surroundings) {
+
+     //这里返回它附近空的空间的方向
+     var emptySpace = findDirections(surroundings, ' ');
+     //这里返回找到它附近的青苔的方向
+     var lichen = findDirections(surroundings, '*');
+
+     if (emptySpace.length > 0 && this.energy >= 30) {
+     // randomElement(emptySpace) 找出来的方向 ， 选择随机方向
+     return {type: 'reproduce', direction: randomElement(emptySpace)}
+     } else if (lichen.length > 0) {
+     return {type: 'eat', direction: randomElement(lichen)}
+     } else if (emptySpace.length > 0) {
+     return {type: 'move', direction: randomElement(emptySpace)}
+     } else {
+     return {type: 'wait'}
+     }
+     }
+
+     curetureTypes.register(liChenEater, 'c');*/
+
+
+    var moodyCave =
+            ["############################",
+                "#  *c #  #     o   *** #####",
+                "# ***       %           **##",
+                "# c c c ####      c   ~    #",
+                "##      #  #    # #***     #",
+                "### ***   ##      #   ** c*#",
+                "#    c   ###      #        #",
+                "#   ###    **  %      ~    #",
+                "#   ##       o      ~      #",
+                "# o  #    c     o      ### #",
+                "#*** #     c     ***       #",
+                "############################"
+            ];
+
+
+    //很多时候，青苔生长过快  ， 覆盖了生态圈的大部分地方 ， 丰富的食物使食草动物的数量增加快，于是他们很快就吃完了所有（或者几乎所有）的青苔，然后吃掉了它们自己 。 唉 ， 大自然的悲剧
+    /* var terrarium = new LifeLikeTerrarium(moodyCave);
+     for (var i = 0; i < 10; i++) {
+     for (var j = 0; j < 20; j++) {
+     terrarium.step();
+     }
+     //每走 20步 后 打印查看
+     console.log(terrarium.toString())
+     }
+     */
+
+
+    //人工愚蠢
+    //生态圈里面的居民几分钟 ， 这使我们有点郁闷 ， 要解决这一问题 ， 我们可以教食草动物学会耕作 ， 以维持长期 ， 持续的生长 ， 不管他们有多么饥饿， 只有看到附近至少两个青苔时 ， 才让他们进食 ，这样就永远不会让青苔灭绝 。 也可以通过改变它们的act方法来实现上述目的。即只有在lichen.length 至少为2时才能进食 。
+
+    //修改之后 ，运行上面的moodyCave生态圈 ， 仍常常看到 ， 过了一段时间后食草动物还是灭绝了。这是因为饥饿一段时间后 ， 它们至少在空旷的空间里漫无目的的爬来爬去，而不是去存找仅与它们相隔几个网格的青苔。
+
+    //ling另外一个可以改进的地方是减少这些生物运动的随机性，生物总是挑选一个随机的方向移动， 但它通常会来回移动 ， 而不会去往任何地方 。存食生物通过记住最后到过的方向 ， 并继续朝那个方向前进， 能更快的找到食物 ， 浪费较少的时间 。 这里是更新后的实现
+
+
+    //代替 liChenEater 函数
+    function CleverLichenEater() {
+        this.energy = 10;
+        this.direction = 'ne'
+    }
+
+    CleverLichenEater.prototype.act = function (surroundings) {
+
+        //这里返回它附近空的空间的方向
+        var emptySpace = findDirections(surroundings, ' ');
+        //这里返回找到它附近的青苔的方向
+        var lichen = findDirections(surroundings, '*');
+
+        //八个方向 ， ne 的位置 不等于 空
+        if (surroundings[this.direction] != ' ' && emptySpace.length > 0) {
+            this.direction = randomElement(emptySpace);
+        }
+
+        if (emptySpace.length > 0 && this.energy >= 30) {
+            // randomElement(emptySpace) 找出来的方向 ， 选择随机方向
+            return {type: 'reproduce', direction: randomElement(emptySpace)}
+        } else if (lichen.length > 1) {
+            return {type: 'eat', direction: randomElement(lichen)}
+        } else if (emptySpace.length > 0) {
+            return {type: 'move', direction: this.direction}
+        } else {
+            return {type: 'wait'}
+        }
+    }
+    curetureTypes.register(CleverLichenEater, 'c');
+
+
+    var terrarium = new LifeLikeTerrarium(moodyCave);
+    for (var i = 0; i < 100; i++) {
+        for (var j = 0; j < 20; j++) {
+            terrarium.step();
+        }
+        //每走 20步 后 打印查看
+        console.log(terrarium.toString())
+    }
+
+
+</script>
+</body>
+</html>

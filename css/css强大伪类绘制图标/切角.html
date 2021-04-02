@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>切角</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        .notching {
+            background: linear-gradient(135deg, transparent 15px, deeppink 0) top left, linear-gradient(-135deg, transparent 15px, deeppink 0) top right, linear-gradient(-45deg, transparent 15px, deeppink 0) bottom right, linear-gradient(45deg, transparent 15px, deeppink 0) bottom left;
+            background-size: 50% 50%;
+            background-repeat: no-repeat;
+        }
+
+        .notching {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%,-50%);
+            width: 160px;
+            padding: 60px 20px;
+            text-align: center;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+<!--使用线性渐变实现-->
+<hgroup class="notching">
+    <h1>.notching</h1>
+</hgroup>
+</body>
+</html>

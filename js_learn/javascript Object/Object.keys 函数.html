@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Object.keys 函数</title>
+</head>
+
+<body>
+<script>
+    //返回对象的可枚举属性和方法的名称。
+    //下面的示例创建一个对象，该对象具有三个属性和一个方法。然后使用 keys 方法获取该对象的属性和方法。
+    // Create a constructor function.
+    function Pasta(grain, width, shape) {
+        this.grain = grain;
+        this.width = width;
+        this.shape = shape;
+
+        // Define a method.
+        this.toString = function () {
+            return (this.grain + ", " + this.width + ", " + this.shape);
+        }
+    }
+
+    // Create an object.
+    var spaghetti = new Pasta("wheat", 0.2, "circle");
+
+    // Put the enumerable properties and methods of the object in an array.
+    var arr = Object.keys(spaghetti);
+    document.write (arr);
+
+    // Output:
+    // grain,width,shape,toString
+
+    //下面的示例显示 Pasta 对象中以字母“g”开头的所有可枚举属性的名称。
+    // Create a constructor function.
+    function Pasta(grain, width, shape) {
+        this.grain = grain;
+        this.width = width;
+        this.shape = shape;
+    }
+
+    var polenta = new Pasta("corn", 1, "mush");
+
+    var keys = Object.keys(polenta).filter(CheckKey);
+    document.write(keys);
+
+    // Check whether the first character of a string is "g".
+    function CheckKey(value) {
+        var firstChar = value.substr(0, 1);
+        if (firstChar.toLowerCase() == "g")
+            return true;
+        else
+            return false;
+    }
+
+    // Output:
+    // grain
+
+</script>
+</body>
+</html>

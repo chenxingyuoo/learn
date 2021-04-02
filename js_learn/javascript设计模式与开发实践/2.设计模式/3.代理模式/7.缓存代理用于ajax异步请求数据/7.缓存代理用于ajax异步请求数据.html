@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+
+<div class="box">
+
+</div>
+
+<ul>
+    <li class="page-item">1</li>
+    <li class="page-item active">2</li>
+</ul>
+
+
+<script>
+    //我们在常常在  中遇到分页的需 ，同一页的数 理论上 需要去后   一 ，这些
+    //经  到的数 在 个地方  存之后，下    同一页的时候， 可以  使用之 的数 。
+
+
+
+
+    //封装http请求
+    var ajax = (function () {
+        var notThing = function () {};
+        var defaults = {
+            type : 'GET',
+            async : true,
+            success : notThing,
+            error : notThing
+        };
+
+        return function (options) {
+            var settings = Object.assign(defaults, options || {});
+            var xhr = new window.XMLHttpRequest();
+
+            xhr.open(settings.type, settings.url, settings.async);
+
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4) {
+                    if ((xhr.status >= 200 && xhr.status < 300) || xhr.status == 304) {
+                        var result = JSON.parse(xhr.responseText);
+                        //成功回调
+                        settings.success(result, xhr);
+                    } else {
+                        //错误回调
+                        settings.error(xhr.statusText || null, xhr.status ? 'error' : 'abort', xhr);
+                    }
+                }
+            };
+
+            xhr.send(settings.data ? settings.data : null);
+
+            return xhr;
+        }
+    })();
+
+    //缓存ajax数据
+    var cacheAjaxData = (function () {
+        var cache = [];
+        return function () {
+            var args = Array.prototype.slice.call(arguments);
+            var key = args[0];
+            var data = args[1];
+
+            //如果有缓存数据则返回数据
+            if (key in cache) {
+                return cache[key];
+            }
+
+            if (data) {
+                cache[key] = data;
+            }
+        }
+    })();
+
+    var box = document.querySelector('.box');
+    var pageItem = document.querySelectorAll('.page-item');
+
+    for (var i = 0, len = pageItem.length; i < len; i++) {
+        (function (i) {
+            pageItem[i].onclick = function (e) {
+                var url;
+                var page = i + 1;
+                var tpl = function (data){
+                    var html = '';
+                    data.forEach(function (item, index){
+                        html = html + '<div class="item">姓名 : '+ item.name + ' 年龄 : ' + item.age +'</div>'
+                    });
+                    return html;
+                };
+
+                if (i === 0) {
+                    url = './test1.json';
+                } else if (i === 1) {
+                    url = './test2.json';
+                }
+
+                //成功回调
+                var _success = function (data) {
+                    console.log(data);
+                    box.innerHTML = tpl(data.data);
+                };
+
+                //获取缓存的数据
+                var data = cacheAjaxData(page);
+
+                //如果存在数据
+                if (data) {
+                    _success(data);
+                    return;
+                }
+
+                //请求数据
+                ajax({
+                    url: url,
+                    type: 'GET',
+                    data: {
+                        page: page
+                    },
+                    success: function (data) {
+                        if (data.code === 200) {
+                            _success(data);
+                            cacheAjaxData(page, data);
+                        } else {
+                            console.log('error');
+                        }
+                    }
+                })
+            }
+        })(i)
+    }
+
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,94 @@
+@tree-prefix-cls: ~"sp-tree";
+@node-prefix-cls: ~"sp-tree-node";
+ul,
+ol {
+    list-style: none;
+}
+.@{tree-prefix-cls} {
+    &-item {
+        padding-left: 20px;
+        position: relative;
+    }
+    &-title-wrap {
+        display: inline-block;
+        height: 30px;
+        line-height: 30px;
+        margin:5px 0;
+        width: 100%;
+        border-radius: 5px;
+    }
+    &-arrow {
+        position: absolute;
+        left: 0;
+        top:50%;
+        margin-top:-6px;
+        transition: 0.5s all ease;
+    }
+    &-arrow-open {
+        transform: rotate(90deg);
+        -webkit-transform: rotate(90deg);
+    }
+    &-arrow-hidden{
+        display:none !important;
+    }
+    &-node-title{
+
+    }
+}
+.sp-tree-node-title{
+    display: inline-block;
+    width: 240px;
+    height: 28px;
+    line-height: 28px;
+    border-radius: 2px;
+    border: 2px solid transparent;
+}
+
+/*拖拽样式 开始*/
+.tree-draggable{
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  /* Required to make elements draggable in old WebKit */
+  -khtml-user-drag: element;
+  -webkit-user-drag: element;
+  cursor:move;
+  border-radius:2px;
+}
+.tree-drag-over {
+  background-color: #5295E7;
+  color: white;
+  border: 2px #5295E7 solid;
+}
+.tree-drag-over-top {
+  border-top: 2px #5295E7 solid;
+}
+.tree-drag-over-bottom {
+  border-bottom: 2px #5295E7 solid;
+}
+.tree-drag-over.tree-drop-disabled {
+  background-color: #f6f6f6;
+  color: #ccc;
+  border: 2px #f6f6f6 solid;
+}
+.tree-drag-over-top.tree-drop-disabled {
+  border-top: 2px #f6f6f6 solid;
+}
+.tree-drag-over-bottom.tree-drop-disabled {
+  border-bottom: 2px #f6f6f6 solid;
+}
+.tree-drag-selected{
+  background-color:#deeaf7;
+}
+.tree-drag-disabled{
+   cursor:default;
+}
+.tree-drag-disabled :hover{
+   color:#bbb; 
+}
+.@{node-prefix-cls} {
+    padding-left: 20px;
+}
+

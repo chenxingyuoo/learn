@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+
+<script src="js/three.js"></script>
+<script>
+  function transform(x,y){
+    let mouse = new THREE.Vector2();
+    mouse.x = x-window.innerWidth/2;
+    mouse.y = window.innerHeight/2 - y;
+    return mouse;
+  }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>扩展</title>
+</head>
+
+<body>
+
+<canvas id="canvas" style="background:#000;" width="500" height="500">
+    you browser not support canvas
+</canvas>
+<script src="../js/arrow.js"></script>
+<script src="../js/utils.js"></script>
+<script>
+    window.onload = function() {
+        var canvas = document.getElementById("canvas");
+        var context = canvas.getContext("2d");
+
+        var arrow = new Arrow();
+        arrow.x = canvas.width/2;
+        arrow.y = canvas.height/2;
+
+        var vr = 30, speed = 2;
+
+        (function drawFrame(){
+            window.requestAnimationFrame(drawFrame, canvas);
+            context.clearRect(0,0,canvas.width,canvas.height);
+
+            //通过rotation来改变角度值
+            arrow.rotation = vr * Math.PI/180;
+            //分解
+            arrow.x += Math.cos(arrow.rotation)*speed;
+            arrow.y += Math.sin(arrow.rotation)*speed;
+
+            arrow.draw(context);
+        }())
+    }
+</script>
+
+</body>
+</html>

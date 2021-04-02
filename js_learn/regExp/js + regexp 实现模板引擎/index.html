@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>demo</title>
+</head>
+<body>
+
+<div id="content"></div>
+<!--HTML模板(类似MVC中的view)-->
+<script type="text/html" id="template">
+    <p>name: {{name}}</p>
+    <p>age: {{age}}</p>
+</script>
+
+
+<script type="text/javascript">
+    // 模板引擎函数(类似MVC中的controller)
+    var mtpl = function(tpl, data) {
+        var re = /{{(.+?)}}/g;
+        while((match = re.exec(tpl))!==null) {
+            if(match[1]){
+                tpl = tpl.replace(match[0], data[match[1]])
+            }else{
+                tpl = tpl.replace(match[0], '')
+            }
+        }
+        return tpl
+    };
+
+    // 模板数据(类似MVC中的model)
+    var tpl = document.getElementById("template").innerHTML;
+    document.getElementById("content").innerHTML = mtpl(tpl,{
+        name: "zhaomenghuan",
+        age: 22
+    });
+
+    //这里我们通过data['key']的形式取值然后替换模板中的{{...}}的内容实现了一个内容的替换。上述代码很简单，基本实现了一个字符替换而已，我们上面是通过字符串替换实现了模板和数据的匹配，但是如果我们上面那个json数据是这样的：
+
+    var data = {
+        base : {
+            name: 'zhaomenghuan',
+            age: 22
+        },
+        skills : ['html5','javascript','android']
+    }
+
+    //我们直接通过data[match[1]]进行显然会有问题，我们虽然可以通过data.base['name']获取，但是对于模板引擎函数封装来说是不够完善的，而且也不能执行JavaScript，好像并没有类似于一些有名的js模板引擎库中的语法功能，所以略显low。下面我们在这个基础上进行改造。
+    var fn = new Function("arg", "console.log(arg + 1);");
+    fn(2); // outputs 3
+
+    //fn可是一个货真价实的函数，它接受一个参数，函数体是console.log(arg + 1);，上面那个例子等同于：
+    var fn = function(arg) {
+        console.log(arg + 1);
+    }
+    fn(2);
+
+    //接着说，我们有时候参数是多个，我们虽然可以输入多个参数，但是这显然不是最好的办法，我们可以使用apply，这样我们不必显式地传参数给这个函数。比如我们前面的例子：
+    var data = {
+        name: 'zhaomenghuan',
+        age: 22
+    }
+    new Function("console.log(this.name + ' is ' + this.age +' years old.');").apply(data);
+    //结果：
+    //"zhaomenghuan is 22 years old."
+
+    //我们可以通过数组push()或者+=拼接方式将分隔的字符串连接起来，有文章中称，“在现代浏览器使用+=会比数组push方法快，在v8引擎中使用+=方法会比数组拼接快4.7倍，而在IE6-8下push比+=拼接快”。至于二者效率比较不在本文范围内，大家可以自行探究，但是我们为了简化问题，不考虑效率问题，我们可以将分隔的字符串用下列方法push拼接：
+
+    var r=[];
+    r.push("<p>");
+    r.push(this.name);
+    r.push("</p><p>");
+    r.push(this.age);
+    r.push("</p>");
+    return r.join("");
+
+    //我们如果直接拼接成数组然后转成对象也可以，但是需要将<>转义，为了方便，我们有时候可以这样处理：
+    var data = {
+        name: 'zhaomenghuan',
+        age: 22
+    }
+    var code = 'var r=[];\n';
+    code += 'r.push("<p>");\n';
+    code += 'r.push(this.name);\n'
+    code += 'r.push("</p><p>");\n';
+    code += 'r.push(this.age);\n';
+    code += 'r.push("</p>");\n';
+    code += 'return r.join("");';
+    console.log(code)
+    var fn = new Function(code.replace(/[\r\t\n]/g, '')).apply(data);
+    console.log(fn)
+    //结果：
+    "<p>zhaomenghuan</p><p>22</p>"
+</script>
+
+</body>
+</html>

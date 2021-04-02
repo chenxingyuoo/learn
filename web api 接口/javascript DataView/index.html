@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script>
+    //DataView 视图提供了一种用于向 ArrayBuffer 读写数据的底层接口。
+
+    var buffer = new ArrayBuffer(16);
+    var dv = new DataView(buffer, 0);
+
+    dv.setInt16(1, 42);
+    dv.getInt16(1); //42
+</script>
+</body>
+</html>

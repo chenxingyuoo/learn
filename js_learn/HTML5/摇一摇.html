@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>摇一摇</title>
+</head>
+<body>
+
+摇一摇
+
+<script type="text/javascript">
+	   //判断系统是否支持html5摇一摇的相关属性
+            if (window.DeviceMotionEvent){
+                    var speed = 25;
+            
+                    var x = t = z = lastX = lastY = lastZ = 0;
+                    window.addEventListener('devicemotion',
+                    function () {
+                            var acceleration = event.accelerationIncludingGravity;
+                            x = acceleration.x;
+                            y = acceleration.y;
+                            if (Math.abs(x - lastX) > speed || Math.abs(y - lastY) > speed) {
+                                    
+                                    
+                                    alert('摇动成功');
+                                    
+                                     //手机震动1秒
+				                    if (navigator.vibrate) {
+				                        navigator.vibrate(1000);//震动1000毫秒
+				                    } else if (navigator.webkitVibrate) {
+				                        navigator.webkitVibrate(1000);
+				                    }
+                                    
+                            };
+                            lastX = x;
+                            lastY = y;
+                    },false);
+            }
+            else {
+            alert('not support mobile event');
+        }
+</script>
+</body>
+</html>

@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        #edit {
+            border: 1px solid #000;
+            height: 100px;
+        }
+
+        .qq-face {
+            width: 20px;
+            height: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+<input type="button" value="添加表情" id="add-face-btn">
+<input type="button" value="恢复光标" id="restore-selection-btn">
+<div contenteditable="true" id="edit"></div>
+
+<script>
+  let selectedRange = '';
+  let edit = document.querySelector('#edit');
+  let addFaceBtn = document.querySelector('#add-face-btn');
+  let restoreSelectionBtn = document.querySelector('#restore-selection-btn');
+
+
+  //插入html
+  function insertHTML(html) {
+    document.execCommand('insertHTML', true, html);
+  }
+
+
+  function deleteRange() {
+    if (selectedRange) {
+      selectedRange.deleteContents();
+    }
+  }
+
+  function toTextEnd(elem) {
+    if (window.getSelection) {
+      elem.setSelectionRange(elem.value.length, elem.value.length);
+      elem.focus();
+    } else if (document.selection) {
+      /*IE下*/
+      let range = elem.createTextRange();
+      range.moveStart('character', elem.value.length);
+      range.collapse(true);
+      range.select();
+    }
+  }
+
+  function setCursorEnd(elem) {
+    if (window.getSelection) {
+      elem.focus();
+      let range = window.getSelection();
+      range.selectAllChildren(elem);
+      range.collapseToEnd();
+    } else if (document.selection) {
+      let range = document.selection.createTextRange();
+      range.moveToElementText(elem);
+      range.collapse(false);
+      range.select();
+    }
+  }
+
+  function selectAllText(elem) {
+    if (window.getSelection) {
+      elem.setSelectionRange(0, elem.value.length);
+      elem.focus();
+    } else if (document.selection) {
+      let range = elem.createTextRange();
+      range.select();
+    }
+  }
+
+  function deleteRange2() {
+    if (selectedRange) {
+      let fragment = selectedRange.extractContents();
+      document.querySelector('.show span').appendChild(fragment);
+    }
+  }
+
+  function saveSelection() {
+    if (window.getSelection) {
+      /*主流的浏览器，包括chrome、Mozilla、Safari*/
+      return window.getSelection();
+    } else if (document.selection) {
+      /*IE下的处理*/
+      return document.selection.createRange();
+    }
+    return null;
+  }
+
+  function saveSelection2() {
+    if (window.getSelection) {
+      /*主流的浏览器，包括chrome、Mozilla、Safari*/
+      let sel = window.getSelection();
+      if (sel.rangeCount > 0) {
+        return sel.getRangeAt(0);
+      }
+    } else if (document.selection) {
+      /*IE下的处理*/
+      return document.selection.createRange();
+    }
+    return null;
+  }
+
+  function getRangePosition() {
+    console.log(selectedRange);
+    if (selectedRange) {
+      return {
+        startOffset: selectedRange.startOffset,
+        endOffset: selectedRange.endOffset,
+        collapsed: selectedRange.collapsed,
+        startContainer: selectedRange.startContainer.parentNode.nodeName,
+        endContainer: selectedRange.endContainer.parentNode.nodeName,
+        commonAncestorContainer: selectedRange.commonAncestorContainer.nodeName
+      };
+    }
+    return null;
+  }
+
+  function getSelectionPosition() {
+    let selection = window.getSelection();
+    return {
+      anchorNode: selection.anchorNode.parentNode.nodeName,
+      anchorOffset: selection.anchorOffset,
+      focusNode: selection.focusNode.parentNode.nodeName,
+      focusOffset: selection.focusOffset
+    };
+  }
+
+  function restoreSelection() {
+    let selection = window.getSelection();
+    if (selectedRange) {
+      try {
+        selection.removeAllRanges();
+        /*清空所有Range对象*/
+      } catch (ex) {
+        /*IE*/
+        document.body.createTextRange().select();
+        document.selection.empty();
+      }
+      /*恢复保存的范围*/
+      selection.addRange(selectedRange);
+    }
+  }
+
+  function insertRange() {
+    restoreSelection();
+    let content = '';
+    if (document.createRange) {
+      let range = document.createRange();
+      let span = document.querySelector('.edit span');
+      let p = document.querySelector('.edit p');
+      range.setStart(span.firstChild, 20);
+      range.setEnd(p.firstChild, 3);
+      content = range.cloneContents();
+    }
+    document.querySelector('.show span').appendChild(content);
+  }
+
+  /**
+   * 光标位置插入html
+   * 参数1 string 要插入的内容
+   **/
+  function pasteHtmlAtCaret(html, selectPastedContent) {
+    if (window.getSelection) {
+      let sel = window.getSelection();
+      let range = sel.getRangeAt(0);
+      let frag, node, lastNode;
+
+      if (range.createContextualFragment) {
+        frag = range.createContextualFragment(html);
+      } else {
+        let el = document.createElement('div');
+        el.innerHTML = html;
+        frag = document.createDocumentFragment();
+
+        while ((node = el.firstChild)) {
+          lastNode = frag.appendChild(node);
+        }
+      }
+
+      let lastChild = frag.lastChild;
+
+      range.insertNode(frag);
+      range.setStartAfter(lastChild);
+      sel.removeAllRanges();
+      sel.addRange(range);
+    } else if (document.selection && document.selection.type !== 'Control') {
+      let originalRange = document.selection.createRange();
+      originalRange.pasteHTML(html);
+      originalRange.select();
+    }
+  }
+
+  //点击输入框，保存selection
+  edit.addEventListener('mouseup', () => {
+    selectedRange = saveSelection2();
+  });
+
+  document.addEventListener('keyup', (e) => {
+    let activeElement = document.activeElement;
+    if (activeElement === edit) {
+      selectedRange = saveSelection2();
+    }
+  });
+
+  //恢复光标
+  restoreSelectionBtn.addEventListener('click', () => {
+    restoreSelection();
+  });
+
+  addFaceBtn.addEventListener('click', () => {
+    edit.focus();
+
+    restoreSelection();
+
+    let html = '<img class="qq-face" text="[微笑]" src="http://img1.imgtn.bdimg.com/it/u=3178499799,2095076954&fm=27&gp=0.jpg">';
+
+    pasteHtmlAtCaret(html);
+    //document.execCommand('insertHTML', true, html);
+
+    saveSelection2();
+  }, false);
+
+</script>
+
+</body>
+</html>

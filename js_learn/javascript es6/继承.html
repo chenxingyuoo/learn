@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <script>
+
+
+    function mix(...mixins) {
+      class Mix {}
+
+      for (let mixin of mixins) {
+        copyProperties(Mix.prototype, mixin); // 拷贝实例属性
+        copyProperties(Mix.prototype, mixin.prototype); // 拷贝原型属性
+      }
+
+      return Mix;
+    }
+
+    function copyProperties(target, source) {
+      for (let key of Reflect.ownKeys(source)) {
+        if ( key !== "constructor"&& key !== "prototype"&& key !== "name") {
+          let desc = Object.getOwnPropertyDescriptor(source, key);
+          Object.defineProperty(target, key, desc);
+        }
+      }
+    }
+
+
+    class Animal{
+      constructor(name, age) {
+        debugger;
+      }
+      run() {
+        console.log('Animal run');
+      }
+    }
+    class Runnable{
+      runing() {
+        console.log('Runnable run');
+      }
+    }
+
+    // 可通过super传递参数
+    class Dog extends Animal{
+      constructor(){
+        super('ccc', 10)
+      }
+
+      run() {
+        console.log('Dog run');
+      }
+    }
+
+    copyProperties(Dog.prototype, Runnable.prototype);
+
+    let d = new Dog()
+    d.run()
+
+
+    // 不能通过super传递参数
+    class Dog1 extends mix(Animal,Runnable){
+      constructor(){
+        super()
+      }
+
+      run() {
+        console.log('Dog run');
+      }
+    }
+
+    let d1 = new Dog1()
+    d1.run()
+
+  </script>
+</head>
+<body>
+
+</body>
+</html>

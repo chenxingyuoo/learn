@@ -1,0 +1,93 @@
+@import "compass/css3";
+
+body {
+  margin: 0;
+  padding-top: 3em;
+  background: #DDCF97;
+  position: relative;
+}
+
+.sky {
+	position: absolute;
+	left: 0;
+  right: 0;
+  top: 0;
+  height: 550px;
+  background: #D9EAFF;
+  border-bottom: 2px solid #BEAE6F;
+}
+
+svg {
+	margin: auto;
+	padding: 2em;
+	display: block;
+  z-index: 1;
+  position: relative;
+}
+
+#bird {
+	animation: fly .9s ease-in-out infinite;
+}
+
+#shadow {
+	animation: shadow .9s ease-in-out infinite;
+}
+
+#rightwing {
+	animation: rightwing .25s linear infinite;
+	transform-origin: 330px 350px;
+}
+
+#leftwing {
+	animation: leftwing .25s linear infinite;
+	transform-origin: 90px 390px;
+}
+
+#leftpupil {
+	animation: leftpupil 12s ease-in-out infinite;
+}
+
+#rightpupil {
+	animation: rightpupil 12s ease-in-out infinite;
+}
+
+// Keyframes
+
+@keyframes fly {
+	from {transform: translateY(0);}
+	50% {transform: translateY(12px);}
+}
+
+@keyframes shadow {
+	50% {transform: scale(1.05) translateX(-10px);}
+}
+
+@keyframes rightwing {
+	from {transform: rotate(0deg);}
+	50% {transform: rotate(40deg);}
+}
+
+@keyframes leftwing {
+	from {transform: rotate(0deg);}
+	50% {transform: rotate(-30deg);}
+}
+
+@keyframes leftpupil {
+	17% {transform: translateX(0);} 
+	20% {transform: translateX(10px);}
+	47% {transform: translateX(10px);}
+	50% {transform: translateX(0) translateY(-30px);}
+	82% {transform: translateX(0) translateY(-30px);}
+	85% {transform: translateX(-50px) translateY(-5px);}
+	97% {transform: translateX(-50px) translateY(-5px);}
+}
+
+@keyframes rightpupil {
+	17% {transform: translateX(0);}
+	20% {transform: translateX(70px);}
+	48% {transform: translateX(70px);}
+	50% {transform: translateX(0) translateY(-30px);}
+	82% {transform: translateX(0) translateY(-30px);}
+	85% {transform: translateX(-12px) translateY(-5px);}
+	97% {transform: translateX(-12px) translateY(-5px);}
+}

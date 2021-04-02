@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>HTML5 Canvas Demo</title>
+
+</head>
+<body>
+<div style="margin-left:30px;">
+    <canvas id="myCanvasTag" width="400" height="400" style="border: 10px blue solid">
+    </canvas>
+    <br /><br />
+    <a href="index.html">back</a>
+</div>
+<script>
+    var mycanvas  = document.getElementById("myCanvasTag")
+    var mycontext = mycanvas.getContext('2d');
+    var x;
+    var y;
+    var x2;
+    var y2;
+    var r;
+    var g;
+    var b;
+    function line() {
+        x=Math.floor(Math.random()*190) + Math.floor(Math.random()*190);
+        y=Math.floor(Math.random()*190) + Math.floor(Math.random()*190);
+        x2=Math.floor(Math.random()*190) + Math.floor(Math.random()*190);
+        y2=Math.floor(Math.random()*190) + Math.floor(Math.random()*190);
+        r=Math.floor(Math.random()*255);
+        g=Math.floor(Math.random()*255);
+        b=Math.floor(Math.random()*255);
+        mycontext.moveTo(x, y);
+        mycontext.lineTo(x2, y2);
+        mycontext.strokeStyle='rgb(' + r + ',' + g +  ',' + b + ')';
+        mycontext.lineWidth=Math.floor(Math.random()*6);
+        mycontext.stroke();
+        mycontext.restore();
+    }
+    setInterval(line, 100);
+
+</script>
+</body>
+</html>

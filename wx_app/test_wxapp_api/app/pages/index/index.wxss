@@ -1,0 +1,26 @@
+.index-wrap{
+    height: 100%;
+}
+.index-box{
+    width: 520rpx;
+    height: 820rpx;
+}
+.suit-image-box{
+    width: 580rpx;
+    padding: 40rpx 0;
+    background-color: #fff;
+    border-radius: 20rpx;
+    box-shadow: 0 0 10rpx #ddd;
+}
+.suit-image{
+    width: 340rpx;
+    height: 500rpx;
+}
+
+.group-qr-code{
+    width: 20rpx;
+    height: 20rpx;
+    position: fixed;
+    top:0;
+    left: -100%;
+}

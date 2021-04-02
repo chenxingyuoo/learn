@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+</head>
+<body>
+
+<form enctype="multipart/form-data" method="post">
+    <h2>Regular file upload</h2>
+    <input type="file"></input>
+
+    <h2>capture=camera</h2>
+    <input type="file" accept="image/*;capture=camera"></input>
+
+    <h2>capture=camcorder</h2>
+    <input type="file" accept="video/*;capture=camcorder"></input>
+
+    <h2>capture=microphone</h2>
+    <input type="file" accept="audio/*;capture=microphone"></input>
+</form>
+
+</body>
+</html>

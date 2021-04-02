@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <title>HTML5 SVG 3D空间模型DEMO演示</title>
+
+    <link rel="stylesheet" href="css/style.css" media="screen" type="text/css" />
+
+</head>
+
+<body>
+<div style="text-align:center;clear:both;position:absolute;top:0;left:280px;z-index:999">
+<script src="/gg_bd_ad_720x90.js" type="text/javascript"></script>
+<script src="/follow.js" type="text/javascript"></script>
+</div>
+  <main>
+  <article>
+    <section id="perspective">
+      <svg id="grid">
+        <rect x="1" y="1" width="998" height="998"/>
+        <line x1="200" y1="2" x2="200" y2="998"/>
+        <line x1="400" y1="2" x2="400" y2="998"/>
+        <line x1="600" y1="2" x2="600" y2="998"/>
+        <line x1="800" y1="2" x2="800" y2="998"/>
+        <line x1="2" y1="200" x2="998" y2="200"/>
+        <line x1="2" y1="400" x2="998" y2="400"/>
+        <line x1="2" y1="600" x2="998" y2="600"/>
+        <line x1="2" y1="800" x2="998" y2="800"/>
+      </svg>
+      <section id="axis">
+        <figure id="X">
+          <div class="front"></div>
+          <div class="back"></div>
+          <div class="left"></div>
+          <div class="right"></div>
+          <div class="top"></div>
+          <div class="bottom"></div>
+        </figure>
+        <figure id="Y">
+          <div class="front"></div>
+          <div class="back"></div>
+          <div class="left"></div>
+          <div class="right"></div>
+          <div class="top"></div>
+          <div class="bottom"></div>
+        </figure>
+        <figure id="Z">
+          <div class="front"></div>
+          <div class="back"></div>
+          <div class="left"></div>
+          <div class="right"></div>
+          <div class="top"></div>
+          <div class="bottom"></div>
+        </figure>
+      </section>
+      <section id="graph"></section>
+    </section>
+  </article>
+  <nav>
+    <button onmousedown="select(this)">Pan</button>
+    <button onmousedown="select(this)">Rotate</button>
+    <button onmousedown="select(this)">Zoom</button>
+    <button onmousedown="resetViewport()">Reset viewport</button>
+    <section id="menu">Your menu</section>
+  </nav>
+  <label>‹</label>
+  <label id="info">ⓘ</label>
+  <aside>
+    <p>This CSS 3D project works fine only in WebKit based browsers</p>
+    <p>Middle mouse button - Pan view</p>
+    <p>Alt + Left mouse button - Rotate view</p>
+    <p>Scroll wheel - Zoom in / out</p>
+  </aside>
+</main>
+
+  <script src="js/index.js"></script>
+
+</body>
+
+</html>

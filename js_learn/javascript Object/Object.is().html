@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Object.is()</title>
+</head>
+<body>
+<script>
+    //所述Object.is（）方法确定两个值是否相同的值。
+
+    //Object.is(value1, value2);
+
+    //return value 布尔表示两个参数是否是相同的值。
+
+    Object.is('foo', 'foo');     // true
+    Object.is(window, window);   // true
+
+    Object.is('foo', 'bar');     // false
+    Object.is([], []);           // false
+
+    var test = { a: 1 };
+    Object.is(test, test);       // true
+
+    Object.is(null, null);       // true
+
+    // Special Cases
+    Object.is(0, -0);            // false
+    Object.is(-0, -0);           // true
+    Object.is(NaN, 0/0);         // true
+
+    //兼容
+    if (!Object.is) {
+        Object.is = function(x, y) {
+            // SameValue algorithm
+            if (x === y) { // Steps 1-5, 7-10
+                // Steps 6.b-6.e: +0 != -0
+                return x !== 0 || 1 / x === 1 / y;
+            } else {
+                // Step 6.a: NaN == NaN
+                return x !== x && y !== y;
+            }
+        };
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+{
+  "name": "char_dome",
+  "version": "1.0.0",
+  "description": "char_dome",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.14.0",
+    "socket.io": "^1.4.8"
+  }
+}

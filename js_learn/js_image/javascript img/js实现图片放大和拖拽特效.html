@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>js实现图片放大和拖拽特效</title>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+    <style type="text/css">
+        body {
+            font-size: 12px;
+            font-family: "Verdana", "Arial", "Helvetica", "sans-serif";
+            overflow-y: hidden;
+            overflow-x: hidden;
+            margin: 0;
+            padding: 0;
+        }
+
+        td {
+            font-size: 12px;
+            line-height: 150%;
+        }
+
+        TD {
+            font-size: 12px;
+            color: #000000;
+        }
+
+        A {
+            font-size: 12px;
+            color: #000000;
+        }
+
+        #Layer1 {
+            z-index: 100;
+            position: absolute;
+            top: 100px;
+            left: 45%;
+        }
+
+        #Layer2 {
+            z-index: 1;
+            position: absolute;
+        }
+
+        .dragAble {
+            z-index: 10;
+            position: absolute;
+            top: 100px;
+            left: 45%;
+        }
+
+        #pic {
+            border: 0;
+        }
+
+    </style>
+</head>
+
+<body onLoad="" onmouseup="/*document.selection.empty()*/" oncontextmenu="return false"
+      onselectstart="return false" ondragstart="return false" onbeforecopy="return false"
+      style="" oncopy="document.selection.empty()"
+      onselect="document.selection.empty()">
+
+
+<div id="Layer1">
+    <table cellspacing="2" cellpadding="0" border="0">
+        <tbody>
+        <tr>
+            <td>
+
+            </td>
+            <td>
+                <img title="向上" style="cursor: hand" onClick="clickMove('up')" height="20" src="images/up.gif"
+                     width="20">
+            </td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <img title="向左" style="cursor: hand" onClick="clickMove('left')" height="20" src="images/left.gif"
+                     width="20">
+            </td>
+            <td>
+                <img title="还原" style="cursor: hand" onClick="realsize();" height="20" src="images/zoom.gif"
+                     width="20">
+            </td>
+            <td>
+                <img title="向右" style="cursor: hand" onClick="clickMove('right')" height="20" src="images/right.gif"
+                     width="20">
+            </td>
+        </tr>
+        <tr>
+            <td>
+
+            </td>
+            <td>
+                <img title="向下" style="cursor: hand" onClick="clickMove('down')" height="20" src="images/down.gif"
+                     width="20">
+            </td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+
+            </td>
+            <td>
+                <img title="放大" style="cursor: hand" onClick="bigit();" height="20" src="images/zoom_in.gif"
+                     width="20">
+            </td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+
+            </td>
+            <td>
+                <img title="缩小" style="cursor: hand" onClick="smallit();" height="20" src="images/zoom_out.gif"
+                     width="20">
+            </td>
+            <td>
+
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<!--onMouseOver="dragObj=block1; drag=1;"-->
+<div class="dragAble" id="dragAble" drag="0">
+    <img id="pic" style="zoom: 1" src="http://img4.imgtn.bdimg.com/it/u=1885550173,3384564109&fm=21&gp=0.jpg"
+         name="images1">
+</div>
+
+<script>
+
+    function $id(id) {
+        return document.getElementById(id);
+    }
+
+    var dragAble = $id('dragAble');
+    var pic = $id('pic');
+
+
+    //鼠标滚动图片进行缩放
+    pic.addEventListener('wheel', function () {
+        onWheelZoom(this)
+    }, false);
+
+    var winW = document.documentElement.clientWidth || document.body.clientWidth,
+            winH = document.documentElement.clientHeight || document.body.clientHeight;
+
+    //缩放函数
+    function onWheelZoom(obj) { //滚轮缩放
+        var zoom = parseFloat(obj.style.zoom);
+        var tZoom = zoom + (event.wheelDelta > 0 ? 0.05 : -0.05);
+        if (tZoom < 0.1) return true;
+        // if (tZoom > winW) return true;
+        obj.style.zoom = tZoom;
+        return false;
+    }
+
+
+    //鼠标按下初始化
+    function fnDown(event) {
+        event = event || window.event;
+        var target = event.target || event.srcElement;
+
+        //是img标签才可以拖动
+        if (target.tagName == 'IMG') {
+            // 光标按下时光标和面板之间的距离
+            var disX = event.clientX - dragAble.offsetLeft,
+                    disY = event.clientY - dragAble.offsetTop;
+            // 移动
+            document.onmousemove = function (event) {
+                event = event || window.event;
+                fnMove(event, disX, disY);
+            };
+
+            // 释放鼠标
+            document.onmouseup = function () {
+                document.onmousemove = null;
+                document.onmouseup = null;
+            }
+
+        }
+
+    }
+
+
+    //鼠标拖动
+    function fnMove(e, posX, posY) {
+        var left = e.clientX - posX,
+                top = e.clientY - posY,
+                maxW = winW - dragAble.offsetWidth,
+                maxH = winH - dragAble.offsetHeight;
+        if (left < 0) {
+            left = 0;
+        } else if (left > maxW) {
+            left = maxW;
+        }
+
+        if (top < 0) {
+            top = 0;
+        } else if (top > maxH) {
+            top = maxH;
+        }
+        dragAble.style.left = left + 'px';
+        dragAble.style.top = top + 'px';
+    }
+
+    document.onmousedown = fnDown;
+
+
+    function clickMove(s) {
+        var dragAbleW = dragAble.offsetWidth,
+            dragAbleH = dragAble.offsetHeight,
+            top = dragAble.offsetTop,
+            left = dragAble.offsetLeft;
+
+        if (s == "up") {
+            if (top > 0) {
+                dragAble.style.top = parseInt(top) - 100 + 'px';
+            }
+        } else if (s == "down") {
+            if ((top + dragAbleH + 100) < winH) {
+                dragAble.style.top = parseInt(top) + 100 + 'px';
+            }
+        } else if (s == "left") {
+            if (left > 0) {
+                dragAble.style.left = parseInt(left) - 100 + 'px';
+            }
+        } else if (s == "right") {
+            if ((left + dragAbleW + 100) < winW) {
+                dragAble.style.left = parseInt(left) + 100 + 'px';
+            }
+        }
+
+    }
+
+    //缩小
+    function smallit() {
+        var h = pic.offsetHeight / 1.2,
+            w = pic.offsetWidth / 1.2;
+        pic.style.height = h + 'px';
+        pic.style.width = w + 'px';
+    }
+
+    //放大
+    function bigit() {
+        pic.style.height = pic.offsetHeight * 1.2 + 'px';
+        pic.style.width = pic.offsetWidth * 1.2 + 'px';
+    }
+
+    //重置
+    function realsize() {
+        pic.style.width = 336 + 'px';
+        pic.style.height = 223 + 'px';
+        pic.style.zoom = 1;
+        dragAble.style.left = 45 + '%';
+        dragAble.style.top = 100 + 'px';
+
+    }
+
+    /*function featsize() {
+     var width1 = images2.width;
+     var height1 = images2.height;
+     var width2 = 701;
+     var height2 = 576;
+     var h = height1 / height2;
+     var w = width1 / width2;
+     if (height1 < height2 && width1 < width2) {
+     images1.height = height1;
+     images1.width = width1;
+     }
+     else {
+     if (h > w) {
+     images1.height = height2;
+     images1.width = width1 * height2 / height1;
+     }
+     else {
+     images1.width = width2;
+     images1.height = height1 * width2 / width1;
+     }
+     }
+     block1.style.left = 0;
+     block1.style.top = 0;
+     }*/
+
+</script>
+
+</body>
+</html>

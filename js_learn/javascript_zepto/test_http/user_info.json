@@ -1,0 +1,9 @@
+{
+  "name" : "chen",
+  "age" : 20,
+  "clothes" : {
+    "coat" : "coat",
+    "underClothing" : "Under clothing",
+    "Shoes" : "Shoes"
+  }
+}

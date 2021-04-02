@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+
+<body>
+<script src="js/underscore.js"></script>
+<script>
+    _.each([1, 2, 3],  function (val) {
+        console.log(val)
+    });
+    //alerts each number in turn...
+    _.each({one: 1, two: 2, three: 3}, function (val) {
+        console.log(val)
+    });
+    //=> alerts each number value in turn...
+
+    var listOfPlays = {
+        title: "The Tempest",
+    };
+    var where = _.where( listOfPlays,{author: "Shakespeare", year: 1611});
+    console.log(where)  //["Shakespeare", 1611]
+
+
+    var windWhere = _.findWhere( {newsroom: "The New York Times",year: 1611});
+    console.log(windWhere);  //The New York Times
+
+    var zip = _.zip(['moe', 'larry', 'curly'], [30, 40, 50], [true, false, false]);
+     console.log(zip); //[["moe", 30, true], ["larry", 40, false], ["curly", 50, false]]
+
+
+    var unzip = _.unzip(['moe', 'larry', 'curly'], [30, 40, 50], [true, false, false]);
+    console.log(unzip); // ["moe", 30, true], ["larry", 40, false], ["curly", 50, false]
+
+</script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+
+<script>
+
+    //除了 ECMAScript 6 中提供的 let 之外，一般我们通过函数来创建作用域:
+    var myObject = (function(){
+        var name = 'chen';
+        return {
+            getName : function (){
+                return name;
+            }
+        }
+    });
+
+    console.log( myObject.getName() );  //chen
+    console.log( myObject.name );       //undefined
+
+
+    //另外值得一提的是，在 ECAMScript 6 中，还可以通过 Symbol 创建私有属性。
+    // 详情可参阅 https://github.com/lukehoban/es6features，二维码见右边。
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+
+<script>
+
+    var googleMap = {
+        show: function () {
+            console.log('开始渲染谷歌地图');
+        }
+    };
+    var baiduMap = {
+        show: function () {
+            console.log('开始渲染百度地图');
+        }
+    };
+    var renderMap = function (map) {
+        if (map.show instanceof Function) {
+            map.show();
+        }
+    };
+    renderMap(googleMap); //开始渲染谷歌地图
+    renderMap(baiduMap); //开始渲染百度地图
+
+
+    //万一提供的接口不统一
+    var googleMap = {
+        show: function () {
+            console.log('开始渲染谷歌地图');
+        }
+    };
+    var baiduMap = {
+        display: function () {
+            console.log('开始渲染百度地图');
+        }
+    };
+    //使用适配器模式
+    var baiduMapAdapter = {
+        show: function () {
+            return baiduMap.display();
+        }
+    }
+
+    renderMap(googleMap); //开始渲染谷歌地图
+    renderMap(baiduMap); //开始渲染百度地图
+
+
+    //广东地图
+    var getGuangdongCity = function () {
+        var guangdongCity = [
+            {
+                name: 'shenzhen',
+                id: 11,
+            }, {
+                name: 'guangzhou',
+                id: 12,
+            }];
+        return guangdongCity;
+    };
+
+    var render = function (fn) {
+        console.log('开始渲染广东地图');
+        document.write(JSON.stringify(fn()));
+    };
+
+    render(getGuangdongCity);
+
+    //利用这些数据 ， 成功的渲染了一些城市 ， 但是还不完整 ，缺少一些资源 ， 然后再到网上找到一些资源 ，但是数据格式不一致
+
+    var guangdongCity = {
+        shenzhen: 11,
+        guangzhou: 12,
+        zhuhai: 13
+    };
+
+    //除了打动干戈之外改代码之外 ，使用适配器模式
+    var addressAdapter = function (oldAddressfn) {
+        var address = {},
+            oldAddress = oldAddressfn();
+        for (var i = 0, c; c = oldAddress[i++];) {
+            address[c.name] = c.id;
+        }
+        
+        return function (){
+            return address;
+        }
+    }
+
+    render( addressAdapter(guangdongCity) );
+
+
+</script>
+
+</body>
+</html>

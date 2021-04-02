@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+
+<body>
+
+<script type="text/html" id="template">
+    <p>name: {{this.name}}</p>
+    <p>age: {{this.age}}</p>
+</script>
+
+<script type="text/javascript">
+    var mtpl = function(tpl,data) {
+        debugger
+        var re = /{{(.+?)}}/g,cursor = 0;
+
+        while((match = re.exec(tpl))!== null) {
+            // 开始标签  {{ 前的内容和结束标签 }} 后的内容
+            console.log(tpl.slice(cursor, match.index))
+            // 开始标签  {{ 和 结束标签 }} 之间的内容
+            console.log(match[1])
+            // 每一次匹配完成移动指针
+            cursor = match.index + match[0].length;
+        }
+        // 最后一次匹配完的内容
+        console.log(tpl.substr(cursor, tpl.length - cursor))
+    };
+
+    // 调用
+    var tpl = document.getElementById("template").innerHTML;
+    var data = {
+        base : {
+            name: 'zhaomenghuan',
+            age: 22
+        },
+        skills : ['html5','javascript','android']
+    }
+    mtpl(tpl,data);
+</script>
+</body>
+</html>

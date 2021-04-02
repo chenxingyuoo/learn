@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>给图形绘制阴影</title>
+</head>
+<body>
+
+<canvas id="canvas" width="800" height="600"></canvas>
+
+<!--
+context.shadowOffsetX :阴影的横向位移量（默认值为0）
+
+context.shadowOffsetY :阴影的纵向位移量（默认值为0）
+
+context.shadowColor :阴影的颜色
+
+context.shadowBlur :阴影的模糊范围（值越大越模糊）
+-->
+
+
+<script>
+    document.body.onload = draw27('canvas');
+    function draw27(id) {
+        var canvas = document.getElementById(id);
+        if (canvas == null)
+            return false;
+        var context = canvas.getContext('2d');
+        context.shadowOffsetX = 10;
+        context.shadowOffsetY = 10;
+        context.shadowColor = 'rgba(100,100,100,0.5)';
+        context.shadowBlur = 1.5;
+        context.fillStyle = 'rgba(255,0,0,0.5)';
+        context.fillRect(100, 100, 200, 100);
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+
+<body>
+
+<script src="test.js"></script>
+<script>
+
+
+  function getUserJobById(res) {
+      debugger;
+    return new Promise(function (resolve) {
+        debugger;
+      setTimeout(function () {
+        resolve(new Error('net Error'));
+      }, 2000);
+    });
+  }
+
+  new Promise((resolve, reject) => {
+     debugger;
+  resolve('resolve');
+  }).then((res) => {
+      debugger;
+    throw new Error('net Error');
+  }).then(res => {
+    debugger;
+  }).catch(err => {
+      debugger;
+  });
+//  new Promise((resolve, reject) => {
+//      debugger;
+//    setTimeout(function () {
+//      resolve('timeWait 10ms');
+//      console.log('mylog', 'timeWait 10ms');
+//    }, 1000);
+//  }).then(res => {
+//    debugger;
+//  });
+</script>
+</body>
+</html>

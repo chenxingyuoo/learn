@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>promise模式</title>
+</head>
+
+<body>
+<script>
+    /* promise模式在任何时刻都处于以下三种状态之一：未完成（unfulfilled）、已完成（resolved）和拒绝（rejected）。以CommonJS Promise/A 标准为例，promise对象上的then方法负责添加针对已完成和拒绝状态下的处理函数。then方法会返回另一个promise对象，以便于形成promise管道，这种返回promise对象的方式能够支持开发人员把异步操作串联起来，如then(resolvedHandler, rejectedHandler); 。resolvedHandler 回调函数在promise对象进入完成状态时会触发，并传递结果；rejectedHandler函数会在拒绝状态下调用。
+
+     有了promise模式，我们可以重新实现上面的Twitter示例。为了更好的理解实现方法，我们尝试着从零开始构建一个promise模式的框架。首先需要一些对象来存储promise。*/
+
+    var Promise = function () {
+        /* initialize promise */
+    };
+
+    //接下来，定义then方法，接受两个参数用于处理完成和拒绝状态。
+    Promise.prototype.then = function (onResolved, onRejected) {
+        /* invoke handlers based upon state transition */
+    };
+
+    //同时还需要两个方法来执行理从未完成到已完成和从未完成到拒绝的状态转变。
+    Promise.prototype.resolve = function (value) {
+        /* move from unfulfilled to resolved */
+    };
+
+    Promise.prototype.reject = function (error) {
+        /* move from unfulfilled to rejected */
+    };
+
+
+    function handleError(error) {
+        console.log('err');
+        /* handle the error */
+    }
+
+    function concatResults(data1, data2) {
+        /* order tweets by date */
+    }
+
+
+    /*现在搭建了一个promise的架子，我们可以继续上面的示例，假设只获取IE10的内容。创建一个方法来发送Ajax请求并将其封装在promise中。这个promise对象分别在xhr.onload和xhr.onerror中指定了完成和拒绝状态的转变过程，请注意searchTwitter函数返回的正是promise对象。然后，在loadTweets中，使用then方法设置完成和拒绝状态对应的回调函数。*/
+    function searchTwitter(term) {
+
+        var url, xhr, results, promise;
+        url = 'http://search.twitter.com/search.json?rpp=100&q=' + term;
+        promise = new Promise();
+        xhr = new XMLHttpRequest();
+        xhr.open('GET', url, true);
+
+        xhr.onload = function (e) {
+            if (this.status === 200) {
+                results = JSON.parse(this.responseText);
+                promise.resolve(results);
+            }
+        };
+
+        xhr.onerror = function (e) {
+            promise.reject(e);
+        };
+
+        xhr.send();
+        return promise;
+    }
+
+    function loadTweets() {
+        var container = document.getElementById('container');
+        searchTwitter('#IE10').then(function (data) {
+            data.results.forEach(function (tweet) {
+                var el = document.createElement('li');
+                el.innerText = tweet.text;
+                container.appendChild(el);
+            });
+        }, handleError);
+    }
+
+    //到目前为止，我们可以把promise模式应用于单个Ajax请求，似乎还体现不出promise的优势来。
+    // 下面来看看多个Ajax请求的并发协作。此时，我们需要另一个方法when来存储准备调用的promise对象。
+    // 一旦某个promise从未完成状态转化为完成或者拒绝状态，then方法里对应的处理函数就会被调用。
+    // when方法在需要等待所有操作都完成的时候至关重要。
+
+
+    Promise.when = function () {
+        /* handle promises arguments and queue each */
+    };
+
+    //以刚才获取IE10和IE9两块内容的场景为例，我们可以这样来写代码：
+    var container, promise1, promise2;
+    container = document.getElementById('container');
+    promise1 = searchTwitter('#IE10');
+    promise2 = searchTwitter('#IE9');
+    Promise.when(promise1, promise2).then(function (data1, data2) {
+
+        /* Reshuffle due to date */
+        var totalResults = concatResults(data1.results, data2.results);
+        totalResults.forEach(function (tweet) {
+            var el = document.createElement('li');
+            el.innerText = tweet.text;
+            container.appendChild(el);
+        });
+    }, handleError);
+
+    //分析上面的代码可知，when函数会等待两个promise对象的状态发生变化再做具体的处理。
+    // 在实际的Promise库中，when函数有很多变种，比如 when.some()、when.all()、when.any()等，
+    // 读者从函数名字中大概能猜出几分意思来，详细的说明可以参考CommonJS的一个promise实现
+
+
+
+
+
+</script>
+</body>
+</html>

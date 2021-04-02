@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+
+
+<input type ="file" id="choose" accept="image/*" multiple>
+
+<script>
+
+
+    document.querySelector('input').addEventListener('change',function(){
+        uploadFile(this.files[0])
+    },false);
+
+    function newBlob(data, datatype){
+        var out;
+        try {
+            out = new Blob([data], {type: datatype});
+        }
+        catch (e) {
+            window.BlobBuilder = window.BlobBuilder ||
+                    window.WebKitBlobBuilder ||
+                    window.MozBlobBuilder ||
+                    window.MSBlobBuilder;
+
+            if (e.name == 'TypeError' && window.BlobBuilder) {
+                var bb = new BlobBuilder();
+                bb.append(data.buffer);
+                out = bb.getBlob(datatype);
+            }
+            else if (e.name == "InvalidStateError") {
+                out = new Blob([data], {type: datatype});
+            }
+            else {
+            }
+        }
+        return out;
+    }
+
+    // 判断是否需要blobbuilder
+    var needsFormDataShim = (function () {
+                var bCheck = ~navigator.userAgent.indexOf('Android')
+                        && ~navigator.vendor.indexOf('Google')
+                        && !~navigator.userAgent.indexOf('Chrome');
+
+                return bCheck && navigator.userAgent.match(/AppleWebKit\/\/(\/d+)/).pop() <= 534;
+            })(),
+            blobConstruct = !!(function () {
+                try { return new Blob(); } catch (e) {}
+            })(),
+            XBlob = blobConstruct ? window.Blob : function (parts, opts) {
+                var bb = new (window.BlobBuilder || window.WebKitBlobBuilder || window.MSBlobBuilder);
+                parts.forEach(function (p) {
+                    bb.append(p);
+                });
+
+                return bb.getBlob(opts ? opts.type : undefined);
+            };
+
+    function FormDataShim () {
+        // Store a reference to this
+        var o = this,
+                parts = [],// Data to be sent
+                boundary = Array(5).join('-') + (+new Date() * (1e16*Math.random())).toString(32),
+                oldSend = XMLHttpRequest.prototype.send;
+
+        this.append = function (name, value, filename) {
+            parts.push('--' + boundary + '/r/nContent-Disposition: form-data; name="' + name + '"');
+
+            if (value instanceof Blob) {
+                parts.push('; filename="'+ (filename || 'blob') +'"/r/nContent-Type: ' + value.type + '/r/n/r/n');
+                parts.push(value);
+            } else {
+                parts.push('/r/n/r/n' + value);
+            }
+            parts.push('/r/n');
+        };
+
+        // Override XHR send()
+        XMLHttpRequest.prototype.send = function (val) {
+            var fr,
+                    data,
+                    oXHR = this;
+
+            if (val === o) {
+                //注意不能漏最后的/r/n ,否则有可能服务器解析不到参数.
+                parts.push('--' + boundary + '--/r/n');
+                data = new XBlob(parts);
+                fr = new FileReader();
+                fr.onload = function () { oldSend.call(oXHR, fr.result); };
+                fr.onerror = function (err) { throw err; };
+                fr.readAsArrayBuffer(data);
+
+                this.setRequestHeader('Content-Type', 'multipart/form-data; boundary=' + boundary);
+                XMLHttpRequest.prototype.send = oldSend;
+            }
+            else {
+                oldSend.call(this, val);
+            }
+        };
+    }
+
+    //把图片转成formdata 可以使用的数据...
+    //这里要把/s替换掉..要不然atob的时候会出错....
+    function dataURLtoBlob(data) {
+        debugger
+        var tmp = data.split(',');
+
+        tmp[1] = tmp[1].replace(/\s/g,'');
+        var binary = atob(tmp[1]);
+        var array = [];
+        for(var i = 0; i < binary.length; i++) {
+            array.push(binary.charCodeAt(i));
+        }
+        return new newBlob(new Uint8Array(array), 'image/jpeg');
+    }
+
+    function uploadFile(img){
+
+        var fd = needsFormDataShim ? new FormDataShim() : new FormData();
+        var file = dataURLtoBlob(img.name);
+        fd.append('img',file);
+
+        var prog = function(e){
+            /*你的逻辑*/
+        }
+        var load = function(e){
+            /*你的逻辑*/
+        }
+        var error = function(e){
+            /*你的逻辑*/
+        }
+        var abort = function(e){
+            /*你的逻辑*/
+        }
+
+        var xhr = new XMLHttpRequest();
+        xhr.upload.addEventListener('progress',prog,false);
+        xhr.addEventListener('load',load,false);
+        xhr.addEventListener('error',error,false);
+        xhr.addEventListener('abort',abort,false);
+
+        xhr.onreadystatechange = function(){
+            /*你的逻辑*/
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                var jsonData = JSON.parse(xhr.responseText);
+                console.log('上传成功：' + jsonData);
+
+            }
+        }
+        xhr.open('POST','a.php',true);
+        xhr.send(fd);
+    }
+</script>
+</body>
+</html>

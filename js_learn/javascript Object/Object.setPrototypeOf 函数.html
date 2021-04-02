@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Object.setPrototypeOf 函数</title>
+</head>
+
+<body>
+<script>
+    //设置对象的原型。
+
+    //备注 ： 设置原型可能会降低有权访问其原型已发生改变的所有 JavaScript 代码的性能。
+
+
+    //下面的代码示例演示如何设置对象的原型。
+    function Rectangle() {
+    }
+
+    var rec = new Rectangle();
+
+    if (console && console.log) {
+        console.log(Object.getPrototypeOf(rec) === Rectangle.prototype);  // Returns true
+        Object.getPrototypeOf(rec, Object.prototype);
+        console.log(Object.getPrototypeOf(rec) === Rectangle.prototype);  // Returns false
+    }
+
+    //下面的代码示例演示如何通过将属性添加到原型来将其添加到对象。
+    var proto = { y: 2 };
+
+    var obj = { x: 10 };
+    Object.getPrototypeOf(obj, proto);
+
+    proto.y = 20;
+    proto.z = 40;
+
+    if (console && console.log) {
+        console.log(obj.x === 10);  // Returns true
+        console.log(obj.y === 20);  // Returns true
+        console.log(obj.z === 40);  // Returns true
+    }
+
+
+    //下面的代码示例通过设置 String 对象上的新原型，将属性添加该对象上。
+    var stringProp = { desc: "description" };
+
+    Object.getPrototypeOf(String, stringProp);
+    var s1 = "333";
+    var s2 = new String("333");
+
+    if (console && console.log) {
+
+        console.log(String.desc === "description"); // Returns true
+        console.log(s1.desc === "description");     // Returns false
+        console.log(s2.desc === "description");     // Returns false
+
+        Object.getPrototypeOf(s1, String); // Can't be set.
+        Object.getPrototypeOf(s2, String);
+
+        console.log(s1.desc === "description"); // Returns false
+        console.log(s2.desc === "description"); // Returns true
+    }
+
+
+</script>
+</body>
+</html>

@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+   <!-- <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>-->
+    <style>
+
+        /* cyrillic-ext */
+        @font-face {
+            font-family: 'Open Sans';
+            font-style: normal;
+            font-weight: 400;
+            src: local('Open Sans'), local('OpenSans'), url(https://fonts.gstatic.com/s/opensans/v13/K88pR3goAWT7BTt32Z01m4X0hVgzZQUfRDuZrPvH3D8.woff2) format('woff2');
+            unicode-range: U+0460-052F, U+20B4, U+2DE0-2DFF, U+A640-A69F;
+        }
+        /* cyrillic */
+        @font-face {
+            font-family: 'Open Sans';
+            font-style: normal;
+            font-weight: 400;
+            src: local('Open Sans'), local('OpenSans'), url(https://fonts.gstatic.com/s/opensans/v13/RjgO7rYTmqiVp7vzi-Q5UYX0hVgzZQUfRDuZrPvH3D8.woff2) format('woff2');
+            unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+        }
+        /* greek-ext */
+        @font-face {
+            font-family: 'Open Sans';
+            font-style: normal;
+            font-weight: 400;
+            src: local('Open Sans'), local('OpenSans'), url(https://fonts.gstatic.com/s/opensans/v13/LWCjsQkB6EMdfHrEVqA1KYX0hVgzZQUfRDuZrPvH3D8.woff2) format('woff2');
+            unicode-range: U+1F00-1FFF;
+        }
+        /* greek */
+        @font-face {
+            font-family: 'Open Sans';
+            font-style: normal;
+            font-weight: 400;
+            src: local('Open Sans'), local('OpenSans'), url(https://fonts.gstatic.com/s/opensans/v13/xozscpT2726on7jbcb_pAoX0hVgzZQUfRDuZrPvH3D8.woff2) format('woff2');
+            unicode-range: U+0370-03FF;
+        }
+        /* vietnamese */
+        @font-face {
+            font-family: 'Open Sans';
+            font-style: normal;
+            font-weight: 400;
+            src: local('Open Sans'), local('OpenSans'), url(https://fonts.gstatic.com/s/opensans/v13/59ZRklaO5bWGqF5A9baEEYX0hVgzZQUfRDuZrPvH3D8.woff2) format('woff2');
+            unicode-range: U+0102-0103, U+1EA0-1EF9, U+20AB;
+        }
+        /* latin-ext */
+        @font-face {
+            font-family: 'Open Sans';
+            font-style: normal;
+            font-weight: 400;
+            src: local('Open Sans'), local('OpenSans'), url(https://fonts.gstatic.com/s/opensans/v13/u-WUoqrET9fUeobQW7jkRYX0hVgzZQUfRDuZrPvH3D8.woff2) format('woff2');
+            unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;
+        }
+        /* latin */
+        @font-face {
+            font-family: 'Open Sans';
+            font-style: normal;
+            font-weight: 400;
+            src: local('Open Sans'), local('OpenSans'), url(https://fonts.gstatic.com/s/opensans/v13/cJZKeOuBrn4kERxqtaUH3ZBw1xU1rKptJj_0jans920.woff2) format('woff2');
+            unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+        }
+        /* cyrillic-ext */
+        @font-face {
+            font-family: 'Open Sans';
+            font-style: normal;
+            font-weight: 700;
+            src: local('Open Sans Bold'), local('OpenSans-Bold'), url(https://fonts.gstatic.com/s/opensans/v13/k3k702ZOKiLJc3WVjuplzA7aC6SjiAOpAWOKfJDfVRY.woff2) format('woff2');
+            unicode-range: U+0460-052F, U+20B4, U+2DE0-2DFF, U+A640-A69F;
+        }
+        /* cyrillic */
+        @font-face {
+            font-family: 'Open Sans';
+            font-style: normal;
+            font-weight: 700;
+            src: local('Open Sans Bold'), local('OpenSans-Bold'), url(https://fonts.gstatic.com/s/opensans/v13/k3k702ZOKiLJc3WVjuplzBdwxCXfZpKo5kWAx_74bHs.woff2) format('woff2');
+            unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+        }
+        /* greek-ext */
+        @font-face {
+            font-family: 'Open Sans';
+            font-style: normal;
+            font-weight: 700;
+            src: local('Open Sans Bold'), local('OpenSans-Bold'), url(https://fonts.gstatic.com/s/opensans/v13/k3k702ZOKiLJc3WVjuplzJ6vnaPZw6nYDxM4SVEMFKg.woff2) format('woff2');
+            unicode-range: U+1F00-1FFF;
+        }
+        /* greek */
+        @font-face {
+            font-family: 'Open Sans';
+            font-style: normal;
+            font-weight: 700;
+            src: local('Open Sans Bold'), local('OpenSans-Bold'), url(https://fonts.gstatic.com/s/opensans/v13/k3k702ZOKiLJc3WVjuplzPy1_HTwRwgtl1cPga3Fy3Y.woff2) format('woff2');
+            unicode-range: U+0370-03FF;
+        }
+        /* vietnamese */
+        @font-face {
+            font-family: 'Open Sans';
+            font-style: normal;
+            font-weight: 700;
+            src: local('Open Sans Bold'), local('OpenSans-Bold'), url(https://fonts.gstatic.com/s/opensans/v13/k3k702ZOKiLJc3WVjuplzPgrLsWo7Jk1KvZser0olKY.woff2) format('woff2');
+            unicode-range: U+0102-0103, U+1EA0-1EF9, U+20AB;
+        }
+        /* latin-ext */
+        @font-face {
+            font-family: 'Open Sans';
+            font-style: normal;
+            font-weight: 700;
+            src: local('Open Sans Bold'), local('OpenSans-Bold'), url(https://fonts.gstatic.com/s/opensans/v13/k3k702ZOKiLJc3WVjuplzIjoYw3YTyktCCer_ilOlhE.woff2) format('woff2');
+            unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;
+        }
+        /* latin */
+        @font-face {
+            font-family: 'Open Sans';
+            font-style: normal;
+            font-weight: 700;
+            src: local('Open Sans Bold'), local('OpenSans-Bold'), url(https://fonts.gstatic.com/s/opensans/v13/k3k702ZOKiLJc3WVjuplzBampu5_7CjHW5spxoeN3Vs.woff2) format('woff2');
+            unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+        }
+
+    </style>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        h1 {
+            font-size: 1.4em;
+        }
+
+        body {
+            counter-reset: game;
+            text-align: center;
+            background: #e9b58b;
+            font-family: 'Open Sans', 'Helvetica', 'Arial', sans-serif;
+            color: #333;
+        }
+
+        input:checked {
+            counter-increment: game;
+        }
+
+        .total-count::after {
+            content: counter(game);
+        }
+
+        h2 {
+            font-size: 1em;
+            margin: -.5em auto 3em;
+            font-weight: 400;
+        }
+
+        .total-count {
+            font-size: 1.75em;
+            position: absolute;
+            top: 1.75em;
+            width: 100%;
+            left: 0;
+            text-align: center;
+            z-index: 300;
+        }
+
+        .game-area {
+            display: flex;
+            flex-flow: wrap;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 600px;
+            min-height: 550px;
+            max-height: 700px;
+            margin: 0 auto;
+            padding-left: 0; //list reset
+        }
+
+        li {
+            width: calc(33% - .5em);
+            margin-bottom: 1em;
+            height: 10em;
+            list-style: none;
+            position: relative;
+            outline: 4px solid white;
+            background: #64ddf3;
+        }
+
+
+
+        /*@for $i from 1 through 9 {
+        $speed: random()*5 + 's';
+        $color-hue: random()*360 + 'deg';
+        $brightness: random() + 1;
+
+            li:nth-child($i) {
+            input {
+                filter: hue-rotate(#{$color-hue}) brightness(#{$brightness});
+                animation-duration: #{$speed};
+            }
+        }
+        }*/
+
+        li:nth-child(1) input {
+            -webkit-filter: hue-rotate(321.68274deg) brightness(1.44895);
+            filter: hue-rotate(321.68274deg) brightness(1.44895);
+            -webkit-animation-duration: 1.14129s;
+            animation-duration: 1.14129s;
+        }
+
+        li:nth-child(2) input {
+            -webkit-filter: hue-rotate(303.61791deg) brightness(1.83602);
+            filter: hue-rotate(303.61791deg) brightness(1.83602);
+            -webkit-animation-duration: 2.36557s;
+            animation-duration: 2.36557s;
+        }
+
+        li:nth-child(3) input {
+            -webkit-filter: hue-rotate(73.01607deg) brightness(1.5613);
+            filter: hue-rotate(73.01607deg) brightness(1.5613);
+            -webkit-animation-duration: 3.73807s;
+            animation-duration: 3.73807s;
+        }
+
+        li:nth-child(4) input {
+            -webkit-filter: hue-rotate(42.0331deg) brightness(1.81929);
+            filter: hue-rotate(42.0331deg) brightness(1.81929);
+            -webkit-animation-duration: 2.7159s;
+            animation-duration: 2.7159s;
+        }
+
+        li:nth-child(5) input {
+            -webkit-filter: hue-rotate(351.72069deg) brightness(1.8629);
+            filter: hue-rotate(351.72069deg) brightness(1.8629);
+            -webkit-animation-duration: 4.4988s;
+            animation-duration: 4.4988s;
+        }
+
+        li:nth-child(6) input {
+            -webkit-filter: hue-rotate(117.87692deg) brightness(1.22734);
+            filter: hue-rotate(117.87692deg) brightness(1.22734);
+            -webkit-animation-duration: 1.40665s;
+            animation-duration: 1.40665s;
+        }
+
+        li:nth-child(7) input {
+            -webkit-filter: hue-rotate(102.62453deg) brightness(1.13905);
+            filter: hue-rotate(102.62453deg) brightness(1.13905);
+            -webkit-animation-duration: 1.74396s;
+            animation-duration: 1.74396s;
+        }
+
+        li:nth-child(8) input {
+            -webkit-filter: hue-rotate(248.82804deg) brightness(1.01317);
+            filter: hue-rotate(248.82804deg) brightness(1.01317);
+            -webkit-animation-duration: 3.99281s;
+            animation-duration: 3.99281s;
+        }
+
+        li:nth-child(9) input {
+            -webkit-filter: hue-rotate(205.81772deg) brightness(1.19911);
+            filter: hue-rotate(205.81772deg) brightness(1.19911);
+            -webkit-animation-duration: 1.0308s;
+            animation-duration: 1.0308s;
+        }
+
+        input[type="checkbox"] {
+            width: 50px;
+            height: 50px;
+            position: absolute;
+            cursor: crosshair;
+            background: -webkit-radial-gradient(#ff0000 10%, #ffffff 10%, #ffffff 30%, #ff0000 30%, #ff0000 50%, #ffffff 50%, #ffffff 80%, #ff0000 80%, #ff0000 100%);
+            background: radial-gradient(#ff0000 10%, #ffffff 10%, #ffffff 30%, #ff0000 30%, #ff0000 50%, #ffffff 50%, #ffffff 80%, #ff0000 80%, #ff0000 100%);
+            border-radius: 50%;
+            display: block;
+            left: 0;
+            right: 0;
+            text-align: center;
+            margin: 0 auto;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            border: 6px solid red;
+            -webkit-animation: hide-target infinite alternate ease-in-out;
+            animation: hide-target infinite alternate ease-in-out;
+            z-index: 1;
+        }
+
+        li:before {
+             content: '';
+             display: block;
+             background-color: black;
+             height: 50%;
+             width: 6px;
+             position: absolute;
+             left: 0; right: 0;
+             top: calc(100% + 6px);
+             margin: 0 auto;
+             z-index: -1;
+         }
+
+        input[type="checkbox"]:focus {
+             outline: none;
+             appearance: none;
+         }
+
+
+        input[type="checkbox"]:checked {
+             pointer-events: none;
+             filter: grayscale(1) opacity(.75);
+             animation: none;
+        }
+
+        input[type="checkbox"]:checked:after {
+             content: '+1!';
+             padding: .5em;
+             margin: 1em 0 0 1.5em;
+             font-size: 2.5em;
+             font-weight: 600;
+
+
+        }
+
+        .shield {
+            background: #724c20;
+            width: 100%;
+            height: 60%;
+            margin: 0 auto;
+            bottom: 0;
+            left: 0; right: 0;
+            position: absolute;
+            pointer-events: all;
+            z-index: 100;
+        }
+
+        @keyframes hide-target {
+            0% {
+                top: 0
+            }
+            25% {
+                top: 50%
+            }
+            100% {
+                top: 0
+            }
+        }
+        @-webkit-keyframes hide-target {
+            0% {
+                top: 0
+            }
+            25% {
+                top: 50%
+            }
+            100% {
+                top: 0
+            }
+        }
+
+        .game-over {
+            height: 100%;
+            width: 100%;
+            display: block;
+            background: white;
+            pointer-events: all;
+            position: absolute;
+            top: -100%;
+            left: 0;
+            z-index: 200;
+            animation: appear .25s forwards;
+            animation-delay: 8s;
+            background: repeating-linear-gradient(-45deg, #c9ff00 0, #c9ff00 5em, #20c0ff 5em, #20c0ff 10em);
+        }
+
+        h1 {
+            padding: 1em 0 3.5em;
+            background: white;
+         }
+
+
+        @keyframes appear {
+            from {
+                top: -100vh;
+                opacity: 0;
+            }
+            to {
+                top: 0;
+                opacity: 1;
+            }
+        }
+        @-webkit-keyframes appear {
+            from {
+                top: -100vh;
+                opacity: 0;
+            }
+            to {
+                top: 0;
+                opacity: 1;
+            }
+        }
+
+        .play-again {
+            background: white;
+            color: #20c0ff;
+            padding: .5em 1em;
+            font-size: 2.5em;
+            font-weight: 700;
+        }
+
+        small a {
+            margin-bottom: 2em;
+            display: block;
+            color: #222;
+        }
+    </style>
+
+</head>
+<body>
+
+
+
+<h1>CSS Only Carnival: Target Practice</h1>
+<h2>This game uses no JS at all (isn't CSS awesome?). You have 8 seconds to hit as many targets as you can!</h2>
+
+<div class="game-over">
+    <h1>Game Over!</h1>
+    <a class="play-again" target="_parent" href="http://codepen.io/una/full/NxZaNr">Play Again</a>
+</div>
+
+<ul class="game-area">
+    <li><input type="checkbox"><div class="shield"></div></li>
+    <li><input type="checkbox"><div class="shield"></div></li>
+    <li><input type="checkbox"><div class="shield"></div></li>
+    <li><input type="checkbox"><div class="shield"></div></li>
+    <li><input type="checkbox"><div class="shield"></div></li>
+    <li><input type="checkbox"><div class="shield"></div></li>
+    <li><input type="checkbox"><div class="shield"></div></li>
+    <li><input type="checkbox"><div class="shield"></div></li>
+    <li><input type="checkbox"><div class="shield"></div></li>
+</ul>
+
+<h3 class="total-count">Targets Hit: &nbsp;</h3>
+
+<small><a href="http://twitter.com/<una</una>">Made with love by @una &hearts;</a></small>
+
+</body>
+</html>

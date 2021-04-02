@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>享元（Flyweight）模式</title>
+</head>
+
+<body>
+<script>
+    //享元（Flyweight）模式：运用共享技术有效地支持大量细粒度的对象。
+
+    //享元模式可以避免大量非常相似类的开销。在程序设计中有时需要生成大量细粒度的类实例来表示数据。如果发现这些实例除了几个参数外基本伤都是相同的，有时就能够受大幅度第减少需要实例化的类的数量。如果能把这些参数移到类实例外面，在方法调用时将他们传递进来，就可以通过共享大幅度地减少单个实例的数目。
+
+    //从实际出发说说自己的理解吧。
+
+    //组成部分
+    //2 　　“享元”：抽离出来的外部操作和数据；
+    // 3 　　“工厂”：创造对象的工厂；
+    //4 　　“存储器”：存储实例对象的对象或数组，供“享元”来统一控制和管理。
+    //5
+    //6 　　应用场景
+    //7 　　1. 页面存在大量资源密集型对象；
+    //8 　　2. 这些对象具备一定的共性，可以抽离出公用的操作和数据
+    //9
+    //10 　　关键
+    //11 　　1. 合理划分内部和外部数据。
+    //12 　　既要保持每个对象的模块性、保证享元的独立、可维护，又要尽可能多的抽离外部数据。
+    //13 　　2. 管理所有实例
+    //14　　 既然抽离出了外部数据和操作，那享元就必须可以访问和控制实例对象。在JavaScript这种动态语言中，这个需求是很容易实现的：我们可以把工厂生产出的对象简单的扔在一个数组中。为每个对象设计暴露给外部的方法，便于享元的控制。
+    //15
+    //16 　　优点
+    //17 　　1. 将能耗大的操作抽离成一个，在资源密集型系统中，可大大减少资源和内存占用；
+    //18 　　2. 职责封装，这些操作独立修改和维护；
+    //19
+    //20 　　缺点
+    //21　　 1. 增加了实现复杂度。
+    //22 　　将原本由一个工厂方法实现的功能，修改为了一个享元+一个工厂+一个存储器。
+    //23 　　2. 对象数量少的情况，可能会增大系统开销。
+
+    //　示例：
+
+    //汽车登记示例
+    /*var Car = function (make, model, year, owner, tag, renewDate) {
+        this.make = make;
+        this.model = model;
+        this.year = year;
+        this.owner = owner;
+        this.tag = tag;
+        this.renewDate = renewDate;
+    };
+
+    Car.prototype = {
+        getMake: function () {
+            return this.make;
+        },
+        getModel: function () {
+            return this.model;
+        },
+        getYear: function () {
+            return this.year;
+        },
+        transferOwner: function (owner, tag, renewDate) {
+            this.owner = owner;
+            this.tag = tag;
+            this.renewDate = renewDate;
+        },
+        renewRegistration: function (renewDate) {
+            this.renewDate = renewDate;
+        }
+    }*/
+
+    //数据量小到没多大的影响，数据量大的时候对计算机内存会产生压力，下面介绍享元模式优化后
+    //包含核心数据的Car类
+    var Cars = function (make, model, year) {
+        this.make = make;
+        this.model = model;
+        this.year = year;
+    };
+
+    Cars.prototype = {
+        getMake: function () {
+            return this.make;
+        },
+        getModel: function () {
+            return this.model;
+        },
+        getYear: function () {
+            return this.year;
+        }
+    };
+
+    //中间对象，用来实例化Car类
+    var CarFactory = (function () {
+        var createdCars = {};
+        return {
+            createCar: function (make, model, year) {
+                debugger
+                var car = createdCars[make + "-" + model + "-" + year];
+                return car ? car : createdCars[make + '-' + model + '-' + year] = (new Cars(make, model, year));
+            }
+        }
+    })();
+
+    //数据工厂，用来处理Car的实例化和整合附加数据
+    var CarRecordManager = (function () {
+        var carRecordDatabase = {};
+        return {
+            //添加车载记录
+            addCarRecord: function (make, model, year, owner, tag, renewDate) {
+                debugger
+                var car = CarFactory.createCar(make, model, year);
+                carRecordDatabase[tag] = {
+                    owner: owner,
+                    tag: tag,
+                    renewDate: renewDate,
+                    car: car
+                }
+            },
+            //转让所有权
+            transferOwnership: function (tag, newOwner, newTag, newRenewDate) {
+                if(!carRecordDatabase[tag]){
+                    alert('不存在该车辆的信息记录');
+                    return
+                }
+
+                var record = carRecordDatabase[tag];
+                record.owner = newOwner;
+                record.tag = newTag;
+                record.renewDate = newRenewDate;
+            },
+            //注册续约
+            renewRegistration: function (tag, newRenewDate) {
+                if(!carRecordDatabase[tag]){
+                    alert('不存在该车辆的信息记录');
+                    return
+                }
+                carRecordDatabase[tag].renewDate = newRenewDate;
+            },
+            //获取汽车信息
+            getCarInfo: function (tag) {
+                if(!carRecordDatabase[tag]){
+                    alert('不存在该车辆的信息记录');
+                    return
+                }
+                return carRecordDatabase[tag];
+            }
+        }
+    })();
+
+    var objCar = {}
+    objCar.maintenance = {};
+
+    for (var i = 0; i < 2; i++) {
+        console.log(
+                CarRecordManager.addCarRecord('Car wash',objCar.maintenance,'2016/01/16','owner','porsche-718',new Date().getFullYear() + '/' + (new Date().getMonth()+1) + '/' + new Date().getDate()));
+    }
+
+
+</script>
+</body>
+</html>

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+
+<script>
+    //前面提到，functor 的概念来自于范畴学，并满足一些定律。我们先来探索这些实用的定律。
+
+    // identity
+    map(id) === id;
+
+    // composition
+    compose(map(f), map(g)) === map(compose(f, g));
+
+    //同一律很简单，但是也很重要。因为这些定律都是可运行的代码，所以我们完全可以在我们自己的 functor 上试验它们，验证它们是否成立。
+
+    var idLaw1 = map(id);
+    var idLaw2 = id;
+
+    idLaw1(Container.of(2));
+    //=> Container(2)
+
+    idLaw2(Container.of(2));
+    //=> Container(2)
+
+    //看到没，它们是相等的。接下来看一看组合。
+
+    var compLaw1 = compose(map(concat(" world")), map(concat(" cruel")));
+    var compLaw2 = map(compose(concat(" world"), concat(" cruel")));
+
+    compLaw1(Container.of("Goodbye"));
+    //=> Container('Goodbye cruel world')
+
+    compLaw2(Container.of("Goodbye"));
+    //=> Container('Goodbye cruel world')
+
+    //在范畴学中，functor 接受一个范畴的对象和态射（morphism），然后把它们映射（map）到另一个范畴里去。
+    // 根据定义，这个新范畴一定会有一个单位元（identity），也一定能够组合态射；我们无须验证这一点，前面提到的定律保证这些东西会在映射后得到保留。
+
+    //可能我们关于范畴的定义还是有点模糊。你可以把范畴想象成一个有着多个对象的网络，对象之间靠态射连接。
+    // 那么 functor 可以把一个范畴映射到另外一个，而且不会破坏原有的网络。
+    // 如果一个对象 a 属于源范畴 C，那么通过 functor F 把 a 映射到目标范畴 D 上之后，就可以使用 F a 来指代 a 对象（把这些字母拼起来是什么？！）。
+    // 可能看图会更容易理解：
+
+
+    // 这张图除了能表示态射借助 functor F 完成从一个范畴到另一个范畴的映射之外，我们发现它还符合交换律，也就是说，顺着箭头的方向往前，形成的每一个路径都指向同一个结果。
+    // 不同的路径意味着不同的行为，但最终都会得到同一个数据类型。这种形式化给了我们原则性的方式去思考代码——无须分析和评估每一个单独的场景，只管可以大胆地应用公式即可。
+    // 来看一个具体的例子。
+
+    //  topRoute :: String -> Maybe(String)
+    var topRoute = compose(Maybe.of, reverse);
+
+    //  bottomRoute :: String -> Maybe(String)
+    var bottomRoute = compose(map(reverse), Maybe.of);
+
+
+    topRoute("hi");
+    // Maybe("ih")
+
+    bottomRoute("hi");
+    // Maybe("ih")
+
+
+    //根据所有 functor 都有的特性，我们可以立即理解代码，重构代码。
+
+    //functor 也能嵌套使用：
+
+    var nested = Task.of([Right.of("pillows"), Left.of("no sleep for you")]);
+
+    map(map(map(toUpperCase)), nested);
+    // Task([Right("PILLOWS"), Left("no sleep for you")])
+
+    //nested 是一个将来的数组，数组的元素有可能是程序抛出的错误。我们使用 map 剥开每一层的嵌套，
+    // 然后对数组的元素调用传递进去的函数。可以看到，这中间没有回调、if/else 语句和 for 循环，只有一个明确的上下文。
+    // 的确，我们必须要 map(map(map(f))) 才能最终运行函数。不想这么做的话，可以组合 functor。是的，你没听错：
+
+    var Compose = function(f_g_x){
+        this.getCompose = f_g_x;
+    }
+
+    Compose.prototype.map = function(f){
+        return new Compose(map(map(f), this.getCompose));
+    }
+
+    var tmd = Task.of(Maybe.of("Rock over London"))
+
+    var ctmd = new Compose(tmd);
+
+    map(concat(", rock on, Chicago"), ctmd);
+    // Compose(Task(Maybe("Rock over London, rock on, Chicago")))
+
+    ctmd.getCompose;
+    // Task(Maybe("Rock over London, rock on, Chicago"))
+
+    // 看，只有一个 map。functor 组合是符合结合律的，而且之前我们定义的 Container 实际上是一个叫 Identity 的 functor。
+    // identity 和可结合的组合也能产生一个范畴，这个特殊的范畴的对象是其他范畴，态射是 functor。
+    // 这实在太伤脑筋了，所以我们不会深入这个问题，但是赞叹一下这种模式的结构性含义，或者它的简单的抽象之美也是好的。
+
+</script>
+
+</body>
+</html>

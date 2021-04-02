@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en" style="width:600px;">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body style="width:600px;">
+<canvas id="canvas" width="500" height="400" style="background:#000;">
+    your browser not support canvas!
+</canvas>
+<script src="../js/utils.js"></script>
+<script src="../js/box.js"></script>
+<script>
+    window.onload = function(){
+        var canvas = document.getElementById('canvas'),
+                context = canvas.getContext('2d'),
+                boxes = [],
+                activeBox = createBox(),
+                gravity = 0.02;
+
+        //创建一个新的box
+        function createBox(){
+            var color = Math.random()*(0xffffff);
+            var box = new Box(Math.random()*40+10, Math.random()*40+10, color);
+            box.x = Math.random()*canvas.width;
+            boxes.push(box);
+            return box;
+        }
+        //画boxes
+        function drawBox(box){
+            //判断box是否是activeBox,如果不是做碰撞检测,碰上了，创建新的box
+            if(activeBox !== box && utils.intersects(activeBox, box)){
+                activeBox.y = box.y - activeBox.height;
+                activeBox = createBox();
+            }
+            box.draw(context);
+        }
+
+        //监听事件keydown
+        window.addEventListener('keydown', function(event){
+            switch (event.keyCode){
+                case 37:
+                    activeBox.x -= 5;
+                    break;
+                case 39:
+                    activeBox.x += 5;
+                    break;
+                case 40:
+                    gravity = 2;
+                    break;
+            }
+        }, false);
+        //监听事件keyup
+        window.addEventListener("keyup", function(event){
+            gravity = 0.02;
+        }, false);
+
+        //动画循环
+        (function drawFrame(){
+            window.requestAnimationFrame(drawFrame, canvas);
+            context.clearRect(0, 0, canvas.width, canvas.height);
+
+            activeBox.vy += gravity;
+            activeBox.y += activeBox.vy;
+
+            //如果到达底部就创建一个新的box
+            if(activeBox.y + activeBox.height > canvas.height){
+                activeBox.y = canvas.height - activeBox.height;
+                activeBox = createBox();
+            }
+
+            //范围限制
+            if(activeBox.x < 0 ){
+                activeBox.x = 0;
+            }
+            if( activeBox.x + activeBox.width > canvas.width){
+                activeBox.x = canvas.width -activeBox.width;
+            }
+            //绘制
+            boxes.forEach(drawBox);
+        }());
+    }
+</script>
+</body>
+</html>

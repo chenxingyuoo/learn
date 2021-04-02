@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>小拼图</title>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=3, minimum-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-itunes-app" content="app-id=myAppStoreID, affiliate-data=myAffiliateData, app-argument=myURL">
+    <!-- 添加智能 App 广告条 Smart App Banner（iOS 6+ Safari） -->
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+    <style>
+        .container-fluid{
+            text-align: center;
+            display: -webkit-box;
+            -webkit-box-orient: block-axis;
+            -webkit-box-align: center;
+        }
+        .puzzle {
+            position: relative;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            background-size: 100% 100%;
+            background-repeat: no-repeat;
+            display: -webkit-box;
+            -webkit-box-align: center;
+            -webkit-box-pack: center;
+            font-size: 14px;
+        }
+
+        .puzzle-in {
+            position: relative;
+            margin: 1%;
+            height: 99%;
+            width: 99%
+        }
+
+        .puzz-item {
+            position: absolute;
+            text-align: center;
+            box-shadow: 0 0 4px #fff;
+            overflow: hidden;
+        }
+
+        .puzz-item p {
+            color: #000;
+            font-size: 24px;
+            position: absolute;
+            top: 50%;
+            margin-top: -8px;
+            left: 50%;
+            margin-left: -8px;
+        }
+        .puzz-item .mask{
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-color: #000;
+            opacity: 0.5;
+        }
+        .puzz-item img{
+            position: absolute;
+        }
+        .sel-btn.active{
+            background-color: beige;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="container-fluid">
+
+    <div class="content">
+        <h2>小拼图</h2>
+
+        <div class="puzzle" id="puzzle"></div>
+        <span style="margin-top:10px;display: inline-block">
+            <input type="button" class="btn" value="重开" onclick="game.shuffle();"/>
+        </span>
+        <span style="margin-top:10px;display: inline-block">
+            <input type="button" class="btn" value="开始" onclick="game.start();"/>
+        </span>
+        <span style="margin-top:10px;display: inline-block">
+            <input id="getFile" type="button" class="btn" value="本地图片"/>
+        </span>
+        <span style="margin-top:10px;display: inline-block">
+            <input id="three-btn" type="button" class="sel-btn active" data-value="3" value="难度3*3"/>
+        </span>
+        <span style="margin-top:10px;display: inline-block">
+            <input id="four-btn" type="button" class="sel-btn" data-value="4" value="难度4*4"/>
+        </span>
+        <span style="margin-top:10px;display: inline-block">
+            <input id="five-btn" type="button" class="sel-btn" data-value="5" value="难度5*5"/>
+        </span>
+        <input id="fileEle" type="file" class="btn" value="本地" style="display: none"/>
+
+    </div>
+</div>
+
+<script src="../../../fast_click.js"></script>
+<script>
+    var Dom = function () {};
+    Dom.prototype = {
+
+        $: function (id) {
+            return document.getElementById(id);
+        },
+
+        isString: function (content) {
+            return typeof content === "string";
+        },
+
+        create: function (tagName) {
+            return document.createElement(tagName);
+        },
+
+        htmlForElem: function (html) {
+            var ele = this.create("DIV");
+            var documentFragment = document.createDocumentFragment("DIV");
+            ele.innerHTML = html;
+            while (ele.firstChild) {
+                documentFragment.appendChild(ele.firstChild);
+            }
+            return documentFragment;
+        },
+
+        append: function (ele, content) {
+            if (this.isString(content)) {
+                content = this.htmlForElem(content);
+            }
+            return ele.appendChild(content);//如果传入字符串 返回值是 Document Fragment 并且为空
+        }
+    }
+</script>
+<script>
+
+    var dom = new Dom();
+
+    var Puzz = function (index, width, height, size, wrap, url, end) {//顺序 宽度，高度，比例，父容器，url, 是否是最后一个元素
+
+        this.ele = null;
+        this.left = 0;
+        this.top = 0;
+        this.defaultBackground = "#fff";
+        this.width = width;
+        this.height = height;
+        this.size = size;
+        this.wrap = wrap;
+        this.url = url;
+        this.end = end;//标识是否最后一个
+        this.index = index + 1;
+        this.x = 0;
+        this.y = 0;
+    };
+
+    Puzz.prototype = {
+        init: function () {
+            this.create();
+        },
+        setLeft: function (value) {
+            this.left = value + 'px';
+        },
+        setDefaultBackground: function (color) {
+            this.defaultBackground = color;
+        },
+        setShowBackground: function (background) {
+            this.ele.style.background = background;
+        },
+
+        setTop: function (value) {
+            this.top = value + 'px';
+        },
+        getProperty: function (key) {
+            return this[key];
+        },
+
+        move: function (x, y) {//移动到一个坐标
+            
+            this.setLeft(x * this.width);
+            this.setTop(y * this.height);
+            this.update();
+            this.x = x;
+            this.y = y;
+        },
+
+        create: function () {
+
+            var div = document.createElement('div');
+            div.className = 'puzz-item';
+            div.style.width = this.width + "px";
+            div.style.height = this.height + "px";
+            this.ele = div;
+
+            var lie = parseInt((this.index - 1) / this.size);
+            var row = parseInt((this.index - 1) % this.size);
+
+            var img = dom.create('img');
+            img.src = this.url;
+            with(img.style){
+                left = - (row * this.width) + "px";
+                top = - (lie * this.height) + "px";
+                width = this.width * this.size + 'px';
+                height = this.height * this.size + 'px';
+            }
+             dom.append(this.ele, img);
+
+            if (this.url && this.end == false) {
+                /*this.setShowBackground("url(" + this.url + ") no-repeat  -" + ( row * this.width) + "px -" + (lie * this.height) + "px ");*/
+
+            } else {
+                //this.setShowBackground(this.defaultBackground);
+                /*this.setShowBackground("url(" + this.url + ") no-repeat  -" + ( row * this.width) + "px -" + (lie * this.height) + "px ");*/
+                var mask = dom.create('div');
+                mask.className = 'mask';
+                dom.append(this.ele, mask);
+            }
+
+            this.move(row, lie);
+
+        },
+
+        setShowInt: function () {
+            var p = dom.create('p');
+            p.innerText = this.index;
+            dom.append(this.ele, p);
+        },
+        update: function () {
+
+            this.ele.style.left = this.left;
+            this.ele.style.top = this.top;
+        },
+        isOkay: function () {
+            return parseInt((this.index - 1) / this.size) == this.y && parseInt((this.index - 1) % this.size) == this.x;
+        },
+
+        drawing: function (x, y) {
+
+            dom.append(this.wrap, this.ele);
+        },
+        click: function (callback, obj) {
+            var _this = this;
+            this.ele.onclick = function () {
+                callback.call(obj, _this.y, _this.x);
+            }
+        }
+    }
+
+
+    var Puzzle = function (id, width, height, url, size, isNunber) {//容器ID，宽度，高度，图片url, 拆分模块数量, 是否拼数字
+        this.ele = dom.$(id);
+        this.url = url;
+        this.width = width;
+        this.height = height;
+        this.size = size;
+        this.itemList = [];//全部item
+        this.listOrder = [];//顺序 多维
+        this.isNunber = isNunber != false ? true : false;//undefined
+        this.init();
+    };
+
+    Puzzle.prototype = {
+        init: function () {
+            with(this.ele.style){
+                width = this.width + 'px';
+                height = this.height + 'px';
+                backgroundImage = "url(" + this.url + ")";
+
+            }
+            this.itemWidth = this.width / this.size;
+            this.itemHeight = this.height / this.size;
+            
+            this.itemList = [];
+            this.create();
+
+        },
+        create: function () {
+
+            var list = this.itemList;
+            var item = null;
+            var end = false;
+
+            for (var i = 0, len = this.size * this.size; i < len; i++) {
+                
+                end = ( i + 1 == len ? true : false);
+                item = new Puzz(i, this.itemWidth, this.itemHeight, this.size, this.ele, this.url, end);//new 新的item
+                item.init();  //Puzz 实例化
+
+                if (this.isNunber == true && end == false) {
+                    item.setShowInt();
+                }
+
+                list.push(item);
+
+            }
+            if (this.size == 3) {
+                this.bindWindow();//绑定键盘事件 可以用小键盘操作
+            }
+        },
+
+        start: function () {
+
+            var list = this.itemList;
+            for (var i = 0, len = list.length; i < len; i++) {
+
+                list[i].drawing();
+                list[i].click(this.regEvent, this);
+            }
+            this.shuffle();
+        },
+
+        sort: function (array) {
+
+            return array.sort(function () {
+
+                return Math.random() - 0.5;
+            });
+        },
+
+        shuffle: function () {//洗牌
+
+            if (this.itemList.length == 0) {
+                this.init();
+                this.start();
+                return;
+            }
+
+            var order = [];//位置序列
+
+            for (var i = 0; i < this.size * this.size; i++) {
+                order.push(i);
+            }
+
+            order = this.sort(order);
+
+            while (!this.solvability(order.slice(0), this.size)) {//判断当前序列是否能还原
+                order = this.sort(order);
+            }
+
+
+            var size = this.size;
+            var listOrder = this.listOrder = [];
+            var itemList = this.itemList;
+
+            for (var i = 0; i < size; i++) {//矩阵
+                listOrder.push(order.slice(i * size, (i + 1) * size));
+            }
+            var list = this.itemList;
+            for (var i = 0, len = listOrder.length; i < len; i++) {
+                for (var j = 0; j < listOrder[i].length; j++) {
+                    itemList[listOrder[i][j]].move(j, i);
+                }
+            }
+
+        },
+
+        ////判断当前的拼图是否可以还原
+        solvability: function (order, size) {
+            // 定理1：图形A与图形B等价的充要条件图形A的排列的逆序数加上0元素行号和列号的奇偶性等于图形B的排列的逆序数加上0元素行号和列号的奇偶性。为方便表述，把图形排列的逆序数加上0元素行号和列号的奇偶性称为图形的奇偶性。
+
+            var a;
+            var count = 0;
+            var m = 0;
+            var n = 0;
+
+            var len = order.length;
+            size = size || 3;
+            //[0,1,2,3,4,5,7,6,8]
+            for (var i = 0; i < len; i++) {
+                var a = order[i];
+
+                if (a == 8) {
+                    m = parseInt(i / size);
+                    n = parseInt(i % size);
+                }
+
+                for (var j = i + 1; j < len; j++) {
+
+                    if (order[j] < a) {
+                        count++;
+                    }
+                }
+            }
+            //console.log(count);
+            count += m;
+            count += n;
+            return count % 2 == 0;
+        },
+
+        isOkay: function () {
+            var okay = true;
+            var list = this.itemList;
+            for (var i = 0, len = list.length; i < len; i++) {
+                if (!list[i].isOkay()) {
+                    okay = false;
+                    break;
+                }
+            }
+            return okay;
+        },
+
+        regEvent: function (x, y) {
+
+            var size = this.size;
+            var list = this.itemList;
+            var order = this.listOrder;
+
+            var tmp = null;
+
+            //检测上面
+            if (x > 0 && list[order[x - 1][y]].end) {
+                //交换位置
+                list[order[x][y]].move(y, x - 1);
+                list[order[x - 1][y]].move(y, x);
+                //先用一个变量存储好要转换的这个值。
+                tmp = order[x][y];
+                //上面的dom元素移动了 ， 这里在矩阵里面对应数组的值也要对应改变 ， 因为dom元素是通过这个矩阵 this.listOrder 的值找到的。
+                order[x][y] = order[x - 1][y];
+                order[x - 1][y] = tmp;
+                //检测右边
+            } else if (y < order.length - 1 && list[order[x][y + 1]].end) {
+                //交换位置
+                list[order[x][y]].move(y + 1, x);
+                list[order[x][y + 1]].move(y, x);
+                //先用一个变量存储好要转换的这个值。
+                tmp = order[x][y];
+                //上面的dom元素移动了 ， 这里在矩阵里面对应数组的值也要对应改变 ， 因为dom元素是通过这个矩阵 this.listOrder 的值找到的。
+                order[x][y] = order[x][y + 1];
+                order[x][y + 1] = tmp;
+                //检测下边
+            } else if (x < order.length - 1 && list[order[x + 1][y]].end) {
+                //交换位置
+                list[order[x][y]].move(y, x + 1);
+                list[order[x + 1][y]].move(y, x);
+                //先用一个变量存储好要转换的这个值。
+                tmp = order[x][y];
+                //上面的dom元素移动了 ， 这里在矩阵里面对应数组的值也要对应改变 ， 因为dom元素是通过这个矩阵 this.listOrder 的值找到的。
+                order[x][y] = order[x + 1][y];
+                order[x + 1][y] = tmp;
+                //检测左边
+            } else if (y > 0 && list[order[x][y - 1]].end) {
+                //交换位置
+                list[order[x][y]].move(y - 1, x);
+                list[order[x][y - 1]].move(y, x);
+                //先用一个变量存储好要转换的这个值。
+                tmp = order[x][y];
+                //上面的dom元素移动了 ， 这里在矩阵里面对应数组的值也要对应改变 ， 因为dom元素是通过这个矩阵 this.listOrder 的值找到的。
+                order[x][y] = order[x][y - 1];
+                order[x][y - 1] = tmp;
+            }
+
+            //this.solvability();
+            if (this.isOkay()) {
+                this.success();
+            }
+        },
+
+        success: function () {//完成
+            this.itemList = [];
+            this.ele.innerHTML = '恭喜你，过关了!';
+
+        },
+
+        keyMove: function (index) {
+            var lie = parseInt((index - 1) / this.size);
+            var row = parseInt((index - 1) % this.size);
+            this.regEvent(lie, row);
+        },
+
+        bindWindow: function () {
+            var _this = this;
+            //var keyboard = {97:1,98:2,99:3,100:4,101:5,102:6,103:7,104:8,105:9};//正常键盘
+            var keyboard = {97: 7, 98: 8, 99: 9, 100: 4, 101: 5, 102: 6, 103: 1, 104: 2, 105: 3};//反转键盘 789 = 123
+            document.onkeyup = function (event) {
+                var e = event || window.event;
+                var index = keyboard[e.keyCode];
+                if (index) {
+                    _this.keyMove(index);
+                }
+            }
+        },
+
+    }
+
+</script>
+
+
+<script>
+    var srcs = [
+        "img/1.jpg",
+        "img/2.jpg",
+        "img/3.jpg",
+        "img/4.jpg",
+        "img/5.jpg",
+        "img/6.jpg",
+        "img/7.jpg",
+        "img/8.jpg",
+    ];
+    var src = srcs[Math.floor(Math.random() * srcs.length)];
+    var game;
+
+    //初始化
+    game= new Puzzle('puzzle', 300, 300, src, 3, true);
+
+
+    var threeBtn = dom.$('three-btn');
+    var fourBtn = dom.$('four-btn');
+    var fiveBtn = dom.$('five-btn');
+    var btn = document.querySelectorAll('.sel-btn');
+
+
+
+
+    // 难度4 * 4
+    /*fourBtn.addEventListener('click', function () {
+        this.className = 'btn active';
+        threeBtn.className = 'btn';
+        fiveBtn.className = 'btn';
+        game = new Puzzle('puzzle', 300, 300, src, 4, true);
+    });
+
+
+    // 难度5 * 5
+    fiveBtn.addEventListener('click', function () {
+        this.className = 'btn active';
+        threeBtn.className = 'btn';
+        fourBtn.className = 'btn';
+        game = new Puzzle('puzzle', 300, 300, src, 5, true);
+    });*/
+
+
+    var fileLoad = function (that, cal) {
+        if (window.FileReader) {
+            var fr = new FileReader();
+            //cal.call(that);
+            foreach(that.files, function (files, index) {
+                //检测图片格式
+                if (!/image\/\w+/.test(files.type)) {
+                    alert("图片格式不正确");
+                    return false;
+                }
+                //二进制读取图片
+                fr.readAsDataURL(files);
+            });
+
+            //读取图片结束触发, 分布函数调用回调
+            fr.onloadend = function (e) {
+                cal.call(that, e.target.result);
+            };
+
+        } else if (this.getAsDataURL) {
+            cal.call(that, that.getAsDataURL());
+        } else {
+            cal.call(that, that.value);
+        }
+
+        return that;
+    };
+
+    //属性
+    var property = function (key) {
+        return function (obj) {
+            return obj == null ? void 0 : obj[key];
+        };
+    };
+
+    var MAX_ARRAY_INDEX = Math.pow(2, 53) - 1;
+    var getLength = property('length');
+    //判断一个对象是否是数组 ， 类数组
+    var isArrayLike = function (collection) {
+        var length = getLength(collection); // 上面property 传的参数是 length ， 执行 property 返回的闭包 。传一个数组 ， 就返回一个length值
+        return typeof length == 'number' && length >= 0 && length <= MAX_ARRAY_INDEX;
+    };
+
+    //一个'each`实现，又名`forEach`。遍历一个队列 ， 执行方法 ， 传对应的 key ， value值
+    var foreach = function (obj, iteratee, context) {
+        //包装回调函数
+        var i, length;
+        if (isArrayLike(obj)) {
+            for (i = 0, length = obj.length; i < length; i++) {
+                iteratee(obj[i], i, obj);
+            }
+        } else {
+            //_.keys 调用了 Object.keys 。方法 ，读取自身的属性名 ， 返回自身的属性名数组 。 ECMAScript5的东西
+            var keys = Object.keys(obj);
+            for (i = 0, length = keys.length; i < length; i++) {
+                // obj[keys[i]] 得知自身属性名就可以从传进来的对象上获取对应的值
+                iteratee(obj[keys[i]], keys[i], obj);
+            }
+        }
+        return obj;
+    };
+
+
+    var fileEle = dom.$('fileEle');
+    dom.$('getFile').addEventListener('click', function () {
+        fileEle.click();
+    });
+
+    //选取本地图片 ， 读取二进制文件
+    fileEle.addEventListener('change', function () {
+        console.log(game)
+        fileLoad(this, function (url) {
+            if (!url) return;
+            var srcs = url; // 本地图片
+            game.ele.innerHTML = '';
+            game = new Puzzle('puzzle', 300, 300, srcs, game.size, true)
+        });
+    });
+
+
+
+    foreach(btn, function (sel_btn) {
+        // 难度3 * 3
+        sel_btn.addEventListener('click', selBtn, false);
+    });
+
+    function selBtn() {
+        //设置样式
+        for (var i = 0; i < btn.length; i++) {
+            btn[i].className = 'sel-btn';
+        }
+        this.className = 'sel-btn active';
+        var value = this.getAttribute('data-value');
+        //实例化
+        game = new Puzzle('puzzle', 300, 300, src, value, true);
+    };
+
+</script>
+</body>
+</html>

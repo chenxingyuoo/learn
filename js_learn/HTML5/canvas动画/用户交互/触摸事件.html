@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title> 触摸事件</title>
+</head>
+
+<body>
+
+<canvas id="canvas" width='500' height="500" style="background:#000">
+    <p>you browser not support canvas!<p>
+</canvas>
+
+<script>
+//触摸事件中，手指就充当了鼠标的作用。同样我们最为关心的是当前触摸的位置。和captureMouse方法一样，这里在我们的工具函数文件中，需要添加一新的方法来捕获触摸的位置，名为captureTouch,现在在utils.js文件中添加如下方法：
+window.captureTouch = function (element) {
+    var touch = {
+        x: null,
+        y: null,
+        isPressed: false,
+        event: null
+    };
+      var body_scrollLeft = document.body.scrollLeft,
+              element_scrollLeft = document.documentElement.scrollLeft,
+              body_scrollTop = document.body.scrollTop,
+              element_scrollTop = document.documentElement.scrollTop,
+              offsetLeft = element.offsetLeft,
+              offsetTop = element.offsetTop;
+
+    // 绑定touchstart事件
+    element.addEventListener('touchstart', function (event) {
+        touch.isPressed = true;
+        touch.event = event;
+    }, false);
+
+    // 绑定touchend事件
+    element.addEventListener('touchend', function (event) {
+        touch.isPressed = false;
+        touch.x = null;
+        touch.y = null;
+        touch.event = event;
+    }, false);
+
+    //绑定touchmove事件
+    element.addEventListener('touchmove', function (event) {
+        var x, y,
+                touch_event = event.touches[0]; //第一次touch
+
+
+        if (touch_event.pageX || touch_event.pageY) {
+            x = touch_event.pageX;
+            y = touch_event.pageY;
+        } else {
+            x = touch_event.clientX + body_scrollLeft + element_scrollLeft;
+            y = touch_event.clientY + body_scrollTop + element_scrollTop;
+        }
+
+        //减去偏移量
+        x -= offsetLeft;
+        y -= offsetTop;
+
+        touch.x = x;
+        touch.y = y;
+        touch.event = event;
+
+    }, false);
+    //返回touch对象
+    return touch;
+};
+
+
+window.onload = function() {
+    var canvas = document.getElementById('canvas'),
+    //将canvas传入，该方法会返回一个包含属性x和y的对象
+            touch = window.captureTouch(canvas);
+
+
+}
+</script>
+
+</body>
+</html>

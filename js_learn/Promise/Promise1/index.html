@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>promise 实现</title>
+</head>
+<body>
+
+<script src="promise.js"></script>
+<script>
+
+    // 测试 new 一个promise , catch 补货错误
+    /*var ss = new Promise(function(resolve){
+//        throw '撒旦法师打发'
+        setTimeout(function(){
+//            throw '哈哈哈哈哈'
+            resolve('什么鬼啊')
+        }, 2000)
+    }).then(function(value){
+        console.log(value)
+    }).catch(function(mes){
+        console.log('错误信息',mes)
+    })
+
+    // 测试状态变化
+    ss.addStatusChanger(function(){
+        console.log('状态发生了变化')
+    })*/
+
+
+    // 测试链式调用
+    var q1 = new Promise(function(res){
+        setTimeout(function(){
+            res(111)
+        },1000)
+    }).then(function(value){
+        alert(value);
+        return new Promise(function(res){
+            setTimeout(function(){
+                res('怎么回事儿呢')
+            },1000)
+        })
+    }).then(function(value){
+        alert(value)
+    })
+
+    var q2 = new Promise(function(res){
+        setTimeout(function(){
+            res(222222)
+        },1000)
+    })
+
+    // 测试promise.all
+    var ww = Promise.all([q1,q2]).then(function(value){
+        console.log('全部完成', value )
+    })
+
+
+    /*new Promise(function(res){
+        setTimeout(function(){
+            res('吃饭')
+        },3000)
+    }).then(function(v){
+        console.log(v)
+        return new Promise(function(res){
+            setTimeout(function(){
+                res('睡觉')
+            },1000)
+        })
+    }).then(function(v){
+        console.log(v)
+        return new Promise(function(res, rej){
+            setTimeout(function(){
+                res('左爱')
+            },1000);
+            setTimeout(function(){
+                rej('还是睡觉')
+            },800)
+        })
+    }).then(function(v){
+                console.log(v)
+                return new Promise(function(res){
+                    setTimeout(function(){
+                        res('生了一个孩子')
+                    },1000)
+                })
+            },function(v){
+                console.log(v)
+                return new Promise(function(res){
+                    setTimeout(function(){
+                        res('右手长出老茧')
+                    },1000)
+                })
+            }
+    ).then(function(v){
+        console.log(v)
+    })*/
+</script>
+
+</body>
+</html>

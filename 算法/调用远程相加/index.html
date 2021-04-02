@@ -1,0 +1,112 @@
+<!--
+ * @Description: 这是***页面
+ * @Date: 2021-03-16 11:55:06
+ * @Author: chenxingyu
+ * @LastEditors: chenxingyu
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    // 这周六面试官，会现场讲解一道题如何区分 P5/6/7，来，大家可以做做看，把答案丢群里
+
+    // 假设本地机器无法做加减乘除法，需要通过远程请求让服务端来实现。
+    // 以加法为例，现有远程API的模拟实现
+    const addRemote = async (a, b) =>
+      new Promise(resolve => {
+        setTimeout(() => resolve(a + b), 1000)
+      })
+
+
+    const chunk = (arr, size) => {
+      return Array.from({ length: Math.ceil(arr.length / size) }, (v, i) =>
+        arr.slice(i * size, i * size + size)
+      )
+    }
+
+    const cache = {
+      addCache: {}
+    }
+
+    const addRemoteParamLen = 2
+    
+    async function add(...args) {
+      if (args.length < addRemoteParamLen) {
+        return 0
+      }
+
+      let single = [] // 存放余出的数
+
+      // 计算余数
+      if (args.length % addRemoteParamLen !== 0) {
+        const index = args.length - args.length % addRemoteParamLen
+        single = args.slice(index)
+        args = args.slice(0, index)
+      }
+
+      // 相加
+      const addFn = (num1, num2) => {
+        const cacheKey = `${num1},${num2}`
+        console.log('cache.addCache[cacheKey]', cache.addCache[cacheKey])
+        if (typeof cache.addCache[cacheKey] !== 'undefined') {
+          return Promise.resolve(cache.addCache[cacheKey])
+        } else {
+          const prom = addRemote(num1, num2).then((res) => {
+            cache.addCache[cacheKey] = res
+            return res
+          })
+          return prom
+        }
+      }
+      
+      /**
+       * 遍历
+       * @param {Array} list 
+       * @return 返回数组
+       */
+      const traverser = async (list) => {
+        const addArr = chunk(list, addRemoteParamLen)
+        const p = []
+
+        for (const values of addArr) {
+          if (values.length === addRemoteParamLen) {
+            p.push(addFn(values[0], values[1]))
+          }
+        }
+
+        const result = await Promise.all(p)
+
+        if (result.length >= addRemoteParamLen) {
+          return traverser(result)
+        }
+
+        return result
+      }
+
+      const res = await traverser(args)
+
+      // 有多余出来的再相加一次
+      if (single.length) {
+        return await addFn(res[0], single[0])
+      }
+      
+      return res[0]
+    }
+
+    // 请用示例验证运行结果:
+    // add(1, 2).then(result => {
+    //   console.log(result) // 3
+    // })
+
+    add(3, 5, 3, 5, 3, 5, 1).then(result => {
+      console.log(result) // 15
+    })
+  </script>
+</body>
+</html>

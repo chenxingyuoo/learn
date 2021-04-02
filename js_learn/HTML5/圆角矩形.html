@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+
+
+<strong>这是原图</strong>
+<p><img src="http://image.zhangxinxu.com/image/study/s/s256/mm1.jpg" width="256" height="191"></p>
+<strong>这是Canvas实现</strong>
+<p>圆角大小：<span class="range-txt"> 0 <input id="radiusInput" type="range" min="0" max="92" value="92"> 92</span></p>
+<canvas id="canvas" width="256" height="191"></canvas>
+
+<script type="text/javascript">
+//圆角矩形
+CanvasRenderingContext2D.prototype.roundRect = function (x, y, w, h, r) {
+    var min_size = Math.min(w, h);
+    if (r > min_size / 2) r = min_size / 2;
+    // 开始绘制
+    this.beginPath();
+    this.moveTo(x + r, y);
+    this.arcTo(x + w, y, x + w, y + h, r);
+    this.arcTo(x + w, y + h, x, y + h, r);
+    this.arcTo(x, y + h, x, y, r);
+    this.arcTo(x, y, x + w, y, r);
+    this.closePath();
+    return this;
+}
+
+// canvas元素, 图片元素
+var canvas = document.querySelector("#canvas"), image = new Image(), input = document.getElementById("radiusInput");
+var context = canvas.getContext("2d");
+
+var draw = function(obj) {
+    // 创建图片纹理
+    var pattern = context.createPattern(obj, "no-repeat");
+    // 如果要绘制一个圆，使用下面代码
+    // context.arc(obj.width / 2, obj.height / 2, Math.max(obj.width, obj.height) / 2, 0, 2 * Math.PI);
+    // 这里使用圆角矩形
+    context.roundRect(0, 0, obj.width, obj.height, input.value * 1 || 0);
+    
+    // 填充绘制的圆
+    context.fillStyle = pattern;
+    context.fill();    
+}
+
+image.onload = function() {
+    draw(this);
+};
+image.src = "http://image.zhangxinxu.com/image/study/s/s256/mm1.jpg";
+
+input.addEventListener("change", function() {
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    draw(image);	
+});
+</script>
+
+</body>
+</html>

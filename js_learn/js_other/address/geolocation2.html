@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title></title>
+  <meta charset="utf-8"/>
+</head>
+
+<body>
+<div id="location"></div>
+<div id="map"></div>
+
+<script type="text/javascript" src="../jquery-2.2.1.js"></script>
+<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=71709218d45a706b9c7e3abc2f037b23&callback"></script>
+<script type="text/javascript">
+  if (navigator.geolocation) {  
+    navigator.geolocation.getCurrentPosition(locationSuccess, locationError,{  
+        // 指示浏览器获取高精度的位置，默认为false  
+        enableHighAcuracy: true,  
+        // 指定获取地理位置的超时时间，默认不限时，单位为毫秒  
+        timeout: 5000,  
+        // 最长有效期，在重复获取地理位置时，此参数指定多久再次获取位置。  
+        maximumAge: 3000  
+    });  
+}else{  
+    alert("Your browser does not support Geolocation!");  
+}  
+
+
+ function locationSuccess(position){  
+    var coords = position.coords;       
+    var latlng = new google.maps.LatLng(  
+        // 维度  
+        coords.latitude,  
+        // 精度  
+        coords.longitude  
+    );     
+    var myOptions = {     
+        // 地图放大倍数     
+        zoom: 12,     
+        // 地图中心设为指定坐标点     
+        center: latlng,     
+        // 地图类型     
+        mapTypeId: google.maps.MapTypeId.ROADMAP     
+    };     
+    // 创建地图并输出到页面     
+    var myMap = new google.maps.Map(     
+        document.getElementById("map"),myOptions     
+    );     
+    // 创建标记     
+    var marker = new google.maps.Marker({     
+        // 标注指定的经纬度坐标点     
+        position: latlng,     
+        // 指定用于标注的地图     
+        map: myMap  
+    });  
+    //创建标注窗口     
+    var infowindow = new google.maps.InfoWindow({     
+        content:"您在这里<br/>纬度："+     
+            coords.latitude+     
+            "<br/>经度："+coords.longitude     
+    });     
+    //打开标注窗口     
+    infowindow.open(myMap,marker);    
+}  
+
+ function locationError(error){  
+    switch(error.code) {  
+        case error.TIMEOUT:  
+            alert("A timeout occured! Please try again!");  
+            break;  
+        case error.POSITION_UNAVAILABLE:  
+            alert('We can\'t detect your location. Sorry!');  
+            break;  
+        case error.PERMISSION_DENIED:  
+            alert('Please allow geolocation access for this to work.');  
+            break;  
+        case error.UNKNOWN_ERROR:  
+            alert('An unknown error occured!');  
+            break;  
+    }  
+}  
+</script>
+</body>
+</html>

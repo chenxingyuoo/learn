@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+
+</head>
+
+<body>
+
+<img src="../canvas.jpg" id="lamp" width="50" height="50">
+
+<button onclick="draw('repeat')">Repeat</button>
+<button onclick="draw('repeat-x')">Repeat-x</button>
+<button onclick="draw('repeat-y')">Repeat-y</button>
+<button onclick="draw('no-repeat')">no-Repeat</button>
+
+<canvas id="canvas" width="1000" height="1000" style="border: 1px solid #ddd;display: block;margin: 50px">
+    您的浏览器不支持 HTML5 canvas 标签。
+</canvas>
+
+
+<script type="text/javascript">
+
+    function draw(direction){
+
+        var canvas = document.getElementById('canvas');
+        canvas.width = 800;
+        canvas.height = 800;
+        var context = canvas.getContext('2d');
+
+        context.clearRect(0,0,canvas.width,canvas.height);
+        var img = document.getElementById('lamp')    ;
+
+        var pat = context.createPattern(img,direction);
+
+        context.rect(0,0,150,100);
+        context.fillStyle = pat;
+        context.fill();
+
+    }
+
+
+    window.onload = function (){
+        var c = document.getElementById('canvas');
+        var ctx = c.getContext('2d');
+        // Red rectangle
+        ctx.beginPath();
+        ctx.lineWidth="6";
+        ctx.strokeStyle="red";
+        ctx.rect(5,5,290,140);
+        ctx.stroke();
+
+// Green rectangle
+        ctx.beginPath();
+        ctx.lineWidth="4";
+        ctx.strokeStyle="green";
+        ctx.rect(30,30,50,50);
+        ctx.stroke();
+
+// Blue rectangle
+        ctx.beginPath();
+        ctx.lineWidth="10";
+        ctx.strokeStyle="blue";
+        ctx.rect(50,50,150,80);
+        ctx.stroke();
+
+
+       //绘制 150*100 像素的已填充矩形：
+        var c=document.getElementById("canvas");
+        var ctx=c.getContext("2d");
+        ctx.fillStyle = 'red';
+        ctx.fillRect(350,20,150,100);
+
+
+        //绘制 150*100 像素的矩形：
+        var c=document.getElementById("canvas");
+        var ctx=c.getContext("2d");
+        ctx.strokeStyle = 'green';
+        ctx.strokeRect(20,200,150,100);
+
+
+        //在给定矩形内清空一个矩形：
+        var c=document.getElementById("canvas");
+        var ctx=c.getContext("2d");
+        ctx.fillStyle="red";
+        ctx.fillRect(0,350,300,150);
+        ctx.clearRect(20,370,100,50);
+
+        //绘制 150*100 像素的矩形，然后用红色来给它填色：
+        var c=document.getElementById("canvas");
+        var ctx=c.getContext("2d");
+        ctx.rect(0,520,150,100);
+        ctx.fillStyle="red";
+        ctx.fill();
+
+        //绘制一条路径，形状是红色的字母 L：
+        var c=document.getElementById("canvas");
+        var ctx=c.getContext("2d");
+        ctx.beginPath();
+        ctx.moveTo(400,400);
+        ctx.lineTo(400,800);
+        ctx.lineTo(100,800);
+        ctx.strokeStyle="red";
+        ctx.stroke();
+
+
+        //在画布上绘制两条路径；绿色和紫色：
+        var c=document.getElementById("canvas");
+        var ctx=c.getContext("2d");
+
+        ctx.beginPath();
+        ctx.lineWidth="5";
+        ctx.strokeStyle="green"; // Green path
+        ctx.moveTo(0,75);
+        ctx.lineTo(250,75);
+        ctx.stroke(); // Draw it
+
+        ctx.beginPath();
+        ctx.strokeStyle="purple"; // Purple path
+        ctx.moveTo(50,0);
+        ctx.lineTo(150,130);
+        ctx.stroke(); // Draw it
+
+
+        //绘制一条路径，形式是字母 L，然后绘制线条以返回开始点：
+        var c=document.getElementById("canvas");
+        var ctx=c.getContext("2d");
+        ctx.beginPath();
+        ctx.moveTo(700,700);
+        ctx.lineTo(400,100);
+        ctx.lineTo(70,100);
+        ctx.closePath();
+        ctx.stroke();
+
+        //clip() 从画布中剪切 200*120 像素的矩形区域。然后，绘制一个红色矩形。只有被剪切区域内的红色矩形部分是可见的：
+        var c=document.getElementById("canvas");
+        var ctx=c.getContext("2d");
+// Clip a rectangular area
+        ctx.rect(50,650,200,120);
+        ctx.stroke();
+        ctx.clip();
+        ctx.fillStyle="red";
+        ctx.fillRect(50,650,150,100);
+
+
+        //quadraticCurveTo() 绘制一条二次贝塞尔曲线：
+        var c=document.getElementById("canvas");
+        var ctx=c.getContext("2d");
+        ctx.beginPath();
+        ctx.moveTo(20,20);
+        ctx.quadraticCurveTo(20,100,200,20);
+        ctx.stroke();
+
+        //bezierCurveTo() 绘制一条三次贝塞尔曲线：
+        var c=document.getElementById("canvas");
+        var ctx=c.getContext("2d");
+        ctx.beginPath();
+        ctx.moveTo(20,20);
+        ctx.bezierCurveTo(20,100,200,100,200,20);
+        ctx.strokeStyle = 'yellow';
+        ctx.stroke();
+    }
+
+</script>
+</body>
+</html>

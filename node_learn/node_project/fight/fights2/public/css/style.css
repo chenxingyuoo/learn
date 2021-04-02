@@ -1,0 +1,8 @@
+body {
+  padding-bottom: 50px;
+}
+.alert-danger.hides {
+  display: none;
+  margin-bottom: 0 !important;
+}
+

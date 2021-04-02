@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>圆弧</title>
+</head>
+<body>
+
+<canvas id="canvas" width="800" height="600"></canvas>
+
+<!--x:圆心的x坐标
+
+y:圆心的y坐标
+
+straAngle:开始角度
+
+endAngle:结束角度
+
+anticlockwise:是否逆时针（true）为逆时针，(false)为顺时针
+
+ps：经过试验证明书本上ture是顺时针，false是逆时针是错误的，而且无论是逆时针还是顺时针，角度都沿着顺时针扩大，如下图：-->
+
+<script>
+    document.body.onload = draw0('canvas')
+    function draw0(id) {
+        var canvas = document.getElementById(id);
+        if (canvas == null) {
+            return false;
+        }
+        var context = canvas.getContext('2d');
+        context.beginPath();
+        context.arc(200, 150, 100, 0, Math.PI * 2, true);
+        //不关闭路径路径会一直保留下去，当然也可以利用这个特点做出意想不到的效果
+        context.closePath();
+        context.fillStyle = 'rgba(0,255,0,0.25)';
+        context.fill();
+    }
+</script>
+
+
+
+</body>
+</html>

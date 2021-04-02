@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Function.prototype.bind</title>
+</head>
+
+<body>
+
+<div class="klasses">111</div>
+<div class="klasses">111</div>
+<div class="klasses">111</div>
+<div class="klasses">111</div>
+
+<button>button</button>
+
+<script src="../jquery-2.2.1.js"></script>
+<script>
+
+    //看看这段代码，把上下文赋值给一个变量：
+
+    var myObj = {
+        special : function () {
+            console.log('special')
+        },
+        anotherSpecial : function () {
+            console.log('anotherSpecial');
+        },
+        getAsyncData : function (cb) {
+            cb();
+        },
+        render : function () {
+            console.log(1)
+            var that = this;
+            this.getAsyncData(function () {
+                that.special();
+                that.anotherSpecial();
+            })
+        }
+    }
+    debugger
+    myObj.render();
+
+    //如果上面直接用this.special Function(),结果是一个错误信息： this.special is not a function
+
+
+    //当回调的时候，我们需要保持myObj的上下文引用。使用that.specialFunction()，让我们用that的上下文且正确执行函数。然而，用Function.prototype.bind()可以简化一些。
+    var myObjs = {
+        special : function () {
+            console.log('special')
+        },
+        anotherSpecial : function () {
+            console.log('anotherSpecial');
+        },
+        getAsyncData : function (cb) {
+            cb();
+        },
+        render : function () {
+            this.getAsyncData(function () {
+                this.special();
+                this.anotherSpecial();
+            }.bind(this));
+
+        }
+    }
+
+    myObjs.render();
+
+    //.bind()就是创建了一个新函数，当我们呼叫时，把他的this赋值。所以我们可以传递我们的上下文，this（指向myObjs），传递进.bind()函数。当回调执行的时候，this指向myObjs。
+
+
+    //如果我们对Function.prototype.bind()的内部实现有兴致，请看下面的例子：
+    Function.prototype.bind = null;
+    Function.prototype.bind = function (scope) {
+        var that = this;
+        return function () {
+            return that.apply(scope)
+        }
+    }
+
+    var foo = {x : 3}
+    var bar = function () {
+        return this.x
+    }
+
+    console.log(bar());  //直接调用是 undefined
+
+    var result = bar.bind(foo);  //使用bind绑定之后
+    console.log(result());  //调用结果返回 3
+
+
+    //bind方法不支持ie8以下（啥也不说了）。
+    //幸运的是，MDN为那些原生不支持.bind()的浏览器提供了解决：
+    Function.prototype.bind = null;
+    if(!Function.prototype.bind){
+        Function.prototype.bind = function (oThis) {
+            if (typeof this !== "function") {
+                // closest thing possible to the ECMAScript 5 internal IsCallable function
+                throw new TypeError("Function.prototype.bind - what is trying to be bound is not callable");
+            }
+            //传多个参数 ， 只拿第一个
+            var args = Array.prototype.slice.call(arguments,1),
+                fToBind = this,
+                fNOP = function () {},
+                fBound = function () {
+                    return fToBind.apply(this instanceof fNOP && oThis ?
+                                this : oThis,
+                                args.concat(Array.prototype.slice.call(arguments))
+                            );
+                };
+            fNOP.prototype = this.prototype;
+            fBound.prorotype = new fNOP();
+
+            return fBound
+        }
+    }
+
+    var bars = function () {
+        return this.x + this.b
+    }
+    var results = bars.bind({x : 10 , b:20});  //使用bind绑定之后
+    console.log(results());  //调用结果返回 30
+
+
+    //使用方式
+
+
+    //点击事件处理
+    //其中一个用处是追踪点击（点击后执行一个动作），需要我们在一个对象中储存信息：
+    var logger = {
+        x : 0 ,
+        updateCount : function () {
+            this.x++;
+            console.log(x)
+        }
+    }
+
+    document.querySelector('button').addEventListener('click', function(){
+        logger.updateCount();
+    });
+
+    //但我们造了一个不必要的匿名函数，保持this的正确指向。
+    //简化一下： 使用bind创建一个函数也是简化了吗 ？
+    document.querySelector('button').addEventListener('click',logger.updateCount.bind(logger))
+    //刚才我们用了.bind()创造一个新函数然后把作用域绑定到logger对象上。
+
+
+    //时间间隔函数
+    //如果你以前用过模板引擎（handlebars）或者MV*框架，那你应该意识到一个问题的发生，当你呼叫渲染模板，立刻想进入新的DOM节点。
+    //假设我们尝试实例一个jQuery插件：
+
+    var myView = {
+        template : '/* a template string containing our <select /> */',
+        $el : $('#content'),
+        afterRender : function () {
+            this.$el.find('select').myPlugin();
+        },
+        render : function () {
+            this.$el.html(this.template);
+            this.afterRender();
+        }
+
+    }
+
+    myView.render();
+
+    //你会发现这可用，但并不总是可用的。这就是问题所在。这就像是老鼠赛跑：不管发生什么，第一个到达获得胜利。有时候是render，有时候是插件的实例（instantiation）。
+
+
+    //我们可以用小hack---setTimeout（）。
+    //需要重写一下，一旦Dom节点出现，我们就可以安全的实例我们的JQuery插件。
+
+    //
+
+    var myView = {
+        template : '/* a template string containing our <select /> */',
+        $el : $('#content'),
+        afterRender : function () {
+            this.$el.find('select').myPlugin();
+        },
+
+        render: function () {
+            this.$el.html(this.template);
+            setTimeout(this.afterRender, 0);  //可是，我们会看到.afterRender()没有被找到。
+                                              // 咋办？把我们.bind()加进去：
+        }
+
+    }
+
+
+    //
+
+    var myView = {
+        template : '/* a template string containing our <select /> */',
+        $el : $('#content'),
+        afterRender : function () {
+            this.$el.find('select').myPlugin();
+        },
+
+        render: function () {
+            this.$el.html(this.template());
+            setTimeout(this.afterRender.bind(this), 0);
+        }
+
+    }
+
+    //现在afterRender（）可以在正确的上下文中执行了。
+
+
+
+    //整合事件绑定和querySelectorAll
+    //DOM API一个重大提高就是querySelector，querySelectorAll和classList API等等。
+
+    //然而，并没有原生添加事件到多个节点（nodeList）的方式。所以，我们最终偷窃了forEach函数，来自Array.prototype，如下：
+
+    function someFunction(){
+        console.log(11)
+    }
+
+    Array.prototype.forEach.call(document.querySelectorAll('.klasses'), function (el) {
+        el.addEventListener('click', someFunction)
+    })
+
+    //更好一点，用.bind():
+    var unboundForEach = Array.prototype.forEach,
+            forEach = Function.prototype.call.bind(unboundForEach);
+    forEach(document.querySelectorAll('.klasses'), function (el) {
+        el.addEventListener('click', someFunction);
+    });
+
+</script>
+</body>
+</html>

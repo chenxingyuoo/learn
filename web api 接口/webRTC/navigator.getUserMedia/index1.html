@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+</head>
+
+<body>
+
+<video id="video1" autoplay></video>
+<video id="video2" autoplay></video>
+
+
+
+<script>
+
+    //设置介质的限制（分辨率，高度，宽度）
+
+    function $(elStr){
+        return document.querySelector(elStr);
+    }
+
+    var errorCallback = function(e) {
+        console.log('Reeeejected!', e);
+    };
+
+    var hdConstraints = {
+        video: {
+            mandatory: {
+                minWidth: 1280,
+                minHeight: 720
+            }
+        }
+    };
+
+    navigator.getUserMedia(hdConstraints, function (stream){
+        $('#video1').src = window.URL.createObjectURL(stream);
+    }, errorCallback);
+
+
+    var vgaConstraints = {
+        video: {
+            mandatory: {
+                maxWidth: 640,
+                maxHeight: 360
+            }
+        }
+    };
+
+    navigator.getUserMedia(vgaConstraints, function (stream){
+        $('#video2').src = window.URL.createObjectURL(stream);
+    }, errorCallback);
+
+</script>
+
+</body>
+</html>

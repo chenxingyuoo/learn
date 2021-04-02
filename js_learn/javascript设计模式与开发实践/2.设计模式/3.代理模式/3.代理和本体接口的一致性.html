@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+
+<script>
+
+    var myImage = (function () {
+        var imgNode = document.createElement('img');
+        document.body.appendChild(imgNode);
+
+        return function (src) {
+            imgNode.src = src;
+        }
+    })();
+
+    var proxyImage = (function() {
+        var img = new Image;
+        img.onload = function () {
+            myImage(this.src);
+        };
+
+        return function (src) {
+            myImage('https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=790773105,228104110&fm=23&gp=0.jpg');
+            img.src = src;
+        }
+    })();
+
+
+    proxyImage('https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=2178247177,53848409&fm=23&gp=0.jpg');
+
+</script>
+
+</body>
+</html>

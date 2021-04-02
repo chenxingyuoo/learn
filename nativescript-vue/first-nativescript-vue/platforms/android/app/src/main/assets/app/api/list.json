@@ -1,0 +1,10 @@
+{
+  "0" : {
+    "Name" : "ios",
+    "Image" : "http://localhost:8082/static/img/small.a7c0545.png"
+  },
+  "1" : {
+    "Name" : "android",
+    "Image" : "http://localhost:8082/static/img/g4.75569e1.png"
+  }
+}

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Object.prototype.valueOf()</title>
+</head>
+<body>
+<script>
+    function myNumberType(n) {
+        this.number = n;
+    }
+
+    myNumberType.prototype.valueOf = function() {
+        return this.number;
+    };
+
+    myObj = new myNumberType(4);
+    myObj + 3; // 7
+</script>
+</body>
+</html>

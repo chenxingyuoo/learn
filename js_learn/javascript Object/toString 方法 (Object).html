@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>toString 方法 (Object)</title>
+</head>
+
+<body>
+<script>
+    //返回对象的字符串表示形式。
+    //下面的示例阐释了带有 radix 参数的 toString 方法的用法。  下文显示的函数的返回值是一个基数转换表。
+
+    function CreateRadixTable (){
+        var s = "";
+
+        // Create table heading.
+        s += "Hex  Dec  Bin \n";
+
+        for (var x = 0; x < 16; x++)
+        {
+            s += "   ";
+
+            // Convert to hexidecimal.
+            s += x.toString(16);
+            s += "     ";
+            if (x < 10) s += "  ";
+
+            // Convert to decimal.
+            s += x.toString(10);
+            s += "     ";
+
+            // Convert to binary.
+            s += x.toString(2);
+            s += "\n";
+        }
+
+        return(s);
+    }
+
+    console.log(CreateRadixTable());
+
+    /*Hex  Dec  Bin
+    0       0     0
+    1       1     1
+    2       2     10
+    3       3     11
+    4       4     100
+    5       5     101
+    6       6     110
+    7       7     111
+    8       8     1000
+    9       9     1001
+    a     10     1010
+    b     11     1011
+    c     12     1100
+    d     13     1101
+    e     14     1110
+    f     15     1111*/
+
+</script>
+</body>
+</html>

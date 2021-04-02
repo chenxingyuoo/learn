@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>scroll</title>
+    <style>
+        #wrapper {
+            height:296px;
+        }
+
+
+        #scroller1 li {
+            height:40px;
+            line-height:40px;
+        }
+
+        .myScrollbarV {
+            position:absolute;
+            z-index:100;
+            width:8px;bottom:7px;top:2px;right:1px
+        }
+        .myScrollbarV > div {
+            position:absolute;
+            z-index:100;
+            width:100%;
+            background:-webkit-gradient(linear, 0 0, 100% 0, from(#f00), to(#900));
+            border:1px solid #800;
+            -webkit-background-clip:padding-box;
+            -webkit-box-sizing:border-box;
+            -webkit-border-radius:4px;
+            -webkit-box-shadow:inset 1px 1px 0 rgba(255,255,255,0.5);
+        }
+    </style>
+</head>
+
+<body>
+<div id="wrapper">
+    <div id="scroller">
+        <ul id="thelist">
+
+        </ul>
+
+
+    </div>
+</div>
+
+<script src="iscroll.js"></script>
+<script type="text/javascript">
+    //固定长宽用
+    /*var myScroll;
+    function loaded() {
+        myScroll = new iScroll('wrapper');
+    }
+    document.addEventListener('DOMContentLoaded', loaded, false);*/
+
+    //无法确定区域长款
+   /* var myScroll;
+    function loaded() {
+        setTimeout(function () {
+            myScroll = new iScroll('wrapper');
+        }, 100);
+    }
+    window.addEventListener('load', loaded, false);*/
+
+    /*var myScroll = new iScroll('wrapper',{ hScrollbar: false, vScrollbar: false });*/
+
+
+    //下拉加载数据
+    var myScroll = null;
+    var generatedCount = 0;
+    function pullUpAction () {
+        var el, li, i;
+        el = document.getElementById('thelist');
+        for (i=0; i<3; i++) {
+            li = document.createElement('li');
+            li.innerText = 'Generated row ' + (++generatedCount);
+            el.appendChild(li, el.childNodes[0]);
+        }
+        myScroll.refresh();     // Remember to refresh when contents are loaded (ie: on ajax completion)!
+    }
+
+    window.onload = function() {
+        myScroll = new iScroll('wrapper', {
+            snap: 'li',
+            onScrollEnd: function () {
+                //如果滑动到底部，则加载更多数据（距离最底部10px高度）
+                if ((this.y - this.maxScrollY) > 10) {
+                    pullUpAction();
+                }
+            }
+        });
+        for (var n=0; n<10; n++) {
+            pullUpAction();
+        }
+    }
+
+    document.addEventListener('touchmove', function (e) { e.preventDefault(); }, false);
+
+</script>
+</body>
+</html>

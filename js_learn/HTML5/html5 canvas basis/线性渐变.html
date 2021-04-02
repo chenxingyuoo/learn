@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>线性渐变</title>
+</head>
+
+<body>
+<canvas id="canvas" width="800" height="600"></canvas>
+
+<!--var lg= context.createLinearGradient(xStart,yStart,xEnd,yEnd)
+
+线性渐变颜色lg.addColorStop(offset,color)
+
+xstart:渐变开始点x坐标
+
+ystart:渐变开始点y坐标
+
+xEnd:渐变结束点x坐标
+
+yEnd:渐变结束点y坐标
+
+offset:设定的颜色离渐变结束点的偏移量(0~1)
+
+color:绘制时要使用的颜色
+
+给出书本偏移量的解析图，从图可以看出线性渐变可以是两种以上颜色的渐变-->
+
+
+
+<script>
+    document.body.onload = draw25('canvas');
+
+    function draw25(id) {
+        var canvas = document.getElementById(id);
+        if (canvas == null)
+            return false;
+        var context = canvas.getContext('2d');
+        var g1 = context.createLinearGradient(0, 0, 0, 300);
+
+        g1.addColorStop(0, 'rgb(255,0,0)'); //红
+        g1.addColorStop(0.5, 'rgb(0,255,0)');//绿
+        g1.addColorStop(1, 'rgb(0,0,255)'); //蓝
+
+        //可以把lg对象理解成GDI中线性brush
+        context.fillStyle = g1;
+        //再用这个brush来画正方形
+        context.fillRect(0, 0, 400, 300);
+    }
+</script>
+</body>
+</html>

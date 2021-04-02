@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script type="text/javascript">
+        window.onload = function (){
+            
+
+            var canvas = document.getElementById('canvas');
+            if (canvas.getContext("2d")){
+                var context = canvas.getContext("2d");
+                context.fillStyle="#FF0000";
+                context.fillRect(0,0,150,75);
+
+
+                //矩形
+                context.beginPath();
+                var c=document.getElementById("myCanvas");
+                var ctx=c.getContext("2d");
+                ctx.rect(20,20,150,100);
+                ctx.stroke();
+
+
+                //三角形
+                context.beginPath();
+                context.moveTo(100,100);
+                context.lineTo(700,700);
+                context.lineTo(100,700);
+                context.lineTo(100,100);
+                context.closePath();
+
+                context.fillStyle="rgba(123,124,12,1)";  //shi实心颜色
+               context.fill();  //shi实心填充颜色方法
+                context.stroke();
+
+
+                //线条
+                context.beginPath();
+                context.moveTo(200,100);
+                context.lineTo(700,600);
+                context.closePath();
+
+                context.lineWidth=5;  //线条宽度
+                context.strokeStyle = 'black'; //线条颜色
+                context.stroke(); //线条颜色方法
+
+
+                //圆
+                context.beginPath();
+                context.arc(200,200,50,0,2*Math.PI);
+                context.closePath();
+                context.lineWidth=2;  //线条宽度
+                context.strokeStyle = "yellowgreen";
+                context.stroke(); //线条颜色方法
+
+
+                //文字
+                context.beginPath();
+                context.font = "30px Arial";
+                context.strokeStyle = "black";
+                /*context.fillText("hello world ",800,500); 实体字*/
+                context.strokeText("hello world",800,400);
+
+
+                //Canvas - 渐变
+                context.beginPath();
+                var cxt = context.createLinearGradient(0,0,200,0); //创建线性渐变
+                cxt.addColorStop(0,'red');
+                cxt.addColorStop(1,'white');
+                context.fillStyle =cxt;
+                context.fillRect(100,100,150,80);
+
+
+                context.beginPath();
+                                      //创建一个径向/圆渐变。使用渐变填充矩形：
+                var cxt = context.createRadialGradient(70,50,5,90,60,100);
+                cxt.addColorStop(0,'red');
+                cxt.addColorStop(1,'yellow');
+                context.fillStyle = cxt;
+                context.fillRect(10,10,150,80);
+
+
+                //把图片复制到画布
+                context.beginPath();
+                var img = document.getElementById('scream');
+                context.drawImage(img,10,10);
+
+                //阴影
+                context.beginPath();
+                context.shadowBlur = 20;
+                context.shadowColor = 'black';
+                context.fillStyle = 'red';
+                context.fillRect(900,600,100,80);
+
+                //返回阴影的水平距离
+                context.beginPath();
+                context.shadowBlur = 20;
+                context.shadowOffsetX = 20;
+                context.shadowColor = 'black';
+                context.fillStyle = 'red';
+                context.closePath();
+                context.fillRect(900,500,100,80);
+
+
+                //返回阴影的垂直距离
+                context.beginPath();
+                context.shadowBlur = 20;
+                context.shadowOffsetY = 20;
+                context.shadowColor = 'blue';
+                context.fillStyle = 'red';
+                context.closePath();
+                context.fillRect(900,400,100,80);
+
+            }else{
+                alert('当前的浏览器不支持canvas ， 请更换浏览器再试');
+            }
+
+        }
+    </script>
+</head>
+
+<body>
+<img id="scream" src="../canvas.jpg" alt="The Scream" width="500" height="500"/>
+<canvas id="canvas" width="1024" height="768" style="border: 1px solid #ddd;margin:20px"></canvas>
+</body>
+</html>

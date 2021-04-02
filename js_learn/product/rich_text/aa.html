@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>aa</title>
+</head>
+
+<body>
+<div id='editControls' class='' style=' padding:5px;'>
+    <div class='btn-group'>
+        <a class='btn' data-role='bold' href='#'><b>Bold</b></a>
+        <a class='btn' data-role='italic' href='#'><em>Italic</em></a>
+        <a class='btn' data-role='underline' href='#'><u><b>U</b></u></a>
+        <a class='btn' data-role='strikeThrough' href='#'><strike>abc</strike></a>
+    </div>
+</div>
+
+<!--编辑区域-->
+<div id='editor' class='' style='' contenteditable='true'>
+</div>
+
+
+<script src="../jquery-2.2.1.js"></script>
+<script>
+    var leafNodes = [];
+    var styleNodes = [];
+
+    var scan = function (node, inhrintStyles) {
+        debugger
+        // 已经是叶子节点了
+        if (node.nodeType === node.TEXT_NODE) {
+
+            if (inhrintStyles.length) {
+                leafNodes.push({
+                    inhrintStyles: inhrintStyles.concat([]),
+                    node: node
+                });
+            }
+            // 非叶子节点
+        } else {
+            // 如果是style节点
+            // 标记这是要删除的style节点，
+            if (styleTagNames.indexOf(node.tagName.toLowerCase()) > -1) {
+                // inhrintStyles存在此style 不重复增加
+                var exists = 0;
+                for (var i = 0; i < inhrintStyles.length; i++) {
+                    if (inhrintStyles[i].tagName === node.tagName) {
+                        exists = 1;
+                        break;
+                    }
+                }
+                if (!exists) {
+                    inhrintStyles = inhrintStyles.concat(node);
+                }
+                styleNodes.push(node);
+            }
+
+            for (var i = 0; i < node.childNodes.length; i++) {
+                scan(node.childNodes[i], inhrintStyles);
+            }
+
+        }
+    };
+
+    scan(document.getElementById('editControls'), []);
+
+
+    // 删除样式节点
+    for (var i = 0; i < styleNodes.length; i++) {
+        var styleNode = styleNodes[i];
+
+        var childNodes = styleNode.childNodes;
+
+        var fragment = document.createDocumentFragment();
+        var child;
+        while (child = childNodes[0]) {
+            fragment.appendChild(child);
+        }
+
+        styleNode.parentNode.replaceChild(fragment, styleNode);
+    }
+
+
+    // 对叶子结点进行样式插入
+    for (var i = 0; i < leafNodes.length; i++) {
+        var leafNode = leafNodes[i];
+
+        if (leafNode.node.nodeValue === "") {
+            leafNode.node.parentNode.removeChild(leafNode.node);
+            continue;
+        }
+
+        var node;
+        var styleNode;
+        var frag = document.createDocumentFragment();
+        var currParent = frag;
+        while (styleNode = leafNode.inhrintStyles.shift()) {
+            // 去除无用atribute属性
+            if (!donotTrimSpan && styleAttrTagNames.indexOf(styleNode.tagName.toLowerCase()) > -1 && !styleNode.attributes.length) {
+            } else {
+                el = styleNode.cloneNode();
+
+                currParent.appendChild(el);
+
+                currParent = el;
+            }
+        }
+
+        var leafNodeParent = leafNode.node.parentNode;
+        var tempNode = document.createElement("span");
+        leafNodeParent.replaceChild(tempNode, leafNode.node);
+
+        currParent.appendChild(leafNode.node);
+
+        leafNodeParent.replaceChild(frag, tempNode);
+    }
+
+    $(function () {
+        //富文本编辑主要
+        $doc.on('click', '#editControls a', function (e) {
+            e.preventDefault();
+            var $that = $(this),
+                    role = $that.data('role'),
+                    sValue = null;
+            formatDoc(role, sValue)
+        });
+
+        function formatDoc(role, sValue) {
+            switch (role) {
+                case 'h1' :
+                case 'h2':
+                case 'h3':
+                case 'h4':
+                case 'h5':
+                case 'h6':
+                case 'p':
+                    document.execCommand('formatBlock', false, '<' + role + '>');
+                    break;
+                default:
+                    document.execCommand(role, false, sValue);
+                    break;
+            }
+            oDoc.focus();
+        }
+
+    })
+</script>
+</body>
+</html>

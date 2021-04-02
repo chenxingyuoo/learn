@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Three.js チュートリアル１</title>
+    <script src="./Three.js"></script>
+    <style type="text/css">
+        div#canvas-frame {
+            border: none;
+            cursor: pointer;
+            width: 1200px;
+            height: 600px;
+            background-color: #EEEEEE;
+        }
+    </style>
+    <script>
+        var width, height;
+        var renderer;
+
+        function initThree() {
+            width = document.getElementById('canvas-frame').clientWidth;
+            height = document.getElementById('canvas-frame').clientHeight;
+            renderer = new THREE.WebGLRenderer({antialias: true});
+            renderer.setSize(width, height);
+            document.getElementById('canvas-frame').appendChild(renderer.domElement);
+            renderer.setClearColor(0xFFFFFF, 1.0);
+        }
+
+        var camera;
+
+        function initCamera() {
+            camera = new THREE.PerspectiveCamera(45, width / height, 1, 10000);
+            camera.position.x = 400;
+            camera.position.y = 20;
+            camera.position.z = 50;
+            camera.up.x = 0;
+            camera.up.y = 0;
+            camera.up.z = 1;
+            camera.lookAt({x: 0, y: 0, z: 0});
+        }
+
+        var scene;
+
+        function initScene() {
+            scene = new THREE.Scene();
+        }
+
+        var light;
+        var light2;
+
+        function initLight() {
+            light = new THREE.DirectionalLight(0xFF0000, 1.0, 0);
+            light.position.set(100, 100, 200);
+            scene.add(light);
+
+            light2 = new THREE.AmbientLight(0x555555);
+            scene.add(light2);
+        }
+
+        var cube = Array();
+
+        function initObject() {
+            for (var i = 0; i < 3; i++) {
+                cube[i] = new THREE.Mesh(
+                    new THREE.CubeGeometry(50, 50, 50),                //形状の設定
+                    new THREE.MeshLambertMaterial({color: 0xff0000, ambient : 0xff0000}) //材質の設定
+                );
+                scene.add(cube[i]);
+                cube[i].position.set(0, -100 + 100 * i, 0);
+            }
+        }
+
+        var t = 0;
+
+        function loop() {
+            t++;
+            cube[0].rotation.set(t / 100, 0, 0);
+            cube[1].rotation.set(0, t / 100, 0);
+            cube[2].rotation.set(0, 0, t / 100);
+
+            renderer.clear();
+            renderer.render(scene, camera);
+            window.requestAnimationFrame(loop);
+        }
+
+        function threeStart() {
+            initThree();
+            initCamera();
+            initScene();
+            initLight();
+            initObject();
+            loop();
+        }
+
+        var down = false;
+        var sy = 0, sz = 0;
+        window.onmousedown = function (ev){    //マウスダウン
+            if (ev.target == renderer.domElement) {
+                down = true;
+                sy = ev.clientX; sz = ev.clientY;
+            }
+        };
+        window.onmouseup = function(){        //マウスアップ
+            down = false;
+        };
+        window.onmousemove = function(ev) {   //マウスムーブ
+            var speed = 2;
+            if (down) {
+                if (ev.target == renderer.domElement) {
+                    var dy = -(ev.clientX - sy);
+                    var dz = -(ev.clientY - sz);
+                    camera.position.y += dy*speed;
+                    camera.position.z -= dz*speed;
+                    sy -= dy;
+                    sz -= dz;
+                }
+            }
+        }
+        window.onmousewheel = function(ev){   //マウスホイール
+            var speed = 0.2;
+            camera.position.x += ev.wheelDelta * speed ;
+        }
+    </script>
+</head>
+
+<body onload="threeStart();">
+<div id="canvas-frame"></div>
+</body>
+</html>

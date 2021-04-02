@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=3, minimum-scale=1, user-scalable=no">
+    <title>Title</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        html,body{
+            height: 100%;
+            overflow: hidden;
+        }
+        #bg-box{
+            height: 100%;
+        }
+        #bg-scroll{
+            height: 100%;
+        }
+        #bg-scroll img{
+            height: 100%;
+            float: left;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div id="bg-box">
+    <div id="bg-scroll">
+        <img src="./img/A.jpg" alt="">
+        <img src="./img/B.jpg" alt="">
+        <img src="./img/C.jpg" alt="">
+        <img src="./img/D.jpg" alt="">
+        <img src="./img/E.jpg" alt="">
+    </div>
+</div>
+
+<div id="target" style="position:absolute; bottom: 50px; left: 100px; width: 100px; height: 100px; background: #a0dde9; padding: 1em;">
+    hello world!
+</div>
+
+
+<script src="./js/Tween.js"></script>
+<script src="./js/RequestAnimationFrame.js"></script>
+<script src="./js/style.js"></script>
+<script>
+    var $ = function (selector){
+        return document.querySelector(selector)
+    };
+
+    var $all = function (selector){
+        return document.querySelectorAll(selector);
+    };
+
+//    var setStyle = function (){
+//
+//    };
+
+    window.onload = function (){
+        var bgBox = $('#bg-box');
+        var bgScroll = $('#bg-scroll');
+        var bgImg = $all('#bg-scroll img');
+
+        var bgWidth = 0;
+        bgImg.forEach(function (item, index){
+            bgWidth = bgWidth +  item.width
+        });
+
+        setStyle(bgScroll, {
+            width : bgWidth + 'px'
+        });
+
+
+        var animationObj = [
+            {
+                name : '背景滚动',
+                action : function (){
+
+                }
+            }
+        ];
+
+
+        var position;
+        var target;
+        var tween, tweenBack;
+
+        init();
+        animate();
+
+        function init() {
+            position = {x: 0, y: 0, rotation: 0};
+            target = document.getElementById('bg-scroll');
+            tween = new TWEEN.Tween(position)
+                .to({x: -bgWidth, y: 0 }, 50000)
+                .delay(0)
+                .easing(TWEEN.Easing.Linear.None)
+                .onUpdate(update);
+
+//            tweenBack = new TWEEN.Tween(position)
+//                .to({x: 0, y: 0, rotation: 0}, 3000)
+//                .easing(TWEEN.Easing.Linear.None)
+//                .onUpdate(update);
+
+            //tweenBack 动画在 tween动画结束后开始
+            tween.chain(tweenBack);
+
+            //tween 动画在 tweenBack动画结束后开始
+//            tweenBack.chain(tween);
+
+            tween.start();
+
+        }
+
+        function animate( time ) {
+
+            requestAnimationFrame( animate );
+
+            TWEEN.update( time );
+
+        }
+
+        function update() {
+            target.style.webkitTransform = 'translate3d('+ position.x +'px,'+ position.y +'px,0) rotate(' + Math.floor(position.rotation) + 'deg)';
+            target.style.MozTransform = 'translate3d('+ position.x +'px,'+ position.y +'px,0) rotate(' + Math.floor(position.rotation) + 'deg)';
+
+        }
+
+    }
+
+</script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

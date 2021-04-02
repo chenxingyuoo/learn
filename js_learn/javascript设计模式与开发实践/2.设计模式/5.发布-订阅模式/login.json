@@ -1,0 +1,18 @@
+{
+  "code" : 200,
+  "msg" : "请求成功",
+  "data" : [
+    {
+      "name" : "chen1",
+      "age" : 18
+    },
+    {
+      "name" : "chen2",
+      "age" : 19
+    },
+    {
+      "name" : "chen3",
+      "age" : 20
+    }
+  ]
+}

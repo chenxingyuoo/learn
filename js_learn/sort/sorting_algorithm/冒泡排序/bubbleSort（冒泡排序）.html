@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>bubbleSort（冒泡排序）</title>
+    <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+
+
+<div style="margin:50px;">
+    <h1>排序算法动画演示 <small><a href="https://github.com/jun-lu/SortAnimate">view Github</a></small></h1>
+
+    <div>
+        <p>
+            动画速度：<input value="170" max="200" min="1" id="speed" type="range" >
+        </p>
+        <p>
+            数组长度：
+            <input value="50" width="50" id="arrlen">
+            <input type="button" value="随机数组" id="randomArray" class="btn" />
+        </p>
+        <p>
+            待排序数组：<input id="arrayText" value="[43,27,39,17,32,21,14,42,22,15,18,12,46,1,16,10,4,29,3,23,24,49,0,5,36,13,34,6,19,47,9,33,31,20,28,44,38,37,41,40,8,35,30,7,11,45,2,25,48,26]" style="width:80%;">
+        </p>
+        <p></p>
+    </div>
+    <div>
+
+        <input type="button" value="冒泡排序" attr="quick" id="bubble_btn" class="btn" />
+        <!--<input type="button" value="快速排序" attr="quick" id="quick_btn" class="btn" />-->
+        <!--<input type="button" value="插入排序" onclick="playSortAnimate(sortMethodMap.insert)" class="btn" />
+        <input type="button" value="希尔排序" onclick="playSortAnimate(sortMethodMap.shell)" class="btn" />
+        <input type="button" value="选择排序" onclick="playSortAnimate(sortMethodMap.selection)" class="btn" />
+        <input type="button" value="鸡尾酒排序" onclick="playSortAnimate(sortMethodMap.cocktail)" class="btn" />
+        <input type="button" value="奇偶排序" onclick="playSortAnimate(sortMethodMap.oddEven)" class="btn" />
+        <input type="button" value="梳排序" onclick="playSortAnimate(sortMethodMap.comb)" class="btn" />-->
+
+
+    </div>
+    <div>
+        <div class="sort-animate-box" id="sortAnimateBox" style="height:100px;"></div>
+        <div id="sortText"></div>
+    </div>
+
+</div>
+
+<script>
+
+    function bubbleSort(arr , srotanimte){
+        var arrLen = arr.length; //获取数组的长度，即有n个数在排序
+        var temp = null; //定义一个临时变量，交换数据用
+        var flag=false;//设置标志位，初始值为false
+        for (var i = 0; i < arrLen - 1; i++) {  //外层循环arrLen - 1次
+
+            for(var j=0; j< arrLen - 1 - i; j++){ //内层每次循环 arrLen - 1 - i 次，每次循环完，都能从剩下的数当中找出一个最大的放在 arrLen - 1 - i 的位置
+
+                if(arr[j] > arr[j+1]){ //如果 arr[j] > arr[j+1] 则交换位置
+
+                    //srotanimte 是动画对象
+                    srotanimte.exChange(j , j + 1);
+
+                    temp=arr[j];
+                    arr[j]=arr[j+1];
+                    arr[j+1]=temp;
+                    flag=true;//只要交换了标识就设为true
+                }
+            }
+
+            if(flag){//只要交换了位置，flag的值就重新设置为false
+               flag=false;
+            }else{  //如果没有交换，说明数组已经排好序，可以结束循环了
+               break;
+            }
+
+        }
+
+        return arr;
+    }
+
+   // var a=[12,3,43,11,56,90,7,66,82];
+   // console.log(bubbleSort(a));
+
+
+    var srotanimte = null;
+
+    function $(id){
+        return document.getElementById(id);//.value;
+    }
+
+    //排序动画构造器
+    function SortAnimate(array, wrapper){
+        this.array = array.slice();
+        this.max = Math.max.apply(Math, array);
+        this.ui = {items : [] , wrapper : wrapper || document.body};
+        this.animte = [];
+        this.index = -1;
+        this.html = '';
+        this.speed = 0;
+        this.init();
+    }
+
+    SortAnimate.prototype.init = function(){
+        var html = '';
+        for (var i = 0; i < this.array.length; i++) {
+            html += this.setDom(this.array[i]);
+        }
+
+        this.html = html;
+        this.ui.wrapper.innerHTML = this.html;
+        this.ui.items = this.ui.wrapper.querySelectorAll(".items");
+    };
+
+
+    //获取高度
+    SortAnimate.prototype.getHeight = function(i){
+        return parseInt( i / this.max * 100);
+    };
+
+    //初始化设置dom
+    SortAnimate.prototype.setDom = function (i) {
+        return '<div class="items" style="height:'+this.getHeight(i)+'%" title="items'+ i +'" ></div>'
+    };
+
+    //添加交换两个数的位置
+    SortAnimate.prototype.exChange = function(index1, index2){
+        this.animte.push({
+            type:"uiExchange",
+            data:[index1, index2]   //储存在一个data数组里面 ， 后面利用分布函数调用的时候传的参数
+        });
+    };
+
+    //交换两个数的位置
+    SortAnimate.prototype.uiExchange = function( index1, index2 ){
+        //交换两个数的位置
+        var tmp = this.array[index1];  //这里要用个临时变量储存 index1 的值 或者 index2 的值 。因为下面的代码就要把这个值重新赋值了。
+        this.array[index1] = this.array[index2];
+        this.array[index2] = tmp;
+
+        //改变两个数的高度
+        this.setDomHeight(index1);
+        this.setDomHeight(index2);
+    };
+
+    //改变速度
+    SortAnimate.prototype.changeSpeed = function( speed ){
+        this.speed = speed;
+        this.play();
+    };
+
+    //设置高度, 改变两个数的高度
+    SortAnimate.prototype.setDomHeight = function( index ){
+        var number = this.array[index];
+        this.ui.items[index].style.height = this.getHeight( number )+"%";
+        this.ui.items[index].title = number;
+    };
+
+    //获取速度
+    SortAnimate.prototype.getSpeed = function(){
+        return this.speed =  200 - document.getElementById('speed').value; //获取速度
+    };
+
+    //播放动画 利用setInterval执行每一帧的动画
+    SortAnimate.prototype.play = function( speed ){
+        clearInterval( SortAnimate.interid );
+        this.speed = speed || this.getSpeed();  //获取速度
+        var animate = this.animte;  //setInterval 里面访问不到this变量 ， 所以要用个临时变量保存起来
+        var len = animate.length;  //交换位置的动作的长度（也就是要执行这么多次）；
+        var self = this;
+        SortAnimate.interid = setInterval(function(){
+            self.index++;
+            if(self.index < len){
+                try{
+                    self[animate[self.index].type].apply(self, animate[self.index].data);
+                }catch(e){
+                    console.log(animate[self.index].type);
+                }
+            }else{
+                clearInterval( SortAnimate.interid );
+            }
+        },this.speed)
+    };
+
+
+
+    //随机数组
+    function randomArrayText( len ){
+        len = len || 50;
+        var arr = [];
+        for(var i=0; i<len;i++){
+            arr.push( i );
+        }
+        arr.sort(function(){
+            return Math.random() - 0.5;
+        });
+        document.getElementById( "arrayText" ).value = "["+ arr.toString() +"]";
+    };
+
+    //随机数组
+    $('randomArray').addEventListener('click',function(){
+        var value = $('arrlen').value;
+        randomArrayText(value);
+    },false);
+
+
+    //获取数组
+    function getArray(){
+        var text = document.getElementById( "arrayText" ).value;
+        try{
+            return JSON.parse( text );
+        }catch(e){
+            alert("数组有错误")
+        }
+    }
+
+    function playSortAnimate(sortFun){
+        //获取数组
+        var arr = getArray();
+        srotanimte = new SortAnimate(arr, $('sortAnimateBox'));
+        sortFun(arr , srotanimte);
+        srotanimte.play(); //播放动画
+    };
+    //点击按钮执行，播放排序动画
+    $('bubble_btn').addEventListener('click',function(){
+        playSortAnimate(bubbleSort);
+    },false);
+
+
+    //检测速度值改变
+    $('speed').addEventListener('change',function(){
+        srotanimte.changeSpeed( 200 - this.value);
+    });
+
+
+
+
+
+</script>
+</body>
+</html>

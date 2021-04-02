@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+
+<script>
+
+    //函数是不同数值之间的特殊关系：每一个输入值返回且只返回一个输出值。
+
+    //如果输入直接指明了输出，那么就没有必要再实现具体的细节了。因为函数仅仅只是输入到输出的映射而已，所以简单地写一个对象就能“运行”它，使用 [] 代替 () 即可。
+
+    var toLowerCase = {"A":"a", "B": "b", "C": "c", "D": "d", "E": "e", "D": "d"};
+
+    toLowerCase["C"];
+    //=> "c"
+
+    var isPrime = {1:false, 2: true, 3: true, 4: false, 5: true, 6:false};
+
+    isPrime[3];
+    //=> true
+
+</script>
+
+</body>
+</html>

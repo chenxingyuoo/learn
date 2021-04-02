@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+
+<script>
+  function Stack() {
+    var items = [];
+    this.push = function (element) {
+      items.push(element);
+    };
+    this.pop = function () {
+      return items.pop();
+    };
+    this.peek = function () {
+      return items[items.length - 1];
+    };
+    this.isEmpty = function () {
+      return items.length === 0;
+    };
+    this.size = function () {
+      return items.length;
+    };
+    this.clear = function () {
+      items = [];
+    };
+    this.print = function () {
+      console.log(items.toString());
+    };
+  }
+
+  //将一个数值 转换为任意进制 的数值
+  function baseConverter(decNumber, base){
+    var remStack = new Stack(),
+      rem,
+      binaryString = '',
+      digits = '0123456789ABCDEF';
+    while (decNumber > 0){ //{1}
+      rem = Math.floor(decNumber % base); //{2}
+      remStack.push(rem); //{3}
+      decNumber = Math.floor(decNumber / base); //{4}
+    }
+    while (!remStack.isEmpty()){ //{5}
+      binaryString += digits[remStack.pop()];
+    }
+    return binaryString;
+  }
+
+  console.log( baseConverter(10, 2))
+
+</script>
+
+</body>
+</html>

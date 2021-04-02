@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>观察者（Observer）模式</title>
+</head>
+
+<body style="height: 1000px">
+<script>
+
+
+
+    //观察者（Observer）模式：定义对象间的一种一对多的依赖关系，以便当一个对象的状态发生改变时，所有依赖于它的对象都得到通知并自动刷新。
+
+    //观察者模式中存在两个角色,观察者和被观察者。在DOM的编程环境中的高级事件模式中，事件监听器说到底就是一种内置的观察者。事件处理器(handler)和时间监听器(listener)并不是一回事，前者就是一种把事件传给与其关联的函数的手段，而在后者中，一个时间可以与几个监听器关联，每个监听器都能独立于其他监听器而改变。
+
+    //使用时间监听器可以让多个函数相应一个事件
+
+
+    //。事件对象
+    function nornalizeEvent(event){
+        if(!event.stopPropagation){
+            event.stopPropagation = function () {
+                this.cancelBubble = true;
+            }
+            event.preventDefault = function(){
+                this.returnValue = false;
+            }
+        }
+        if(!event.stop){
+            event.stop = function () {
+                this.stopPropagation();
+                this.preventDefault();
+            }
+        }
+
+        if(event.srcElement && !event.target){
+            event.target = event.srcElement
+        }
+
+        if((event.toElement || event.fromElement) && !event.relatedTarget){
+            event.relatedTarget = event.toElement || event.fromElement;
+        }
+
+        if(event.clientX != undefined && event.pageX == undefined){
+            event.pageX = event.clientX + document.body.scrollLeft;
+            event.pageY = event.clientY + document.body.scrollTop;
+        }
+
+        if(event.type == 'keypress'){
+            event.character = String.fromCharCode( event.charCode || event.keyCode);
+        }
+        return event;
+    }
+
+
+
+    //注册事件
+    function registerEventHandler(node , event, handler){
+        if(typeof node.addEventListener  == 'function'){
+            node.addEventListener(event,handler, false);
+        }else{
+            node.attachEvent('on' + event , handler);
+        }
+    }
+
+    //删除事件
+    function unregisterEventHandler(node , event, handler){
+        if(typeof node.removeEventListener == 'function'){
+            node.removeEventListener(event,handler, false);
+        }else{
+            node.detachEvent('on' + event , handler);
+        }
+    }
+
+
+    function addHandler(node , type ,handler){
+        function wrapHanlder(event){
+            handler(nornalizeEvent(event || window.event));
+        }
+
+        registerEventHandler(node , type ,wrapHanlder);
+        return {node : node , type : type , handler : wrapHanlder};
+    }
+
+
+    function removeHandler(obj){
+        unregisterEventHandler(obj.node, obj.type, obj.handler);
+    }
+
+
+    　var fn1 =function(){
+            　　//code
+
+         　console.log('fn1')　         　　
+      }
+     　　var fn2 =function(){
+            　　//code
+
+           console.log('fn2')　
+      }
+
+
+    addHandler(document.querySelector('body'), 'click',fn1);
+    addHandler(document.querySelector('body'), 'click',fn2);
+
+
+    　　 //而时间处理函数就办不到
+    document.querySelector('body').onclick = fn1;
+    document.querySelector('body').onclick = fn2;
+
+    //观察者模式是开发基于行为的应用程序的有力手段，前端程序员可做的就是借助一个事件监听器替你处理各种行为，从而降低内存消耗和提高互动性能。
+
+
+
+    //汤姆大叔
+
+    //观察者模式又叫发布订阅模式（Publish/Subscribe），它定义了一种一对多的关系，让多个观察者对象同时监听某一个主题对象，这个主题对象的状态发生变化时就会通知所有的观察者对象，使得它们能够自动更新自己。
+
+    //使用观察者模式的好处：
+
+    //支持简单的广播通信，自动通知所有已经订阅过的对象。
+    //页面载入后目标对象很容易与观察者存在一种动态关联，增加了灵活性。
+    //目标对象与观察者之间的抽象耦合关系能够单独扩展以及重用。
+
+    //JS里对观察者模式的实现是通过回调来实现的，我们来先定义一个pubsub对象，其内部包含了3个方法：订阅、退订、发布
+
+
+    var pubsub = {};
+    (function (q) {
+
+        var topics = {}, // 回调函数存放的数组
+                subUid = -1;
+        // 发布方法
+        q.publish = function (topic, args) {
+
+
+            if (!topics[topic]) {
+                return false;
+            }
+
+            setTimeout(function () {
+                debugger
+                var subscribers = topics[topic],
+                        len = subscribers ? subscribers.length : 0;
+
+                while (len--) {
+                    subscribers[len].func(topic, args);
+                }
+            }, 0);
+
+            return true;
+
+        };
+        //订阅方法
+        q.subscribe = function (topic, func) {
+
+
+            if (!topics[topic]) {
+                topics[topic] = [];
+            }
+
+            var token = (++subUid).toString();
+            topics[topic].push({
+                token: token,
+                func: func
+            });
+            return token;
+        };
+        //退订方法
+        q.unsubscribe = function (token) {
+
+            for (var m in topics) {
+                debugger
+                if (topics[m]) {
+                    for (var i = 0, j = topics[m].length; i < j; i++) {
+                        if (topics[m][i].token === token) {
+                            topics[m].splice(i, 1);
+                            return token;
+                        }
+                    }
+                }
+            }
+            return false;
+        };
+    } (pubsub));
+
+    //使用方式如下：
+    //来，订阅一个
+    /*pubsub.subscribe('example1', function (topics, data) {
+        console.log(topics + ": " + data);
+    });
+
+    //发布通知
+    pubsub.publish('example1', 'hello world!');
+    pubsub.publish('example1', ['test', 'a', 'b', 'c']);
+    pubsub.publish('example1', [{ 'color': 'blue' }, { 'text': 'hello'}]);*/
+
+
+    //怎么样？用起来是不是很爽？但是这种方式有个问题，就是没办法退订订阅，要退订的话必须指定退订的名称，所以我们再来一个版本：
+
+    //将订阅赋值给一个变量，以便退订
+    var testSubscription = pubsub.subscribe('example1', function (topics, data) {
+        console.log(topics + ": " + data);
+    });
+
+    //发布通知
+    pubsub.publish('example1', 'hello world!');
+    pubsub.publish('example1', ['test', 'a', 'b', 'c']);
+    pubsub.publish('example1', [{ 'color': 'blue' }, { 'text': 'hello'}]);
+
+    //退订
+    setTimeout(function () {
+        pubsub.unsubscribe(testSubscription);
+    }, 0);
+
+    //再发布一次，验证一下是否还能够输出信息
+    pubsub.publish('example1', 'hello again! (this will fail)');
+
+    // 调用结果
+
+    //example1: hello world!
+    //example1: test,a,b,c
+    //example1: hello again! (this will fail)
+
+
+
+    //我们也可以利用原型的特性实现一个观察者模式，代码如下：
+
+    function Observer() {
+        this.fns = [];
+    }
+    Observer.prototype = {
+        subscribe: function (fn) {
+            debugger
+            this.fns.push(fn);
+        },
+        unsubscribe: function (fn) {
+            this.fns = this.fns.filter(function (el) {
+                        debugger
+                        if (el !== fn) {
+                            return el;
+                        }
+                    }
+            );
+        },
+        update: function (o, thisObj) {
+            var scope = thisObj || window;
+            this.fns.forEach(function (el) {
+                        debugger
+                        el.call(scope, o);
+                    }
+            );
+        }
+    };
+
+    //测试
+    var o = new Observer;
+    var f1 = function (data) {
+        debugger
+        console.log('Robbin: ' + data + ', 赶紧干活了！');
+    };
+
+    var f2 = function (data) {
+        console.log('Randall: ' + data + ', 找他加点工资去！');
+    };
+
+    o.subscribe(f1);
+    o.subscribe(f2);
+
+    o.update("Tom回来了！");
+
+    //退订f1
+    o.unsubscribe(f1);
+    //再来验证
+    o.update("Tom回来了！");
+
+    //Robbin: Tom回来了！, 赶紧干活了！
+    //Randall: Tom回来了！, 找他加点工资去！
+    //Randall: Tom回来了！, 找他加点工资去！
+
+    //如果提示找不到filter或者forEach函数，可能是因为你的浏览器还不够新，暂时不支持新标准的函数，你可以使用如下方式自己定义：
+    if (!Array.prototype.forEach) {
+        Array.prototype.forEach = function (fn, thisObj) {
+            var scope = thisObj || window;
+            for (var i = 0, j = this.length; i < j; ++i) {
+                fn.call(scope, this[i], i, this);
+            }
+        };
+    }
+    if (!Array.prototype.filter) {
+        Array.prototype.filter = function (fn, thisObj) {
+            var scope = thisObj || window;
+            var a = [];
+            for (var i = 0, j = this.length; i < j; ++i) {
+                if (!fn.call(scope, this[i], i, this)) {
+                    continue;
+                }
+                a.push(this[i]);
+            }
+            return a;
+        };
+    }
+
+
+    //如果想让多个对象都具有观察者发布订阅的功能，我们可以定义一个通用的函数，然后将该函数的功能应用到需要观察者功能的对象上，代码如下：
+
+    //通用代码
+    var observer = {
+        //订阅
+        addSubscriber: function (callback) {
+            debugger
+            this.subscribers[this.subscribers.length] = callback;
+        },
+        //退订
+        removeSubscriber: function (callback) {
+            debugger
+            for (var i = 0; i < this.subscribers.length; i++) {
+                if (this.subscribers[i] === callback) {
+                    delete (this.subscribers[i]);
+                }
+            }
+        },
+        //发布
+        publish: function (what) {
+            debugger
+            for (var i = 0; i < this.subscribers.length; i++) {
+                if (typeof this.subscribers[i] === 'function') {
+                    this.subscribers[i](what);
+                }
+            }
+        },
+        // 将对象o具有观察者功能
+        make: function (o) {
+            debugger
+            for (var i in this) {
+                o[i] = this[i];
+                o.subscribers = [];
+            }
+        }
+    };
+
+
+    //然后订阅2个对象blogger和user，使用observer.make方法将这2个对象具有观察者功能，代码如下：
+
+    var blogger = {
+        recommend: function (id) {
+            debugger
+            var msg = 'dudu 推荐了的帖子:' + id;
+            this.publish(msg);
+        }
+    };
+
+    var user = {
+        vote: function (id) {
+            var msg = '有人投票了!ID=' + id;
+            this.publish(msg);
+        }
+    };
+
+    observer.make(blogger);
+    observer.make(user);
+
+    console.log(user,blogger)
+
+    //使用方法就比较简单了，订阅不同的回调函数，以便可以注册到不同的观察者对象里（也可以同时注册到多个观察者对象里）：
+
+    var tom = {
+        read: function (what) {
+            console.log('Tom看到了如下信息：' + what)
+        }
+    };
+
+    var mm = {
+        show: function (what) {
+            console.log('mm看到了如下信息：' + what)
+        }
+    };
+    // 订阅
+    blogger.addSubscriber(tom.read);
+    blogger.addSubscriber(mm.show);
+    blogger.recommend(123); //调用发布
+
+    //退订
+    blogger.removeSubscriber(mm.show);
+    blogger.recommend(456); //调用发布
+
+    //另外一个对象的订阅
+    user.addSubscriber(mm.show);
+    user.vote(789); //调用发布
+
+    //调用结果
+    //Tom看到了如下信息：dudu 推荐了的帖子:123
+    //mm看到了如下信息：dudu 推荐了的帖子:123
+    //Tom看到了如下信息：dudu 推荐了的帖子:456
+    //mm看到了如下信息：有人投票了!ID=789
+
+
+    var  $ = jQuery =  {};
+
+    //根据jQuery1.7版新增的on/off功能，我们也可以定义jQuery版的观察者：
+    (function ($) {
+
+        debugger
+        var o = $;
+
+
+        $.subscribe = function () {
+            o.on.apply(o, arguments);
+        };
+
+        $.unsubscribe = function () {
+            o.off.apply(o, arguments);
+        };
+
+        $.publish = function () {
+            o.trigger.apply(o, arguments);
+        };
+
+    })(jQuery);
+
+
+    //回调函数
+    function handle(e, a, b, c) {
+        // `e`是事件对象，不需要关注
+        console.log(a + b + c);
+    };
+
+    //订阅
+    $.subscribe("/some/topic", handle);
+    //发布
+    $.publish("/some/topic", ["a", "b", "c"]); // 输出abc
+
+
+    $.unsubscribe("/some/topic", handle); // 退订
+
+    //订阅
+    $.subscribe("/some/topic", function (e, a, b, c) {
+        console.log(a + b + c);
+    });
+
+    $.publish("/some/topic", ["a", "b", "c"]); // 输出abc
+
+    //退订（退订使用的是/some/topic名称，而不是回调函数哦，和版本一的例子不一样
+    $.unsubscribe("/some/topic");
+
+    //可以看到，他的订阅和退订使用的是字符串名称，而不是回调函数名称，所以即便传入的是匿名函数，我们也是可以退订的
+
+    //总结
+    //观察者的使用场合就是：当一个对象的改变需要同时改变其它对象，并且它不知道具体有多少对象需要改变的时候，就应该考虑使用观察者模式。
+
+    //总的来说，观察者模式所做的工作就是在解耦，让耦合的双方都依赖于抽象，而不是依赖于具体。从而使得各自的变化都不会影响到另一边的变化。
+
+</script>
+</body>
+</html>

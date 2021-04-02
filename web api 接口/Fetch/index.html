@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+
+<script>
+
+
+    //get
+    fetch("./data.json").then(function(res) {
+        // res instanceof Response == true.
+        if (res.ok) {
+            res.json().then(function(data) {
+                console.log(data);
+            });
+        } else {
+            console.log("Looks like the response wasn't perfect, got status", res.status);
+        }
+    }, function(e) {
+        console.log("Fetch failed!", e);
+    });
+
+    var form = new FormData(document.getElementById('login-form'));
+    form.append('id' , 1);
+
+    //post
+    fetch("./data.json",{
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: form
+    }).then(function(res) {
+        // res instanceof Response == true.
+        if (res.ok) {
+            res.json().then(function(data) {
+                console.log(data);
+            });
+        } else {
+            console.log("Looks like the response wasn't perfect, got status", res.status);
+        }
+    }, function(e) {
+        console.log("Fetch failed!", e);
+    });
+
+    var u = new URLSearchParams();
+    u.append('method', 'flickr.interestingness.getList');
+    u.append('api_key', '<insert api key here>');
+    u.append('format', 'json');
+    u.append('nojsoncallback', '1');
+
+    var apiCall = fetch('https://api.flickr.com/services/rest?' + u);
+
+    apiCall.then(function(response) {
+        debugger;
+        return response.json().then(function(json) {
+            // photo is a list of photos.
+            return json.photos.photo;
+        });
+    }).then(function(photos) {
+        photos.forEach(function(photo) {
+            console.log(photo.title);
+        });
+    });
+</script>
+
+</body>
+</html>

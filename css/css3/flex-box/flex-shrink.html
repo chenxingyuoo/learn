@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+    <meta charset="utf-8" />
+    <title>flex-shrink_CSS参考手册_web前端开发参考手册系列</title>
+    <style>
+        h1{font:bold 20px/1.5 georgia,simsun,sans-serif;}
+        #flex{display:-webkit-flex;display:flex;width:400px;margin:0;padding:0;list-style:none;}
+        #flex li{width:200px;}
+        #flex li:nth-child(1){background:#888;}
+        #flex li:nth-child(2){background:#ccc;}
+        #flex li:nth-child(3){-webkit-flex-shrink:3;flex-shrink:3;background:#aaa;}
+    </style>
+</head>
+<body>
+<h1>flex-shrink示例：</h1>
+<ul id="flex">
+    <li>a</li>
+    <li>b</li>
+    <li>c</li>
+</ul>
+</body>
+</html>
+			

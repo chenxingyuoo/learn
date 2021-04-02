@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ajax</title>
+    <script src="../../build/react.js"></script>
+    <script src="../../build/react-dom.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.24/browser.min.js"></script>
+    <script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.js"></script>
+</head>
+
+<body>
+<div id="example"></div>
+<script type="text/babel">
+   //组件的数据来源，通常是通过 Ajax 请求从服务器获取，可以使用 componentDidMount 方法设置 Ajax 请求，
+   // 等到请求成功，再用 this.setState 方法重新渲染 UI
+    var UserGist = React.createClass({
+        getInitialState : function () {
+           return {
+               username: 'a',
+               lastGistUrl: ''
+           }
+        },
+        componentDidMount : function () {
+            $.get(this.props.source, function (result) {
+                console.log(result);
+                var lastGist = result[0];
+                if(this.isMounted()){
+                    this.setState({
+                        username : lastGist.owner.login,
+                        lastGistUrl : lastGist.html_url
+                    });
+                }
+            }.bind(this));
+        },
+        render : function () {
+            return (
+                    <div>
+                        {this.state.username}'s last gist is
+                        <a href={this.state.lastGistUrl}>href</a>
+                    </div>
+            );
+        } 
+    });
+
+    ReactDOM.render(
+            <UserGist source="https://api.github.com/users/octocat/gists" />,
+            document.getElementById('example')
+    );
+
+    //上面代码使用 jQuery 完成 Ajax 请求，这是为了便于说明。React 本身没有任何依赖，完全可以不用jQuery，而使用其他库。
+</script>
+</body>
+</html>

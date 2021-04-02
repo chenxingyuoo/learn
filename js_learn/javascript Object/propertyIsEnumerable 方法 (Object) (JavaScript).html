@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>propertyIsEnumerable 方法 (Object) (JavaScript)</title>
+</head>
+
+<body>
+<script>
+    //确定指定的属性是否可枚举。
+    /*备注
+    如果 proName 存在于 object 中，且可以使用 For 循环对其进行枚举，则 propertyIsEnumerable 方法返回 true。如果 object 不具有所指定名称的属性或者所指定的属性是不可枚举的，则 propertyIsEnumerable 方法将返回 false。通常，预定义的属性是不可枚举的，而用户定义的属性始终是可枚举的。
+    propertyIsEnumerable 方法不考虑原型链中的对象。*/
+
+    var a = new Array("apple", "banana", "cactus");
+    document.write(a.propertyIsEnumerable(1));
+
+    // Output: true
+</script>
+</body>
+</html>

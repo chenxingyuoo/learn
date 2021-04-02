@@ -1,0 +1,351 @@
+<html style=""><head>
+  <meta charset="UTF-8">
+  <title></title>
+  <style id="stylesheet">
+    .show,
+    .board {
+      background: #ddd;
+      padding: 10px;
+      color: #333;
+      margin: 10px 0;
+    }
+
+    .board {
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      pointer-events: none;
+    }
+
+    .board pre code {
+      white-space: pre-wrap;
+    }
+
+    .group {
+      overflow: hidden;
+      padding: 10px;
+    }
+
+    .group button {
+      margin: 0 10px 10px 0;
+      padding: 5px;
+    }
+
+    .edit {
+      padding: 10px;
+      border: 1px solid #000;
+    }
+
+    .highlight {
+      color: red;
+    }
+
+    .blue {
+      color: blue;
+    }
+
+    h4 {
+      padding: 10px 0;
+    }
+
+    textarea {
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+
+<body>
+<div id="content">
+  <div class="board">
+				<pre><code>&lt;<span class="highlight">div</span> contenteditable="true" class="edit"&gt;&lt;<span class="highlight">span</span>&gt;相信前端攻城狮伙伴们都知道富文本编辑器，比如：百度的Ueditor ，基于jQuery的bootstrap-wysiwyg 等等多种操作性丰富的编辑器。在我之前的一篇文章《一个不算成熟的富文本编辑器》中，我个人也搞了一个小小的富文本编辑器。&lt;/span&gt;
+&lt;<span class="highlight">p</span>&gt;有段时间对富文本编辑器如何判断鼠标位置和获取选择的文本感到好奇，所以就翻看了bootstrap-wysiwyg富文本编辑器插件的源码&lt;/p&gt;
+&lt;/div&gt;</code></pre>
+  </div>
+  <h4>对下面编辑框里的内容编辑</h4>
+  <div contenteditable="true" class="edit"><span>相信前端攻城狮伙伴们都知道富文本编辑器，比如：百度的Ueditor ，基于jQuery的bootstrap-wysiwyg 等等多种操作性丰富的编辑器。在我之前的一篇文章《一个不算成熟的富文本编辑器》中，我个人也搞了一个小小的富文本编辑器。</span>
+    <p>有段时间对富文本编辑器如何判断鼠标位置和获取选择的文本感到好奇，所以就翻看了bootstrap-wysiwyg富文本编辑器插件的源码</p>
+  </div>
+  <div class="show">
+    选择的文本是：<span class="blue"></span>
+  </div>
+  <div class="group">
+    <button id="getRange">（btn1）拖动选择多个文本，点击按钮（在Firefox下，按Ctrl选择多个）</button>
+    <button id="getRange2">（btn2）拖动选择单个文本，点击按钮</button>
+    <button id="getOffset">（btn3）获取范围位置</button>
+    <button onclick="getSelectionPosition()">（btn4）获取范围位置</button>
+    <button id="setColor">（btn5）拖动选择文本，点击btn2按钮，然后随意点击一处，再点击此按钮</button>
+    <button id="insertHTML" onclick="insertRange()">（btn6）创建空Range对象，然后用setStart和setEnd方法获取范围</button>
+    <button onclick="deleteRange()">（btn7）deleteContents()删除选中的文本</button>
+    <button onclick="deleteRange2()">（btn8）extractContents()删除选中的文本，将返回的fragment插入文本框</button>
+    <button id="setCursorEnd">（btn9）光标移至最后</button>
+  </div>
+
+  <div>
+    <div class="group">
+      <button id="setToTextEnd">（btn10）将光标置于表单元素最后</button>
+      <button id="selectAllText">（btn11）选中全部文本</button>
+    </div>
+    <textarea cols="80" rows="5">相信前端攻城狮伙伴们都知道富文本编辑器，比如：百度的Ueditor ，基于jQuery的bootstrap-wysiwyg 等等多种操作性丰富的编辑器。在我之前的一篇文章《一个不算成熟的富文本编辑器》中，我个人也搞了一个小小的富文本编辑器。</textarea>
+  </div>
+
+  <div>
+    <iframe id="edit2" name="edit"></iframe>
+  </div>
+</div>
+
+<script id="scripts">
+  var selectedRange = '';
+
+  function setFrameEdit() {
+    var frame = document.getElementById("edit2");
+    var frameDocument = frame.contentDocument;
+    frameDocument.designMode = 'on';
+    frameDocument.body.style.color = '#fff';
+    frameDocument.body.innerHTML = '我是可编辑的iframe';
+  };
+  setFrameEdit();
+
+  //			function getSelectionRect() {
+  //				if(window.getSelection) {
+  //					var sel = window.getSelection();
+  //					if(sel.rangeCount == 0) {
+  //						return;
+  //					};
+  //					var range = sel.getRangeAt(0).cloneRange();
+  //					if(range.getBoundingClientRect) {
+  //						var rect = range.getBoundingClientRect();
+  //						if(rect && rect.left && rect.top && rect.right && rect.bottom)
+  //							return {
+  //								left: parseInt(rect.left),
+  //								top: parseInt(rect.top),
+  //								width: parseInt(rect.right - rect.left),
+  //								height: parseInt(rect.bottom - rect.top)
+  //							};
+  //					}
+  //				} else if(document.selection) {
+  //					var sel = document.selection;
+  //					if(sel.type != 'Control') {
+  //						var range = sel.createRange();
+  //						// IE
+  //						if(range.boundingLeft || range.boundingTop || range.boundingWidth || range.boundingHeight)
+  //							return {
+  //								left: range.boundingLeft,
+  //								top: range.boundingTop,
+  //								width: range.boundingWidth,
+  //								height: range.boundingHeight
+  //							};
+  //					}
+  //				}
+  //				return false;
+  //			}
+
+  function setContextMenu() {
+    var edit = document.querySelector('.edit');
+    edit.oncontextmenu = function(e) {
+      e = e || window.event;
+      e.preventDefault();
+
+      var top = e.pageY || e.clientY + document.body.scrollTop + document.docuemntElement.scrollTop;
+      top -= this.scrollTop;
+      var left = e.pageX || e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
+      left -= this.scrollLeft;
+
+      var menu = '<div class="contextmenu" style="background:#fff;color:#333;padding:10px;position:fixed;top:' + top + 'px;left:' + left + 'px">';
+      menu += '<a>右键菜单</a>';
+      menu += '</div>';
+      var box = document.createElement('div');
+      box.innerHTML = menu;
+      var menuBox = document.querySelector('.contextmenu');
+      if(menuBox) {
+        menuBox.style.top = top + 'px';
+        menuBox.style.left = left + 'px';
+      } else {
+        document.body.appendChild(box.firstChild);
+      }
+    };
+    window.addEventListener('click',function(e){
+      e = e || window.event;
+      var menuBox = document.querySelector('.contextmenu');
+      if(menuBox){
+        var target = e.target;
+        var parent = target.parentNode;
+        if(parent.nodeName != 'DIV' || !parent.classList.contains('contextmenu')){
+          document.body.removeChild(menuBox);
+        }
+      }
+    });
+  }
+  setContextMenu();
+
+  function deleteRange() {
+    if(selectedRange) {
+      selectedRange.deleteContents();
+    }
+  };
+
+  function toTextEnd(elem) {
+    if(window.getSelection) {
+      elem.setSelectionRange(elem.value.length, elem.value.length);
+      elem.focus()
+    } else if(document.selection) {
+      /*IE下*/
+      var range = elem.createTextRange();
+      range.moveStart('character', elem.value.length);
+      range.collapse(true);
+      range.select();
+    }
+  };
+
+  function setCursorEnd(elem) {
+    if(window.getSelection) {
+      elem.focus();
+      var range = window.getSelection();
+      range.selectAllChildren(elem);
+      range.collapseToEnd();
+    } else if(document.selection) {
+      var range = document.selection.createTextRange();
+      range.moveToElementText(elem);
+      range.collapse(false);
+      range.select();
+    }
+  }
+
+  function selectAllText(elem) {
+    if(window.getSelection) {
+      elem.setSelectionRange(0, elem.value.length);
+      elem.focus();
+    } else if(document.selection) {
+      var range = elem.createTextRange();
+      range.select();
+    }
+  }
+
+  function deleteRange2() {
+    if(selectedRange) {
+      var fragment = selectedRange.extractContents();
+      document.querySelector('.show span').appendChild(fragment);
+    }
+  };
+
+  function saveSelection() {
+    if(window.getSelection) {
+      /*主流的浏览器，包括chrome、Mozilla、Safari*/
+      return window.getSelection();
+    } else if(document.selection) {
+      /*IE下的处理*/
+      return document.selection.createRange();
+    };
+    return null;
+  };
+
+  function saveSelection2() {
+    debugger;
+    if(window.getSelection) {
+      /*主流的浏览器，包括chrome、Mozilla、Safari*/
+      var sel = window.getSelection();
+      if(sel.rangeCount > 0) {
+        return sel.getRangeAt(0);
+      }
+    } else if(document.selection) {
+      /*IE下的处理*/
+      return document.selection.createRange();
+    }
+    return null;
+  };
+
+  function getRangePosition() {
+    debugger;
+    console.log(selectedRange);
+    if(selectedRange) {
+      return {
+        startOffset: selectedRange.startOffset,
+        endOffset: selectedRange.endOffset,
+        collapsed: selectedRange.collapsed,
+        startContainer: selectedRange.startContainer.parentNode.nodeName,
+        endContainer: selectedRange.endContainer.parentNode.nodeName,
+        commonAncestorContainer: selectedRange.commonAncestorContainer.nodeName
+      };
+    };
+    return null;
+  };
+
+  function getSelectionPosition() {
+    debugger;
+    var selection = window.getSelection();
+    var p = {
+      anchorNode: selection.anchorNode.parentNode.nodeName,
+      anchorOffset: selection.anchorOffset,
+      focusNode: selection.focusNode.parentNode.nodeName,
+      focusOffset: selection.focusOffset
+    };
+    document.querySelector('.show span').innerHTML = '';
+    for(var k in p) {
+      document.querySelector('.show span').innerHTML += '</br>' + k + '： <span class="highlight">' + p[k] + '</span>';
+    }
+  };
+
+  function restoreSelection() {
+    var selection = window.getSelection();
+    if(selectedRange) {
+      try {
+        selection.removeAllRanges(); /*清空所有Range对象*/
+      } catch(ex) {
+        /*IE*/
+        document.body.createTextRange().select();
+        document.selection.empty();
+      };
+      /*恢复保存的范围*/
+      selection.addRange(selectedRange);
+    }
+  };
+
+  function insertRange() {
+    debugger;
+    restoreSelection();
+    var content = ''
+    if(document.createRange) {
+      var range = document.createRange();
+      var span = document.querySelector('.edit span');
+      var p = document.querySelector('.edit p');
+      range.setStart(span.firstChild, 20);
+      range.setEnd(p.firstChild, 3);
+      content = range.cloneContents();
+    };
+    document.querySelector('.show span').appendChild(content);
+  };
+  document.getElementById("setCursorEnd").addEventListener('click', function() {
+    setCursorEnd(document.querySelector('.edit'));
+  });
+  document.getElementById("selectAllText").addEventListener('click', function() {
+    selectAllText(document.querySelector('textarea'));
+  });
+  document.querySelector('.edit').addEventListener('mouseup', function() {
+    selectedRange = saveSelection2();
+  });
+  document.getElementById("getRange").addEventListener('click', function() {
+    selectedRange = saveSelection();
+    document.querySelector('.show span').innerHTML = selectedRange; //如果是IE下，必须使用selection.text来获取内容
+  });
+  document.getElementById("getRange2").addEventListener('click', function() {
+    selectedRange = saveSelection2();
+    document.querySelector('.show span').innerHTML = selectedRange; //如果是IE下，必须使用selection.text来获取内容
+  });
+  document.getElementById("getOffset").addEventListener('click', function() {
+    selectedRange = saveSelection2();
+    var p = getRangePosition();
+    document.querySelector('.show span').innerHTML = '';
+    for(var k in p) {
+      document.querySelector('.show span').innerHTML += '</br>' + k + '： <span class="highlight">' + p[k] + '</span>';
+    }
+  });
+  document.getElementById("setToTextEnd").addEventListener('click', function() {
+    toTextEnd(document.querySelector('textarea'));
+  })
+  document.getElementById("setColor").addEventListener('click', function() {
+    restoreSelection();
+    document.execCommand('forecolor', false, 'red');
+  });
+</script>
+
+
+</body></html>

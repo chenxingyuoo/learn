@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    .list-view {
+        height: 900px;
+        overflow: auto;
+        position: relative;
+        border: 1px solid #666;
+      }
+
+      .list-view-phantom {
+        position: absolute;
+        left: 0;
+        top: 0;
+        right: 0;
+        z-index: -1;
+      }
+
+      .list-view-content {
+        left: 0;
+        right: 0;
+        top: 0;
+        position: absolute;
+      }
+
+      .list-view-item {
+        padding: 5px;
+        color: #666;
+        border: 1px solid #ddd;
+        height: 222px;
+        line-height: 222px;
+        box-sizing: border-box;
+        width: 50%;
+        display: inline-block;
+        margin-bottom: 20px;
+      }
+  </style>
+  <script src="http://unpkg.com/vue/dist/vue.js"></script>
+
+</head>
+<body>
+  <div id="app">
+  <template>
+    <div ref="list" class="list-view" @scroll="handleScroll($event)">
+      <div class="list-view-phantom" :style="{ height: data.length * itemHeight / clos + 'px' }"></div>
+      <div ref="content" class="list-view-content">
+        <div class="list-view-item" v-for="(item, i) in visibleData" :key="item.value">
+          <img :src="item.src" style="width: 100px;">
+          <span>{{ item.value }}</span>
+        </div>
+      </div>
+    </div>
+  </template>
+  </div>
+˜
+  <script>
+    new Vue({
+      props: {
+        itemHeight: {
+          type: Number,
+          default: 242
+        },
+        // 列数
+        clos: {
+          type: Number,
+          default: 2
+        }
+      },
+
+      mounted() {
+        // this.visibleCount = Math.ceil(this.$el.clientHeight / this.itemHeight) * this.clos;
+        // console.log('this.visibleCount', this.visibleCount);
+        
+        // this.start = 0;
+        // this.end = this.start + this.visibleCount;
+        // this.visibleData = this.data.slice(this.start, this.end);
+
+        this.initVisibleCount()
+        this.updateVisibleData()
+      },
+
+      data() {
+        const data = [];
+        for (let i = 0; i < 26; i++) {
+          data.push({
+            src: `./img/${i + 1}.jpg`,
+            value: i 
+          });
+        }
+
+        return {
+          data,
+          start: 0,
+          end: null,
+          visibleCount: null,
+          visibleData: [],
+          scrollTop: 0
+        };
+      },
+
+      methods: {
+        initVisibleCount () {
+          let num = Math.ceil(this.$el.clientHeight / this.itemHeight)
+          this.visibleCount = num * this.clos + num;
+        },
+        updateVisibleData(scrollTop) {
+          scrollTop = scrollTop || 0;
+          console.log('scrollTop / this.itemHeight', scrollTop / this.itemHeight)
+          
+          this.start = Math.floor(scrollTop / this.itemHeight) * this.clos;
+          this.end = this.start + this.visibleCount;
+
+          console.log('this.start', this.start)
+          
+          this.visibleData = this.data.slice(this.start, this.end);
+          console.log('this.visibleData', this.visibleData)
+          
+        },
+        handleScroll() {
+          const scrollTop = this.$refs.list.scrollTop;
+          // console.log('scrollTop', scrollTop);
+          // console.log('scrollTop % this.itemHeight', scrollTop);
+          this.updateVisibleData(scrollTop)
+          this.$refs.content.style.webkitTransform = `translate3d(0, ${ (this.start / this.clos) * this.itemHeight }px, 0)`;
+          // const fixedScrollTop = scrollTop - scrollTop % this.itemHeight;
+          // this.$refs.content.style.webkitTransform = `translate3d(0, ${fixedScrollTop}px, 0)`;
+
+          // this.start = Math.floor(scrollTop / this.itemHeight) * this.clos;
+          // this.end = this.start + this.visibleCount;
+          // this.visibleData = this.data.slice(this.start, this.end);
+        }
+      }    
+    }).$mount('#app')
+  </script>
+</body>
+</html>

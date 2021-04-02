@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>绘制图像</title>
+</head>
+
+<body>
+<div>
+    <canvas id="canvas1" width="800" height="600"></canvas>
+</div>
+<div>
+    <canvas id="canvas2" width="800" height="600"></canvas>
+</div>
+<div>
+    <canvas id="canvas3" width="800" height="600"></canvas>
+</div>
+
+<!--绘图：context.drawImage
+
+图像平铺：context.createPattern(image,type)
+
+图像裁剪：context.clip()
+
+像素处理：var imagedata=context.getImageData(sx,sy,sw,sh)
+
+绘图 context.drawImage
+
+context.drawImage(image,x,y)
+
+image:Image对象var img=new Image(); img.src="url(...)";
+
+x:绘制图像的x坐标
+
+y:绘制图像的y坐标
+
+context.drawImage(image,x,y,w,h)
+
+image:Image对象var img=new Image(); img.src="url(...)";
+
+x:绘制图像的x坐标
+
+y:绘制图像的y坐标
+
+w:绘制图像的宽度
+
+h:绘制图像的高度
+
+context.drawImage(image,sx,sy,sw,sh,dx,dy,dw,dh):选取图像的一部分矩形区域进行绘制
+
+image:Image对象var img=new Image(); img.src="url(...)";
+
+sx：图像上的x坐标
+
+sy：图像上的y坐标
+
+sw：矩形区域的宽度
+
+sh：矩形区域的高度
+
+dx：画在canvas的x坐标
+
+dy：画在canvas的y坐标
+
+dw：画出来的宽度
+
+dh：画出来的高度-->
+
+<script>
+    //drawImage(image,x,y)
+    document.body.onload = draw28('canvas1');
+    function draw28(id) {
+
+        var image = new Image();
+
+        image.src = "1.jpg";
+        var canvas = document.getElementById(id);
+
+        if (canvas == null)
+            return false;
+        var context = canvas.getContext("2d");
+        context.fillStyle = "#EEEEFF";
+
+        context.fillRect(0, 0, 400, 300);
+        image.onload = function () {
+            context.drawImage(image, 0, 0);
+        }
+    }
+
+    document.body.onload = draw12('canvas2');
+    //drawImage(image,x,y,w,h)
+    function draw12(id) {
+
+        var image = new Image();
+
+        image.src = "1.jpg";
+        var canvas = document.getElementById(id);
+
+        if (canvas == null)
+            return false;
+        var context = canvas.getContext("2d");
+        context.fillStyle = "#EEEEFF";
+
+        context.fillRect(0, 0, 400, 300);
+        image.onload = function () {
+            context.drawImage(image, 50, 50, 300, 200);
+        }
+    }
+
+    document.body.onload = draw13('canvas3');
+    //drawImage(image,sx,sy,sw,sh,dx,dy,dw,dh)
+    function draw13(id) {
+        var image = new Image();
+        image.src = "1.jpg";
+        var canvas = document.getElementById(id);
+
+        if (canvas == null)
+            return false;
+        var context = canvas.getContext("2d");
+        context.fillStyle = "#EEEEFF";
+
+        context.fillRect(0, 0, 400, 300);
+        image.onload = function () {
+            context.drawImage(image, 100, 100, 200, 150, 50, 50, 300, 200);//这里取的是实际尺寸
+        }
+    }
+</script>
+
+</body>
+</html>

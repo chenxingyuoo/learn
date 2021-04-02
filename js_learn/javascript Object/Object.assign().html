@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Object.assign()</title>
+</head>
+
+<body>
+<script>
+    //所述Object.assign（）方法被用于从一个或多个源对象的所有可枚举自己的属性的值复制到目标对象。它会返回目标对象
+    //Object.assign(target, ...sources)
+
+    //Return value
+    //The target object
+
+    //例子
+    //克隆对象
+    var obj = { a: 1 };
+    var copy = Object.assign({}, obj);
+    console.log(copy); // { a: 1 }
+
+    //深克隆
+    //对于深克隆，我们需要使用其他的替代品。这是因为Object.assign（）复制属性引用时被分配的属性是对象。
+    function test() {
+        let a = { b: {c:4} , d: { e: {f:1}} }
+        let g = Object.assign({},a)
+        let h = JSON.parse(JSON.stringify(a));
+        console.log(g.d) // { e: { f: 1 } }
+        g.d.e = 32
+        console.log('g.d.e set to 32.') // g.d.e set to 32.
+        console.log(g) // { b: { c: 4 }, d: { e: 32 } }
+        console.log(a) // { b: { c: 4 }, d: { e: 32 } }
+        console.log(h) // { b: { c: 4 }, d: { e: { f: 1 } } }
+        h.d.e = 54
+        console.log('h.d.e set to 54.') // h.d.e set to 54.
+        console.log(g) // { b: { c: 4 }, d: { e: 32 } }
+        console.log(a) // { b: { c: 4 }, d: { e: 32 } }
+        console.log(h) // { b: { c: 4 }, d: { e: 54 } }
+    }
+    test();
+
+    //合并对象
+    var o1 = { a: 1 };
+    var o2 = { b: 2 };
+    var o3 = { c: 3 };
+
+    var obj = Object.assign(o1, o2, o3);
+    console.log(obj); // { a: 1, b: 2, c: 3 }
+    console.log(o1);  // { a: 1, b: 2, c: 3 }, target object itself is changed
+
+    //合并具有相同属性的对象
+    var o1 = { a: 1, b: 1, c: 1 };
+    var o2 = { b: 2, c: 2 };
+    var o3 = { c: 3 };
+
+    var obj = Object.assign({}, o1, o2, o3);
+    console.log(obj); // { a: 1, b: 2, c: 3 }
+
+    //属性是由具有相同的属性中的参数顺序后其他对象覆盖。
+
+
+    //复制符号类型属性
+    var o1 = { a: 1 };
+    var o2 = { [Symbol('foo')]: 2 };
+    var obj = Object.assign({}, o1, o2);
+    console.log(obj); // { a : 1, [Symbol("foo")]: 2 } (cf. bug 1207182 on Firefox)
+    Object.getOwnPropertySymbols(obj); // [Symbol(foo)]
+
+    //在原型链和不可枚举性属性不能被复制
+    var obj = Object.create({ foo: 1 }, { // foo is on obj's prototype chain.
+        bar: {
+            value: 2  // bar is a non-enumerable property.
+        },
+        baz: {
+            value: 3,
+            enumerable: true  // baz is an own enumerable property. 不可被枚举
+        }
+    });
+
+    var copy = Object.assign({}, obj);
+    console.log(copy); // { baz: 3 }
+
+    //原型将被包装对象
+    var v1 = 'abc';
+    var v2 = true;
+    var v3 = 10;
+    var v4 = Symbol('foo');
+
+    var obj = Object.assign({}, v1, null, v2, undefined, v3, v4);
+    //基元将被包装，null和undefined将被忽略。
+    // 注意，只有串包装可以有自己的枚举的属性。
+    console.log(obj); // { "0": "a", "1": "b", "2": "c" }
+
+    debugger
+    //异常会中断正在进行的复制任务
+    var target = Object.defineProperty({}, 'foo', {
+        value: 1,
+        writable: false
+    }); // target.foo is a read-only property
+
+    Object.assign(target, { bar: 2 }, { foo2: 3, foo: 3, foo3: 3 }, { baz: 4 });
+    // TypeError: "foo" is read-only
+    // The Exception is thrown when assigning target.foo
+
+    console.log(target.bar);  // 2, the first source was copied successfully.
+    console.log(target.foo2); // 3, the first property of the second source was copied successfully.
+    console.log(target.foo);  // 1, exception is thrown here.
+    console.log(target.foo3); // undefined, assign method has finished, foo3 will not be copied.
+    console.log(target.baz);  // undefined, the third source will not be copied either.
+
+    //复制访问
+    var obj = {
+        foo: 1,
+        get bar() {
+            return 2;
+        }
+    };
+
+    var copy = Object.assign({}, obj);
+    console.log(copy);
+    // { foo: 1, bar: 2 }, the value of copy.bar is obj.bar's getter's return value.
+
+    // This is an assign function that copies full descriptors
+    function completeAssign(target, ...sources) {
+        sources.forEach(source => {
+            let descriptors = Object.keys(source).reduce((descriptors, key) => {
+                descriptors[key] = Object.getOwnPropertyDescriptor(source, key);
+                return descriptors;
+            }, {});
+            // by default, Object.assign copies enumerable Symbols too
+            Object.getOwnPropertySymbols(source).forEach(sym => {
+                let descriptor = Object.getOwnPropertyDescriptor(source, sym);
+                if (descriptor.enumerable) {
+                    descriptors[sym] = descriptor;
+                }
+            });
+            Object.defineProperties(target, descriptors);
+        });
+        return target;
+    }
+
+    var copy = completeAssign({}, obj);
+    console.log(copy);
+    // { foo:1, get bar() { return 2 } }
+
+    //兼容es2015
+    if (typeof Object.assign != 'function') {
+        (function () {
+            Object.assign = function (target) {
+                'use strict';
+                // We must check against these specific cases.
+                if (target === undefined || target === null) {
+                    throw new TypeError('Cannot convert undefined or null to object');
+                }
+
+                var output = Object(target);
+                for (var index = 1; index < arguments.length; index++) {
+                    var source = arguments[index];
+                    if (source !== undefined && source !== null) {
+                        for (var nextKey in source) {
+                            if (source.hasOwnProperty(nextKey)) {
+                                output[nextKey] = source[nextKey];
+                            }
+                        }
+                    }
+                }
+                return output;
+            };
+        })();
+    }
+
+</script>
+</body>
+</html>

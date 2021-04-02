@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>h5 + css3 + js 图片编辑器</title>
+</head>
+
+<body>
+<div class="wrapper">
+    <h1>Image Editor</h1>
+
+    <!--Form for collecting image URL -->
+    <form id="urlBox" class="center">
+        <input class="url-box" type="url" id="imgUrl"
+               placeholder="Paste any image link and hit enter to start playing.">
+    </form>
+
+    <input class="file-box" id="file-box" type="file">
+
+    <!--Controls for CSS filters via range input-->
+    <div class="sliders">
+        <form id="imageEditor">
+            <p>
+                <label for="gs">Grayscale</label>
+                <input id="gs" name="gs" type="range" min=0 max=100 value=0>
+            </p>
+
+            <p>
+                <label for="blur">Blur</label>
+                <input id="blur" name="blur" type="range" min=0 max=10 value=0>
+            </p>
+
+            <p>
+                <label for="br">Brightness</label>
+                <input id="br" name="br" type="range" min=0 max=200 value=100>
+            </p>
+
+            <p>
+                <label for="ct">Contrast</label>
+                <input id="ct" name="ct" type="range" min=0 max=200 value=100>
+            </p>
+
+            <p>
+                <label for="huer">Hue Rotate</label>
+                <input id="huer" name="huer" type="range" min=0 max=360 value=0>
+            </p>
+
+            <p>
+                <label for="opacity">Opacity</label>
+                <input id="opacity" name="opacity" type="range" min=0 max=100 value=100>
+            </p>
+
+            <p>
+                <label for="invert">Invert</label>
+                <input id="invert" name="invert" type="range" min=0 max=100 value=0>
+            </p>
+
+            <p>
+                <label for="saturate">Saturate</label>
+                <input id="saturate" name="saturate" type="range" min=0 max=500 value=100>
+            </p>
+
+            <p>
+                <label for="sepia">Sepia</label>
+                <input id="sepia" name="sepia" type="range" min=0 max=100 value=0>
+            </p>
+
+            <input type="reset" form="imageEditor" id="reset" value="Reset"/>
+
+        </form>
+    </div>
+
+    <!--container where image will be loaded-->
+    <div id="imageContainer" class="center">
+        <img src="../images/1.jpg"/>
+    </div>
+</div>
+
+<script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.js"></script>
+<script>
+    //用户输入的图片链接 ， 选择的图片
+    function addImage(file_val) {
+        var imgUrl = file_val ? file_val : $('.url-box').val();
+        if (imgUrl.length) {
+            $('#imageContainer img').attr('src', imgUrl);
+        }
+    }
+    $('#urlBox').submit(addImage());
+
+    //h5显示图片
+    document.getElementById('file-box').addEventListener('change', function (e) {
+        var that = this;
+        var files = Array.prototype.slice.call(that.files);
+        var file_val;
+
+        files.forEach(function (file, i) {
+            var reader = new FileReader();
+            reader.readAsDataURL(files[i]);
+            reader.onload = function () {
+                file_val = this.result;
+                addImage(file_val);
+            }
+        });
+
+    });
+
+
+    // 监听 range 属性
+    $("input[type=range]").mousemove(editImage).change(editImage);
+
+    function editImage() {
+        //获取对应的所有的值
+        var gs = $("#gs").val(); // grayscale
+        var blur = $("#blur").val(); // blur
+        var br = $("#br").val(); // brightness
+        var ct = $("#ct").val(); // contrast
+        var huer = $("#huer").val(); //hue-rotate
+        var opacity = $("#opacity").val(); //opacity
+        var invert = $("#invert").val(); //invert
+        var saturate = $("#saturate").val(); //saturate
+        var sepia = $("#sepia").val(); //sepia
+
+        $("#imageContainer img").css({
+            'filter': 'grayscale(' + gs + '%)' +
+            'sepia(' + sepia + '%)' +
+            'saturate(' + saturate + '%)' +
+            'hue-rotate(' + huer + 'deg)' +
+            'invert(' + invert + '%)' +
+            'opacity(' + opacity + '%)' +
+            'brightness(' + br + '%)' +
+            'contrast(' + ct + '%)' +
+            'blur(' + blur + 'px)'
+            ,
+            '-webkit-filter': 'grayscale(' + gs + '%)' +
+            'sepia(' + sepia + '%)' +
+            'saturate(' + saturate + '%)' +
+            'hue-rotate(' + huer + 'deg)' +
+            'invert(' + invert + '%)' +
+            'opacity(' + opacity + '%)' +
+            'brightness(' + br + '%)' +
+            'contrast(' + ct + '%)' +
+            'blur(' + blur + 'px)'
+
+        })
+    }
+
+
+</script>
+</body>
+</html>

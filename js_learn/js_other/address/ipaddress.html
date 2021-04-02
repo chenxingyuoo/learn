@@ -1,0 +1,28 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">  
+<html lang="en">  
+<head>  
+  
+<title>Rainet云灌溉-把灌溉装进口袋</title>  
+<meat charset="utf-8"/>  
+<script src="../jquery-2.2.1.js"></script>
+<script language="javascript" type="text/javascript">  
+$(document).ready(function(){  
+    $("#a").click(function(){  
+        var url = 'http://chaxun.1616.net/s.php?type=ip&output=json&callback=?&_='+Math.random();    
+        $.getJSON(url, function(data){  
+            $("#b").html("显示：IP【"+data.Ip+"】 地址【"+data.Isp+"】 浏览器【"+data.Browser+"】 系统【"+data.OS+"】");  
+        });   
+    });  
+});  
+</script>  
+  
+</head>  
+<body>  
+    <a href="#" style="margin-left:100px;"><span id="a" style="color: #000;font-size:18px;border:#000 0px solid;">Click Me</span></a>  
+    <br/>  
+    <br/>  
+    <br/>  
+    <br/>  
+    <span id="b" style="color: #000;font-size:18px;border:#000 0px solid;">显示：点击上方【Click Me】显示ip详情！</span>  
+</body>  
+</html>  

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+
+<body>
+
+<canvas id="canvas" width="1000" height="1000" style="border: 1px solid #ddd;display: block;margin: 50px">
+    您的浏览器不支持 HTML5 canvas 标签。
+</canvas>
+
+<script type="text/javascript">
+    window.onload  = function (){
+        //绘制一个矩形；放大到 200%，再次绘制矩形；放大到 200%，再次绘制矩形；放大到 200%，再次绘制矩形：
+        var c=document.getElementById("canvas");
+        var ctx=c.getContext("2d");
+        ctx.strokeRect(5,5,25,15);
+        ctx.scale(2,2);
+        ctx.strokeRect(5,5,25,15);
+        ctx.scale(2,2);
+        ctx.strokeRect(5,5,25,15);
+        ctx.scale(2,2);
+        ctx.strokeRect(5,5,25,15);
+
+
+        //rotate() 旋转 将矩形旋转 20 度：
+        var c=document.getElementById("canvas");
+        var ctx=c.getContext("2d");
+        ctx.rotate(20*Math.PI/180);
+        ctx.fillRect(50,20,100,50);
+
+
+
+
+    }
+</script>
+</body>
+</html>

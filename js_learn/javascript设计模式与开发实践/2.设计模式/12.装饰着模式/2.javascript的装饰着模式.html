@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+
+<script>
+    var plane = {
+        fire: function fire1() {
+            console.log('发射普通子弹');
+        }
+    }
+
+    var missileDecorator = function () {
+        console.log('发射导弹');
+    }
+
+    var atomDecorator = function () {
+        console.log('发射原子弹');
+    }
+    debugger;
+
+    var fire1 = plane.fire;
+
+    plane.fire = function fire2() {
+        fire1();
+        missileDecorator();
+    }
+
+    var fire2 = plane.fire;
+
+    plane.fire = function fire3() {
+        fire2();
+        atomDecorator();
+    }
+
+    plane.fire();
+</script>
+
+</body>
+</html>

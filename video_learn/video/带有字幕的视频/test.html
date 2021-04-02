@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+	<title>test</title>
+	<script type="text/javascript">
+      function eID(elm) {
+          return document.getElementById(elm);  // create short cut to getElementById()
+      }
+
+      // after elements are loaded, hook the cuechange event on the track element
+      document.addEventListener("load", function () {
+          eID("track").addEventListener("cuechange", function (e) {
+              var myTrack = e.target.track;  // the target property is the track element
+              var myCues = myTrack.activeCues;   // activeCues is an array of current cues.
+              //  display the start and end times
+              eID("display").innerHTML = myCues[0].startTime + " --> " + myCues[0].endTime;
+          }, false);
+
+      }, false);
+     
+  </script>
+</head>
+
+<body>
+
+<video id="mainvideo" controls autoplay loop>
+  <source type="video/mp4" src="VfE_html5.mp4">
+  <track src="en_track.vtt" srclang="en" label="English" kind="caption" >
+</video>
+
+</body>
+</html>

@@ -1,0 +1,24 @@
+{
+	"index.html": {
+		"resources": [
+			"css/common.css",
+			"js/update.js",
+			"js/shortcut.js",
+			"js/immersed.js"
+		],
+		"refer": [
+			"plus/accelerometer.html",
+			"plus/payment.html"
+		]
+	},
+	"plus/accelerometer.html": {
+		"resources": [
+			"js/common.js"
+		]
+	},
+	"plus/payment.html": {
+		"resources": [
+			"js/common.js"
+		]
+	}
+}

@@ -1,0 +1,30 @@
+{
+	"initial": [
+		"libs/modules/egret/egret.js",
+		"libs/modules/egret/egret.web.js",
+		"libs/modules/eui/eui.js",
+		"libs/modules/assetsmanager/assetsmanager.js",
+		"libs/modules/tween/tween.js",
+		"libs/modules/promise/promise.js",
+		"libs/modules/game/game.js",
+		"libs/egretad/bin/egretad.js"
+	],
+	"game": [
+		"bin-debug/containers/GameEndPanel.js",
+		"bin-debug/Main.js",
+		"bin-debug/components/Buttons.js",
+		"bin-debug/components/Dialog.js",
+		"bin-debug/components/Msg.js",
+		"bin-debug/components/SkinDialog.js",
+		"bin-debug/components/TimberMask.js",
+		"bin-debug/components/TimberMaskSprite.js",
+		"bin-debug/components/Bottom.js",
+		"bin-debug/containers/GamePlayingPanel.js",
+		"bin-debug/containers/GameStartPanel.js",
+		"bin-debug/tools/AssetAdapter.js",
+		"bin-debug/tools/LoadingUI.js",
+		"bin-debug/tools/Platform.js",
+		"bin-debug/tools/ThemeAdapter.js",
+		"bin-debug/tools/Tools.js"
+	]
+}

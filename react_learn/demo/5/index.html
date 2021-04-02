@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>demo5</title>
+    <script src="../../build/react.js"></script>
+    <script src="../../build/react-dom.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.24/browser.min.js"></script>
+</head>
+
+<body>
+<div id="example"></div>
+<script type="text/babel">
+   var NotesList  = React.createClass({
+       render : function () {
+           return (
+                   <ol>
+                       {React.Children.map(this.props.children, function (child) {
+                           debugger
+                           return <li>{child}</li>
+                       })}
+                   </ol>
+           );
+       }
+   });
+
+   ReactDOM.render(
+           <NotesList>
+               <span>hello</span>
+               <span>world</span>
+           </NotesList>,
+           document.getElementById('example')
+   );
+    //上面代码的 NoteList 组件有两个 span 子节点，它们都可以通过 this.props.children 读取
+    //这里需要注意， this.props.children 的值有三种可能：如果当前组件没有子节点，它就是 undefined ;
+   // 如果有一个子节点，数据类型是 object ；如果有多个子节点，数据类型就是 array 。
+   // 所以，处理 this.props.children 的时候要小心。
+</script>
+</body>
+</html>

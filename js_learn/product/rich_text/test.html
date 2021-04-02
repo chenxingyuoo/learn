@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body  >
+
+
+<button onclick="doRichEditCommand('bold')" style="font-weight:bold;">B</button>
+<script>
+    function doRichEditCommand(aName, aArg){
+        getIFrameDocument('editorWindow').execCommand(aName,false, aArg);
+        document.getElementById('editorWindow').contentWindow.focus()
+    }
+
+    function getIFrameDocument(aID){
+        // if contentDocument exists, W3C compliant (Mozilla)
+        if (document.getElementById(aID).contentDocument){
+            return document.getElementById(aID).contentDocument;
+        } else {
+            // IE
+            return document.frames[aID].document;
+        }
+    }
+
+</script>
+</body>
+</html>

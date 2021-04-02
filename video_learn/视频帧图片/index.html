@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <style>
+        *{
+            margin: 0;
+        }
+        #imgs-wrap{
+            width: 100%;
+            overflow-x: auto;
+        }
+        #imgs{
+            white-space:nowrap;
+        }
+      #imgs img{
+      }
+      #line{
+          width: 2px;
+          background: #000;
+          height: 200px;
+      }
+    </style>
+</head>
+<body>
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>capture screen</title>
+</head>
+<body>
+<video id="video" controls="controls">
+    <source src="./VfE_html5.mp4">
+</video>
+<div id="output"></div>
+<div id="imgs-wrap">
+   <div id="imgs"></div>
+</div>
+<div id="line"></div>
+<script type="text/javascript">
+    (function(){
+    	var timer
+        var video, output;
+        var scale = 0.3;
+        let interval = 1;
+        let currentTime = 0
+        let duration = 0;
+        let array = []
+        var canvas
+        var totalWidth = 11904
+        var step = 0
+        var imgarray = window.localStorage.getItem('imgarray')
+        imgarray = imgarray ? JSON.parse(imgarray) : null
+        console.log('imgarray',imgarray);
+           
+        var initialize = function() {
+            output = document.getElementById("output");
+            imgs = document.getElementById("imgs");
+            video = document.getElementById("video");
+            video.addEventListener('ended', function(){
+            	window.cancelAnimationFrame(timer)
+                console.log('array', array);
+
+                window.localStorage.setItem('imgarray', JSON.stringify(array))
+                imgs.style.width = array.length * canvas.width + 'px'
+                totalWidth = array.length * canvas.width
+                
+            })
+            // video.addEventListener('click',captureImage);
+
+            video.addEventListener('loadeddata', function() {
+                duration = video.duration
+                step = totalWidth / duration
+                console.log('step', step);
+                
+                captureImage()
+            })
+
+            imgs.addEventListener('click', function (e) {
+                let target = e.currentTarget
+            })
+        };
+
+        var drawImage = function (cxt, canvas) {
+            // if (video.currentTime < duration) {
+            //     setTimeout(() => {
+            //         drawImage(cxt, canvas)
+            //     }, 10);
+            // }
+            cxt.drawImage(video, 0, 0, canvas.width, canvas.height);
+            var img = document.createElement("img");
+            var url = canvas.toDataURL("image/png")
+            img.src = url
+            imgs.appendChild(img);
+            array.push(url)
+            video.currentTime += interval
+
+           
+            timer = window.requestAnimationFrame(function() {
+            	drawImage(cxt, canvas)
+            })
+        }
+ 
+        var captureImage = function() {
+            canvas = document.createElement("canvas");
+            canvas.width = video.videoWidth * scale;
+            canvas.height = video.videoHeight * scale;
+            var ctx = canvas.getContext('2d')
+
+            drawImage(ctx, canvas)
+        };
+ 
+        initialize();
+    })();
+
+    function extractFramesFromVideo(videoUrl, fps=25) {
+          // fully download it first (no buffering):
+          // let videoBlob = await fetch(videoUrl).then(r => r.blob());
+          // let videoObjectUrl = URL.createObjectURL(videoBlob);
+          let video = document.createElement("video");
+          let output = document.getElementById("output");
+
+          let seekResolve;
+          video.addEventListener('seeked', async function() {
+            if(seekResolve) seekResolve();
+          });
+
+          video.addEventListener('loadeddata', async function() {
+            let canvas = document.createElement('canvas');
+            let context = canvas.getContext('2d');
+            let [w, h] = [video.videoWidth, video.videoHeight]
+            canvas.width =  w;
+            canvas.height = h;
+
+            let frames = [];
+            let interval = 0.1;
+            let currentTime = 0;
+            let duration = video.duration;
+
+            while(currentTime < duration) {
+              video.currentTime = currentTime;
+              context.drawImage(video, 0, 0, w, h);
+
+             let base64ImageData = canvas.toDataURL("image/png");
+              frames.push(base64ImageData);
+              
+              var img = document.createElement("img");
+              img.src = base64ImageData
+              output.appendChild(img)
+              
+              currentTime += interval;
+            }
+            console.log('frames', frames);
+          });
+
+          // set video src *after* listening to events in case it loads so fast
+          // that the events occur before we were listening.
+          video.src = videoUrl; 
+      }
+
+    //   let frames = extractFramesFromVideo('./VfE_html5.mp4');
+
+
+
+</script>
+</body>
+
+</body>
+</html>

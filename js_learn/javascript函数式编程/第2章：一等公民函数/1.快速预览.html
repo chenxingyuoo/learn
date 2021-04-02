@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script>
+
+    //坏
+    var hi = function(name){
+        return "Hi " + name;
+    };
+
+    var greeting = function(name) {
+        return hi(name);
+    };
+    greeting('greeting');
+
+
+    //好
+    var greeting = hi;
+    greeting('greeting');
+
+    //用一个函数把另一个函数包起来，目的仅仅是延迟执行，真的是非常糟糕的编程习惯。
+
+    function ajaxCall(json){
+        console.log(json);
+    }
+
+    //坏
+    var getServerStuff = function(callback){
+        return ajaxCall(function(json){
+            return callback(json);
+        });
+    };
+
+    //好
+    var getServerStuff = ajaxCall;
+
+
+    // 这行
+    return ajaxCall(function(json){
+        return callback(json);
+    });
+
+    // 等价于这行
+    return ajaxCall(callback);
+
+    // 那么，重构下 getServerStuff
+    var getServerStuff = function(callback){
+        return ajaxCall(callback);
+    };
+
+    // ...就等于
+    var getServerStuff = ajaxCall;
+
+
+    //坏 封装一个函数只为返回一个可访问的函数
+    var BlogController = (function() {
+        var index = function(posts) {
+            return Views.index(posts);
+        };
+
+        var show = function(post) {
+            return Views.show(post);
+        };
+
+        var create = function(attrs) {
+            return Db.create(attrs);
+        };
+
+        var update = function(post, attrs) {
+            return Db.update(post, attrs);
+        };
+
+        var destroy = function(post) {
+            return Db.destroy(post);
+        };
+
+        return {index: index, show: show, create: create, update: update, destroy: destroy};
+    })();
+
+    //好 直接返回函数的引用
+    var BlogController = {index: Views.index, show: Views.show, create: Db.create, update: Db.update, destroy: Db.destroy};
+
+</script>
+</body>
+</html>

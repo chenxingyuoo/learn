@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <title>demo</title>
+   <meta charset="utf-8"/>
+</head>
+
+<body>
+<script type="text/javascript">
+
+function is_leap(year) { 
+   return (year%100==0?res=(year%400==0?1:0):res=(year%4==0?1:0));
+} //是否为闰年
+
+var nstr=new Date(); //当前Date资讯
+var ynow=nstr.getFullYear(); //年份
+var mnow=nstr.getMonth(); //月份
+var dnow=nstr.getDate(); //今日日期
+var n1str=new Date(ynow,mnow,1); //当月第一天Date资讯
+
+var firstday=n1str.getDay(); //当月第一天星期几
+
+var m_days=new Array(31,28+is_leap(ynow),31,30,31,30,31,31,30,31,30,31); //各月份的总天数
+
+var tr_str=Math.ceil((m_days[mnow] + firstday)/7); //表格所需要行数
+
+//打印表格第一行（有星期标志）
+document.write ("<table border='1' align='center' width='220' cellspacing='0'><tr><td align='center'>日</td><td align='center'>一</td><td align='center'>二</td><td align='center'>三</td><td align='center'>四</td><td align='center'>五</td><td align='center'>六</td></tr>");
+
+for(var i=0;i<tr_str;i++) { //表格的行
+   document.write("<tr>");
+   for(var k=0;k<7;k++) { //表格每行的单元格
+      idx=i*7+k; //单元格自然序列号
+      date_str=idx-firstday+1; //计算日期
+      (date_str<=0 || date_str>m_days[mnow]) ? date_str="&nbsp;" : date_str=idx-firstday+1; //过滤无效日期（小于等于零的、大于月总天数的）
+      //打印日期：今天底色为红
+      date_str==dnow ? document.write ("<td align='center' bgcolor='red'>" + date_str + "</td>") : document.write ("<td align='center'>" + date_str + "</td>");
+   }
+   document.write("</tr>"); //表格的行结束
+}
+
+document.write("</table>"); //表格结束
+
+</script>
+</body>
+</html>

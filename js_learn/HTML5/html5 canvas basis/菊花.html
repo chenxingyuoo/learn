@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+
+<canvas id="canvas" width="800" height="600"></canvas>
+
+<script>
+
+    document.body.onload = draw1('canvas');
+
+    function draw1(id) {
+        var canvas = document.getElementById(id);
+        if (canvas == null)
+            return false;
+        var context = canvas.getContext("2d");
+        context.fillStyle = "#EEEEFF";
+        context.fillRect(0, 0, 400, 300);
+        var n = 0;
+        var dx = 150;
+        var dy = 150;
+        var s = 100;
+        context.beginPath();
+        context.fillStyle = 'rgb(100,255,100)';
+        context.strokeStyle = 'rgb(0,0,100)';
+        var x = Math.sin(0);
+        var y = Math.cos(0);
+        var dig = Math.PI / 15 * 11;
+        for (var i = 0; i < 30; i++) {
+            var x = Math.sin(i * dig);
+            var y = Math.cos(i * dig);
+            console.log(dx + x * s, dy + y * s)
+            context.lineTo(dx + x * s, dy + y * s);
+        }
+        context.closePath();
+        context.fill();
+        context.stroke();
+
+    }
+</script>
+</body>
+</html>

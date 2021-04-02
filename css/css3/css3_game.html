@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        /*// 父元素有一个counter-reset应用于实例化（初始化）*/
+        section {
+        counter-reset: unicornCounter;
+        }
+
+        /*// 被指定的子元素上开始计算*/
+        section h1 {
+        counter-increment: unicornCounter;
+        }
+
+        input:checked {
+            counter-increment: counterName;
+        }
+        span::after {
+            content: counter(counterName);
+        }
+    </style>
+</head>
+
+<body>
+<section>
+   <h1>hsh</h1>
+    <input type="checkbox">
+    <span></span>
+</section>
+</body>
+</html>

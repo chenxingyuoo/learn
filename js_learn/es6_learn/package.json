@@ -1,0 +1,7 @@
+{
+  "devDependencies": {
+    "co": "^4.6.0",
+    "superagent": "^3.5.2",
+    "thunkify": "^2.1.2"
+  }
+}

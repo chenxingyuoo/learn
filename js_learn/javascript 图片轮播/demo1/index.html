@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .page2-img-content{
+            width: 300px;
+            height: 250px;
+            margin: 0 auto;
+            position: relative;
+        }
+        .page2-img-item {
+            width: 300px;
+            height: 250px;
+            overflow: hidden;
+            text-align: center;
+            background-repeat: no-repeat;
+            background-size: 100% 100%;
+            position: absolute;
+            -webkit-transition: all 600ms ease-out ;
+            opacity: 0;
+            -webkit-transform: scale(0.8);
+        }
+        .page2-img-content ul li a {
+            display: block;
+        }
+        .page2-img-item.active{
+            display: block;
+        }
+
+        .one-positive{
+            display: block !important;
+            opacity: 1;
+            -webkit-transform: translateX(-65%) translateZ(0) rotateY(78deg) scale(0.8);
+        }
+        .one-negative{
+            display: block !important;
+            opacity: 1;
+            -webkit-transform: translateX(65%) translateZ(0) rotateY(-78deg) scale(0.8);
+        }
+        .page2-img-item.active{
+            z-index: 100;
+            opacity: 1;
+            -webkit-transform: scale(1);
+        }
+    </style>
+</head>
+<body>
+
+<ul class="page2-img-content">
+    <li class="page2-img-item" style="background-image: url(../../test_pic/A.jpg)">
+        <a href=""></a>
+    </li>
+    <li class="page2-img-item" style="background-image: url(../../test_pic/B.jpg)">
+        <a href=""></a>
+    </li>
+    <li class="page2-img-item" style="background-image: url(../../test_pic/C.jpg)">
+        <a href=""></a>
+    </li>
+    <li class="page2-img-item" style="background-image: url(../../test_pic/D.jpg)">
+        <a href=""></a>
+    </li>
+    <li class="page2-img-item" style="background-image: url(../../test_pic/E.jpg)">
+        <a href=""></a>
+    </li>
+    <li class="page2-img-item" style="background-image: url(../../test_pic/F.jpg)">
+        <a href=""></a>
+    </li>
+    <li class="page2-img-item" style="background-image: url(../../test_pic/G.jpg)">
+        <a href=""></a>
+    </li>
+    <li class="page2-img-item" style="background-image: url(../../test_pic/H.jpg)">
+        <a href=""></a>
+    </li>
+    <li class="page2-img-item" style="background-image: url(../../test_pic/I.jpg)">
+        <a href=""></a>
+    </li>
+    <li class="page2-img-item" style="background-image: url(../../test_pic/J.jpg)">
+        <a href=""></a>
+    </li>
+</ul>
+
+<div class="prev">prev</div>
+<div class="next">next</div>
+
+<script src="../../jquery1.9.1.js"></script>
+<script>
+    $(function (){
+
+        function ImgScroll(box, config) {
+            this.box = $(box); //盒子
+            this.config = $.extend({}, config || {});
+            this.children = this.box.children();
+            this.width = this.config.width || this.children.eq(0).width() ;//一次滚动的宽度
+            this.size = this.config.size || this.children.length ; //列表长度值
+            this.scroll_time = this.config.scroll_time || 600;//滚动时长
+            this.index = this.config.index || -1; //索引值
+            this.lock = false;  //锁定
+            this.prev_btn = $(this.config.prev_btn);
+            this.next_btn = $(this.config.next_btn);
+            this.init(); //初始化
+        }
+
+        ImgScroll.prototype = {
+            init : function (){
+                var self = this;
+
+                if(self.index < 0){
+                    self.index = 0
+                }else if(self.index > self.size){
+                    self.index = self.size
+                }
+
+                //对应的index获取样式
+                self.get_style();
+
+                //绑定左右按钮事件
+                self.bindEvent();
+
+            },
+            //判断按钮是否存在 ， 绑定左右按钮事件
+            bindEvent : function (){
+                var self = this;
+                if(self.prev_btn.length != 0){
+                    self.prev_btn.on('click',function (){
+                        if(!self.lock){
+                           self.lock = true;
+                           self.prev();
+                        }
+                    });
+                }
+                if(self.next_btn.length != 0) {
+                    self.next_btn.on('click', function () {
+                        if(!self.lock) {
+                            self.lock = true;
+                            self.next();
+                        }
+                    });
+                }
+            },
+            //上一页
+            prev : function (){
+                var self = this;
+                self.index = self.index - 1;
+                //判断 self.index 是否小于0
+                if(self.index < 0){
+                    self.index = self.size - 1
+                }
+                self.go_index();
+            },
+            //下一页
+            next : function (){
+                var self = this;
+                self.index = self.index + 1;
+                self.go_index();
+            },
+            //跳到索引页
+            go_index : function (){
+                var self = this;
+                //检测index的取值范围
+                self.check_index();
+                //对应的index获取样式
+                self.get_style();
+                //动画执行完成的回调方法
+                setTimeout(function (){
+                    self.complete(self.index);
+                },600);
+
+            },
+            complete : function (){
+                var self = this;
+                //锁定
+                self.lock = false;
+                //回调函数
+                self.config.callback && self.config.callback(self);
+
+            },
+            //对应的index获取样式
+            get_style : function (){
+                var self = this;
+                self.children.removeClass('one-positive one-negative');
+                self.children.eq(self.index).addClass('active').siblings().removeClass('active');
+                self.children.eq( self.index - 1 < 0 ? self.size - 1 : self.index - 1).addClass('one-positive');
+                self.children.eq( self.index + 1 >= self.size ? 0 : self.index + 1).addClass('one-negative');
+
+            },
+            //检测index的范围
+            check_index : function (){
+                var self = this;
+                self.index = self.index % self.size;
+            }
+        };
+
+        var imgScroll = new ImgScroll('.page2-img-content',{
+            prev_btn : '.prev',
+            next_btn : '.next'
+        });
+
+
+    });
+</script>
+
+</body>
+</html>

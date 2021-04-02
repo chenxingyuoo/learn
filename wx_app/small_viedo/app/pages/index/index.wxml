@@ -1,0 +1,21 @@
+<view>
+
+    <view animation="{{animationData}}" style="background:#000;height:100rpx;width:100rpx;position: absolute;z-index: 10"></view>
+
+    <!--scale.wxml -->
+    <canvas canvas-id="1" style="position: absolute;z-index: 10" />
+
+
+    <view class="page-top">
+        <text class="username">恭喜你</text>
+        <text class="text-info">成功地搭建了一个微信小程序</text>
+        <view class="page-btn-wrap">
+            <button class="page-btn" bindtap="gotoVideo">进入程序</button>
+        </view>
+    </view>
+    <view class="page-bottom">
+        <text class="qr-txt">分享二维码邀请好友结伴一起写小程序！</text>
+        <image src="../../images/qr.png" class="qr-img"></image>
+        <image src="../../images/logo.png" class="page-logo"></image>
+    </view>
+</view>

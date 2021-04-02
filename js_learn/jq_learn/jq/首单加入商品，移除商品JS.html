@@ -1,0 +1,766 @@
+@extends('layout.main')
+
+@section('title', '首单')
+
+@section('header_related')
+
+    <style>
+        .tab-botm {
+            height: 78px;
+            border-top: solid 1px #d0d0d0;
+            padding: 15px 0px;
+        }
+
+        .sy-box {
+            position: relative;
+            width: 72px;
+        }
+
+        .tab-bleft {
+            float: left;
+            width: 68%;
+            text-align: right;
+            font-size: 10px;
+        }
+
+        .tab-bignum {
+            font-size: 20px;
+        }
+
+        .tab-smalnum {
+            font-size: 16px;
+        }
+
+        span.sy_minus, span.sy_plus {
+            width: 18px;
+            height: 18px;
+            line-height: 16px;
+            text-align: center;
+            display: block;
+            position: absolute;
+            top: 0px;
+            font-size: 14px;
+            border: solid 1px #d0d0d0;
+            background: #fff;
+            cursor: pointer;
+            border-radius: 3px;
+            font-size: 10px;
+        }
+
+        span.sy_minus {
+            left: 0px;
+        }
+
+        span.sy_plus {
+            right: 0px;
+        }
+
+        input.sy_num {
+            width: 26px;
+            height: 18px;
+            line-height: 18px;
+            text-align: center;
+            position: absolute;
+            top: 0px;
+            left: 22px;
+            font-size: 10px;
+            border-radius: 3px;
+            border: solid 1px #d0d0d0;
+        }
+
+        span.sy_num {
+            padding: 5px 8px;
+            border: solid 1px #d0d0d0;
+            border-left: none;
+            border-right: none;
+            cursor: pointer;
+        }
+
+        td {
+            font-size: 12px;
+        }
+
+        .c-red {
+            color: #fa4a7a;
+        }
+
+        .center {
+            text-align: center;
+        }
+
+        .icon-siz {
+            font-size: 15px;
+        }
+
+        .bo-1 {
+            margin-bottom: 20px;
+        }
+
+        .tixput {
+            padding-left: 15px;
+        }
+
+        .f-r {
+            float: right;
+        }
+
+        th {
+            text-align: center;
+
+        }
+
+        .store-box {
+            width: 18%;
+            height: 150px;
+            margin-right: 13px;
+            float: left;
+            margin-bottom: 14px;
+        }
+
+        .store-box.end {
+            margin-right: 0;
+        }
+
+        .img-box {
+            height: 90px;
+            border: 1px solid #eeeeee;
+            margin-bottom: 5px;
+        }
+
+        .img-txt {
+            margin-bottom: 5px;
+            height: 30px;
+            overflow: hidden;
+            line-height: 15px;
+            font-size: 12px;
+            text-align: center;
+        }
+
+        .img-shop {
+            height: 19px;
+
+        }
+
+        .img-shop_span1 {
+            color: red;
+            float: left;
+            line-height: 19px;
+            height: 19px;
+            width: 54%;
+            overflow: hidden;
+        }
+
+        .img-shop_span2 {
+            float: right;
+            padding: 4px;
+            border: 1px solid #eeeeee;
+            line-height: 8px;
+            font-size: 12px;
+            border-radius: 5px;
+        }
+
+        td {
+            text-align: center;
+
+        }
+
+        tr {
+
+        }
+
+        .h-ticon {
+            display: inline-block;
+            float: right;
+            text-align: center;
+            height: 56px;
+            width: 56px;
+            border-left: #eeeeee 1px solid;
+            line-height: 56px;
+            font-size: 17px;
+            color: #676767;
+        }
+
+        .h-sech {
+            display: inline-block;
+            float: right;
+            height: 56px;
+            padding: 10px 20px 10px 10px;
+        }
+
+        .yuan-input {
+            position: absolute;
+            top: -30%;
+            left: -30%;
+            display: block;
+            width: 160%;
+            height: 160%;
+            margin: 0px;
+            padding: 0px;
+            border: 0px;
+            opacity: 0;
+            background: rgb(255, 255, 255);
+        }
+        .widget-container{
+            overflow: hidden;
+        }
+        .main-tab-content{
+            margin:0 -15px 20px;
+        }
+    </style>
+@endsection
+
+@section('content')
+    <div class="main-container">
+        <div class="container-fluid">
+            @include('layout.breadcrumb', [
+                'title' => '加盟管理',
+                'breadcrumb' => [
+                    '加盟管理' => route('league.create'),
+                    '首单' => ''
+                ]
+            ])
+        </div>
+    </div>
+    {{--<div class="main-container">
+        <div class="container-fluid">
+            @include('layout.breadcrumb')
+
+            <div class="row">
+                <div class="col-md-12">
+                    {{ base_path('resources/views/league-first-order/form.blade.php') }}
+                </div>
+            </div>
+        </div>
+    </div>--}}
+
+    <div class="container-fluid">
+        <div class="full-tab-container">
+            <ul class="main-tab nav nav-tabs">
+                <li class="">
+                    <a href="{{ route('league.index') }}">
+                        <span>已加盟</span>
+                    </a>
+                </li>
+
+                <li class="">
+                    <a href="{{ route('league-apply.index') }}">
+                        <span>代理商审核</span>(<span class="c-red">32</span>)
+                    </a>
+                </li>
+
+                <li class="">
+                    <a href="{{ route('league-apply.merchant') }}">
+                        <span>招商部审核</span>(<span class="c-red">32</span>)
+                    </a>
+                </li>
+
+
+                <li class="active">
+                    <a href="{{ route('league-first-order.index') }}">
+                        <span>首单</span>
+                    </a>
+                </li>
+                <div class=" col-md-2 user-nav-icon f-r">
+                    <a style="background-color: #e7e7e7; height: 46px; line-height:30px"
+                       href="{{ route('user.league.create') }}" target="_blank" data-bb="custom_html"
+                       class="btn btn-default btn-block"><i class="ico-plus user-nav-icon"></i>创建加盟店</a>
+                </div>
+            </ul>
+            <div class="main-tab-content tab-content">
+                <div class="widget-container">
+                    <div class="col-md-8" style="padding-left: 0;">
+                        <div class="box-widget widget-module">
+                            <div class="widget-head clearfix">
+                                <ul class="nav navbar-nav">
+                                    <li class="dropdown">
+                                        <a href="{{ route('league-first-order.create', ['id' => $id]) }}"
+                                           class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                           aria-haspopup="true" aria-expanded="false">
+                                            @if ($category)
+                                                {{ $category->name }}
+                                            @else
+                                                {{ '全部' }}
+                                            @endif
+                                            <span class="caret"></span>
+                                        </a>
+                                        <ul class="dropdown-menu">
+                                            @if ($category)
+                                                <li>
+                                                    <a href="{{ route('league-first-order.create', ['id' => $id]) }}">全部</a>
+                                                </li>
+                                            @endif
+                                            @foreach($categories as $item)
+                                                <li>
+                                                    <a href="{{ route('league-first-order.create', ['category' => $item->id, 'id' => $id]) }}">{{ $item->name }}</a>
+                                                </li>
+                                                @if ($item->child)
+                                                    @foreach($item->child as $citem)
+                                                        <li>
+                                                            <a href="{{ route('league-first-order.create', ['category' => $citem->id, 'id' => $id]) }}">|--{{ $citem->name }}</a>
+                                                        </li>
+                                                    @endforeach
+                                                @endif
+                                            @endforeach
+                                        </ul>
+                                    </li>
+                                </ul>
+
+                                <span class="h-ticon"><i class="fa fa-list-ul"></i></span>
+
+                                <form method="get" action="{{ route('league-first-order.create') }}">
+                                    <div class="col-xs-4 h-sech">
+                                        <input name="id" type="hidden" value="{{ $id }}" >
+                                        <input type="text" name="keyword" value="{{ $keyword }}" placeholder="搜索"
+                                               class="form-control">
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="widget-container">
+                                <div class=" widget-block" style="display: inline-block; width: 100% ">
+                                    @foreach($goods as $k => $item)
+                                        <div class="store-box @if($k % 5 - 4 == 0){{ 'end' }}@endif">
+                                            <div class="img-box">
+                                                <img src="{{ $item->cover('100w_100h') }}">
+                                            </div>
+                                            <div class="img-txt">
+                                                {{ $item->name }}
+                                            </div>
+                                            <div class="img-shop">
+                                                <span class="img-shop_span1">￥{{ $item->purchase_price }}</span>
+                                                    <span class="img-shop_span2"
+                                                          goods_id="{{ $item->id }}"
+                                                          style="cursor: pointer"> + 加入 </span>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                            <div class="dt-pagination">
+                                <nav> {!! $goods->render() !!} </nav>
+                            </div>
+                        </div>
+                    </div>
+
+                    <form class="col-md-4" style="padding:0 0 ;" action="{{ url('league-first-order') }}/save">
+                        <div class="box-widget widget-module">
+                            <div class="widget-head clearfix">
+                                    <span class="h-icon"><i style="color: #676767; font-size: 18px;"
+                                                            class="fa fa-cart-plus"></i></span>
+                                <h4>{{ $league->user->name }} {{ $league->apply->agent_id }} 的首单</h4>
+                            </div>
+                            <div class="panel-body">
+                                <table class="table table-hover">
+                                    <tbody class="NameData">
+                                    @if($card)
+                                        @foreach($card as $item)
+                                            <tr class="goods_tr">
+                                                <td style="width:50%">{{ $item->goods->name }}</td>
+                                                <td class="price" style="width:18%">
+                                                    ￥{{ $item->goods->purchase_price }}</td>
+                                                <td style="width:7%">
+                                                    <div class="sy-box">
+                                                        <span class="sy_minus ico-minus" id="sy_minus_gid1"></span>
+                                                        <input class="sy_num" id="sy_num_gid1" type="text"
+                                                               name="months" value="{{ $item->count }}">
+                                                            <span style="display:none"
+                                                                  class="goods_id">{{ $item->goods->id }}</span>
+                                                        <span class="sy_plus ico-plus" id="sy_plus_gid1"></span>
+                                                    </div>
+                                                </td>
+                                                <td style="width:25%;cursor: pointer" class="delete_goods">移除</td>
+                                            </tr>
+                                        @endforeach
+                                    @endif
+                                    </tbody>
+                                </table>
+                                <div class="tab-botm">
+                                    <div class="tab-bleft">
+                                        <div class="c-red">
+                                            <span class="tab-smalnum">￥</span><span
+                                                    class="tab-bignum">{{ $all_price }}</span>
+                                        </div>
+                                        <div class="bleft-botm">
+                                            <span>已经选择了<span class="c-red totalNum">{{ $total_num }}</span>种商品，不含运费合计</span>
+                                        </div>
+                                    </div>
+
+                                    <input name="id" type="hidden" value="{{ $id }}" >
+                                    <input name="user_id" type="hidden" value="{{ $league->user_id }}" >
+                                    <button style="padding: 12px 22px; color: #fff; border: none; float: right; background-color: #ed5970"
+                                            type="submit" class="btn btn-default first_save">保存
+                                    </button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+
+
+            </div>
+
+        </div>
+    </div>
+@endsection
+@section('footer_related')
+    <script src="/js/bootbox.js"></script>
+    <script src="/js/sweetalert.js"></script>
+    <script src="/js/icheck.js"></script>
+    <script src="/js/sea.js"></script>
+    <script src="/js/jquery.bootstrap-touchspin.js"></script>
+
+    <script type="text/javascript">
+        var $ = jQuery;
+        var $doc = $(document);
+        $doc.ready(function () {
+            var $ = jQuery;
+            //加减按钮功能实现开始
+            $('.NameData').on('click', '.sy_minus', function (e) {
+                e.preventDefault();
+                var $this = $(this);
+                var goods_num = $this.closest('.sy-box').find('#sy_num_gid1');
+                var val = $this.closest('.sy-box').find('#sy_num_gid1').val();
+                if (val >1) {
+                    goods_num.val(Number(val) - 1);
+                }
+                else {
+                    swal("商品数量不能修改为0!", "");
+                    return;
+                }
+                totalPrice();
+                var ActionURL = "{{ url('league-first-order') }}/append";
+                var goods_id = $this.closest('.sy-box').find('.goods_id').text();
+                var goodNum = $this.closest('.sy-box').find('#sy_num_gid1').val();
+                changeGoodsNumber(ActionURL, goods_id, goodNum);
+            });
+
+            $('.NameData').on('click', '.sy_plus', function (e) {
+                e.preventDefault();
+                var $this = $(this);
+                var goods_num = $(this).closest('.sy-box').find('#sy_num_gid1');
+                var val = $(this).closest('.sy-box').find('#sy_num_gid1').val();
+                goods_num.val(Number(val) + 1);
+                totalPrice();
+                var ActionURL = "{{ url('league-first-order') }}/append";
+                var goods_id = $this.closest('.sy-box').find('.goods_id').text();
+                var goodNum = $this.closest('.sy-box').find('#sy_num_gid1').val();
+                changeGoodsNumber(ActionURL, goods_id, goodNum);
+
+            });
+            //加减按钮功能实现结束
+            /* //保存按钮开始
+            $('.first_save').on('click', function (e) {
+                e.preventDefault();
+                var token = '{{ csrf_token() }}';
+                swal({
+                    title: "确定保存?",
+                    //text: "删除后将不能恢复！!",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "确定",
+                    cancelButtonText: "取消",
+                    closeOnConfirm: false,
+                    closeOnCancel: true
+                }, function (isConfirm) {
+                    if (!isConfirm) return;
+                    var ActionURL="{{ url('league-first-order') }}/save";
+                    var id=$("input[name='id']").val();
+                    var user_id=$("input[name='user_id']").val();
+                    $.ajax({
+                        url:ActionURL,
+                        data:{
+                            id:id,
+                            user_id:user_id,
+                            _token:token
+                        },
+                        success:function(json){
+                            if(json.state==1){
+                                window.location.reload();
+                            }
+                        },
+                        error:function(){
+                            console.log(error);
+                        }
+                    });
+
+                });
+            }); */
+            //保存按钮结束
+
+            //点击加入上传数据到后台开始
+            var goodsIdArr = [];
+
+            $('.img-shop_span2').on('click', function () {
+                var $ = jQuery;
+                var $this = $(this);
+                var $goods_id = $this.attr('goods_id');
+                var $tr = $this.closest('.store-box ');
+                var texts = $tr.find('.img-txt').text();
+                var $price = $tr.find('.img-shop_span1').text();
+                var $obox = $('.table');
+                var $index = getGoodsIndex();
+                $newOitem = $('<tr class="goods_tr">' +
+                        '<td style="width:50%">' + texts + '</td>' +
+                        '<td class="price" style="width:18%">' + $price + '</td>' +
+                        '<td style="width:7%">' +
+                        '<div class="sy-box">' +
+                        '<span class="sy_minus ico-minus" id="sy_minus_gid1"></span>' +
+                        '<input  class="sy_num" id="sy_num_gid1"  type="text" name="months" value="1" />' + '<span style="display:none" class="goods_id">' + $goods_id + '</span>' +
+                        '<span class="sy_plus ico-plus" id="sy_plus_gid1"></span>' +
+                        '</div>' +
+                        '</td>' +
+                        '<td style="width:25%;cursor: pointer" class="delete_goods">移除</td>' +
+                        '</tr>');
+                var is_exist = $.inArray($goods_id, goodsIdArr);
+
+                if (is_exist == -1) {
+
+                    $this.data('$newOitem', $newOitem);
+                    $obox.append($newOitem);
+                    goodsIdArr.push($goods_id);
+                }
+                else {
+                    var $sy_num = $this.closest('body').find('.goods_tr').eq($index).find('.sy_num');
+                    var old_sy_num = $sy_num.val();
+                    $sy_num.val(Number(old_sy_num) + 1);
+                }
+                //获得当前点击对象的goods_id在table中得索引值开始
+                function getGoodsIndex() {
+                    var goods_tr = $('.table').find('.NameData').find('.goods_tr');
+                    var len = goods_tr.length;
+                    if (len > 0) {
+                        for (var i = 0; i < len; i++) {
+                            var goods_id = goods_tr.eq(i).find('.goods_id').text();
+                            if ($goods_id == goods_id) {
+                                return i;
+                            }
+                        }
+                    }
+                    else {
+                        return;
+                    }
+                }
+                //获得当前点击对象的goods_id在table中得索引值结束
+                addGoodsData($this, $index);
+                totalPrice();
+
+            });
+            //点击加入上传数据到后台开始
+
+            function addGoodsData($this, $index) {
+                var ActionURL = "{{ url('league-first-order') }}/append";
+                var goods_id = $this.attr('goods_id');
+
+
+                $.ajax({
+                    url: ActionURL,
+                    data: {
+                        goods_id: goods_id,
+                        user_id: "{{ $league->user_id }}",
+                        type_id: 1
+                    },
+                    success: function (json) {
+                        if (json.state == 1) {
+                            //返回商品总数
+                            var totalNum = json.total_num;
+                            $('.totalNum').text(totalNum);
+                            totalPrice();
+
+                        }
+                        else {
+                            swal("添加失败!", json.message, "error");
+                        }
+                    },
+                    error: function (error) {
+                        console.log(error);
+                    }
+
+                });
+            }
+
+            //点击加入上传数据到后台结束
+
+            //点击移除上传数据到后台开始
+
+            $('.NameData').on('click', '.delete_goods', function (e) {
+                e.preventDefault();
+                $this = $(this);
+                var $index = $(this).closest('.goods_tr').index();
+                console.log($index);
+                var goods_id = $this.closest('body').find('.goods_tr').find('.goods_id').eq($index).text();
+                console.log(goods_id);
+                var ActionURL = "{{ url('league-first-order') }}/remove";
+                swal({
+                    title: "确定移除?",
+                    text: "移除后将不可更改！！",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "确定",
+                    cancelButtonText: "取消",
+                    closeOnConfirm: false,
+                    closeOnCancel: true
+                }, function (isConfirm) {
+                    if (!isConfirm) return;
+                    $.ajax({
+                        url: ActionURL,
+                        data: {
+                            goods_id: goods_id,
+                            user_id: "{{ $league->user_id }}",
+                        },
+                        success: function (json) {
+                            if (json.state == 1) {
+                                $this.closest('.goods_tr').remove();
+                                var totalNum = json.total_num;
+                                $('.totalNum').text(totalNum);
+                                totalPrice();
+                                goodsIdArr.pop();
+                                swal("移除成功!", json.message, "success");
+
+                            }
+                            else {
+                                swal("移除失败!", json.message, "error");
+
+                            }
+                        }
+
+                    });
+
+                });
+            });
+
+            //点击移除上传数据到后台结束
+            //改变商品数目开始
+            $(document).on('change', '#sy_num_gid1', function (e) {
+                e.preventDefault();
+                $this = $(this);
+                var ActionURL = "{{ url('league-first-order') }}/append";
+                var goods_id = $this.next('.goods_id').text();
+                var goodNum = $this.val();
+                if(goodNum>=1){
+                changeGoodsNumber(ActionURL, goods_id, goodNum);
+                }
+                else{
+                    $this.val(1);
+                    swal("商品数量不能修改为0!", "error");
+                }
+            });
+            function changeGoodsNumber(ActionURL, goods_id, goodNum) {
+                $.ajax({
+                    url: ActionURL,
+                    data: {
+                        user_id: "{{ $league->user_id }}",
+                        goods_id: goods_id,
+                        count: goodNum,
+                        type_id: 3
+                    },
+                    success: function (json) {
+                        if (json.state == 1) {
+                            var totalNum = json.total_num;
+                            $('.totalNum').text(totalNum);
+                            totalPrice();
+                        }
+                        else {
+                            swal("添加失败!", json.message, "error");
+                        }
+                    }
+                });
+            }
+            //改变商品数目结束
+
+            //计算商品总价开始
+            function totalPrice() {
+                var goods_tr = $('.NameData').find('tr').find('#sy_num_gid1');
+                //单价
+                var total_price = 0.00;
+                for (var i = 0, len = goods_tr.length; i < len; i++) {
+                    var good_num = goods_tr.eq(i).val();
+                    var good_price = goods_tr.eq(i).closest('.goods_tr').find('.price').text().split('￥')[1];
+                    var oneTotal =accMul(good_num,good_price).toFixed(2);
+
+                    total_price = accAdd(total_price,oneTotal).toFixed(2);
+
+                }
+                $('.tab-bignum').text(total_price);
+            }
+
+            //计算商品总价结束
+
+            //两个浮点数相乘的方法开始
+            function accMul(arg1, arg2) {
+                var m = 0, s1 = arg1.toString(), s2 = arg2.toString();
+                try {
+                    m += s1.split(".")[1].length;
+                }
+                catch (e) {
+                }
+                try {
+                    m += s2.split(".")[1].length;
+                }
+                catch (e) {
+                }
+                return Number(s1.replace(".", "")) * Number(s2.replace(".", "")) / Math.pow(10, m);
+            }
+            //两个浮点数相乘的方法结束
+
+            //两个数相加的方法开始
+            function accAdd(arg1, arg2) {
+                var r1, r2, m, c;
+                try {
+                    r1 = arg1.toString().split(".")[1].length;
+                }
+                catch (e) {
+                    r1 = 0;
+                }
+                try {
+                    r2 = arg2.toString().split(".")[1].length;
+                }
+                catch (e) {
+                    r2 = 0;
+                }
+                c = Math.abs(r1 - r2);
+                m = Math.pow(10, Math.max(r1, r2));
+                if (c > 0) {
+                    var cm = Math.pow(10, c);
+                    if (r1 > r2) {
+                        arg1 = Number(arg1.toString().replace(".", ""));
+                        arg2 = Number(arg2.toString().replace(".", "")) * cm;
+                    } else {
+                        arg1 = Number(arg1.toString().replace(".", "")) * cm;
+                        arg2 = Number(arg2.toString().replace(".", ""));
+                    }
+                } else {
+                    arg1 = Number(arg1.toString().replace(".", ""));
+                    arg2 = Number(arg2.toString().replace(".", ""));
+                }
+                return (arg1 + arg2) / m;
+            }
+            //两个数相加的方法结束
+
+            //对table进行遍历开始
+            function checkGoodsId() {
+                var goods_tr = $('.table').find('.NameData').find('.goods_tr');
+                var len = goods_tr.length;
+                if (len > 0) {
+                    for (var i = 0; i < len; i++) {
+                        var $goods_id = goods_tr.eq(i).find('.goods_id').text();
+                        var is_exist = $.inArray($goods_id, goodsIdArr);
+
+                        if(is_exist==-1){
+                            goodsIdArr.push($goods_id);
+                        }
+                    }
+                }
+                else {
+                    return;
+                }
+            }
+            checkGoodsId();
+            //对table进行遍历结束
+
+        })[0].onselectstart = new Function("return false");
+    </script>
+@endsection
+
+

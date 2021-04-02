@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+
+<script src="js/three.js"></script>
+<script src="js/OrbitControls.js"></script>
+<script>
+  function init() {
+    // 获取浏览器窗口的宽高，后续会用
+    var width = window.innerWidth
+    var height = window.innerHeight
+
+    // 创建一个场景
+    var scene = new THREE.Scene()
+
+    // 创建一个具有透视效果的摄像机
+    var camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 800)
+
+    // 设置摄像机位置，并将其朝向场景中心
+    camera.position.x = 0
+    camera.position.y = 10
+    camera.position.z = 200
+    camera.lookAt(scene.position)
+
+    // 创建一个 WebGL 渲染器，Three.js 还提供 <canvas>, <svg>, CSS3D 渲染器。
+    var renderer = new THREE.WebGLRenderer({
+      antialias: true  // 开启抗齿锯
+    })
+
+    // 设置渲染器的清除颜色（即绘制下一帧前填充的颜色）和输出的 canvas 的尺寸
+    renderer.setClearColor(0x000000)
+    renderer.setSize(width, height)
+
+    // 将渲染器的输出（此处是 canvas 元素）插入到 body
+    document.body.appendChild(renderer.domElement)
+
+    // 初始化摄像机插件（用于拖拽旋转摄像机，产生交互效果）
+    var orbitControls = new THREE.OrbitControls(camera)
+    orbitControls.autoRotate = true
+
+    // 通过自定义 canvas 生成纹理
+    var getTexture = function () {
+      var canvas = document.createElement('canvas')
+      canvas.width = 32
+      canvas.height = 32
+
+      var ctx = canvas.getContext('2d')
+      // the body
+      ctx.translate(-81, -84)
+
+      ctx.fillStyle = "orange"
+      ctx.beginPath()
+      ctx.moveTo(83, 116)
+      ctx.lineTo(83, 102)
+      ctx.bezierCurveTo(83, 94, 89, 88, 97, 88)
+      ctx.bezierCurveTo(105, 88, 111, 94, 111, 102)
+      ctx.lineTo(111, 116)
+      ctx.lineTo(106.333, 111.333)
+      ctx.lineTo(101.666, 116)
+      ctx.lineTo(97, 111.333)
+      ctx.lineTo(92.333, 116)
+      ctx.lineTo(87.666, 111.333)
+      ctx.lineTo(83, 116)
+      ctx.fill()
+
+      // the eyes
+      ctx.fillStyle = "white"
+      ctx.beginPath()
+      ctx.moveTo(91, 96)
+      ctx.bezierCurveTo(88, 96, 87, 99, 87, 101)
+      ctx.bezierCurveTo(87, 103, 88, 106, 91, 106)
+      ctx.bezierCurveTo(94, 106, 95, 103, 95, 101)
+      ctx.bezierCurveTo(95, 99, 94, 96, 91, 96)
+      ctx.moveTo(103, 96)
+      ctx.bezierCurveTo(100, 96, 99, 99, 99, 101)
+      ctx.bezierCurveTo(99, 103, 100, 106, 103, 106)
+      ctx.bezierCurveTo(106, 106, 107, 103, 107, 101)
+      ctx.bezierCurveTo(107, 99, 106, 96, 103, 96)
+      ctx.fill()
+
+      // the pupils
+      ctx.fillStyle = "blue"
+      ctx.beginPath()
+      ctx.arc(101, 102, 2, 0, Math.PI * 2, true)
+      ctx.fill()
+      ctx.beginPath()
+      ctx.arc(89, 102, 2, 0, Math.PI * 2, true)
+      ctx.fill()
+
+
+      var texture = new THREE.Texture(canvas)
+      texture.needsUpdate = true
+      return texture
+    }
+
+    var geometry = new THREE.Geometry()
+    var material = new THREE.PointsMaterial({
+      size: 10,
+      transparent: true,
+      opacity: 1,
+      // 指定纹理
+      map: getTexture(),
+      // 粒子的大小是否和其与摄像机的距离有光，默认值 true
+      sizeAttenuation: true,
+      // 用于去除纹理的黑色背景，关于 depthTest 和 depthWrite 的详细解释，请查看https://stackoverflow.com/questions/37647853/three-js-depthwrite-vs-depthtest-for-transparent-canvas-texture-map-on-three-p
+      depthWrite: false
+    })
+
+    var range = 500
+
+    for (var i = 0; i < 5000; i++) {
+      var particle = new THREE.Vector3(
+        Math.random() * range - range / 2,
+        Math.random() * range - range / 2,
+        Math.random() * range - range / 2)
+
+      geometry.vertices.push(particle)
+    }
+
+    var points = new THREE.Points(geometry, material)
+    console.log(points)
+    scene.add(points)
+
+
+    render()
+
+    var step = 0
+    function render() {
+      // 渲染，即摄像机拍下此刻的场景
+      renderer.render(scene, camera)
+
+      step += 0.004;
+
+      points.rotation.x = step;
+      points.rotation.z = step;
+      requestAnimationFrame(render)
+    }
+
+  }
+  init()
+</script>
+</body>
+</html>

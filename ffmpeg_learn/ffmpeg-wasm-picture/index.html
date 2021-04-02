@@ -1,0 +1,195 @@
+<!--
+ * @Description: 这是***页面
+ * @Date: 2020-10-21 10:41:38
+ * @Author: chenxingyu
+ * @LastEditors: chenxingyu
+ * @LastEditTime: 2020-10-21 11:01:00
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ffmpeg-wasm-picture</title>
+</head>
+<body>
+  
+  <input id="js_file" type="file">
+
+  <input id="js_time" type="number" value="1" placeholder="画面时间s">
+
+  <button id="js_button">提取</button>
+
+
+  <div id="js_info"></div>
+
+  <div id="js_result"></div>
+
+  <script>
+    class WebCapture {
+    constructor(option) {
+        this.option = option;
+
+        this.cacheFile = null;
+        this.cacheFilePtr = 0;
+
+        window.Module = {
+            instantiateWasm: (info, receiveInstance) => {
+                fetch('./wasm/capture.wasm')
+                    .then(response => {
+                        return response.arrayBuffer();
+                    })
+                    .then(bytes => {
+                        return WebAssembly.instantiate(bytes, info);
+                    })
+                    .then(result => {
+                        receiveInstance(result.instance);
+                    });
+            },
+            onRuntimeInitialized: () => {
+                if (this.option.onInit) {
+                    this.option.onInit();
+                }
+            }
+        };
+
+        this._loadLib();
+    }
+
+    _loadLib() {
+        let node = document.createElement('script');
+
+        node.onload = () => {
+            document.body.removeChild(node);
+            node = null;
+        };
+
+        node.async = true;
+        node.src = './wasm/capture.js';
+        node.crossOrigin = 'true';
+
+        document.body.appendChild(node);
+    }
+
+    _getImageDataUrl(width, height, imageBuffer) {
+        let canvas = document.createElement('canvas');
+        let ctx = canvas.getContext('2d');
+
+        canvas.width = width;
+        canvas.height = height;
+
+        let imageData = ctx.createImageData(width, height);
+
+        let j = 0;
+        for (let i = 0; i < imageBuffer.length; i++) {
+            if (i && i % 3 == 0) {
+                imageData.data[j] = 255;
+                j += 1;
+            }
+
+            imageData.data[j] = imageBuffer[i];
+            j += 1;
+        }
+
+        ctx.putImageData(imageData, 0, 0, 0, 0, width, height);
+
+        return canvas.toDataURL('image/jpeg');
+    }
+
+    _getImageInfo(imgDataPtr) {
+        let width = Module.HEAPU32[imgDataPtr / 4],
+            height = Module.HEAPU32[imgDataPtr / 4 + 1],
+            duration = Module.HEAPU32[imgDataPtr / 4 + 2],
+            imageBufferPtr = Module.HEAPU32[imgDataPtr / 4 + 3],
+            imageBuffer = Module.HEAPU8.subarray(imageBufferPtr, imageBufferPtr + width * height * 3);
+
+        Module._free(imgDataPtr);
+        Module._free(imageBufferPtr);
+
+        return {
+            width,
+            height,
+            duration,
+            imageBuffer
+        };
+    }
+
+    setFile(file, callback) {
+        this.cacheFile = file;
+
+        if (this.cacheFilePtr) {
+            Module._free(this.cacheFilePtr);
+        }
+
+        let fileReader = new FileReader();
+
+        fileReader.onload = () => {
+            let fileBuffer = new Uint8Array(fileReader.result);
+
+            let filePtr = Module._malloc(fileBuffer.length);
+
+            this.cacheFilePtr = filePtr;
+
+            Module.HEAP8.set(fileBuffer, filePtr);
+
+            Module._setFile(filePtr, fileBuffer.length);
+
+            callback(filePtr);
+        };
+
+        fileReader.readAsArrayBuffer(file);
+    }
+
+    capture(file, timeStamp, callback) {
+        if (file === this.cacheFile) {
+            let imgDataPtr = Module._capture(timeStamp);
+
+            let imgInfo = this._getImageInfo(imgDataPtr);
+
+            let dataUrl = this._getImageDataUrl(imgInfo.width, imgInfo.height, imgInfo.imageBuffer);
+
+            callback(dataUrl, imgInfo);
+        } else {
+            this.setFile(file, () => {
+                let imgDataPtr = Module._capture(timeStamp);
+
+                let imgInfo = this._getImageInfo(imgDataPtr);
+
+                let dataUrl = this._getImageDataUrl(imgInfo.width, imgInfo.height, imgInfo.imageBuffer);
+
+                callback(dataUrl, imgInfo);
+            });
+        }
+    }
+}
+  </script>
+
+<script>
+  let webCapture = new WebCapture({
+      onInit() {
+          console.log('===== wasm 初始化完成 =====');
+      }
+  });
+
+  let button = document.querySelector('#js_button');
+  let resultContainer = document.querySelector('#js_result');
+  let fileInput = document.querySelector('#js_file');
+  let timeInput = document.querySelector('#js_time');
+  let infoContainer = document.querySelector('#js_info');
+
+  button.addEventListener('click', () => {
+      let file = fileInput.files[0];
+
+      let startTime = Date.now();
+
+      webCapture.capture(file, timeInput.value * 1000, (imgDataUrl, imgInfo) => {
+          let deltaTime = Date.now() - startTime;
+
+          resultContainer.innerHTML = `<img src="${imgDataUrl}"/>`;
+
+          infoContainer.innerHTML = `耗时：${deltaTime}ms<br>宽度：${imgInfo.width}<br>高度：${imgInfo.height}<br>时长：${imgInfo.duration / 1000000}s`;
+      });
+  });
+</script>
+</body>
+</html>

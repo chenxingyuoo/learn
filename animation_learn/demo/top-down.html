@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>Offsets</title>
+  <style>
+  html, body {
+    padding: 5px;
+    background: #fcfcfc;
+    font-family: Helvetica, Arial, sans-serif;
+  }
+
+  .no-trans * {
+    -webkit-transition: none !important;
+    -moz-transition: none !important;
+    -ms-transition: none !important;
+    -o-transition: none !important;
+    transition: none !important;
+  }
+
+  .offsetable-wrapper {
+    -webkit-backface-visibility: hidden;
+
+    -webkit-transition: opacity 1800ms cubic-bezier(0.190, 1.000, 0.220, 1.000);
+    -moz-transition: opacity 1800ms cubic-bezier(0.190, 1.000, 0.220, 1.000);
+    -ms-transition: opacity 1800ms cubic-bezier(0.190, 1.000, 0.220, 1.000);
+    -o-transition: opacity 1800ms cubic-bezier(0.190, 1.000, 0.220, 1.000);
+    transition: opacity 1800ms cubic-bezier(0.190, 1.000, 0.220, 1.000);
+  }
+
+  .offsetable-wrapper.hidden {
+    opacity: 0;
+  }
+
+  .offsetable {
+    background: #FFF;
+    color: #333;
+    height: 50px;
+    margin: 0 auto 10px auto;
+    width: 250px;
+    line-height: 60px;
+    text-align: center;
+    display: block;
+    position: relative;
+    border-radius: 3px;
+    -webkit-backface-visibility: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+
+    -webkit-transform: translateY(-240px) scale(0, 0);
+    -moz-transform: translateY(-240px) scale(0, 0);
+    -ms-transform: translateY(-240px) scale(0, 0);
+    -o-transform: translateY(-240px) scale(0, 0);
+    transform: translateY(-240px) scale(0, 0);
+
+    -webkit-transform-origin: 170px 25px;
+    -moz-transform-origin: 170px 25px;
+    -ms-transform-origin: 170px 25px;
+    -o-transform-origin: 170px 25px;
+    transform-origin: 170px 25px;
+
+    -webkit-transition: -webkit-transform 400ms cubic-bezier(0.190, 1.000, 0.220, 1.000);
+    -moz-transition: -moz-transform 400ms cubic-bezier(0.190, 1.000, 0.220, 1.000);
+    -ms-transition: -ms-transform 400ms cubic-bezier(0.190, 1.000, 0.220, 1.000);
+    -o-transition: -o-transform 400ms cubic-bezier(0.190, 1.000, 0.220, 1.000);
+    transition: transform 400ms cubic-bezier(0.190, 1.000, 0.220, 1.000);
+  }
+
+  .offsetable span {
+
+    position: relative;
+    display: block;
+
+    -webkit-transform: translateY(15px);
+    -moz-transform: translateY(15px);
+    -ms-transform: translateY(15px);
+    -o-transform: translateY(15px);
+    transform: translateY(15px);
+
+    -webkit-transition: -webkit-transform 400ms cubic-bezier(0.190, 1.000, 0.220, 1.000);
+    -moz-transition: -moz-transform 400ms cubic-bezier(0.190, 1.000, 0.220, 1.000);
+    -ms-transition: -ms-transform 400ms cubic-bezier(0.190, 1.000, 0.220, 1.000);
+    -o-transition: -o-transform 400ms cubic-bezier(0.190, 1.000, 0.220, 1.000);
+    transition: transform 400ms cubic-bezier(0.190, 1.000, 0.220, 1.000);
+
+    z-index: 1;
+
+    -webkit-backface-visibility: hidden;
+  }
+
+  #container.expanded .offsetable,
+  #container.expanded .offsetable span {
+    -webkit-transform: translateY(0) scale(1, 1);
+    -moz-transform: translateY(0) scale(1, 1);
+    -ms-transform: translateY(0) scale(1, 1);
+    -o-transform: translateY(0) scale(1, 1);
+    transform: translateY(0) scale(1, 1);
+  }
+
+  #container.hidden {
+    opacity: 0;
+
+    -webkit-transition: opacity 200ms cubic-bezier(0.190, 1.000, 0.220, 1.000);
+    -moz-transition: opacity 200ms cubic-bezier(0.190, 1.000, 0.220, 1.000);
+    -ms-transition: opacity 200ms cubic-bezier(0.190, 1.000, 0.220, 1.000);
+    -o-transition: opacity 200ms cubic-bezier(0.190, 1.000, 0.220, 1.000);
+    transition: opacity 200ms cubic-bezier(0.190, 1.000, 0.220, 1.000);
+  }
+
+  .livedemo {
+    width: 100px;
+    background: #333;
+    color: #FFF !important;
+    font-size: 14px;
+    padding: 7px 10px;
+    border-radius: 4px;
+    border: none;
+    transition: background 0.3s ease-out;
+
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    margin-left: -50px;
+  }
+
+  .livedemo:hover {
+    background: #50C0FB;
+  }
+
+  </style>
+
+</head>
+<body>
+
+  <div id="container">
+    <div class="offsetable-wrapper hidden">
+      <div class="offsetable"><span>Item 1</span></div>
+    </div>
+    <div class="offsetable-wrapper hidden">
+      <div class="offsetable"><span>Item 2</span></div>
+    </div>
+    <div class="offsetable-wrapper hidden">
+      <div class="offsetable"><span>Item 3</span></div>
+    </div>
+    <div class="offsetable-wrapper hidden">
+      <div class="offsetable"><span>Item 4</span></div>
+    </div>
+    <div class="offsetable-wrapper hidden">
+      <div class="offsetable"><span>Item 5</span></div>
+    </div>
+  </div>
+
+  <button id="animate" class="livedemo">Animate</button>
+
+  <script>
+
+    // shim layer with setTimeout fallback
+    // always got hugz for Paul Irish
+    window.requestAnimFrame = (function(){
+      return  window.requestAnimationFrame       ||
+              window.webkitRequestAnimationFrame ||
+              window.mozRequestAnimationFrame    ||
+              function( callback ){
+                window.setTimeout(callback, 1000 / 60);
+              };
+    })();
+
+    var offsetable;
+    var offsetables = document.querySelectorAll('.offsetable-wrapper');
+    var goButton = document.getElementById("animate");
+    var container = document.getElementById("container");
+    var delay;
+    var animationState = 0;
+    var timeout = 0;
+
+    function setDelays(singleItemTime, base) {
+      for (var i = 0; i < offsetables.length; i++) {
+
+        delay = (i * singleItemTime);
+
+        offsetable = offsetables[i];
+        setStyleWithPrefix(offsetable, 'TransitionDelay', delay + 'ms');
+
+        var box = offsetable.querySelector('.offsetable');
+        setStyleWithPrefix(box, 'TransitionDelay', delay + 'ms');
+        setStyle(box, 'transitionDelay', delay + 'ms');
+
+        var label = offsetable.querySelector('span');
+        setStyleWithPrefix(label, 'TransitionDelay', base +
+          (i * singleItemTime) + 'ms');
+        setStyle(label, 'transitionDelay', base +
+          (i * singleItemTime) + 'ms');
+      }
+    }
+
+    function setStyleWithPrefix(element, property, value) {
+      var prefixes = [
+        'webkit', 'moz', 'ms', 'o'
+      ];
+
+      for (var p = 0; p < prefixes.length; p++) {
+        element.style[prefixes[p] + property] = value;
+      }
+    }
+
+    function setStyle(element, property, value) {
+      element.style[property] = value;
+    }
+
+    function removeOffsetableHiddenClass(remove) {
+      for (var i = 0; i < offsetables.length; i++) {
+        if (remove)
+          offsetables[i].classList.remove('hidden');
+        else
+          offsetables[i].classList.add('hidden');
+      }
+    }
+
+    function killAllTransitions() {
+      document.body.classList.add('no-trans');
+    }
+
+    function enableAllTransitions() {
+      document.body.classList.remove('no-trans');
+    }
+
+    goButton.addEventListener('click', function() {
+
+      switch(animationState) {
+        case 0:
+          setDelays(30, 180);
+          container.classList.add('expanded');
+          removeOffsetableHiddenClass(true);
+          animationState = 1;
+          break;
+        case 1:
+          container.classList.add('hidden');
+          removeOffsetableHiddenClass(false);
+
+          container.classList.add('hidden');
+
+          clearTimeout(timeout);
+          timeout = setTimeout (function() {
+
+            killAllTransitions();
+
+            requestAnimFrame(function() {
+
+              container.classList.remove('expanded');
+              container.classList.remove('hidden');
+
+              requestAnimFrame(function() {
+                enableAllTransitions();
+                animationState = 0;
+              });
+            });
+          }, 250);
+          break;
+      }
+    });
+
+
+  </script>
+</body>
+</html>

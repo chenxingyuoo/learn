@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <title>SVG实现镂空动画图标DEMO演示</title>
+
+  <style>
+html{font-family:sans-serif;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%}body{margin:0}article,aside,details,figcaption,figure,footer,header,hgroup,main,nav,section,summary{display:block}audio,canvas,progress,video{display:inline-block;vertical-align:baseline}audio:not([controls]){display:none;height:0}[hidden],template{display:none}a{background:transparent}a:active,a:hover{outline:0}abbr[title]{border-bottom:1px dotted}b,strong{font-weight:bold}dfn{font-style:italic}h1{font-size:2em;margin:0.67em 0}mark{background:#ff0;color:#000}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sup{top:-0.5em}sub{bottom:-0.25em}img{border:0}svg:not(:root){overflow:hidden}figure{margin:1em 40px}hr{-moz-box-sizing:content-box;box-sizing:content-box;height:0}pre{overflow:auto}code,kbd,pre,samp{font-family:monospace, monospace;font-size:1em}button,input,optgroup,select,textarea{color:inherit;font:inherit;margin:0}button{overflow:visible}button,select{text-transform:none}button,html input[type="button"],input[type="reset"],input[type="submit"]{-webkit-appearance:button;cursor:pointer}button[disabled],html input[disabled]{cursor:default}button::-moz-focus-inner,input::-moz-focus-inner{border:0;padding:0}input{line-height:normal}input[type="checkbox"],input[type="radio"]{-moz-box-sizing:border-box;box-sizing:border-box;padding:0}input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-outer-spin-button{height:auto}input[type="search"]{-webkit-appearance:textfield;-moz-box-sizing:content-box;box-sizing:content-box}input[type="search"]::-webkit-search-cancel-button,input[type="search"]::-webkit-search-decoration{-webkit-appearance:none}fieldset{border:1px solid #c0c0c0;margin:0 2px;padding:0.35em 0.625em 0.75em}legend{border:0;padding:0}textarea{overflow:auto}optgroup{font-weight:bold}table{border-collapse:collapse;border-spacing:0}td,th{padding:0}
+
+</style>
+
+    <style>
+* {
+  text-align: center;
+}
+svg {
+  fill: transparent;
+  stroke: #222;
+  stroke-width: 0.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 0;
+  animation: dash 18s ease;
+  width: 100px;
+  height: 100px;
+  padding: 5px;
+  transition: .3s;
+}
+svg:hover {
+  fill: #222;
+}
+.icon-dribbble {
+  stroke: #ea4c89;
+}
+.icon-dribbble:hover {
+  fill: #ea4c89;
+}
+.icon-twitter {
+  stroke: #55acee;
+}
+.icon-twitter:hover {
+  fill: #55acee;
+}
+@keyframes dash {
+  from {
+    stroke-dashoffset: 1000;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+</style>
+
+    <script src="js/prefixfree.min.js"></script>
+
+    <script src="js/modernizr.js"></script>
+
+</head>
+
+<body>
+
+  <!-- Defining SVG elements and using as sprites, thanks to @studioromeo for showing me http://studioromeo.co.uk -->
+
+<svg display="none" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="276" height="32" viewBox="0 0 276 32">
+<defs>
+<g id="icon-twitter">
+	<path d="M33,6.076c-1.177,0.522-2.443,0.875-3.771,1.034c1.355-0.813,2.396-2.099,2.887-3.632
+		c-1.269,0.752-2.674,1.299-4.169,1.593c-1.198-1.276-2.904-2.073-4.792-2.073c-3.626,0-6.565,2.939-6.565,6.565
+		c0,0.515,0.058,1.016,0.17,1.496c-5.456-0.274-10.294-2.888-13.532-6.86C2.663,5.169,2.339,6.296,2.339,7.5
+		c0,2.278,1.159,4.287,2.921,5.465c-1.076-0.034-2.088-0.329-2.974-0.821c-0.001,0.027-0.001,0.055-0.001,0.083
+		c0,3.181,2.263,5.833,5.266,6.437c-0.551,0.15-1.131,0.23-1.73,0.23c-0.423,0-0.834-0.041-1.235-0.119
+		c0.835,2.608,3.26,4.507,6.133,4.56c-2.247,1.761-5.078,2.81-8.154,2.81c-0.53,0-1.052-0.03-1.566-0.092
+		c2.905,1.863,6.356,2.95,10.064,2.95c12.076,0,18.679-10.004,18.679-18.68c0-0.285-0.006-0.568-0.019-0.849
+		C31.006,8.548,32.119,7.392,33,6.076L33,6.076z"/>
+</g>
+<g id="icon-dribbble">
+	<path d="M17,31.5C8.454,31.5,1.5,24.547,1.5,16C1.5,7.454,8.454,0.5,17,0.5c8.547,0,15.5,6.954,15.5,15.5
+		C32.5,24.547,25.547,31.5,17,31.5z M30.072,18.121c-0.454-0.143-4.098-1.229-8.247-0.565c1.732,4.758,2.437,8.635,2.572,9.439
+		C27.368,24.987,29.482,21.806,30.072,18.121z M22.171,28.208c-0.197-1.162-0.966-5.211-2.825-10.042
+		c-0.029,0.011-0.058,0.021-0.087,0.03c-7.467,2.603-10.149,7.78-10.386,8.267c2.245,1.751,5.065,2.795,8.127,2.795
+		c1.834,0,3.581-0.375,5.171-1.052V28.208z M7.165,24.873c0.3-0.514,3.933-6.529,10.762-8.737c0.172-0.056,0.347-0.109,0.522-0.157
+		c-0.333-0.751-0.695-1.505-1.073-2.246c-6.612,1.979-13.028,1.896-13.607,1.884c-0.004,0.135-0.006,0.27-0.006,0.405
+		C3.761,19.422,5.05,22.525,7.165,24.873L7.165,24.873z M4.04,13.309c0.592,0.007,6.047,0.032,12.239-1.613
+		c-2.193-3.899-4.56-7.178-4.909-7.657C7.667,5.786,4.898,9.2,4.04,13.309z M13.897,3.148c0.366,0.491,2.771,3.765,4.94,7.75
+		c4.708-1.764,6.701-4.443,6.939-4.783C23.438,4.042,20.364,2.779,17,2.779C15.932,2.779,14.893,2.907,13.897,3.148L13.897,3.148z
+		 M27.249,7.647c-0.279,0.378-2.498,3.222-7.393,5.221c0.308,0.63,0.603,1.272,0.878,1.917c0.098,0.229,0.193,0.456,0.285,0.683
+		c4.405-0.554,8.783,0.334,9.219,0.426C30.208,12.769,29.092,9.9,27.249,7.647z"/>
+</g>
+<g id="icon-github">
+	<path d="M1,17.389c0,1.449,0.136,2.762,0.407,3.935c0.271,1.174,0.647,2.192,1.127,3.059s1.09,1.627,1.831,2.285
+		c0.741,0.657,1.544,1.194,2.41,1.612c0.866,0.416,1.854,0.756,2.965,1.017c1.111,0.261,2.245,0.443,3.403,0.548
+		C14.301,29.948,15.574,30,16.961,30c1.398,0,2.676-0.052,3.834-0.156c1.158-0.104,2.295-0.287,3.411-0.548
+		c1.116-0.261,2.11-0.601,2.981-1.017c0.871-0.418,1.68-0.954,2.425-1.612c0.746-0.657,1.361-1.419,1.846-2.285
+		s0.863-1.886,1.134-3.059c0.271-1.175,0.407-2.486,0.407-3.935c0-2.588-0.866-4.826-2.597-6.714c0.094-0.25,0.18-0.535,0.258-0.853
+		c0.078-0.318,0.151-0.772,0.219-1.361s0.042-1.27-0.078-2.042c-0.12-0.772-0.342-1.56-0.665-2.363l-0.235-0.047
+		c-0.167-0.031-0.441-0.023-0.822,0.024c-0.381,0.047-0.824,0.141-1.33,0.282s-1.158,0.412-1.956,0.814
+		c-0.798,0.402-1.64,0.905-2.527,1.51c-1.523-0.417-3.615-0.626-6.275-0.626c-2.65,0-4.736,0.209-6.259,0.626
+		c-0.887-0.605-1.734-1.108-2.543-1.51C7.381,4.727,6.736,4.456,6.256,4.315S5.328,4.083,4.91,4.041
+		C4.493,3.999,4.229,3.986,4.12,4.002C4.01,4.018,3.924,4.036,3.862,4.057C3.539,4.86,3.317,5.648,3.197,6.42
+		c-0.12,0.772-0.146,1.453-0.078,2.042C3.187,9.051,3.26,9.505,3.338,9.823c0.078,0.318,0.164,0.602,0.258,0.853
+		c-1.732,1.888-2.598,4.126-2.598,6.713H1z M4.928,21.314c0-1.502,0.683-2.879,2.05-4.131c0.407-0.375,0.881-0.66,1.424-0.853
+		c0.542-0.193,1.155-0.302,1.839-0.329c0.683-0.026,1.338-0.021,1.964,0.016s1.398,0.086,2.316,0.149s1.711,0.094,2.379,0.094
+		s1.46-0.031,2.378-0.094s1.69-0.112,2.316-0.149c0.626-0.037,1.28-0.042,1.964-0.016c0.683,0.026,1.296,0.136,1.839,0.329
+		c0.542,0.192,1.017,0.478,1.424,0.853c1.367,1.231,2.05,2.608,2.05,4.131c0,0.897-0.112,1.693-0.337,2.387
+		c-0.224,0.693-0.511,1.275-0.861,1.744c-0.349,0.47-0.834,0.869-1.455,1.197c-0.621,0.33-1.226,0.582-1.815,0.76
+		c-0.589,0.177-1.346,0.315-2.269,0.414c-0.923,0.1-1.747,0.16-2.472,0.181s-1.646,0.03-2.762,0.03c-1.116,0-2.037-0.01-2.762-0.03
+		c-0.725-0.021-1.549-0.081-2.472-0.181c-0.923-0.099-1.68-0.236-2.269-0.414s-1.194-0.43-1.815-0.76
+		c-0.621-0.328-1.106-0.728-1.455-1.197c-0.349-0.469-0.636-1.051-0.861-1.744c-0.224-0.694-0.336-1.489-0.336-2.387H4.928z M21,21
+		c0-1.657,0.895-3,2-3s2,1.343,2,3s-0.895,3-2,3S21,22.657,21,21z M9,21c0-1.657,0.895-3,2-3s2,1.343,2,3s-0.895,3-2,3
+		S9,22.657,9,21z"/>
+</g>
+
+</defs>
+</svg>
+
+
+
+<article class="article">
+  <div style="text-align:center;clear:both;margin:20px auto">
+<script src="/gg_bd_ad_720x90.js" type="text/javascript"></script>
+<script src="/follow.js" type="text/javascript"></script>
+</div>
+	<svg class="icon-dribbble" viewBox="0 0 32 32"><use xlink:href="#icon-dribbble"></use></svg>
+	<svg class="icon-twitter" viewBox="0 0 32 32"><use xlink:href="#icon-twitter"></use></svg>
+	<svg class="icon-github" viewBox="0 0 32 32"><use xlink:href="#icon-github"></use></svg>
+</article>
+
+  <script src='js/jquery.js'></script>
+
+</body>
+
+</html>

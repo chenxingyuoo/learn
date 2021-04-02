@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+
+<script>
+    (function ($) {
+        $.extend($.fn, {
+            fileUpload: function (opts) {
+                this.each(function () {
+                    var $self = $(this);
+                    var quality = opts.quality ? opts.quality / 100 : 0.2;
+                    var dom = {
+                        "fileToUpload": $self.find(".fileToUpload"),
+                        "thumb": $self.find(".thumb"),
+                        "progress": $self.find(".upload-progress")
+                    };
+                    var image = new Image(),
+                            canvas = document.createElement("canvas"),
+                            ctx = canvas.getContext('2d');
+                    var funs = {
+                        setImageUrl: function (url) {
+                            image.src = url;
+                        },
+                        bindEvent: function () {
+                            console.log(dom.fileToUpload)
+                            dom.fileToUpload.on("change", function () {
+                                funs.fileSelect(this);
+                            });
+                        },
+                        fileSelect: function (obj) {
+                            var file = obj.files[0];
+                            var reader = new FileReader();
+                            reader.onload = function () {
+                                var url = reader.result;
+                                funs.setImageUrl(url);
+                                dom.thumb.html(image);
+                            };
+                            image.onload = function () {
+                                var w = image.naturalWidth,
+                                        h = image.naturalHeight;
+                                canvas.width = w;
+                                canvas.height = h;
+                                ctx.drawImage(image, 0, 0, w, h, 0, 0, w, h);
+                                funs.fileUpload();
+                            };
+                            reader.readAsDataURL(file);
+                        },
+                        fileUpload: function () {
+                            var data = canvas.toDataURL("image/jpeg", quality);
+                            //dataURL 的格式为 “data:image/png;base64,****”,逗号之前都是一些说明性的文字，我们只需要逗号之后的就行了
+                            data = data.split(',')[1];
+                            data = window.atob(data);
+                            var ia = new Uint8Array(data.length);
+                            for (var i = 0; i < data.length; i++) {
+                                ia[i] = data.charCodeAt(i);
+                            }
+
+                            //canvas.toDataURL 返回的默认格式就是 image/png
+                            var blob = new Blob([ia], {
+                                type: "image/jpeg"
+                            });
+                            var fd = new FormData();
+                            fd.append('myFile', blob);
+                            var xhr = new XMLHttpRequest();
+                            xhr.addEventListener("load", opts.success, false);
+                            xhr.addEventListener("error", opts.error, false);
+                            xhr.open("POST", opts.url);
+                            xhr.send(fd);
+                        }
+                    };
+                    funs.bindEvent();
+                });
+            }
+        });
+    })(Zepto);
+
+    //调用方式：
+    $(".fileUpload").fileUpload({
+        "url": "savetofile.php",
+        "file": "myFile",
+        "success": function (evt) {
+            console.log(evt.target.responseText)
+        }
+    })
+</script>
+
+</body>
+</html>

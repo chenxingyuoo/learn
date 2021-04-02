@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=640, user-scalable=no">
+    <title>Title</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+
+
+        #index-box,
+        #game-box{
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        #game-box{
+            display: none;
+        }
+
+        #index-box{
+            width: 100%;
+            height: 100%;
+            background-image: url('./dist/img/index/bg.png');
+            background-repeat: no-repeat;
+        }
+
+        .index-title{
+            width: 515px;
+            height: 250px;
+            background-image: url('./dist/img/index/title.png');
+            background-repeat: no-repeat;
+            position: absolute;
+            top: 80px;
+            left: 50%;
+            margin-left: -257.5px;
+            z-index: 10;
+        }
+
+        .index-logo{
+            width: 196px;
+            height: 69px;
+            background-image: url('./dist/img/index/logo.png');
+            background-repeat: no-repeat;
+            position: absolute;
+            top: 20px;
+            left: 20px;
+        }
+
+        .index-run{
+            width: 100%;
+            height: 848px;
+            background-image: url('./dist/img/index/run.png');
+            background-repeat: no-repeat;
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            -webkit-animation-name: run;/* 动画名称 */
+            -webkit-animation-iteration-count: infinite;/* 动画无限播放 */
+            -webkit-animation-timing-function: step-start;/* 马上跳到动画每一结束桢的状态 */
+            -webkit-animation-duration: 1000ms;/* 动画运行的时间 */
+        }
+
+        @-webkit-keyframes run{
+            0%{
+                background-position: 0 0;
+            }
+            25%{
+                background-position: -640px 0;
+            }
+            50%{
+                background-position: -1280px 0;
+            }
+            75%{
+                background-position: -1920px 0;
+            }
+            100%{
+                background-position: 0 0;
+            }
+        }
+
+        .start-btn{
+            width: 233px;
+            height: 74px;
+            background-image: url('./dist/img/index/start_btn.png');
+            background-repeat: no-repeat;
+            position: absolute;
+            left: 50%;
+            bottom: 80px;
+            margin-left: -116.5px;
+        }
+
+        .check-rule-btn{
+            width: 130px;
+            height: 130px;
+            position: absolute;
+            bottom: 100px;
+            left: 50px;
+        }
+        .check-prize-btn{
+            width: 130px;
+            height: 130px;
+            position: absolute;
+            bottom: 130px;
+            right: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div id="app">
+    <div id="index-box">
+        <div class="index-title"></div>
+        <div class="index-logo"></div>
+        <div class="index-run"></div>
+        <div class="start-btn"></div>
+        <div class="check-rule-btn"></div>
+        <div class="check-prize-btn"></div>
+    </div>
+    <div id="game-box">
+        <canvas id="my-canvas"></canvas>
+    </div>
+
+    <div id="music-box"></div>
+</div>
+
+
+
+<script src="./dist/js/app.js"></script>
+
+</body>
+</html>

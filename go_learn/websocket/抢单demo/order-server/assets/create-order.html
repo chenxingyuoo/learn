@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>创建订单</title>
+</head>
+<body>
+  <input type="text" id="name" placeholder="输入名称">
+  <input type="text" id="money" placeholder="输入金额">
+  <button id="order-btn">立即下单</button>
+  <script>
+    window.onload = () => {
+      document.getElementById('order-btn').addEventListener('click', () => {
+        fetch('http://localhost:8080/order/create',{
+          method: 'POST', 
+          body: JSON.stringify({
+            name: document.querySelector('#name').value,
+            money: Number(document.querySelector('#money').value)
+          }),
+          headers: {
+            'content-type': 'application/json'
+          }
+        }).then((result) => {
+          return result.json()
+        }).then((data) => {
+          alert('下单成功')
+        }).catch((err) => {
+          
+        })
+      })
+    }
+    
+  </script>
+</body>
+</html>

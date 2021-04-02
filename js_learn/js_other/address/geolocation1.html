@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=m4rpRNGws0FrqwUrAH9uo0Gh"></script>
+    <!--<script>
+        (function () { // 闭包
+            function load_script(xyUrl, callback) {
+                var head = document.getElementsByTagName('head')[0];
+                var script = document.createElement('script');
+                script.type = 'text/javascript';
+                script.src = xyUrl;
+                // 借鉴了jQuery的script跨域方法
+                script.onload = script.onreadystatechange = function () {
+                    if ((!this.readyState || this.readyState === "loaded" || this.readyState === "complete")) {
+                        callback && callback();
+                        // Handle memory leak in IE
+                        script.onload = script.onreadystatechange = null;
+                        if (head && script.parentNode) {
+                            head.removeChild(script);
+                        }
+                    }
+                };
+                // Use insertBefore instead of appendChild to circumvent an IE6 bug.
+                head.insertBefore(script, head.firstChild);
+            }
+
+            function translate(point, type, callback) {
+                var callbackName = 'cbk_' + Math.round(Math.random() * 10000); // 随机函数名
+                var xyUrl = "http://api.map.baidu.com/ag/coord/convert?from=" + type
+                        + "&to=4&x=" + point.lng + "&y=" + point.lat
+                        + "&callback=BMap.Convertor." + callbackName;
+                // 动态创建script标签
+                load_script(xyUrl);
+                BMap.Convertor[callbackName] = function (xyResult) {
+                    delete BMap.Convertor[callbackName]; // 调用完需要删除改函数
+                    var point = new BMap.Point(xyResult.x, xyResult.y);
+                    callback && callback(point);
+                }
+            }
+
+            window.BMap = window.BMap || {};
+            BMap.Convertor = {};
+            BMap.Convertor.translate = translate;
+        })();
+    </script>-->
+</head>
+
+<body>
+
+<div id="map" style="width:600px; height:400px"></div>
+
+<script type="text/javascript">
+
+    if (window.navigator.geolocation) {
+        var options = {
+            enableHighAccuracy: true,
+        };
+        window.navigator.geolocation.getCurrentPosition(handleSuccess, handleError, options);
+    } else {
+        alert("浏览器不支持html5来获取地理位置信息");
+    }
+
+    function handleSuccess(position) {
+        // 获取到当前位置经纬度  本例中是chrome浏览器取到的是google地图中的经纬度
+        var lng = position.coords.longitude;
+        var lat = position.coords.latitude;
+
+        // 调用百度地图api显示
+        var map = new BMap.Map("map");
+         var ggPoint = new BMap.Point(lng, lat);
+         // 将google地图中的经纬度转化为百度地图的经纬度
+         BMap.Convertor.translate(ggPoint, 2, function(point){
+         var marker = new BMap.Marker(point);
+         map.addOverlay(marker);
+         map.centerAndZoom(point, 15);
+         });
+
+        //调用百度地图地名显示
+        var maps = new BMap.Map("allmap");
+        var point = new BMap.Point(lng, lat);
+        var gc = new BMap.Geocoder();
+        gc.getLocation(point, function (rs) {
+            var addComp = rs.addressComponents;
+            alert(addComp.province + ", " + addComp.city + ", " + addComp.district + ", " + addComp.street + ", " + addComp.streetNumber);
+        });
+
+    }
+
+    function handleError(error) {
+        alert('error')
+    }
+</script>
+
+</body>
+</html>

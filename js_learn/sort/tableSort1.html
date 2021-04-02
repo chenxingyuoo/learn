@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>升降序排序</title>
+</head>
+<body>
+
+
+<p>SortAble demo:</p>
+<table border="1" id="tableId">
+    <thead>
+    <tr>
+        <th data-val=""
+        style="cursor:pointer">name</th>
+        <th data-val="date"
+            style="cursor:pointer">Birthday</th>
+        <th data-val="int"
+            style="cursor:pointer">Age</th>
+        <th data-val="int"
+            style="cursor:pointer">ads</th>
+        <th data-val="float"
+            style="cursor:pointer">float</th>
+        <th data-val=""
+            style="cursor:pointer">tostring</th>
+        <th data-val=""
+            style="cursor:pointer">tostring</th>
+    </tr>
+    </thead>
+    <tbody>
+
+    <tr>
+        <td>Ozone</td>
+        <td>01/12/1982</td>
+        <td>25</td>
+        <td>10</td>
+        <td>1.8</td>
+        <td>chen</td>
+        <td>xu</td>
+    </tr>
+    <tr>
+        <td>OnlyBlue3</td>
+        <td>10/24/1983</td>
+        <td>23</td>
+        <td>18</td>
+        <td>10.8</td>
+        <td>xu</td>
+        <td>pang</td>
+    </tr>
+    <tr>
+        <td>Momo</td>
+        <td>10/14/1999</td>
+        <td>8</td>
+        <td>2</td>
+        <td>8.8</td>
+        <td>pang</td>
+        <td>chen</td>
+    </tr>
+    <tr>
+        <td>Momo</td>
+        <td>10/14/1999</td>
+        <td>50</td>
+        <td>80</td>
+        <td>8.8</td>
+        <td>pang</td>
+        <td>chen</td>
+    </tr>
+
+    </tbody>
+</table>
+
+<script src="../jquery-2.2.1.js"></script>
+<script>
+    //表格排序模块化
+
+    (function(){
+
+        function SortTable(tableId){
+            this.table = document.getElementById(tableId);
+            this.tbody = this.table.tBodies[0];
+            this.colRows = this.tbody.rows;
+            this.aTrs = new Array;
+        }
+
+        //排序 tableId: 表的id,iCol:第几列 ；dataType：iCol对应的列显示数据的数据类型
+        SortTable.prototype.sortAble = function( iCol, dataType) {
+
+            //将将得到的列放入数组，备用
+            for (var i=0; i < this.colRows.length; i++) {
+                this.aTrs[i] = this.colRows[i];
+            }
+
+            //判断上一次排列的列和现在需要排列的是否同一个。
+            if (this.table.sortCol == iCol) {
+                this.aTrs.reverse();
+            } else {
+                //如果不是同一列，使用数组的sort方法，传进排序函数
+                this.aTrs.sort(this.compareEle(iCol, dataType));
+            }
+
+            var oFragment = document.createDocumentFragment();
+
+            for (var i=0; i < this.aTrs.length; i++) {
+                oFragment.appendChild(this.aTrs[i]);
+            }
+            this.tbody.appendChild(oFragment);
+            //记录最后一次排序的列索引
+            this.table.sortCol = iCol;
+        }
+
+
+        SortTable.prototype.ieOrFireFox = function (ob) {
+            if (ob.textContent != null)
+                return ob.textContent;
+            var s = ob.innerText;
+            return s.substring(0, s.length);
+        }
+
+
+        //将列的类型转化成相应的可以排列的数据类型
+        SortTable.prototype.convert = function (sValue, dataType) {
+            switch(dataType) {
+                case "int":
+                    return parseInt(sValue);
+                case "float":
+                    return parseFloat(sValue);
+                case "date":
+                    return new Date(Date.parse(sValue));
+                default:
+                    return sValue.toString();
+            }
+        }
+
+        //排序函数，iCol表示列索引，dataType表示该列的数据类型
+        SortTable.prototype.compareEle = function(iCol, dataType) {
+            var self = this;
+            //闭包 ,  oTR1, oTR2 参数 是 this.aTrs 数组中 ， 先第一个tr和剩下所有tr比较 ，然后到第二个tr和 剩下所有tr比较 ， 因为上面 this.aTrs 数组使用了sort 方法 ，传的参数 就是 compareEle 函数的返回值 ， 也就是 这个闭包 ， 这个闭包接收两个参数 ，用作 排序比较 ， 返回 -1 or 1 or 0
+            return  function (oTR1, oTR2) {
+                //这里访问不到this变量 ，用 self 变量接收
+                var vValue1 = self.convert(self.ieOrFireFox(oTR1.cells[iCol]), dataType);
+                var vValue2 = self.convert(self.ieOrFireFox(oTR2.cells[iCol]), dataType);
+                if (vValue1 < vValue2) {
+                    return -1;
+                } else if (vValue1 > vValue2) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            };
+        }
+
+        window.SortTable = SortTable;
+    })();
+
+    var initSort = new SortTable('tableId');
+    console.log(initSort)
+    $('thead th').on('click', function () {
+        console.log(initSort)
+        var $that = $(this);
+        initSort.sortAble($that.index(),$that.attr('data-val'));
+    })
+</script>
+
+
+</body>
+</html>

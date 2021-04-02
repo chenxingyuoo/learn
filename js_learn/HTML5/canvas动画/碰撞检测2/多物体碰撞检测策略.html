@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>多物体碰撞检测策略</title>
+</head>
+
+<body>
+
+<canvas id="canvas" width="500" height="400" style="background:#000;">
+    your browser not support canvas!
+</canvas>
+<script src="../js/utils.js"></script>
+<script src="../js/ball.js"></script>
+<script>
+    //假如，现在你有6个物体
+
+    //它们在画布中自由运动，你要所要做的就是让它们知道在画布中碰上了彼此。这里我们要用到双重循环，首先object1与其他的物体发生碰撞检测，然后在是object2,object3...与其他物体。
+
+    var objects = ['object0','object1','object2','object3','object4','object5'];
+
+    function hitTestObject() {
+
+    }
+
+    objects.forEach(function(objectA, i){
+        for(var j= 0, len=objects.length; j <len ; j++){
+            var objectB = objects[j];
+            if(hitTestObject(objectA, objectB)){ //如果碰上了
+                //do something
+            }
+        }
+    })
+
+
+    //大概算一下，6个物体，按这种方法就有36次检测，似乎看起来很合理，但是其实有很大的问题。
+    //object0 vs object1, object2, object3, object4, object5
+    //object1 vs object0, object2, object3, object4, object5
+    //object2 vs object0, object1, object3, object4, object5
+    //object3 vs object0, object1, object2, object4, object5
+    //object4 vs object0, object1, object2, object3, object5
+    //object5 vs object0, object1, object2, object3, object4
+
+    //问题一： object1 与 object1，也就是说物体自身跟自身也做了检测。
+    //问题二： object1 与 object2检测过后，我们又做了一次object2 与 object1。
+
+    //现在，我们一一解决上面的问题。对于问题一我们可以这样做
+
+    objects.forEach(function(objectA, i){
+        for(var j= 0, len = objects.length; j <len ; j++){
+            var objectB = objects[j];
+            if(i !==j && hitTestObject(objectA, objectB)){ //如果碰上了
+                //do something
+            }
+        }
+    });
+
+    //我们多加了一个条件，判断当前两个物体的索引值是否是一样的。如果一样则证明他们是同一个物体，就不会做碰撞检测。反之，则做碰撞检测。排除了与自身的检测，一下我们就减少了6次。现在检测次数降到了30次。
+
+
+    //如果我们把问题二也解决了，那么碰撞列表就是这样了，一共还剩15次。也就是说总共减少了21次不必要的检测。
+    //object0 vs object1, object2, object3, object4, object5
+    //object1 vs object2, object3, object4, object5
+    //object2 vs object3, object4, object5
+    //object3 vs object4, object5
+    //object4 vs object5
+    //object5 vs nothing
+
+    //那么我们就需要在代码上动动手脚，首先观察上表，当上层循环的i为0时，下层循环的j为1，i为1时，下层循环的j为2...于是，我们可以总结出一个规律，上层索引值 i 与下层索引值 j 之间存在关系：j=i+1。这不仅解决了问题一，也就是说不需要再判断i与j的索引值是否相等了，同时也完美的解决了问题二。
+    objects.forEach(function(objectA, i){
+        for(var j=i+ 1,len=objects.length; j <len ; j++){
+            var objectB = objects[j];
+            if(hitTestObject(objectA, objectB)){ //如果碰上了
+                //do something
+            }
+        }
+    });
+
+    //现在，我们已经完成了多物体碰撞检测的算法。it's show time！我们要完成的效果就是：检测一堆大小不一的球体是否碰到了彼此.
+
+    window.onload = function() {
+        var canvas = document.getElementById('canvas'),
+            context = canvas.getContext('2d'),
+            balls = [],
+            numBalls = 10,
+            bounce = -1,
+            canWid = canvas.width,
+            canHei = canvas.height;
+        //定义10个小球
+        for(var i=0; i<numBalls; i++){
+            var size = Math.random()*20 + 5,   //大小
+                color = Math.random()*(0xffffff),    //颜色
+                ball = new Ball(size, color);
+                ball.id = "ball_" + i;   //给每个小球一个id
+                ball.radius = Math.random()*30+10;
+                ball.x = Math.random()*canWid;
+                ball.y = Math.random()*canHei;
+                ball.vx = Math.random() * 6 -3;//水平方向速度值
+                ball.vy = Math.random() * 6 -3;//垂直方向速度值
+            balls.push(ball);
+        }
+
+        //边界检测
+        function move(ball) {
+            ball.x += ball.vx;
+            ball.y += ball.vy;
+
+            //核心部分
+            var bounce = Math.random() * -1 ;
+            if (ball.x + ball.radius > canvas.width) {
+                ball.x = canvas.width - ball.radius;
+                ball.vx *= bounce;  // * - 取反方向 ， 将速度方向旋转180度
+            } else if (ball.x - ball.radius < 0) {
+                ball.x = ball.radius;
+                ball.vx *= bounce; // * - 取反方向 ， 将速度方向旋转180度
+            }
+            if (ball.y + ball.radius > canvas.height) {
+                ball.y = canvas.height - ball.radius;
+                ball.vy *= bounce; // * - 取反方向 ， 将速度方向旋转180度
+            } else if (ball.y - ball.radius < 0) {
+                ball.y = ball.radius;
+                ball.vy *= bounce;  // * - 取反方向 ， 将速度方向旋转180度
+            }
+        }
+
+        //物体检测
+        function checkCollision(ballA, i) {
+            for (var j = i + 1; j < balls.length; j++) {
+                var ballB = balls[j];
+                var dx = ballB.x - ballA.x; //两个小球x轴测距离
+                var dy = ballB.y - ballA.y; //两个小球y轴测距离
+                var dist = Math.sqrt(dx*dx + dy*dy); //利用勾股定理返回一个平方根
+                //计算两个球体的最小距离
+                var min_dist = ballB.radius + ballA.radius;
+
+                if(dist < min_dist){
+                    ballA.vx *= bounce;
+                    ballA.vy *= bounce;
+                    ballB.vx *= bounce;
+                    ballB.vy *= bounce;
+                }
+            }
+        }
+
+        //draw
+        function draw (ball) {
+            ball.draw(context);
+        }
+
+
+        (function drawFrame(){
+            window.requestAnimationFrame(drawFrame, canvas);
+            context.clearRect(0, 0, canvas.width, canvas.height);
+
+            //循环绘制
+            balls.forEach(draw);
+            //边界检测
+            balls.forEach(move);
+            //物体检测
+            balls.forEach(checkCollision);
+
+        }());
+    }
+
+</script>
+</body>
+</html>

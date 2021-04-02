@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+
+<body>
+<canvas id="canvas" width="1000" height="1000" style="border: 1px solid #ddd;display: block;margin: 50px">
+    您的浏览器不支持 HTML5 canvas 标签。
+</canvas>
+
+
+<script type="text/javascript">
+    window.onload = function (){
+
+        //quadraticCurveTo() 绘制一条二次贝塞尔曲线：
+        var c=document.getElementById("canvas");
+        var ctx=c.getContext("2d");
+        ctx.beginPath();
+        ctx.moveTo(100,100);
+        ctx.quadraticCurveTo(20,100,200,20);
+        ctx.stroke();
+
+
+        //bezierCurveTo() 绘制一条三次贝塞尔曲线：
+        var c=document.getElementById("canvas");
+        var ctx=c.getContext("2d");
+        ctx.beginPath();
+        ctx.moveTo(20,20);
+        ctx.bezierCurveTo(20,100,200,100,200,20);
+        ctx.strokeStyle = 'yellow';
+        ctx.stroke();
+
+        //arcTo() 在画布上创建介于两个切线之间的弧：
+        var c=document.getElementById("canvas");
+        var ctx=c.getContext("2d");
+        ctx.beginPath();
+        ctx.moveTo(20,20);           // Create a starting point
+        ctx.lineTo(100,20);          // Create a horizontal line
+        ctx.arcTo(150,20,150,70,50); // Create an arc
+        ctx.lineTo(150,120);         // Continue with vertical line
+        ctx.stroke();                // Draw it
+
+        //isPointInPath()  如果点 20,50 位于当前路径中，则绘制一个矩形：
+        var c=document.getElementById("canvas");
+        var ctx=c.getContext("2d");
+        ctx.rect(100,100,150,100);
+        if (ctx.isPointInPath(100,150))
+        {
+            ctx.stroke();
+        };
+
+        //scale() 放大 绘制矩形，放大到 200%，然后再次绘制矩形：
+        var c=document.getElementById("canvas");
+        var ctx=c.getContext("2d");
+        ctx.strokeRect(5,5,25,15);
+        ctx.scale(3,2);
+        ctx.strokeRect(5,5,25,15);
+
+
+        //绘制一个矩形；放大到 200%，再次绘制矩形；放大到 200%，再次绘制矩形；放大到 200%，再次绘制矩形：
+        var c=document.getElementById("canvas");
+        var ctx=c.getContext("2d");
+        ctx.strokeRect(5,5,25,15);
+        ctx.scale(2,2);
+        ctx.strokeRect(5,5,25,15);
+        ctx.scale(2,2);
+        ctx.strokeRect(5,5,25,15);
+        ctx.scale(2,2);
+        ctx.strokeRect(5,5,25,15);
+    }
+</script>
+</body>
+</html>

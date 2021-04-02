@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Object.defineProperties()</title>
+</head>
+<body>
+
+<script>
+    //Object.defineProperties()方法是直接定义了一个对象新的或修改现有的属性，返回对象的Object.defineProperties。
+
+    //Object.defineProperties(obj, props)
+    //obj 在该对象定义或修改属性。
+    //props  其自身的枚举属性的对象构成的属性进行定义或修改描述符。
+    // 目前在对象属性的描述主要有两种形式：数据描述符和访问描述符（见Object.defineProperty（）有详细介绍）。描述有如下关键
+       //configurable 当且仅当该属性描述符的类型可被改变，并且如果该属性可以由相应的对象被删除。 默认为false
+       //enumerable 当且仅当此属性的对应对象的属性枚举过程中显示出来。 默认为false
+       //value 与属性相关联的值。可以是任何有效的JavaScript值（数字，对象，功能等）。 默认为undefined。
+       //writable 当且仅当与属性关联的值可以用赋值操作符来改变。 默认为false
+      //get 其用作属性吸气或未定义如果没有吸气剂的功能。函数的返回将用作的属性的值。 默认为undefined。
+       //set 它作为对属性的设置，或未定义如果没有二传的功能。该功能将收到的唯一参数被分配到属性的新值。 默认为undefined。
+
+    //Return value Object.defineProperties，在本质上，定义对应于对象物obj对象上的道具的枚举自己的属性的所有属性。
+
+    var obj = {};
+    Object.defineProperties(obj, {
+        "property1": {
+            value: true,
+            writable: true
+        },
+        "property2": {
+            value: "Hello",
+            writable: false
+        }
+        // etc. etc.
+    });
+    debugger
+
+</script>
+</body>
+</html>

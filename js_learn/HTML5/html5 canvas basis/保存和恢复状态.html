@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>保存和恢复状态</title>
+</head>
+
+<body>
+
+
+
+
+<!--保存：context.save()
+
+恢复：context.restore()
+
+在上面的裁剪图片提过，一旦设定了裁剪区域，后来绘制的图形都只显示裁剪区域内的内容，要“取消”这个裁剪区域才能正常绘制其他图形，其实这个“取消”是利用save（）方法和restore（）方法来实现的。
+
+context.save()：调用该方法，会保存当前context的状态、属性（把他理解成游戏存档）
+
+context.restore():调用该方法就能恢复到save时候context的状态、属性（游戏回档）-->
+
+<canvas id="canvas" width="800" height="600"></canvas>
+
+<script>
+    document.body.onload = draw18('canvas');
+
+    function draw18(id) {
+        var canvas = document.getElementById(id);
+        if (canvas == null)
+            return false;
+        var context = canvas.getContext("2d");
+        context.fillStyle = "red";
+        context.save(); //保存了当前context的状态
+        context.fillStyle = "black";
+        context.fillRect(0, 0, 100, 100);
+        context.restore();//恢复到刚刚保存的状态
+        context.fillRect(0,120,100,100);
+    }
+
+</script>
+
+</body>
+</html>

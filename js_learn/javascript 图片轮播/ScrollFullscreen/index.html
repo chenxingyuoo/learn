@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=320,initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>mobile_index</title>
+    <link rel="stylesheet" href="static/css/common.css">
+    <link rel="stylesheet" href="static/css/home.css">
+    <style>
+        .home-item {
+            /*position: absolute;*/
+            /*top: 0;*/
+            /*left: 0;*/
+            width: 100%;
+            /*display: none;*/
+            overflow: hidden;
+        }
+
+        .home-item.active {
+            /*display: block;*/
+        }
+
+        .home-item-main {
+            position: relative;
+            height: 100%;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+
+<!--<div class="load-box">
+    <div class="load-progress"></div>
+</div>-->
+
+<div id="home-wrap">
+
+    <div class="home-main">
+        <section class="home-item active" style="background-color: #0b97c4">
+            <div class="home-item-main">
+
+                <div class="home-item-bg" style="    width: 100%;height: 100%;background-image: url('../../test_pic/A.jpg');
+    background-size: cover;background-position: 50% 50%;background-origin: content-box;background-repeat: no-repeat;"></div>
+
+                <ul class="edit-content" pageid="1">
+                    <li class="common-resize" data-type="text"
+                        style="width: 320px; left: -4px; top: 90px; z-index: 102; -webkit-user-select: none;"
+                        title="双击此处进行编辑">
+                        <div class="edit-ele-box">
+                            <div class="edit-ele-text wangEditor-txt" style="height: auto;"><p
+                                    style="text-align: center; ">第一页</p></div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="home-item" style="background-color: #d43f3a;">
+            <div class="home-item-main">
+                <ul class="edit-content" pageid="2">
+                    <li class="common-resize" data-type="text"
+                        style="width: 320px; left: 20px; top: 74px; z-index: 102; -webkit-user-select: none;"
+                        title="双击此处进行编辑">
+                        <div class="edit-ele-box">
+                            <div class="edit-ele-text wangEditor-txt" style="height: auto;"><p
+                                    style="text-align: center; ">第二页</p></div>
+                        </div>
+                    </li>
+                    <li class="common-resize" data-type="text"
+                        style="width: 320px; left: 4px; top: 440px; z-index: 102; -webkit-user-select: none;"
+                        title="双击此处进行编辑">
+                        <div class="edit-ele-box">
+                            <div class="edit-ele-text wangEditor-txt" style="height: auto;"><p
+                                    style="text-align: center; ">第二页</p></div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="home-item" style="background-color: #f0f3f4">
+            <div class="home-item-main">
+                <ul class="edit-content" pageid="3">
+                    <li class="common-resize" data-type="text"
+                        style="width: 320px; left: 3px; top: 94px; z-index: 102; -webkit-user-select: none;"
+                        title="双击此处进行编辑">
+                        <div class="edit-ele-box">
+                            <div class="edit-ele-text wangEditor-txt" style="height: auto;"><p
+                                    style="text-align: center; ">第三页</p></div>
+                        </div>
+                    </li>
+                    <li class="common-resize" data-type="image"
+                        style="width: 234px; height: 188px; left: 58px; top: 176px; z-index: 101;"
+                        title="按住鼠标进行拖动，点击鼠标进行编辑">
+                        <div class="edit-ele-box"><img class="edit-ele-img" src="../../test_pic/A.jpg"></div>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+    </div>
+
+</div>
+
+</body>
+</html>
+
+
+<script src="http://apps.bdimg.com/libs/zepto/1.1.4/zepto.min.js"></script>
+<script src="static/js/scroll_fullscreen.js"></script>
+<script>
+    $(function () {
+        var $doc = $(document);
+        var win_h = document.body.clientHeight || document.documentElement.clientHeight;
+        var $root = $('#home-wrap');
+        $root.height(win_h);
+        $root.find('.home-item').each(function (k, v) {
+            $(v).height(win_h);
+        });
+
+        //实例化页面滚动
+        var scrollFullscreen = new ScrollFullscreen($root.find('.home-main'),{
+            scroll_time : 800
+        });
+
+    });
+</script>
+
+

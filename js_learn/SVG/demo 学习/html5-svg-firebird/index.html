@@ -1,0 +1,1167 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <title>HTML5 SVG绘制的纸鹤动画DEMO演示</title>
+
+    <style>
+body {
+  background: #fff1d0;
+}
+.crest#c-1 {
+  fill: #223233;
+  animation: crest-1 10s infinite;
+}
+.crest#c-2 {
+  fill: #425b5e;
+  animation: crest-2 10s infinite;
+}
+.beak#bk-1 {
+  fill: #bbb2a3;
+}
+.beak#bk-2 {
+  fill: #ded8c6;
+}
+.beak#bk-3 {
+  fill: #faf3dc;
+}
+.beak#bk-4 {
+  fill: #ece6d1;
+}
+.beak#bk-5 {
+  fill: #ada59a;
+}
+.head#h-1 {
+  fill: #649197;
+  animation: head-1 10s infinite;
+}
+.head#h-2 {
+  fill: #2b4142;
+  animation: head-2 10s infinite;
+}
+.head#h-3 {
+  fill: #71a6b2;
+  animation: head-3 10s infinite;
+}
+.head#h-4 {
+  fill: #77b1c0;
+  animation: head-4 10s infinite;
+}
+.head#h-5 {
+  fill: #223435;
+  animation: head-5 10s infinite;
+}
+.head#h-6 {
+  fill: #2a3e40;
+  animation: head-6 10s infinite;
+}
+.head#h-7 {
+  fill: #5a7f88;
+  animation: head-7 10s infinite;
+}
+.head#h-8 {
+  fill: #6c99a8;
+  animation: head-8 10s infinite;
+}
+.head#h-9 {
+  fill: #5f8593;
+  animation: head-9 10s infinite;
+}
+.head#h-10 {
+  fill: #4d6871;
+  animation: head-10 10s infinite;
+}
+.head#h-11 {
+  fill: #648c9d;
+  animation: head-11 10s infinite;
+}
+.head#h-12,
+.head#h-17 {
+  fill: #5f8290;
+  animation: head-12 10s infinite;
+}
+.head#h-13 {
+  fill: #5d808f;
+  animation: head-13 10s infinite;
+}
+.head#h-14 {
+  fill: #668e9f;
+  animation: head-14 10s infinite;
+}
+.head#h-15 {
+  fill: #618796;
+  animation: head-15 10s infinite;
+}
+.head#h-16 {
+  fill: #6790a0;
+  animation: head-16 10s infinite;
+}
+.head#h-18 {
+  fill: #54737e;
+  animation: head-18 10s infinite;
+}
+.head#h-19 {
+  fill: #5a7786;
+  animation: head-19 10s infinite;
+}
+.head#h-20 {
+  fill: #5d7c8e;
+  animation: head-20 10s infinite;
+}
+.head#h-21 {
+  fill: #4e6875;
+  animation: head-21 10s infinite;
+}
+.head#h-22 {
+  fill: #526a7b;
+  animation: head-22 10s infinite;
+}
+.body#b-1 {
+  fill: #35444e;
+  animation: body-1 10s infinite;
+}
+.body#b-2 {
+  fill: #3b4956;
+  animation: body-2 10s infinite;
+}
+.body#b-3 {
+  fill: #263138;
+  animation: body-3 10s infinite;
+}
+.body#b-4 {
+  fill: #465966;
+  animation: body-4 10s infinite;
+}
+.body#b-5 {
+  fill: #5e7990;
+  animation: body-5 10s infinite;
+}
+.body#b-6,
+.body#b-13 {
+  fill: #2f3b46;
+  animation: body-6 10s infinite;
+}
+.body#b-7 {
+  fill: #445263;
+  animation: body-7 10s infinite;
+}
+.body#b-8 {
+  fill: #435263;
+  animation: body-8 10s infinite;
+}
+.body#b-9 {
+  fill: #51647b;
+  animation: body-9 10s infinite;
+}
+.body#b-10 {
+  fill: #4a5c71;
+  animation: body-10 10s infinite;
+}
+.body#b-11 {
+  fill: #2f3745;
+  animation: body-11 10s infinite;
+}
+.body#b-12 {
+  fill: #4a5c70;
+  animation: body-12 10s infinite;
+}
+.body#b-14 {
+  fill: #222934;
+  animation: body-14 10s infinite;
+}
+.body#b-15 {
+  fill: #353e4d;
+  animation: body-15 10s infinite;
+}
+.body#b-16 {
+  fill: #3c4558;
+  animation: body-16 10s infinite;
+}
+.body#b-17 {
+  fill: #4f5d78;
+  animation: body-17 10s infinite;
+}
+.body#b-18 {
+  fill: #343d4c;
+  animation: body-18 10s infinite;
+}
+.tail#t-1 {
+  fill: #4a566e;
+  animation: tail-1 10s infinite;
+}
+.tail#t-2 {
+  fill: #343b4d;
+  animation: tail-2 10s infinite;
+}
+.tail#t-3 {
+  fill: #3b4458;
+  animation: tail-3 10s infinite;
+}
+.tail#t-4 {
+  fill: #464e6a;
+  animation: tail-4 10s infinite;
+}
+.tail#t-5 {
+  fill: #363b4f;
+  animation: tail-5 10s infinite;
+}
+.tail#t-6 {
+  fill: #3d425b;
+  animation: tail-6 10s infinite;
+}
+.tail#t-7 {
+  fill: #20262f;
+  animation: tail-7 10s infinite;
+}
+.tail#t-8 {
+  fill: #2a303c;
+  animation: tail-8 10s infinite;
+}
+.tail#t-9 {
+  fill: #343a4c;
+  animation: tail-9 10s infinite;
+}
+.tail#t-10 {
+  fill: #2e3644;
+  animation: tail-10 10s infinite;
+}
+.paws#p-1 {
+  fill: #282e3d;
+  animation: paws-1 10s infinite;
+}
+.paws#p-2 {
+  fill: #2f3546;
+  animation: paws-2 10s infinite;
+}
+.paws#p-3 {
+  fill: #3f475e;
+  animation: paws-3 10s infinite;
+}
+.paws#p-4 {
+  fill: #262c38;
+  animation: paws-4 10s infinite;
+}
+.paws#p-5 {
+  fill: #455166;
+  animation: paws-5 10s infinite;
+}
+.paws#p-6 {
+  fill: #323a4a;
+  animation: paws-6 10s infinite;
+}
+.paws#p-7 {
+  fill: #47536b;
+  animation: paws-7 10s infinite;
+}
+.clutches {
+  fill: #231f20;
+}
+.stone#s-1 {
+  fill: #504e55;
+}
+.stone#s-2 {
+  fill: #807e8d;
+}
+.stone#s-3 {
+  fill: #5a5760;
+}
+@keyframes crest-1 {
+  25% {
+    fill: #2c2233;
+  }
+  50% {
+    fill: #332322;
+  }
+  75% {
+    fill: #293322;
+  }
+  100% {
+    fill: #223233;
+  }
+}
+@keyframes crest-2 {
+  25% {
+    fill: #53425e;
+  }
+  50% {
+    fill: #5e4542;
+  }
+  75% {
+    fill: #4d5e42;
+  }
+  100% {
+    fill: #425b5e;
+  }
+}
+@keyframes head-1 {
+  25% {
+    fill: #846497;
+  }
+  50% {
+    fill: #976a64;
+  }
+  75% {
+    fill: #789764;
+  }
+  100% {
+    fill: #649197;
+  }
+}
+@keyframes head-2 {
+  25% {
+    fill: #382b42;
+  }
+  50% {
+    fill: #422c2b;
+  }
+  75% {
+    fill: #35422b;
+  }
+  100% {
+    fill: #2b4142;
+  }
+}
+@keyframes head-3 {
+  25% {
+    fill: #9e71b2;
+  }
+  50% {
+    fill: #b27d71;
+  }
+  75% {
+    fill: #85b271;
+  }
+  100% {
+    fill: #71a6b2;
+  }
+}
+@keyframes head-4 {
+  25% {
+    fill: #ab77c0;
+  }
+  50% {
+    fill: #c08677;
+  }
+  75% {
+    fill: #8dc077;
+  }
+  100% {
+    fill: #77b1c0;
+  }
+}
+@keyframes head-5 {
+  25% {
+    fill: #2d2235;
+  }
+  50% {
+    fill: #352322;
+  }
+  75% {
+    fill: #2b3522;
+  }
+  100% {
+    fill: #223435;
+  }
+}
+@keyframes head-6 {
+  25% {
+    fill: #372a40;
+  }
+  50% {
+    fill: #402c2a;
+  }
+  75% {
+    fill: #33402a;
+  }
+  100% {
+    fill: #2a3e40;
+  }
+}
+@keyframes head-7 {
+  25% {
+    fill: #7a5a88;
+  }
+  50% {
+    fill: #88635a;
+  }
+  75% {
+    fill: #68885a;
+  }
+  100% {
+    fill: #5a7f88;
+  }
+}
+@keyframes head-8 {
+  25% {
+    fill: #996ca8;
+  }
+  50% {
+    fill: #a87b6c;
+  }
+  75% {
+    fill: #7ba86c;
+  }
+  100% {
+    fill: #6c99a8;
+  }
+}
+@keyframes head-9 {
+  25% {
+    fill: #875f93;
+  }
+  50% {
+    fill: #936d5f;
+  }
+  75% {
+    fill: #6b935f;
+  }
+  100% {
+    fill: #5f8593;
+  }
+}
+@keyframes head-10 {
+  25% {
+    fill: #684d71;
+  }
+  50% {
+    fill: #71564d;
+  }
+  75% {
+    fill: #56714d;
+  }
+  100% {
+    fill: #4d6871;
+  }
+}
+@keyframes head-11 {
+  25% {
+    fill: #92649d;
+  }
+  50% {
+    fill: #9d7564;
+  }
+  75% {
+    fill: #6f9d64;
+  }
+  100% {
+    fill: #648c9d;
+  }
+}
+@keyframes head-12 {
+  25% {
+    fill: #855f90;
+  }
+  50% {
+    fill: #906d5f;
+  }
+  75% {
+    fill: #6a905f;
+  }
+  100% {
+    fill: #5f8290;
+  }
+}
+@keyframes head-13 {
+  25% {
+    fill: #855d8f;
+  }
+  50% {
+    fill: #8f6c5d;
+  }
+  75% {
+    fill: #678f5d;
+  }
+  100% {
+    fill: #5d808f;
+  }
+}
+@keyframes head-14 {
+  25% {
+    fill: #93669f;
+  }
+  50% {
+    fill: #9f7766;
+  }
+  75% {
+    fill: #719f66;
+  }
+  100% {
+    fill: #668e9f;
+  }
+}
+@keyframes head-15 {
+  25% {
+    fill: #8b6196;
+  }
+  50% {
+    fill: #967061;
+  }
+  75% {
+    fill: #6d9661;
+  }
+  100% {
+    fill: #618796;
+  }
+}
+@keyframes head-16 {
+  25% {
+    fill: #9467a0;
+  }
+  50% {
+    fill: #a07767;
+  }
+  75% {
+    fill: #73a067;
+  }
+  100% {
+    fill: #6790a0;
+  }
+}
+@keyframes head-18 {
+  25% {
+    fill: #74547e;
+  }
+  50% {
+    fill: #7e5f54;
+  }
+  75% {
+    fill: #5e7e54;
+  }
+  100% {
+    fill: #54737e;
+  }
+}
+@keyframes head-19 {
+  25% {
+    fill: #7f5a86;
+  }
+  50% {
+    fill: #86695a;
+  }
+  75% {
+    fill: #61865a;
+  }
+  100% {
+    fill: #5a7786;
+  }
+}
+@keyframes head-20 {
+  25% {
+    fill: #885d8e;
+  }
+  50% {
+    fill: #8e6f5d;
+  }
+  75% {
+    fill: #648e5d;
+  }
+  100% {
+    fill: #5d7c8e;
+  }
+}
+@keyframes head-21 {
+  25% {
+    fill: #6e4e75;
+  }
+  50% {
+    fill: #755b4e;
+  }
+  75% {
+    fill: #55754e;
+  }
+  100% {
+    fill: #4e6875;
+  }
+}
+@keyframes head-22 {
+  25% {
+    fill: #77527b;
+  }
+  50% {
+    fill: #7b6352;
+  }
+  75% {
+    fill: #567b52;
+  }
+  100% {
+    fill: #526a7b;
+  }
+}
+@keyframes body-1 {
+  25% {
+    fill: #4b354e;
+  }
+  50% {
+    fill: #4e3f35;
+  }
+  75% {
+    fill: #384e35;
+  }
+  100% {
+    fill: #35444e;
+  }
+}
+@keyframes body-2 {
+  25% {
+    fill: #563b56;
+  }
+  50% {
+    fill: #56483b;
+  }
+  75% {
+    fill: #3b563b;
+  }
+  100% {
+    fill: #3b4956;
+  }
+}
+@keyframes body-3 {
+  25% {
+    fill: #362638;
+  }
+  50% {
+    fill: #382d26;
+  }
+  75% {
+    fill: #283826;
+  }
+  100% {
+    fill: #263138;
+  }
+}
+@keyframes body-4 {
+  25% {
+    fill: #634666;
+  }
+  50% {
+    fill: #665346;
+  }
+  75% {
+    fill: #496646;
+  }
+  100% {
+    fill: #465966;
+  }
+}
+@keyframes body-5 {
+  25% {
+    fill: #8e5e90;
+  }
+  50% {
+    fill: #90755e;
+  }
+  75% {
+    fill: #60905e;
+  }
+  100% {
+    fill: #5e7990;
+  }
+}
+@keyframes body-6 {
+  25% {
+    fill: #462f46;
+  }
+  50% {
+    fill: #463a2f;
+  }
+  75% {
+    fill: #2f462f;
+  }
+  100% {
+    fill: #2f3b46;
+  }
+}
+@keyframes body-7 {
+  25% {
+    fill: #634462;
+  }
+  50% {
+    fill: #635544;
+  }
+  75% {
+    fill: #446346;
+  }
+  100% {
+    fill: #445263;
+  }
+}
+@keyframes body-8 {
+  25% {
+    fill: #634362;
+  }
+  50% {
+    fill: #635443;
+  }
+  75% {
+    fill: #436344;
+  }
+  100% {
+    fill: #435263;
+  }
+}
+@keyframes body-9 {
+  25% {
+    fill: #7b5179;
+  }
+  50% {
+    fill: #7b6851;
+  }
+  75% {
+    fill: #517b53;
+  }
+  100% {
+    fill: #51647b;
+  }
+}
+@keyframes body-10 {
+  25% {
+    fill: #714a70;
+  }
+  50% {
+    fill: #715f4a;
+  }
+  75% {
+    fill: #4a714c;
+  }
+  100% {
+    fill: #4a5c71;
+  }
+}
+@keyframes body-11 {
+  25% {
+    fill: #452f42;
+  }
+  50% {
+    fill: #453d2f;
+  }
+  75% {
+    fill: #2f4532;
+  }
+  100% {
+    fill: #2f3745;
+  }
+}
+@keyframes body-12 {
+  25% {
+    fill: #704a6f;
+  }
+  50% {
+    fill: #705e4a;
+  }
+  75% {
+    fill: #4a704b;
+  }
+  100% {
+    fill: #4a5c70;
+  }
+}
+@keyframes body-14 {
+  25% {
+    fill: #342232;
+  }
+  50% {
+    fill: #342d22;
+  }
+  75% {
+    fill: #223424;
+  }
+  100% {
+    fill: #222934;
+  }
+}
+@keyframes body-15 {
+  25% {
+    fill: #4d354a;
+  }
+  50% {
+    fill: #4d4435;
+  }
+  75% {
+    fill: #354d38;
+  }
+  100% {
+    fill: #353e4d;
+  }
+}
+@keyframes body-16 {
+  25% {
+    fill: #583c53;
+  }
+  50% {
+    fill: #584f3c;
+  }
+  75% {
+    fill: #3c5841;
+  }
+  100% {
+    fill: #3c4558;
+  }
+}
+@keyframes body-17 {
+  25% {
+    fill: #784f72;
+  }
+  50% {
+    fill: #786a4f;
+  }
+  75% {
+    fill: #4f7856;
+  }
+  100% {
+    fill: #4f5d78;
+  }
+}
+@keyframes body-18 {
+  25% {
+    fill: #4c3449;
+  }
+  50% {
+    fill: #4c4334;
+  }
+  75% {
+    fill: #344c37;
+  }
+  100% {
+    fill: #343d4c;
+  }
+}
+@keyframes tail-1 {
+  25% {
+    fill: #6e4a68;
+  }
+  50% {
+    fill: #6e624a;
+  }
+  75% {
+    fill: #4a6e50;
+  }
+  100% {
+    fill: #4a566e;
+  }
+}
+@keyframes tail-2 {
+  25% {
+    fill: #4d3448;
+  }
+  50% {
+    fill: #4d4634;
+  }
+  75% {
+    fill: #344d3a;
+  }
+  100% {
+    fill: #343b4d;
+  }
+}
+@keyframes tail-3 {
+  25% {
+    fill: #583b53;
+  }
+  50% {
+    fill: #584f3b;
+  }
+  75% {
+    fill: #3b5840;
+  }
+  100% {
+    fill: #3b4458;
+  }
+}
+@keyframes tail-4 {
+  25% {
+    fill: #6a4660;
+  }
+  50% {
+    fill: #6a6246;
+  }
+  75% {
+    fill: #466a50;
+  }
+  100% {
+    fill: #464e6a;
+  }
+}
+@keyframes tail-5 {
+  25% {
+    fill: #4f3648;
+  }
+  50% {
+    fill: #4f4a36;
+  }
+  75% {
+    fill: #364f3e;
+  }
+  100% {
+    fill: #363b4f;
+  }
+}
+@keyframes tail-6 {
+  25% {
+    fill: #5b3d51;
+  }
+  50% {
+    fill: #5b563d;
+  }
+  75% {
+    fill: #3d5b47;
+  }
+  100% {
+    fill: #3d425b;
+  }
+}
+@keyframes tail-7 {
+  25% {
+    fill: #2f202e;
+  }
+  50% {
+    fill: #2f2920;
+  }
+  75% {
+    fill: #202f22;
+  }
+  100% {
+    fill: #20262f;
+  }
+}
+@keyframes tail-8 {
+  25% {
+    fill: #3c2a39;
+  }
+  50% {
+    fill: #3c362a;
+  }
+  75% {
+    fill: #2a3c2d;
+  }
+  100% {
+    fill: #2a303c;
+  }
+}
+@keyframes tail-9 {
+  25% {
+    fill: #4c3446;
+  }
+  50% {
+    fill: #4c4634;
+  }
+  75% {
+    fill: #344c3a;
+  }
+  100% {
+    fill: #343a4c;
+  }
+}
+@keyframes tail-10 {
+  25% {
+    fill: #442e41;
+  }
+  50% {
+    fill: #443c2e;
+  }
+  75% {
+    fill: #2e4431;
+  }
+  100% {
+    fill: #2e3644;
+  }
+}
+@keyframes paws-1 {
+  25% {
+    fill: #3d2838;
+  }
+  50% {
+    fill: #3d3728;
+  }
+  75% {
+    fill: #283d2d;
+  }
+  100% {
+    fill: #282e3d;
+  }
+}
+@keyframes paws-2 {
+  25% {
+    fill: #462f41;
+  }
+  50% {
+    fill: #46402f;
+  }
+  75% {
+    fill: #2f4635;
+  }
+  100% {
+    fill: #2f3546;
+  }
+}
+@keyframes paws-3 {
+  25% {
+    fill: #5e3f57;
+  }
+  50% {
+    fill: #5e563f;
+  }
+  75% {
+    fill: #3f5e47;
+  }
+  100% {
+    fill: #3f475e;
+  }
+}
+@keyframes paws-4 {
+  25% {
+    fill: #382635;
+  }
+  50% {
+    fill: #383226;
+  }
+  75% {
+    fill: #263829;
+  }
+  100% {
+    fill: #262c38;
+  }
+}
+@keyframes paws-5 {
+  25% {
+    fill: #664562;
+  }
+  50% {
+    fill: #665a45;
+  }
+  75% {
+    fill: #45664a;
+  }
+  100% {
+    fill: #455166;
+  }
+}
+@keyframes paws-6 {
+  25% {
+    fill: #4a3246;
+  }
+  50% {
+    fill: #4a4232;
+  }
+  75% {
+    fill: #324a36;
+  }
+  100% {
+    fill: #323a4a;
+  }
+}
+@keyframes paws-7 {
+  25% {
+    fill: #6b4765;
+  }
+  50% {
+    fill: #6b5f47;
+  }
+  75% {
+    fill: #476b4d;
+  }
+  100% {
+    fill: #47536b;
+  }
+}
+
+</style>
+
+    <script src="js/prefixfree.min.js"></script>
+
+</head>
+
+<body>
+<div style="text-align:center;clear:both;">
+<script src="/gg_bd_ad_720x90.js" type="text/javascript"></script>
+<script src="/follow.js" type="text/javascript"></script>
+</div>
+  <svg width="451" height="447">
+  <!--crest-->
+  <polygon class="crest" id="c-1" points="241,43 330,3 339,7"/>
+  <polygon class="crest" id="c-2" points="327,21 327,12 339,7"/>
+  <!--beak-->
+  <polygon class="beak" id="bk-1" points="360,31 366,31 442,94"/>
+  <polygon class="beak" id="bk-2" points="351,31 360,31 442,94"/>
+  <polygon class="beak" id="bk-3" points="344,37 351,31 442,94"/>
+   <polygon class="beak" id="bk-4" points="340,41 344,37 442,94"/>
+  <polygon class="beak" id="bk-5" points="337,46 340,41 392,68"/>
+  <!--head-->
+  <polygon class="head" id="h-1" points="339,7 356,13 346,22"/>
+  <polygon class="head" id="h-2" points="346,22 356,13 366,31"/>
+  <polygon class="head" id="h-3" points="340,41 339,7 346,22"/>
+  <polygon class="head" id="h-4" points="323,26 339,7 340,41"/>
+  <polygon class="head" id="h-5" points="346,22 366,31 351,31"/>
+   <polygon class="head" id="h-6" points="340,41 346,22 351,31"/>
+  <polygon class="head" id="h-7" points="323,26 340,41 333,47"/>
+  <polygon class="head" id="h-8" points="307,71 323,26 333,47"/>
+  <polygon class="head" id="h-9" points="307,71 340,41 318,77"/>
+  <polygon class="head" id="h-10" points="307,71 318,77 324,95"/>
+  <polygon class="head" id="h-11" points="324,95 318,77 325,66"/>
+  <polygon class="head" id="h-12" points="324,95 325,66 337,82"/>
+  <polygon class="head" id="h-13" points="324,95 353,88 340,104"/>
+  <polygon class="head" id="h-14" points="324,95 337,82 353,88"/>
+  <polygon class="head" id="h-15" points="340,104 353,88 347,116"/>
+  <polygon class="head" id="h-16" points="347,116 353,88 365,98"/>
+  <polygon class="head" id="h-17" points="347,116 365,98 365,127"/>
+  <polygon class="head" id="h-18" points="347,116 365,127 357,135"/>
+  <polygon class="head" id="h-19" points="332,160 347,117 357,135"/>
+  <polygon class="head" id="h-20" points="332,160 327,130 347,117"/>
+  <polygon class="head" id="h-21" points="321,135 327,130 332,160"/>
+  <polygon class="head" id="h-22" points="307,165 321,135 332,160"/>
+  <!--body-->
+  <polygon class="body" id="b-1" points="322,162 332,160 285,212"/>
+  <polygon class="body" id="b-2" points="277,216 307,165 317,163"/>
+  <polygon class="body" id="b-3" points="209,52 321,135 277,111"/>
+  <polygon class="body" id="b-4" points="218,79 321,135 318,142"/>
+  <polygon class="body" id="b-5" points="218,79 318,142 307,165"/>
+  <polygon class="body" id="b-6" points="280,193 277,136 307,165"/>
+  <polygon class="body" id="b-7" points="259,166 277,136 280,193"/>
+  <polygon class="body" id="b-8" points="191,164 218,79 277,136"/>
+  <polygon class="body" id="b-9" points="191,164 277,136 259,166"/>
+  <polygon class="body" id="b-10" points="191,164 259,166 280,193"/>
+  <polygon class="body" id="b-11" points="55,117 218,79 191,164"/>
+  <polygon class="body" id="b-12" points="138,71 218,79 178,89"/>
+  <polygon class="body" id="b-13" points="154,59 218,79 189,76"/>
+  <polygon class="body" id="b-14" points="136,145 280,193 265,204"/>
+  <polygon class="body" id="b-15" points="244,218 249,197 265,204"/>
+  <polygon class="body" id="b-16" points="200,195 247,208 244,218"/>
+  <polygon class="body" id="b-17" points="200,195 249,197 247,208"/>
+  <polygon class="body" id="b-18" points="200,195 232,189 249,197"/>
+  <!--tail-->
+  <polygon class="tail" id="t-1" points="110,213 208,178 232,189"/>
+  <polygon class="tail" id="t-2" points="110,213 182,166 208,178"/>
+  <polygon class="tail" id="t-3" points="110,213 136,145 182,166"/>
+  <polygon class="tail" id="t-4" points="91,200 136,145 110,213"/>
+  <polygon class="tail" id="t-5" points="38,184 136,145 91,200"/>
+  <polygon class="tail" id="t-6" points="6,245 91,200 110,213"/>
+  <polygon class="tail" id="t-7" points="177,199 200,195 217,204"/>
+  <polygon class="tail" id="t-8" points="69,284 177,199 217,204"/>
+  <polygon class="tail" id="t-9" points="116,311 177,226 217,204"/>
+  <polygon class="tail" id="t-10" points="181,257 217,204 232,212"/>
+  <!--paws-->
+  <polygon class="paws" id="p-1" points="210,279 232,212 244,218"/>
+  <polygon class="paws" id="p-2" points="210,279 244,218 219,279"/>
+  <polygon class="paws" id="p-3" points="210,279 219,279 226,312"/>
+   <polygon class="paws" id="p-4" points="244,218 256,210 258,219"/>
+  <polygon class="paws" id="p-5" points="244,218 258,219 260,260"/>
+  <polygon class="paws" id="p-6" points="260,260 258,219 269,258"/>
+  <polygon class="paws" id="p-7" points="260,260 269,258 290,275"/>
+  <!--stone-->
+  <polygon class="stone" id="s-1" points="174,420 199,341 226,323 209,373 217,441"/>
+  <polygon class="stone" id="s-2" points="217,441 209,373 226,323 234,321 239,321 257,339 248,428"/>
+  <polygon class="stone" id="s-3" points="248,428 257,339 239,321 245,323 262,339 285,423"/>
+  <!--clutches-->
+  <polygon class="clutches"  points="210,339 212,327 226,312 255,326 262,339 240,323 237,326 236,338 231,327 230,322 217,329"/>
+  <polygon class="clutches" points="262,299 264,284 290,275 311,286 319,297 314,309 313,297 301,286 301,294 291,306 295,294 291,285 268,287"/>
+
+  Sorry, your browser does not support SVG.
+</svg>
+
+  <script src="js/index.js"></script>
+
+</body>
+
+</html>

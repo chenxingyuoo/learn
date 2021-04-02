@@ -1,0 +1,31 @@
+<main class="main">
+    <section class="intro">
+
+        <h1 class="welcome">
+            欢迎来到 Microblog
+        </h1>
+
+        <h3 class="tech">Microblog 是一个基于 Node.js 的微博系统。</h3>
+        <p class="btnlist">
+            <a href="/login" class="login">登录</a>
+            <a href="/reg" class="register">立即注册</a>
+        </p>
+    </section>
+    <section class="show">
+
+        <% posts.forEach(function(k, v){ %>
+        <article class="col">
+            <div class="col-box">
+                <h3 class="author"><%- v.user %></h3>
+                <p class="talk-about"><%- v.post %></p>
+            </div>
+        </article>
+        <% }) %>
+
+    </section>
+</main>
+
+
+
+
+

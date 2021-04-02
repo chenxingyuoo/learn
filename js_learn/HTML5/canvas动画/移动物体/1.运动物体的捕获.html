@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>1.运动物体的捕获</title>
+</head>
+
+<body>
+
+
+<canvas id="canvas" width="400" height="400" style="background:#000;">
+    your browser not support canvas
+</canvas>
+<script src="../js/ball.js"></script>
+<script src="../js/utils.js"></script>
+<script>
+    window.onload = function () {
+        var canvas = document.getElementById('canvas'),
+                context = canvas.getContext('2d'),
+                ball = new Ball(20,'red'),
+                gravity = 0.03,
+                bounce = -1 ;
+
+        var vx = Math.random() * 10 - 5;
+        var vy = Math.random() * 10 - 5;
+
+        ball.x = canvas.width * 0.5;
+        ball.y = canvas.height * 0.5;
+
+        //传入canvas,获取鼠标坐标
+        var mouse = utils.captureMouse(canvas);
+
+        //定义函数moveAndBoun
+        function moveAndBoun(){
+            var left = canvas.width,
+                    right = 0,
+                    top = 0,
+                    bottom = canvas.height;
+
+            //让小球动起来
+            ball.x += vx;
+            vy += gravity;
+            ball.y += vy;
+            //边界检测
+            if(ball.x + ball.radius > left){
+                vx *= bounce;
+                ball.x = left - ball.radius;
+            }else if(ball.x - ball.radius < right){
+                vx *= bounce;
+                ball.x = ball.radius;
+            }
+            if(ball.y + ball.radius > bottom){
+                vy *= bounce;
+                ball.y = bottom - ball.radius;
+            }else if(ball.y - ball.radius < top){
+                vy *= bounce;
+                ball.y = ball.radius;
+            }
+        }
+
+
+
+        var w = 0, h = 0;
+        //为canvas设置监听事件
+        canvas.addEventListener('mousedown', function(event){
+            //判断是否点击在球体上
+            if(utils.containsPoint(ball.getBounds(), mouse.x, mouse.y)){
+                isMousedown = true;
+                w = mouse.x - ball.x;
+                h = mouse.y - ball.y;
+                canvas.addEventListener('mouseup', onMouseUp, false);
+                canvas.addEventListener('mousemove', onMouseMove, false);
+            }
+        }, false);
+
+        //mouseup事件执行函数
+        function onMouseUp(event){
+            isMousedown = false;
+            canvas.removeEventListener('mouseup', onMouseUp, false);
+            canvas.removeEventListener('mousemove', onMouseMove, false);
+        }
+        //mousemove事件执行函数
+        function onMouseMove(event){
+            ball.x = mouse.x - w;
+            ball.y = mouse.y - h;
+        }
+
+
+        var isMousedown = false;
+        (function drawFrame(){
+            window.requestAnimationFrame(drawFrame, canvas);
+            context.clearRect(0, 0, canvas.width, canvas.height);
+
+            //如果没有捕获则自由运动
+            if(!isMousedown){
+                moveAndBoun();
+            }
+            ball.draw(context);
+        }());
+    }
+</script>
+</body>
+</html>

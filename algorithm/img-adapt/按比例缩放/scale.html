@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    * {
+      margin: 0;
+    }
+    #box1{
+      border: 1px solid #ddd;
+      position: relative;
+    }
+    #box2{
+      border: 1px solid #ddd;
+      position: relative;
+    }
+  </style>
+</head>
+<body>
+  <div id="box1">
+
+  </div>
+
+  <div id="box2">
+
+  </div>
+
+  <script src="../../utils/ratio.js"></script>
+  <script>
+    const $ = (selector) => {
+      return document.querySelector(selector)
+    }
+    const setStyles = (el, styles) => {
+      for (const key in styles) {
+        el.style[key] = styles[key]
+      }
+    }
+
+    window.onload = (e) => {
+      let box1 = $('#box1')
+      let box2 = $('#box2')
+      let sourceBox = {
+        width: 520,
+        height: 280
+      }
+      let box1Info = {
+        width: 520,
+        height: 280
+      }
+      let box2Info = {
+        width: 600,
+        height: 200
+      }
+      let elements = [
+        {
+          type: 'img',
+          width: 100,
+          height: 100,
+          x: 10,
+          y: 10,
+          url: 'http://k.zol-img.com.cn/sjbbs/7692/a7691515_s.jpg'
+        },
+        {
+          type: 'text',
+          width: 100,
+          height: 30,
+          text: '我是字体',
+          fontSize: 25,
+          x: 10,
+          y: 110,
+          'line-height': 30
+        }
+      ]
+
+      const renderElements = (el, elements, zoomRatio) => {
+        const result = elements.map((element) => {
+            if (element.type === 'text') {
+              let p = document.createElement('p')
+              p.innerText = element.text
+              setStyles(p, {
+                width: element.width * zoomRatio + 'px',
+                height:  element.height * zoomRatio + 'px',
+                fontSize: element.fontSize * zoomRatio + 'px',
+                'line-height': element['line-height'] * zoomRatio + 'px',
+                left: element.x * zoomRatio  + 'px',
+                top: element.y * zoomRatio + 'px',
+                position: 'absolute'
+              })
+
+              el.appendChild(p)
+            } else if (element.type === 'img') {
+              let img = document.createElement('img')
+              img.src = element.url
+              setStyles(img, {
+                width: element.width * zoomRatio + 'px',
+                height:  element.height * zoomRatio + 'px',
+                left: element.x * zoomRatio  + 'px',
+                top: element.y * zoomRatio + 'px',
+                position: 'absolute'
+              })
+              el.appendChild(img)
+            }
+        })
+      }
+
+    
+      // render box2
+      setStyles(box2, {
+        width: box2Info.width + 'px',
+        height: box2Info.height + 'px',
+      })
+
+      let whRatio = getBox2WHRatio(sourceBox, box2Info)
+      // 模版宽比
+      let widthRatio = whRatio.widthRatio
+      // 模版高比
+      let heightRatio = whRatio.heightRatio
+      // 取最小比例
+      let zoomRatio = Math.min(widthRatio, heightRatio)
+
+      console.log('WidthRatio', widthRatio);
+      console.log('HeightRatio', heightRatio);
+      console.log('zoomRatio', zoomRatio);
+      renderElements(box2, elements, zoomRatio)
+
+      // render box1
+      setStyles(box1, {
+        width: box1Info.width + 'px',
+        height: box1Info.height + 'px',
+      })
+
+      let box1WhRatio = getBox2WHRatio(sourceBox, box1Info)
+      // 取最小比例
+      let box1ZoomRatio = Math.min(box1WhRatio.widthRatio, box1WhRatio.heightRatio)
+      renderElements(box1, elements, box1ZoomRatio)
+      
+    }
+    
+  </script>
+
+</body>
+</html>

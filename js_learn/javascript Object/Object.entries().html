@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Object.entries()</title>
+</head>
+<body>
+<script>
+    //所述Object.entries（）方法返回给定对象的自己的可枚举属性[键，值]对的数组，
+    // 在相同的顺序，通过提供一个用于...中循环（不同之处在于一个用于-in循环枚举在原型链的属性以及）
+
+    //Object.entries(obj)
+
+    //Object.entries（）返回一个数组，其元素是对应于枚举属性阵列直接在对象中找到[键，值]对。
+    // 的属性的排序是相同的，通过上循环手动对象的属性值给定。
+
+    var obj = { foo: "bar", baz: 42 };
+    console.log(Object.entries(obj)); // [ ['foo', 'bar'], ['baz', 42] ]
+
+
+    // array like object
+    var obj = { 0: 'a', 1: 'b', 2: 'c' };
+    console.log(Object.entries(obj)); // [ ['0', 'a'], ['1', 'b'], ['2', 'c']
+
+    // array like object with random key ordering
+    var an_obj = { 100: 'a', 2: 'b', 7: 'c' };
+    console.log(Object.entries(an_obj)); // [ ['2', 'b'], ['7', 'c'], ['100', 'a'] ]
+
+    // getFoo is property which isn't enumerable
+    var my_obj = Object.create({}, { getFoo: { value: function() { return this.foo; } } });
+    my_obj.foo = "bar";
+    console.log(Object.entries(my_obj)); // [ ['foo', 'bar'] ]
+
+    // non-object argument will be coerced to an object
+    console.log(Object.entries("foo")); // [ ['0', 'f'], ['1', 'o'], ['2', 'o'] ]
+
+    //Converting an Object to a Map
+    //新的地图（）构造函数接受条目的迭代。随着Object.entries，您可以轻松地从对象转换为map
+
+    var obj = { foo: "bar", baz: 42 };
+    var map = new Map(Object.entries(obj));
+    console.log(map); // Map { foo: "bar", baz: 42 }
+
+
+    //兼容
+    const reduce = Function.bind.call(Function.call, Array.prototype.reduce);
+    const isEnumerable = Function.bind.call(Function.call, Object.prototype.propertyIsEnumerable);
+    const concat = Function.bind.call(Function.call, Array.prototype.concat);
+    const keys = Reflect.ownKeys;
+
+    if (!Object.values) {
+        Object.values = function values(O) {
+            return reduce(keys(O), (v, k) => concat(v, typeof k === 'string' && isEnumerable(O, k) ? [O[k]] : []), []);
+        };
+    }
+
+    if (!Object.entries) {
+        Object.entries = function entries(O) {
+            return reduce(keys(O), (e, k) => concat(e, typeof k === 'string' && isEnumerable(O, k) ? [[k, O[k]]] : []), []);
+        };
+    }
+
+</script>
+</body>
+</html>

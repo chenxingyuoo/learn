@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>弧形切角</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        .arc {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%,-50%);
+            width: 60px;
+            padding: 60px;
+            text-align: center;
+            color: white;
+        }
+
+        .arc {
+            background:
+            radial-gradient(circle at top left, red 15px, yellow 0) top left,
+            radial-gradient(circle at top right,
+            transparent 15px, yellowgreen 0) top right,
+            radial-gradient(circle at bottom right,
+            transparent 15px, yellowgreen 0) bottom right,
+            radial-gradient(circle at bottom left,
+            transparent 15px, yellowgreen 0) bottom left;
+            background-size: 50% 50%;
+            background-repeat: no-repeat;
+        }
+
+
+        .arcs {
+            position: absolute;
+            top: 70%;
+            left: 70%;
+            width: 60px;
+            padding: 60px;
+            text-align: center;
+            color: white;
+        }
+
+        .arcs {
+            background:
+            radial-gradient(circle at top left, transparent 15px, yellowgreen 0) top left,
+            radial-gradient(circle at top right,
+            transparent 15px, yellowgreen 0) top right,
+            radial-gradient(circle at bottom right,
+            transparent 15px, yellowgreen 0) bottom right,
+            radial-gradient(circle at bottom left,
+            transparent 15px, yellowgreen 0) bottom left;
+            background-size: 50% 50%;
+            background-repeat: no-repeat;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<!--
+弧形切角使用径向渐变实现
+-->
+<hgroup class="arc">
+    <h1>.arc</h1>
+</hgroup>
+
+<hgroup class="arcs">
+    <h1>.arc</h1>
+</hgroup>
+
+</body>
+</html>

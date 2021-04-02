@@ -1,0 +1,14 @@
+{
+  "name": "first-puppeteer",
+  "version": "1.0.0",
+  "main": "app.js",
+  "license": "MIT",
+  "dependencies": {
+    "koa": "^2.7.0",
+    "koa-router": "^7.4.0",
+    "puppeteer": "^1.14.0"
+  },
+  "devDependencies": {
+    "supervisor": "^0.12.0"
+  }
+}

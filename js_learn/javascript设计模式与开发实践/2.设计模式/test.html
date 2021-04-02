@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+
+<div id="box"></div>
+
+<script>
+    /**
+     * 获取间隔日期
+     * @param year   开始年份
+     * @param month  开始月份
+     * @param day    开始日
+     * @param num    间隔数
+     * @returns {Array}
+     */
+    var getIntervalDate = function (year , month , day , num){
+        year = String(year);
+
+        var date = new Date(year);
+        var curYear = date.getFullYear();  //当前年
+        var startMonth = month || 1;  //开始月份
+        var startDay = day || 1;    //开始日
+        //间隔数
+        var intervalNum = num || 14;
+
+        //是否为闰年
+        var isLeapYear = function (year) {
+            return (year % 4 == 0) && (year % 100 != 0 || year % 400 == 0);
+        };
+
+        //获取当年公厉的天数
+        var getYearDays = function (year){
+            return (isLeapYear(year)) ? 366 : 365;
+        };
+
+        //获取当月公厉的天数
+        var getSolarDays = function (){
+            // 公历每个月份的天数普通表
+            var solarMonth =  [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+
+            return function (year, month){
+                month = month - 1;
+                if (month == 1) {
+                    return (isLeapYear(year)) ? 29 : 28;
+                } else {
+                    return solarMonth[month];
+                }
+            }
+        }();
+
+        //获取日期的长度  @year 年  @intervalNum 间隔数
+        var getDateLen = function (year , intervalNum){
+            return Math.floor(getYearDays(year)) / intervalNum;
+        };
+
+        //日期长度
+        var dateLen = getDateLen(curYear, intervalNum);
+
+        var result = [];
+        //循环
+        for (var i = 0; i < dateLen; i++) {
+            var start;
+            var end;
+            //当前月份天数
+            var curMonthSolarDays = getSolarDays(curYear, startMonth);
+
+            //开始日期
+            start = curYear + '-' + startMonth + '-'  + startDay;
+
+            //开始日加上间隔数
+            startDay = startDay + intervalNum;
+
+            //day 大于 当前月份天数
+            if (startDay > curMonthSolarDays) {
+                //day - 当前月份天数
+                startDay = startDay - curMonthSolarDays;
+                //月份 + 1
+                startMonth = startMonth + 1;
+            }
+
+            //结束日期 , 要减去 1 天
+            end = curYear + '-' + startMonth + '-'  + (startDay - 1);
+
+            //存进数组
+            result.push(start + '---' + end);
+        }
+
+        return result;
+    };
+
+    console.log(getIntervalDate(2017, 1, 2, 14));
+
+</script>
+
+<script language="javascript">
+
+
+    //是否为闰年
+    var isLeapYear = function (year) {
+        return (year % 4 == 0) && (year % 100 != 0 || year % 400 == 0);
+    };
+
+
+    //获取当年公厉的天数
+    var getYearDays = function (year){
+        return (isLeapYear(year)) ? 366 : 365;
+    };
+
+    //获取当月公厉的天数
+    var getSolarDays = function (){
+        // 公历每个月份的天数普通表
+        var solarMonth =  [ '' , 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+
+        return function (year, month){
+            if (month == 2) {
+                return (isLeapYear(year)) ? 29 : 28;
+            } else {
+                return solarMonth[month];
+            }
+        }
+    }();
+
+    //获取当前date
+    var getCurDate = function (){
+        var date = new Date();
+        var year = date.getFullYear();
+        var month = date.getMonth() + 1;
+        var day = date.getDate();
+
+        return {
+            year : year,
+            month : month,
+            day : day
+        }
+    };
+
+    //获取指定月份的第一天星期几
+    var getCurMonthFirstDay = function (year, month){
+        var date = new Date(year, month, 1); //指定月第一天Date资讯
+        return date.getDay();                //指定月第一天星期几
+    };
+
+
+    var num = 14;
+
+
+    var curDate = getCurDate();
+
+
+    var week = ['日','一','二','三','四','五','六'];
+
+    //今年的1月
+    var firstDay = getCurMonthFirstDay(curDate.year, 1);
+
+    console.log(firstDay);
+
+    //今年的1月
+    var dayLen = getSolarDays(curDate.year, 1);
+
+    for (var i = 0, len = dayLen; i < len; i++) {
+//        console.log('星期' + week[(firstDay + i) % 7]);
+    }
+
+//    var len = getYearDays(curDate.year) / num;
+
+</script>
+
+</body>
+</html>

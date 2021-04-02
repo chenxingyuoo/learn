@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>rolling_load1</title>
+    <style>
+        html , body{
+            height: 100%;
+            width: 100%;
+            background: yellowgreen;
+        }
+    </style>
+</head>
+<body>
+<script src="../jquery-2.2.1.js"></script>
+<script>
+    /**
+     * @author wsf 前台分页（只对已经加载的数据进行分割）
+     */
+    ;
+    (function (win,$){
+        /**
+         * 自定义命名空间
+         */
+
+        $.scrollPage = $.extend({},{
+            /**
+             * page对象
+             */
+            config:{
+                pageData:{},//页面数据
+                dataLoding:false,//是否正在加载数据
+                canStartLoadData:false,//是否可以开始加载数据
+                pageNo:1,//页码
+                pageItem:10,//没有的数据条数（每页显示的条数）
+                currentPageItem:30,//当前页面显示了多少数据
+                time:null,//时间及时器
+                speed:10,//判断是否可加载的间隔
+            },
+            /**
+             * 初始化
+             */
+            init:function (_config){
+                var _this = $.scrollPage;//
+                $.extend(_this.config,_config);
+                return _this;//为了链式操作
+            },
+            /**
+             * 设置pageData
+             */
+            setPageData:function (pageData){
+                this.config.pageData = pageData;
+            },
+            /**
+             * 加载下一页
+             */
+            getNext:function (){
+                var _this = $.scrollPage;
+                var cfg = _this.config;
+                var sliceStart = cfg.currentPageItem;//数组截取开始下标
+                cfg.pageNo ++;//页码加一
+                cfg.currentPageItem = cfg.pageNo*cfg.pageItem;
+                var sliceEnd = cfg.currentPageItem;//数组截取开始下标
+                return cfg.pageData.slice(sliceStart,sliceEnd);
+            },
+            /**
+             * 返回前一页
+             */
+            getPrev:function (){
+                var _this = $.scrollPage;
+                var cfg = _this.config;
+                var sliceEnd = cfg.currentPageItem;//数组截取开始下标
+                cfg.pageNo--;//页码加一
+                cfg.currentPageItem = 	cfg.pageNo*cfg.pageItem;
+                var sliceStart = cfg.currentPageItem;//数组截取开始下标
+                return cfg.pageData.slice(sliceStart,sliceEnd);
+            },
+            /**
+             * 监听页面滚动事件
+             */
+            listener:function (){
+                var _this = $.scrollPage;
+                var cfg = _this.config;
+                //var _canStart = _this._canStartLoadData();//是否可以开始加载
+                var _canStart = _this.isPageBottom();//是否滚动到页面底部
+                if(_canStart){
+                    showMyLoading();
+                    _this._startLoad(_this._endLoad);//开始加载
+                }
+                return _this;
+            },
+            /**
+             * 开始加载数据
+             */
+            _startLoad:function (callback){
+                var _this = $.scrollPage;
+                var cfg = _this.config;
+                cfg.dataLoding = true;//正在加载数据
+                var _loadData = _this.getNext();//要加载的数据
+                for(var i in _loadData){
+                    _this._addRow(_loadData[i]);//添加行
+                }
+                if(callback)
+                    callback();
+            },
+            /**
+             * 添加行
+             */
+            _addRow:function (_pageData){
+                var _this = $.scrollPage;
+                var cfg = _this.config;
+                $('#content').treegrid('append',{
+                    parent: 0,  // 这里指定父级标识就可以了
+                    data: [_pageData]
+                });
+                _this._interlaceRow();//隔行变色
+            },
+            /**
+             * 加载结束
+             */
+            _endLoad:function (){
+                var _this = $.scrollPage;
+                var cfg = _this.config;
+                cfg.dataLoding = false;
+                cfg.canStartLoadData = false;
+                setTimeout(function (){
+                    closeLoading();
+                },2000);
+                return _this;
+            },
+            /**
+             * 是否可以开始加载数据
+             */
+            _canStartLoadData:function (){
+                var _this = $.scrollPage;
+                var cfg = _this.config;
+                var scrollPos = _this._scrollPosition();
+
+            },
+            /**
+             * 页面滚动到哪个地方了
+             */
+            _scrollPosition:function (){
+                var _this = $.scrollPage;
+                var cfg = _this.config;
+                var scrTop = $("body").scrollTop();//页面的滚动高度
+                return scrTop;
+            },
+            /**
+             * 判断页面是否滚动到底部
+             */
+            isPageBottom:function () {
+                var scrollTop = 0;
+                var clientHeight = 0;
+                var scrollHeight = 0;
+                /*
+                 if (document.documentElement && document.documentElement.scrollTop) {
+                 scrollTop = document.documentElement.scrollTop;
+                 } else if (document.body) {
+                 scrollTop = document.body.scrollTop;
+                 }  */
+                scrollTop = $(document).scrollTop();
+                /*
+                 if (document.body.clientHeight && document.documentElement.clientHeight) {
+                 clientHeight = (document.body.clientHeight < document.documentElement.clientHeight) ? document.body.clientHeight: document.documentElement.clientHeight;
+                 } else {
+                 clientHeight = (document.body.clientHeight > document.documentElement.clientHeight) ? document.body.clientHeight: document.documentElement.clientHeight;
+                 }  */
+                clientHeight = $(document).height();
+                // 知识点：Math.max 比较大小，取最大值返回
+                scrollHeight = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
+                if (scrollTop + clientHeight == scrollHeight) {
+                    return true;
+                } else {
+                    return false;
+                }
+            },
+            _interlaceRow : function(){
+                var allRows = $(".datagrid-row:odd");
+                allRows.css("background-color","rgb(224, 232, 255)");//隔行变色
+            }
+        });
+
+        console.log($.scrollPage)
+    })(window,jQuery);
+</script>
+</body>
+</html>

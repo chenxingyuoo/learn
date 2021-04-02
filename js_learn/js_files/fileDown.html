@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>demoDown</title>
+	<meta charset="utf-8"/>
+</head>
+
+<body>
+<script type="text/javascript">
+	function downloadFile(url) {   
+        try{ 
+            var elemIF = document.createElement("iframe");   
+            elemIF.src = url;   
+            elemIF.style.display = "none";   
+            document.body.appendChild(elemIF);   
+        }catch(e){ 
+ 
+        } 
+    }
+
+    function switchIframe(){
+    window.frames["frameName"].location.href="action.aspx"
+        }
+
+
+    
+</script>
+
+<div class="login_center"><a href="javascript:_login()"></a></div> 
+    <input type="button" value="进入1" onClick = "downloadFile('http://img3.imgtn.bdimg.com/it/u=3729580552,646614237&fm=21&gp=0.jpg')">
+     <input type="button" onclick="()" />
+     <a download="http://img3.imgtn.bdimg.com/it/u=3729580552,646614237&fm=21&gp=0.jpg" href="http://img3.imgtn.bdimg.com/it/u=3729580552,646614237&fm=21&gp=0.jpg">file.js</a>
+
+</body>
+
+</html>

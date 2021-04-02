@@ -1,0 +1,42 @@
+{
+  "_from": "tns-android@4.0.1",
+  "_id": "tns-android@4.0.1",
+  "_inBundle": false,
+  "_integrity": "sha512-1IVGhQLXMfS9pmP+W7Oa3uEmgNT1t/RscF8jLikXA/JF+9LhJ/C+S2pXmt9kciBXTVRKJ/tLeSXEMWwKrbt27Q==",
+  "_location": "/tns-android",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "version",
+    "registry": true,
+    "raw": "tns-android@4.0.1",
+    "name": "tns-android",
+    "escapedName": "tns-android",
+    "rawSpec": "4.0.1",
+    "saveSpec": null,
+    "fetchSpec": "4.0.1"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/tns-android/-/tns-android-4.0.1.tgz",
+  "_shasum": "0de0da56a8d0448025fda16f83c77ca4416681a9",
+  "_spec": "tns-android@4.0.1",
+  "_where": "/Users/chenxingyu/project/my_learn/nativescript-vue/first-nativescript-vue",
+  "bugs": {
+    "url": "https://github.com/NativeScript/android-runtime/issues"
+  },
+  "bundleDependencies": false,
+  "deprecated": false,
+  "description": "NativeScript Runtime for Android",
+  "files": [
+    "**/*"
+  ],
+  "homepage": "https://github.com/NativeScript/android-runtime#readme",
+  "name": "tns-android",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NativeScript/android-runtime.git"
+  },
+  "version": "4.0.1"
+}

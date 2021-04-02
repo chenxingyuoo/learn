@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <style>
+    #edit {
+      border: 1px solid #000;
+      height: 100px;
+    }
+
+    .qq-face {
+      width: 20px;
+      height: 20px;
+    }
+  </style>
+</head>
+
+<body>
+
+<input type="button" value="添加表情" id="add-face-btn">
+<input type="button" value="恢复光标" id="restore-selection-btn">
+<div contenteditable="true" id="edit"></div>
+
+<script src="y-editor.js"></script>
+<script>
+  (function (){
+    let edit = document.querySelector('#edit');
+    let addFaceBtn = document.querySelector('#add-face-btn');
+    let restoreSelectionBtn = document.querySelector('#restore-selection-btn');
+
+    let yEditor = new YEditor(edit);
+
+    //点击输入框，保存selection
+    edit.addEventListener('mouseup', () => {
+      yEditor.selections.saveSelection();
+    });
+
+    let directionCodes = [37, 38, 39, 40];
+
+    document.addEventListener('keyup', (e) => {
+      let activeElement = document.activeElement;
+      if (activeElement === edit) {
+        yEditor.selections.saveSelection();
+      }
+    });
+
+    //恢复光标
+    restoreSelectionBtn.addEventListener('click', () => {
+      yEditor.selections.restoreSelection();
+    });
+
+    addFaceBtn.addEventListener('click', (e) => {
+      let html = '<img class="qq-face" text="[微笑]" src="http://img1.imgtn.bdimg.com/it/u=3178499799,2095076954&fm=27&gp=0.jpg">';
+
+      edit.focus();
+
+      yEditor.pasteHtmlAtCaret(html);
+    }, false);
+  })();
+
+</script>
+</body>
+</html>

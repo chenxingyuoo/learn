@@ -1,0 +1,487 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>Resize</title>
+    <style type="text/css">
+        #rRightDown, #rLeftDown, #rLeftUp, #rRightUp, #rRight, #rLeft, #rUp, #rDown {
+            position: absolute;
+            background: #C00;
+            width: 6px;
+            height: 6px;
+            z-index: 5;
+            font-size: 0;
+            border-radius: 50%;
+        }
+
+        #rLeftDown, #rRightUp {
+            cursor: ne-resize;
+        }
+
+        #rRightDown, #rLeftUp {
+            cursor: nw-resize;
+        }
+
+        #rRight, #rLeft {
+            cursor: e-resize;
+        }
+
+        #rUp, #rDown {
+            cursor: n-resize;
+        }
+
+        #rRightDown {
+            bottom: -3px;
+            right: -3px;
+        }
+
+        #rLeftDown {
+            bottom: -3px;
+            left: -3px;
+        }
+
+        #rRightUp {
+            top: -3px;
+            right: -3px;
+        }
+
+        #rLeftUp {
+            top: -3px;
+            left: -3px;
+        }
+
+        #rRight {
+            right: -3px;
+            top: 50%
+        }
+
+        #rLeft {
+            left: -3px;
+            top: 50%
+        }
+
+        #rUp {
+            top: -3px;
+            left: 50%
+        }
+
+        #rDown {
+            bottom: -3px;
+            left: 50%
+        }
+
+        .hdiv {
+            display: block;
+            position: relative;
+            width: 100%;
+            height: 100%;
+            max-width: none;
+            margin: 0;
+            outline: 0;
+            word-wrap: break-word;
+            max-height: 300px;
+            overflow: auto;
+        }
+
+        .wrap{
+            width: 800px;
+            height: 100%;
+            position: absolute;
+            left: 200px;
+            top:0;
+        }
+        .content{
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+    </style>
+</head>
+<body>
+<div class="wrap">
+    <div class="content">
+        <div id='ss' data-type="text"
+             style="cursor: pointer;height:auto; width:100px; border:1px solid #000000; position:absolute; left:200px; top:200px;z-index : 10;">
+
+
+            <div id="drag-box">
+                <div id="rRightDown" event-type="right-down"></div>
+                <div id="rLeftDown" event-type="left-down"></div>
+                <div id="rRightUp" event-type="right-up"></div>
+                <div id="rLeftUp" event-type="left-up"></div>
+                <div id="rRight" event-type="right"></div>
+                <div id="rLeft" event-type="left"></div>
+                <div id="rUp" event-type="up"></div>
+                <div id="rDown" event-type="down"></div>
+            </div>
+
+            <div id="hdiv" class="hdiv" contenteditable="true">
+                <h1>text text</h1>
+            </div>
+
+        </div>
+
+
+
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-2.2.4.js"></script>
+<script>
+    var Sys = (function (ua) {
+        var s = {};
+        s.IE = ua.match(/msie ([\d.]+)/) ? true : false;
+        s.Firefox = ua.match(/firefox\/([\d.]+)/) ? true : false;
+        s.Chrome = ua.match(/chrome\/([\d.]+)/) ? true : false;
+        s.IE6 = (s.IE && ([/MSIE (\d)\.0/i.exec(navigator.userAgent)][0][1] == 6)) ? true : false;
+        s.IE7 = (s.IE && ([/MSIE (\d)\.0/i.exec(navigator.userAgent)][0][1] == 7)) ? true : false;
+        s.IE8 = (s.IE && ([/MSIE (\d)\.0/i.exec(navigator.userAgent)][0][1] == 8)) ? true : false;
+        return s;
+    })(navigator.userAgent.toLowerCase());
+
+    var $ = function (id) {
+        return document.getElementById(id);
+    };
+
+    var Css = function (e, o) {
+        for (var i in o)
+            e.style[i] = o[i];
+    };
+
+    var Extend = function (destination, source) {
+        for (var property in source) {
+            destination[property] = source[property];
+        }
+    };
+
+    var Bind = function (object, fun) {
+        var args = Array.prototype.slice.call(arguments).slice(2);
+        return function () {
+            return fun.apply(object, args);
+        }
+    };
+    var BindAsEventListener = function (object, fun) {
+        var args = Array.prototype.slice.call(arguments).slice(2);
+        return function (event) {
+            return fun.apply(object, [event || window.event].concat(args));
+        }
+    };
+    var CurrentStyle = function (element) {
+        return element.currentStyle || document.defaultView.getComputedStyle(element, null);
+    };
+    function addListener(element, e, fn) {
+        element.addEventListener ? element.addEventListener(e, fn, false) : element.attachEvent("on" + e, fn);
+    }
+    ;
+    function removeListener(element, e, fn) {
+        element.removeEventListener ? element.removeEventListener(e, fn, false) : element.detachEvent("on" + e, fn)
+    }
+    ;
+    var Class = function (properties) {
+        var _class = function () {
+            return (
+            arguments[0] !== null && this.initialize && typeof(this.initialize) == 'function') ? this.initialize.apply(this, arguments) : this;
+        };
+        _class.prototype = properties;
+        return _class;
+    };
+
+    var Resize = new Class({
+        initialize: function (obj, opts) {
+            this.obj = obj;
+            this.resizeelm = null;
+            this.fun = null; //记录触发什么事件的索引
+            this.original = []; //记录开始状态的数组
+            this.width = null;
+            this.height = null;
+            this.fR = BindAsEventListener(this, this.resize);
+            this.fS = Bind(this, this.stop);
+
+            //配置参数
+            this.setOpts(opts);
+        },
+        setOpts : function (opts){
+            //默认参数
+            this.opts = {
+                isMin : true,  //是否有最小值
+                minHeight : 50,
+                minWidth : 50
+            };
+            //浅拷贝合并参数
+            Extend(this.opts , opts || {});
+        },
+        bindEvent : function (isText){
+
+        },
+        set: function (elm, direction) {
+            if (!elm) return;
+            this.resizeelm = elm;
+            //mousedown事件监听 , 执行start函数 ， 接受一个 函数作为参数 this[direction]
+            addListener(this.resizeelm, 'mousedown', BindAsEventListener(this, this.start, this[direction]));
+            return this;
+        },
+        start: function (e, fun) {
+            e.stopPropagation();
+            this.fun = fun;
+            this.original = [parseInt(CurrentStyle(this.obj).width), parseInt(CurrentStyle(this.obj).height), parseInt(CurrentStyle(this.obj).left), parseInt(CurrentStyle(this.obj).top)];
+
+            this.width = (this.original[2] || 0) + this.original[0];
+            this.height = (this.original[3] || 0) + this.original[1];
+            //mousemove移动事件监听, 执行 resize 方法
+            addListener(document, "mousemove", this.fR);
+            //mouseup鼠标起来事件监听 , 执行stop方法
+            addListener(document, 'mouseup', this.fS);
+        },
+        resize: function (e) {
+            e.stopPropagation();
+            this.fun(e);
+            Sys.IE ? ( this.resizeelm.onlosecapture = function () {
+                this.fS()
+            }) : (this.resizeelm.onblur = function () {
+                this.fS()
+            })
+        },
+        stop: function () {
+            removeListener(document, "mousemove", this.fR);
+            removeListener(document, "mousemove", this.fS);
+            window.getSelection ? window.getSelection().removeAllRanges() : document.selection.empty();
+        },
+        up: function (e) {
+            //判断最小值
+            if(this.opts.isMin && this.height - e.clientY < this.opts.minHeight){
+                return;
+            }
+
+            //设置定位和高度样式
+            this.height > e.clientY ? Css(this.obj, {
+                top: e.clientY + "px",
+                height:  this.height - e.clientY + "px"
+            }) : this.turnDown ? this.turnDown(e) : '';
+
+        },
+        down: function (e) {
+            //判断最小值
+            if(this.opts.isMin && e.clientY - this.original[3] <  this.opts.minHeight){
+                return;
+            }
+            //设置定位和高度样式
+            e.clientY > this.original[3] ? Css(this.obj, {
+                top: this.original[3] + 'px',
+                height:  e.clientY - this.original[3]  + 'px'
+            }) : this.turnUp(e);
+        },
+        left: function (e) {
+            //判断最小宽度
+            if(this.opts.isMin && this.width  - (e.clientX - 200) < this.opts.minWidth){
+                return;
+            }
+
+            //设置宽度和定位样式
+             e.clientX - 200  < this.width ? Css(this.obj, {
+                left: (e.clientX - 200) + 'px',
+                width:  this.width - (e.clientX - 200) + "px"
+            }) : this.turnRight(e);
+
+        },
+        right: function (e) {
+            //判断最小宽度
+            if(this.opts.isMin && e.clientX - 200 - this.original[2] < this.opts.minWidth){
+                return;
+            }
+            //设置宽度和定位样式
+            e.clientX - 200 > this.original[2] ? Css(this.obj, {
+                left: this.original[2] + 'px',
+                width:  e.clientX - 200 - this.original[2] + "px"
+            }) : this.turnLeft(e);
+
+        },
+        leftUp: function (e) {
+            this.up(e);
+            this.left(e);
+        },
+        leftDown: function (e) {
+            this.left(e);
+            this.down(e);
+        },
+        rightUp: function (e) {
+            this.up(e);
+            this.right(e);
+        },
+        rightDown: function (e) {
+            this.right(e);
+            this.down(e);
+        },
+        /*turnDown: function (e) {
+            Css(this.obj, {top: this.height + 'px', height: e.clientY - this.height + 'px'});
+        },*/
+        turnUp: function (e) {
+            Css(this.obj, {top: e.clientY + 'px', height: this.original[3] - e.clientY + 'px'});
+        },
+        turnRight: function (e) {
+            Css(this.obj, {left: this.width + 'px', width: e.clientX - this.width + 'px'});
+        },
+        turnLeft: function (e) {
+            Css(this.obj, {left: e.clientX + 'px', width: this.original[2] - e.clientX + 'px'});
+        }
+    });
+    var abc;
+    window.onload = function () {
+
+
+        abc = new Resize($('ss'), {
+            a : 'a'
+        })
+                .set($('rUp'), 'up')
+                .set($('rDown'), 'down')
+                .set($('rLeft'), 'left')
+                .set($('rRight'), 'right')
+                .set($('rLeftUp'), 'leftUp')
+                .set($('rLeftDown'), 'leftDown')
+                .set($('rRightDown'), 'rightDown')
+                .set($('rRightUp'), 'rightUp');
+        console.log(abc);
+        /*var dragDiv = $('ss');
+         new Drag(dragDiv);*/
+        ssmove($('ss'))
+    };
+
+
+    /*window.onload = function () {
+     var objDiv = document.getElementById('drag');
+     drag(objDiv);
+     };*/
+
+
+
+    /*function Drag(id){
+     this.container = id;
+     this.init(this.container);
+     }
+
+     Drag.prototype.init = function (id){
+     //鼠标按下
+     id.onmousedown = function (e) {
+     var doc = document;
+     e = e || window.event;
+     var x = e.layerX || e.offsetX;
+     var y = e.layerY || e.offsetY;
+     //设置捕获范围
+     if (id.setCapture) {
+     id.setCapture();
+     } else if (window.captureEvents) {
+     window.captureEvents(Event.MOUSEMOVE | Event.MOUSEUP);
+     }
+
+     //鼠标移动
+     this.dragMouseMove(doc, id, x, y);
+
+     //鼠标松开
+     this.dragMouseUp(doc, id);
+
+     }.bind(this);
+     };
+
+     Drag.prototype.dragMouseMove = function (doc, id, x, y){
+     document.onmousemove = function (e) {
+     e = e || window.event;
+     if (!e.pageX)e.pageX = e.clientX;
+     if (!e.pageY)e.pageY = e.clientY;
+     var tx = e.pageX - x;
+     var ty = e.pageY - y;
+     id.style.left = tx + 'px';
+     id.style.top = ty + 'px';
+     };
+     };
+
+     Drag.prototype.dragMouseUp = function (doc, id){
+     doc.onmouseup = function () {
+     //取消捕获范围
+     if (id.releaseCapture) {
+     id.releaseCapture();
+     } else if (window.captureEvents) {
+     window.captureEvents(Event.MOUSEMOVE | Event.MOUSEUP);
+     }
+     //清除事件
+     doc.onmousemove = null;
+     doc.onmouseup = null;
+     };
+     };*/
+    /*function drag(dv) {
+     dv.onmousedown = function (e) {
+     var d = document;
+     e = e || window.event;
+     var x = e.layerX || e.offsetX;
+     var y = e.layerY || e.offsetY;
+     //设置捕获范围
+     if (dv.setCapture) {
+     dv.setCapture();
+     } else if (window.captureEvents) {
+     window.captureEvents(Event.MOUSEMOVE | Event.MOUSEUP);
+     }
+     d.onmousemove = function (e) {
+     e = e || window.event;
+     if (!e.pageX)e.pageX = e.clientX;
+     if (!e.pageY)e.pageY = e.clientY;
+     var tx = e.pageX - x;
+     var ty = e.pageY - y;
+     dv.style.left = tx + 'px';
+     dv.style.top = ty + 'px';
+     };
+     d.onmouseup = function () {
+     //取消捕获范围
+     if (dv.releaseCapture) {
+     dv.releaseCapture();
+     } else if (window.captureEvents) {
+     window.captureEvents(Event.MOUSEMOVE | Event.MOUSEUP);
+     }
+     //清除事件
+     d.onmousemove = null;
+     d.onmouseup = null;
+     };
+     };
+     }*/
+
+
+    function ssmove(odiv2) {
+
+
+        odiv2.onmousedown = function (ev) {
+
+
+            var oEvent = ev || event;
+            var disX = oEvent.clientX - odiv2.offsetLeft;
+            var disY = oEvent.clientY - odiv2.offsetTop;
+
+            //设置捕获范围
+            if (odiv2.setCapture) {
+                odiv2.setCapture();
+            } else if (window.captureEvents) {
+                window.captureEvents(Event.MOUSEMOVE | Event.MOUSEUP);
+            }
+
+
+            document.onmousemove = function (ev) {
+                var oEvent = ev || event;
+                var l2 = oEvent.clientX - disX;
+                var k2 = oEvent.clientY - disY;
+                odiv2.style.left = l2 + 'px';
+                odiv2.style.top = k2 + 'px';
+            };
+            document.onmouseup = function (ev) {
+
+                //取消捕获范围
+                if (odiv2.releaseCapture) {
+                    odiv2.releaseCapture();
+                } else if (window.captureEvents) {
+                    window.captureEvents(Event.MOUSEMOVE | Event.MOUSEUP);
+                }
+                document.onmousemove = null;
+                document.onmouseup = null;
+            };
+
+        };
+
+    }
+</script>
+</body>
+</html>

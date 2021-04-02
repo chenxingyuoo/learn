@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>multi</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        a {
+            outline: none;
+        }
+
+        body, dl, form, ol, pre, td, th, ul {
+            margin: 0;
+        }
+
+        body {
+            font: 62.5% Arial, Helvetica, sans-serif;
+            line-height: 1.5;
+        }
+
+        code, pre {
+            font: 90% Courier New, Courier, monospace;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-size: 100%;
+            margin: 0;
+            padding: 0 0 1em;
+        }
+
+        html {
+            overflow-y: scroll;
+        }
+
+
+        @media screen and (max-width: 780px) {
+             canvas {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+
+<style media="screen">canvas{border:1px solid #CCC;}html,body{overflow:hidden;}</style>
+<canvas id="example" height=450 width=300></canvas>
+
+<script src="jquery-2.2.1.js"></script>
+<script>
+    // Framework for simulating touch events without a mobile device
+    // Trying to be compatible with
+    //  http://dvcs.w3.org/hg/webevents/raw-file/tip/touchevents.html
+    // TODO: support more of the touch API: touch{enter, leave, cancel}
+    var tuio = {
+        cursors: [],
+
+        // Data structure for associating cursors with objects
+        _data: {},
+
+        _touchstart: function (touch) {
+            // Create a touchstart event
+            this._create_event('touchstart', touch, {});
+        },
+
+        _touchmove: function (touch) {
+            // Create a touchmove event
+            this._create_event('touchmove', touch, {});
+        },
+
+        _touchend: function (touch) {
+            // Create a touchend event
+            this._create_event('touchend', touch, {});
+        },
+
+        _create_event: function (name, touch, attrs) {
+            // Creates a custom DOM event
+            var evt = document.createEvent('CustomEvent');
+            evt.initEvent(name, true, true);
+            // Attach basic touch lists
+            evt.touches = this.cursors;
+            // Get targetTouches on the event for the element
+            evt.targetTouches = this._get_target_touches(touch.target);
+            evt.changedTouches = [touch];
+            // Attach custom attrs to the event
+            for (var attr in attrs) {
+                if (attrs.hasOwnProperty(attr)) {
+                    evt[attr] = attrs[attr];
+                }
+            }
+            // Dispatch the event
+            if (touch.target) {
+                touch.target.dispatchEvent(evt);
+            } else {
+                document.dispatchEvent(evt);
+            }
+        },
+
+        _get_target_touches: function (element) {
+            var targetTouches = [];
+            for (var i = 0; i < this.cursors.length; i++) {
+                var touch = this.cursors[i];
+                if (touch.target == element) {
+                    targetTouches.push(touch);
+                }
+            }
+            return targetTouches;
+        },
+
+        // Callback from the main event handler
+        callback: function (type, sid, fid, x, y, angle) {
+            //console.log('callback type: ' + type + ' sid: ' + sid + ' fid: ' + fid);
+            var data;
+
+            if (type !== 3) {
+                data = this._data[sid];
+            } else {
+                data = {
+                    sid: sid,
+                    fid: fid
+                };
+                this._data[sid] = data;
+            }
+
+            // Some properties
+            // See http://dvcs.w3.org/hg/webevents/raw-file/tip/touchevents.html
+            data.identifier = sid;
+            data.pageX = window.innerWidth * x;
+            data.pageY = window.innerHeight * y;
+            data.target = document.elementFromPoint(data.pageX, data.pageY);
+
+            switch (type) {
+                case 3:
+                    this.cursors.push(data);
+                    this._touchstart(data);
+                    break;
+
+                case 4:
+                    this._touchmove(data);
+                    break;
+
+                case 5:
+                    this.cursors.splice(this.cursors.indexOf(data), 1);
+                    this._touchend(data);
+                    break;
+
+                default:
+                    break;
+            }
+
+            if (type === 5) {
+                delete this._data[sid];
+            }
+        }
+
+    };
+
+    function tuio_callback(type, sid, fid, x, y, angle) {
+        tuio.callback(type, sid, fid, x, y, angle);
+    }
+</script>
+
+<script>
+    var CanvasDrawr = function (options) {
+        var canvas = document.getElementById(options.id), ctxt = canvas.getContext("2d");
+        canvas.style.width = '100%'
+        canvas.width = canvas.offsetWidth;
+        canvas.style.width = '';
+        ctxt.lineWidth = options.size || Math.ceil(Math.random() * 35);
+        ctxt.lineCap = options.lineCap || "round";
+        ctxt.pX = undefined;
+        ctxt.pY = undefined;
+        var lines = [, ,];
+        var offset = $(canvas).offset();
+        var self = {
+            init: function () {
+                canvas.addEventListener('touchstart', self.preDraw, false);
+                canvas.addEventListener('touchmove', self.draw, false);
+            }, preDraw: function (event) {
+                $.each(event.touches, function (i, touch) {
+                    var id = touch.identifier, colors = ["red", "green", "yellow", "blue", "magenta", "orangered"], mycolor = colors[Math.floor(Math.random() * colors.length)];
+                    lines[id] = {x: this.pageX - offset.left, y: this.pageY - offset.top, color: mycolor};
+                });
+                event.preventDefault();
+            }, draw: function (event) {
+                var e = event, hmm = {};
+                $.each(event.touches, function (i, touch) {
+                    var id = touch.identifier, moveX = this.pageX - offset.left - lines[id].x, moveY = this.pageY - offset.top - lines[id].y;
+                    var ret = self.move(id, moveX, moveY);
+                    lines[id].x = ret.x;
+                    lines[id].y = ret.y;
+                });
+                event.preventDefault();
+            }, move: function (i, changeX, changeY) {
+                ctxt.strokeStyle = lines[i].color;
+                ctxt.beginPath();
+                ctxt.moveTo(lines[i].x, lines[i].y);
+                ctxt.lineTo(lines[i].x + changeX, lines[i].y + changeY);
+                ctxt.stroke();
+                ctxt.closePath();
+                return {x: lines[i].x + changeX, y: lines[i].y + changeY};
+            }
+        };
+        return self.init();
+    };
+    $(function () {
+        var super_awesome_multitouch_drawing_canvas_thingy = new CanvasDrawr({id: "example", size: 15});
+    });
+</script>
+</body>
+</html>

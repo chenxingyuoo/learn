@@ -1,0 +1,48 @@
+* {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    -webkit-font-smoothing: antialiased;
+    font-smoothing: antialiased;
+    color: #555555;
+    font-size: 14px;
+    list-style-type: none;
+}
+
+@font-face {
+    font-family:'iconfont';
+    src:url('../fonts/iconfont.woff') format('woff');
+    src: url('../fonts/iconfont.eot');
+    src: url('../fonts/iconfont.eot?#iefix&v=4.3.0') format('embedded-opentype'),  url('../fonts/iconfont.woff') format('woff'), url('../fonts/iconfont.ttf') format('truetype'), url('../fonts/iconfont.svg') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+.wif{
+    display: inline-block;
+    font: normal normal normal 14px/1 iconfont;
+    font-size: inherit;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    transform: translate(0,0);
+}
+
+
+.iw-wall:before {
+    content: "\e90b";
+}
+
+.iw-exit:before {
+    content: "\e932";
+}
+.iw-player:before {
+    content: "\e95a";
+}
+.iw-boulder:before {
+    content: "\e931";
+}
+.iw-empty{
+    width: 14px;
+    height: 14px;
+}

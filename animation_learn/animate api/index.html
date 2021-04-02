@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>test</title>
+	<meta charset="utf-8">
+	<style type="text/css">
+		div{
+			width: 100px;
+			height: 100px;
+			background-color: red;
+			
+		}
+	</style>
+</head>
+
+<body>
+
+<div id="eat-me_sprite"></div>
+
+<script type="text/javascript">
+    var cake = document.getElementById('eat-me_sprite'); 
+	// The cake has its own animation:
+	var nommingCake = document.getElementById('eat-me_sprite').animate(
+	[
+	  { transform: 'translateY(0)' },
+	  { transform: 'translateY(80%)' }   
+	], {
+	  fill: 'forwards',
+	  easing: 'steps(4, end)',
+	  duration: 1000
+	});
+
+	// Pause the cake's animation so it doesn't play immediately.
+	nommingCake.pause();
+
+	// This function will play when ever a user clicks or taps
+	var growAlice = function() {
+
+	  // Play Alice's animation.
+	  // aliceChange.play();
+
+	  // Play the cake's animation.
+	  nommingCake.play();
+
+	}
+
+	// When a user holds their mouse down or taps, call growAlice to make all the animations play.
+	cake.addEventListener("mousedown", growAlice, false);
+	cake.addEventListener("touchstart", growAlice, false);
+</script>
+
+</body>
+</html>

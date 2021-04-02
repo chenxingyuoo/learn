@@ -1,0 +1,48 @@
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>鼠标双击</title>
+</head>
+
+<body>
+<div id="div">div</div>
+<script type="text/javascript">
+   var odiv = document.getElementById('div');
+
+ 
+   var isclick = false;
+   odiv.onclick = function  (argument) {
+   	// body...
+
+     isclick = !isclick;
+     setTimeout(function  (argument) {
+     	// body...
+     	isclick = false;
+     	console.log(100)
+     },300)
+
+   	 clickTest();
+   }
+   
+   function clickTest (argument) {
+    	// body...
+    	/*setTimeout(function  (argument) {
+    		// body...
+    		console.log(1)
+    		isclick = true;
+    	},400);*/
+    	if(!isclick){
+    		console.log(2)
+    		alert('双击');
+    		isclick = false;
+    	}
+
+       /*setTimeout(function  (argument) {
+    		// body...
+    		isclick = false;
+    	},600);*/
+    }
+
+</script>
+</body>
+</html>

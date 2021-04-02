@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>less_learn</title>
+    <link rel="stylesheet/less" type="text/css" href="styles.less">
+
+    <!-- set options before less.js script -->
+    <script>
+        less = {
+            env: "development",
+            async: false,
+            fileAsync: false,
+            poll: 1000,
+            functions: {},
+            dumpLineNumbers: "comments",
+            relativeUrls: false,
+            rootpath: ":/a.com/"
+        };
+    </script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/less.js/2.5.3/less.min.js"></script>
+</head>
+<body>
+
+<div id="body">body</div>
+
+<div class="clas">我是less</div>
+<div class="clas1">我是less
+   <div class="clas1_in">我是嵌套</div>
+</div>
+<div class="clas2">我是less</div>
+<div class="clas3">我是less</div>
+<div class="clas4">我是less</div>
+<div class="clas5">我是less</div>
+<div class="clas6">我是less</div>
+<div class="clas7">我是less</div>
+<div class="clas8">我是less</div>
+<div class="clas9">我是less</div>
+<div class="clas10">我是less</div>
+
+<br/>
+<br/>
+<br/>
+
+<div id="home">
+    <div id="top">top</div>
+    <div id="center">
+        <div id="left">left</div>
+        <div id="right">right</div>
+    </div>
+</div>
+
+<a href="baidu.com">baidu.com</a>
+
+<br/>
+
+<div class="switchColor">switchColor</div>
+</body>
+</html>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<input type="range" min="0" max="100" value="100" oninput="CrossfadeSample.crossfade(this);">
+
+
+<script>
+
+    var BUFFERS = {
+
+    }
+    var dogBarkingBuffer = null;
+    // Fix up prefixing
+    window.AudioContext = window.AudioContext || window.webkitAudioContext;
+    var context = new AudioContext();
+
+    loadDogSound('../snare.wav','snare');
+    setTimeout(function(){
+        loadDogSound('../kick.wav','kick');
+    },10);
+
+    setTimeout(function(){
+        loadDogSound('../hihat.wav', 'hihat')
+    },15);
+
+    //加载声音
+    function loadDogSound(url,key) {
+        var request = new XMLHttpRequest();
+        request.open('GET', url, true);
+        request.responseType = 'arraybuffer';
+
+        request.onerror = function (){
+            console.log(new Error('error'));
+        }
+
+        // Decode asynchronously
+        request.onload = function() {
+            context.decodeAudioData(request.response, function(buffer) {
+                dogBarkingBuffer = buffer;
+
+                BUFFERS[key] = buffer
+
+                if(key === 'hihat'){
+                    setTimeout(function(){
+                        CrossfadeSample.play()
+                    },3000);
+                }
+
+            }, request.onerror);
+        }
+
+        request.send();
+    }
+
+    var CrossfadeSample = {playing:false};
+
+    CrossfadeSample.play = function() {
+        // Create two sources.
+        this.ctl1 = createSource(BUFFERS.snare);
+        this.ctl2 = createSource(BUFFERS.hihat);
+        // Mute the second source.
+        this.ctl1.gainNode.gain.value = 0;
+        // Start playback in a loop
+        if (!this.ctl1.source.start) {
+            this.ctl1.source.noteOn(0);
+            this.ctl2.source.noteOn(0);
+        } else {
+            this.ctl1.source.start(0);
+            this.ctl2.source.start(0);
+        }
+
+        function createSource(buffer) {
+            var source = context.createBufferSource();
+            var gainNode = context.createGain ? context.createGain() : context.createGainNode();
+            source.buffer = buffer;
+            // Turn on looping
+            source.loop = true;
+            // Connect source to gain.
+            source.connect(gainNode);
+            // Connect gain to destination.
+            gainNode.connect(context.destination);
+
+            return {
+                source: source,
+                gainNode: gainNode
+            };
+        }
+    };
+
+    CrossfadeSample.stop = function() {
+        if (!this.ctl1.source.stop) {
+            this.ctl1.source.noteOff(0);
+            this.ctl2.source.noteOff(0);
+        } else {
+            this.ctl1.source.stop(0);
+            this.ctl2.source.stop(0);
+        }
+    };
+
+    // Fades between 0 (all source 1) and 1 (all source 2)
+    CrossfadeSample.crossfade = function(element) {
+        var x = parseInt(element.value) / parseInt(element.max);
+        // Use an equal-power crossfading curve:
+        var gain1 = Math.cos(x * 0.5*Math.PI);
+        var gain2 = Math.cos((1.0 - x) * 0.5*Math.PI);
+        this.ctl1.gainNode.gain.value = gain1;
+        this.ctl2.gainNode.gain.value = gain2;
+    };
+
+    CrossfadeSample.toggle = function() {
+        this.playing ? this.stop() : this.play();
+        this.playing = !this.playing;
+    };
+
+
+</script>
+
+</body>
+</html>

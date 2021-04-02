@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+
+<button tag="login" id="button">登录按钮</button>
+
+<script>
+    var showLogin = function () {
+        console.log('打开登录浮窗');
+        log(this.getAttribute('tag'));
+    }
+
+    function log(tag) {
+        console.log('上报标签为' + tag);
+    }
+
+    document.getElementById('button').onclick = showLogin;
+
+    // showLogin 函数里 ， 既要负责打开登录浮窗 ， 又要上传数据。这是两个层面的功能 ，
+    // 在此处耦合在一个函数里
+
+
+    //使用AOP分离
+    Function.prototype.after = function (afterfn) {
+        var __self = this;
+
+        return function () {
+            var ret = __self.apply(this, arguments);
+            afterfn.apply(this, arguments);
+            return ret;
+        }
+    };
+
+
+    var showLogin = function(){
+        console.log( '打开登录浮窗' );
+    }
+
+    var log = function(){
+        console.log( '上报标签为' + this.getAttribute( 'tag' ) );
+    }
+
+    showLogin = showLogin.after(log);
+
+    document.getElementById('button').onclick = showLogin;
+
+</script>
+
+</body>
+</html>

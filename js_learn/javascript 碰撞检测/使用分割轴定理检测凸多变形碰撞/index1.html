@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>使用分割轴定理检测凸多变形碰撞1</title>
+</head>
+
+<body>
+<script>
+
+    function polygonsCollide(polygon1,polygon2){
+        var axes,projection1,projection2;
+
+        axes=polygon1.getAxes();//获取多边形1的所有投影轴,一个数组
+        axes.push(polygon2.getAxes());//获取多边形2的所有投影轴并加入到axes
+        for(var axis in axes){//循环通过每一投影轴
+            projection1=polygon1.project(axis);//获取多边形1在轴axis上的投影
+            projection2=polygon2.project(axis);//获取多边形2在轴axis上的投影
+            if(!projection1.overlaps(projection2))//两段投影没有重叠
+                return false;//没有碰撞
+        }
+        return true;//两多边形碰撞
+    }
+
+</script>
+</body>
+</html>

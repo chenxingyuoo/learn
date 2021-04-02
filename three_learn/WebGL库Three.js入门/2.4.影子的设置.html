@@ -1,0 +1,116 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Three.js チュートリアル２：アニメーション</title>
+    <script src="./Three.js"></script>
+    <style>
+        div#canvas-frame {
+            border: none;
+            cursor: pointer;
+            width: 400px;
+            height: 400px;
+            background-color: #FFFFFF;
+        }
+    </style>
+    <script>
+        var width, height;
+        var renderer;
+
+        function initThree() {
+            width = document.getElementById('canvas-frame').clientWidth;
+            height = document.getElementById('canvas-frame').clientHeight;
+            try {
+                renderer = new THREE.WebGLRenderer({antialias: true});
+            } catch (e) {
+            }
+            if (!renderer) document.getElementById("errer").innerHTML = '<p style="text-align:center;font-size:small; color:red">お使いの環境ではWebGLはご利用いただけません。<br />WebGLに対応していない方のためにGIFファイルを以下に用意しました。<br /><br /><img src="http://www.natural-science.or.jp/images/20120217-4.gif" alt="WEBGLデモ" /></p>';
+            renderer.setSize(width, height);
+            document.getElementById('canvas-frame').appendChild(renderer.domElement);
+            renderer.setClearColor(0xFFFFFF, 1.0);
+            renderer.shadowMapEnabled = true;//影をつける（１）
+        }
+
+        var camera;
+
+        function initCamera() {
+            camera = new THREE.PerspectiveCamera(45, width / height, 1, 10000);
+            camera.up.x = 0;
+            camera.up.y = 0;
+            camera.up.z = 1;
+        }
+
+        var scene;
+
+        function initScene() {
+            scene = new THREE.Scene();
+        }
+
+        var light, light2;
+
+        function initLight() {
+            light = new THREE.DirectionalLight(0xFFFFFF, 1.0, 0);
+            light.position.set(50, 50, 200);
+            light.castShadow = true;//影をつける（2）
+            scene.add(light);
+
+            light2 = new THREE.AmbientLight(0x555555);
+            scene.add(light2);
+        }
+
+        var cube = Array();
+        var plane = Array();
+
+        function initObject() {
+            for (var i = 0; i < 3; i++) {
+                cube[i] = new THREE.Mesh(
+                    new THREE.CubeGeometry(50, 50, 50),
+                    new THREE.MeshLambertMaterial({color: 0xff0000, ambient: 0xFF0000})
+                );
+                scene.add(cube[i]);
+                cube[i].castShadow = true;//影をつける（2）
+                cube[i].position.set(0, -100 + 100 * i, 0);
+
+
+                plane[i] = new THREE.Mesh(
+                    new THREE.PlaneGeometry(50, 50),
+                    new THREE.MeshLambertMaterial({color: 0x999999, ambient: 0xFF0000})
+                );
+                plane[i].receiveShadow = true; //影をつける（3）
+                scene.add(plane[i]);
+                plane[i].position.set(0, -100 + 100 * i, -100);
+
+            }
+
+        }
+
+        var t = 0;
+
+        function loop() {
+            t++;
+            renderer.clear();
+            cube[0].rotation.set(t / 100, 0, 0);
+            cube[1].rotation.set(0, t / 100, 0);
+            cube[2].rotation.set(0, 0, t / 100);
+            camera.position.set(400 * Math.cos(t / 100), 400 * Math.sin(t / 200), 50 * Math.cos(t / 50));
+            camera.lookAt({x: 0, y: 0, z: 0});
+            renderer.render(scene, camera);
+            window.requestAnimationFrame(loop);
+        }
+
+        function threeStart() {
+            initThree();
+            initCamera();
+            initScene();
+            initLight();
+            initObject();
+            loop();
+        }
+    </script>
+</head>
+
+<body onload="threeStart();">
+<div id="canvas-frame">
+</div>
+
+</body>
+</html>

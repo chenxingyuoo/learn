@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>爱心鱼小游戏</title>
+
+    <style>
+        body {
+            padding-top: 10px;
+        }
+
+        .all_bg {
+            width: 800px;
+            height: 600px;
+            margin: 0 auto;
+        }
+
+        #allcanvas {
+            position: relative;
+            width: 800px;
+            height: 600px;
+            margin: 0px;
+        }
+
+        #canvas1 {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            z-index: 1;
+        }
+
+        #canvas2 {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            z-index: 0;
+        }
+
+    </style>
+
+</head>
+
+<body>
+<div class="all_bg">
+    <div id="allcanvas">
+        <canvas id="canvas1" width="800" height="600"></canvas>
+        <canvas id="canvas2" width="800" height="600"></canvas>
+    </div>
+</div>
+
+<!--<script type="" src="js/main.js"></script>-->
+
+<script>
+
+    //计时器，可做动画
+    window.requestAnimFrame = (function () {
+        return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame ||
+                function (/* function FrameRequestCallback */ callback, /* DOMElement Element */ element) {
+                    return window.setTimeout(callback, 1000 / 60);
+                };
+    })();
+
+
+    //返回一个值趋向于一个值 。   //aim目标值，cur当前值 ， ratio 百分比
+    function lerpDistance(aim, cur, ratio) {
+        var delta = cur - aim;
+        return aim + delta * ratio;
+    }
+
+
+    function lerpAngle(a, b, t) {
+        var d = b - a;
+        if (d > Math.PI) d = d - 2 * Math.PI;
+        if (d < -Math.PI) d = d + 2 * Math.PI;
+        return a + d * t;
+    }
+
+    //计算两个坐标的位置
+    function calLength2(x1, y1, x2, y2) {
+        return Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2);
+    }
+
+
+    //绘制海葵
+    function aneObj() {
+        this.x = [];
+        this.len = [];
+    }
+
+    aneObj.prototype.num = 50;
+    aneObj.prototype.init = function () {
+        for (var i = 0; i < this.num; i++) {
+            this.x[i] = i * 16 + Math.random() * 20;
+            this.len[i] = 200 + Math.random() * 50;
+        }
+    };
+    aneObj.prototype.draw = function () {
+        ctx2.save();  //保存当前环境的状态
+        ctx2.globalAlpha = 0.6;  //透明度
+        ctx2.lineWidth = 20;  //设置或返回当前的线条宽度
+        ctx2.lineCap = "round";  //设置或返回线条的结束端点样式
+        ctx2.strokeStyle = '#3b154e'; //设置或返回用于笔触的颜色、渐变或模式
+        for (var i = 0; i < this.num; i++) {
+            //beginPath, moveTo , lineTo , stroke ,strokeStyle ,
+
+            ctx2.beginPath();  //起始一条路径，或重置当前路径
+            ctx2.moveTo(this.x[i], canHeight);  //把路径移动到画布中的指定点，不创建线条
+            ctx2.lineTo(this.x[i], canHeight - this.len[i]);  //添加一个新点，然后在画布中创建从该点到最后指定点的线条
+            ctx2.stroke();  //绘制已定义的路径
+
+        }
+        ctx2.restore(); //返回之前保存过的路径状态和属性
+    };
+
+
+    //绘制海葵果实
+    function fruitObj() {
+        this.alive = []; //bool
+        this.x = [];
+        this.y = [];
+        this.l = [];
+        this.speed = [];
+        this.fruitType = []; //果实类型
+        this.blueImage = new Image();
+        this.orangeImage = new Image();
+    }
+    fruitObj.prototype.num = 30;
+    fruitObj.prototype.init = function () {
+        for (var i = 0; i < this.num; i++) {
+            this.alive[i] = false; //锁定
+            this.x[i] = 0;  //x值
+            this.y[i] = 0;  //x值
+            this.l[i] = 0;  //图片长度 / 宽度
+            this.fruitType[i] = ''; //果实类型
+            this.speed[i] = Math.random() * 0.017 + 0.003; // [0.003 , 0.02]  //速度
+        }
+        this.blueImage.src = './src/blue.png';
+        this.orangeImage.src = './src/fruit.png';
+
+    };
+    //绘制果实图片
+    fruitObj.prototype.draw = function () {
+        for (var i = 0; i < this.num; i++) {
+            //锁定
+            if(this.alive[i]){
+
+                var pic;
+                //判断应该加载蓝色果实或者黄色果实
+                if(this.fruitType[i] == 'blueImage'){
+                    pic = this.blueImage;
+
+                }else{
+                    pic = this.orangeImage;
+                }
+
+                //小于一个值的时候 ， 不然会一直放大
+                if (this.l[i] <= 14) {
+                    this.l[i] += this.speed[i] * deltaTime;
+                }else{
+                    this.y[i] -= this.speed[i] * 7 * deltaTime;
+                }
+
+                //找到海葵的位置 , 绘制果实图片
+                ctx2.drawImage(pic , this.x[i] - this.l[i] * 0.5, this.y[i] - this.l[i] * 0.5, this.l[i], this.l[i]);
+                //y值废除屏幕 ， 再回到锁定状态
+                if(this.y[i] < 10){
+                    this.alive[i] = false;
+                }
+            }
+
+        }
+    };
+
+    //找到对应的海葵 ， 给 x , y , l 赋值
+    fruitObj.prototype.bron = function (i) {
+        var aneID = Math.floor(Math.random() * ane.num);  //随机海葵位置
+        this.x[i] = ane.x[aneID];
+        this.y[i] = canHeight - ane.len[aneID];
+        this.l[i] = 0;
+        this.alive[i] = true;
+        var ran = Math.random();
+        if(ran < 0.2){
+            this.fruitType[i] = 'blueImage';
+        }else{
+            this.fruitType[i] = 'orangeImage';
+        }
+    };
+
+    //果实被鱼吃掉的状态
+    fruitObj.prototype.dead = function(i){
+        this.alive[i] = false;
+    };
+
+    //游戏中果实最大值
+    function fruitMonitor(){
+        var num = 0;
+        for (var i = 0; i < fruit.num; i++) {
+            if (fruit.alive[i]) num++;
+            //如果小于15 ， 就发送果实
+        }
+
+        if(num < 15){
+            sendFruit();
+            return;
+        }
+    }
+
+    //果实出生
+    function sendFruit(){
+        for (var i = 0; i < fruit.num; i++) {
+            if(!fruit.alive[i]){
+                fruit.bron(i);  //找到对应的海葵
+                return;
+            }
+        }
+    }
+
+
+    //大鱼构造函数
+    function momObj(){
+        this.x;
+        this.y;
+        this.angle;
+        this.bigEye = new Image();
+        this.bigBody = new Image();
+        this.bigTail = new Image();
+    }
+    //大鱼初始化
+    momObj.prototype.init = function(){
+      this.x = canWidth * 0.5;  //x轴开始在屏幕中间
+      this.y = canHeight * 0.5;  //y轴开始在屏幕中间
+      this.angle = 0; //角度
+      this.bigEye.src = './src/bigEye0.png';
+      this.bigBody.src = './src/bigSwim0.png';
+      this.bigTail.src = './src/bigTail0.png';
+    };
+    //绘制大鱼
+    momObj.prototype.draw = function(){
+        //进行线性插值
+        this.x = lerpDistance(mx , this.x , 0.98);
+        this.y = lerpDistance(my , this.y , 0.98);
+
+        //随着鼠标的方向 ， 计算出角度
+        var detalY = my - this.y;
+        var detalX = mx - this.x;
+        //通过坐标差计算
+        var beta = Math.atan2(detalY , detalX) + Math.PI ; //返回-PI 到 PI 之间的值，是从 X 轴正向逆时针旋转到点 (x,y) 时经过的角度。
+
+        this.angle = lerpAngle( beta, this.angle, 0.6 ) ;
+
+        ctx1.save();
+        ctx1.translate(this.x , this.y );  //	重新映射画布上的 (0,0) 位置
+        ctx1.rotate(this.angle);  //旋转当前绘图
+        ctx1.drawImage(this.bigTail , -this.bigTail.width * 0.5 + 30, -this.bigTail.height * 0.5  );
+        ctx1.drawImage(this.bigBody , -this.bigBody.width * 0.5 , -this.bigBody.height * 0.5  );
+        ctx1.drawImage(this.bigEye , -this.bigEye.width * 0.5 , -this.bigEye.height * 0.5 );
+
+        ctx1.restore();  //返回之前保存过的路径状态和属性
+    };
+
+
+    //判断大鱼和果实的距离
+    function monFruitCollision(){
+        for (var i = 0; i < fruit.num; i++) {
+            if(fruit.alive[i]){
+                var l = calLength2(fruit.x[i], fruit.y[i] , mom.x , mom.y);
+                if(l < 900){
+                    //果实被吃掉
+                    fruit.dead(i);
+                }
+            }
+        }
+    }
+
+
+    //判断大鱼和小鱼的距离
+    function monBabyCollision(){
+        var l = calLength2(mom.x, mom.y , baby.x , baby.y);
+        if(l < 900){
+            //果实被吃掉
+            baby.babyFadeCount = 0;
+        }
+    }
+
+
+
+
+    //小鱼构造函数
+    function babyObj(){
+        this.x;
+        this.y;
+        this.angle;
+
+        this.babyTailTimer = 0;
+        this.babyTailCount = 0;
+
+        this.babyEyeTimer = 0;
+        this.babyEyeCount = 0;
+        this.babyEyeInterval = 1000;
+
+        this.babyFadeTimer = 0;
+        this.babyFadeCount = 0;
+    }
+
+    babyObj.prototype.init = function(){
+        this.x =  canWidth * 0.5 - 50;
+        this.y =  canHeight * 0.5 + 50;
+        this.angle = 0; //角度
+
+    };
+    babyObj.prototype.draw = function(){
+
+        //让小于的坐标跟随大鱼的坐标
+        this.x = lerpDistance(mom.x , this.x , 0.98);  //进行线性插值
+        this.y = lerpDistance(mom.y , this.y , 0.98);
+
+
+        //随着大鱼的坐标 ， 计算出小于的角度
+        var detalX = mom.x - this.x;
+        var detalY = mom.y - this.y;
+        //通过坐标差计算
+        var beta = Math.atan2(detalY , detalX) + Math.PI ; //返回-PI 到 PI 之间的值，是从 X 轴正向逆时针旋转到点 (x,y) 时经过的角度。
+
+        this.angle = lerpAngle( beta, this.angle, 0.6 ) ;
+
+
+        //小鱼尾巴
+        //计时器存储时间
+        this.babyTailTimer += deltaTime;
+        //50毫秒换一帧
+        if(this.babyTailTimer > 50){
+            this.babyTailCount = (this.babyTailCount + 1) % 8; //取模 ， 让它在1和8之间循环
+            this.babyTailTimer %= 50; //恢复原始状态
+        }
+
+
+        //小鱼眼睛
+        this.babyEyeTimer += deltaTime;
+        if(this.babyEyeTimer > this.babyEyeInterval){
+            this.babyEyeCount = (this.babyEyeCount + 1) % 2;  //取模 ， 让它在1和2之间循环
+            this.babyEyeTimer %= this.babyEyeInterval;  //恢复原始状态
+
+            //鱼眨动眼睛有两种状态
+            if(this.babyEyeCount == 0){
+                this.babyEyeInterval = Math.random() * 1500 + 2000;  //[2000 - 3500]
+            }else{
+                this.babyEyeInterval = 200;
+            }
+        }
+
+        //小鱼身体
+        this.babyFadeTimer += deltaTime;
+        if( this.babyFadeTimer >  300){
+            this.babyFadeCount = this.babyFadeCount + 1;
+            this.babyFadeTimer %= 300;  //恢复归零状态
+            //大鱼十九就等于十九 ， 让它保持在身体变白的图片 ， 再提示 game over
+            if(this.babyFadeCount > 19){
+                this.babyFadeCount = 19;
+
+                //game over
+            }
+        }
+
+        var babyTailCount = this.babyTailCount;  //用一个临时变量存起 babyTailCount
+        var babyEyeCount = this.babyEyeCount;  //用一个临时变量存起 babyEyeCount
+        var babyFadeCount = this.babyFadeCount;  //用一个临时变量存起 babyFadeCount
+
+
+        //绘制
+        ctx1.save();
+        ctx1.translate(this.x , this.y );  //	重新映射画布上的 (0,0) 位置
+        ctx1.rotate(this.angle);
+        ctx1.drawImage(babyTail[babyTailCount] ,  -babyTail[babyTailCount].width * 0.5 + 23, -babyTail[babyTailCount].height * 0.5);
+        ctx1.drawImage(babyFade[babyFadeCount] ,  -babyFade[babyFadeCount].width * 0.5 , -babyFade[babyFadeCount].height * 0.5);
+        ctx1.drawImage(babyEye[babyEyeCount] , -babyEye[babyEyeCount].width * 0.5 , -babyEye[babyEyeCount].height * 0.5);
+
+        ctx1.restore();
+    };
+
+
+
+
+    var can1;
+    var can2;
+
+    var ctx1;
+    var ctx2;
+
+    var lastTime;
+    var deltaTime;
+
+    var bgPic = new Image();
+
+    var canWidth;
+    var canHeight;
+
+    var ane;
+
+    var fruit;
+
+    var mom;
+    var baby;
+
+    var mx;
+    var my;
+
+    var babyTail = [];
+    var babyEye = [];
+    var babyFade = [];
+    document.body.onload = game;
+
+    function game() {
+        init();
+        lastTime = Date.now();
+        deltaTime = 0;
+        gamoloop();
+    }
+
+    function init() {
+        //获得canvas context
+        can1 = document.getElementById('canvas1');//fishes, dust, UI, circle
+        ctx1 = can1.getContext('2d');
+
+        can2 = document.getElementById('canvas2');//background, ane, fruits
+        ctx2 = can2.getContext('2d');
+
+
+        can1.addEventListener('mousemove',omMouseMove, false);
+
+        bgPic.src = './src/background.jpg';
+
+        canWidth = can1.width;
+        canHeight = can1.height;
+
+        //绘制海葵
+        ane = new aneObj();
+        //绘制初始化
+        ane.init();
+
+        //绘制海葵果实
+        fruit = new fruitObj();
+        //绘制海葵果实初始化
+        fruit.init();
+
+        //绘制大鱼
+        mom = new momObj();
+        mom.init();
+        mx = canWidth * 0.5;
+        my = canHeight * 0.5;
+
+        //绘制小鱼
+        baby = new babyObj();
+        baby.init();
+
+        //小鱼尾巴动画图片切换
+        for (var i = 0; i < 8; i++) {
+            babyTail[i] = new Image();
+            babyTail[i].src = './src/babyTail' + i + '.png';
+        }
+
+        //小鱼眼睛动画图片切换
+        for (var i = 0; i < 2; i++) {
+            babyEye[i] = new Image();
+            babyEye[i].src = './src/babyEye' + i + '.png';
+        }
+
+        //小鱼身体切换
+        for (var i = 0; i < 20; i++) {
+            babyFade[i] = new Image();
+            babyFade[i].src = './src/babyFade' + i + '.png';
+
+        }
+
+    }
+
+
+
+    function gamoloop() {
+        window.requestAnimFrame(gamoloop);
+        var nowTime = Date.now();
+        deltaTime = nowTime - lastTime;
+        lastTime = nowTime;
+
+        if(deltaTime > 40 ) deltaTime = 40;
+      //绘制背景图片
+        drawBackGround();
+        //绘制海葵函数
+        ane.draw();
+
+        fruitMonitor();
+
+        //绘制海葵果实函数
+        fruit.draw();
+
+        ctx1.clearRect(0 , 0 , canWidth , canHeight);  //在给定的矩形内清除指定的像素
+        mom.draw();  //绘制大鱼
+
+        //判断果实与大鱼的距离 ， 小于一定的距离 ， 果实被吃掉
+        monFruitCollision();
+        //判断小鱼与大鱼的距离 ， 小于一定的距离 ， 小鱼满血
+        monBabyCollision();
+
+        //绘制小鱼
+        baby.draw();
+
+
+    }
+
+    function omMouseMove(e){
+        if(e.offsetX || e.layerX){
+            mx = e.offsetX == undefined ? e.layerX : e.offsetX;
+            my = e.offsetX == undefined ? e.layerY : e.offsetY;
+        }
+    }
+
+
+    //绘制背景图片
+    function drawBackGround() {
+        ctx2.drawImage(bgPic, 0, 0, canWidth, canHeight); //向画布上绘制图像、画布或视频
+    }
+
+
+</script>
+</body>
+</html>

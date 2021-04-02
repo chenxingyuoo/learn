@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!--<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">-->
+    <!--<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,minimal-ui">-->
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,minimal-ui">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>Title</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body, #main {
+            height: 100%;
+            width: 100%;
+        }
+        body{
+            background-color: #000000;
+            margin: 0;
+            cursor: move;
+            overflow: hidden;
+        }
+
+        .earth {
+            width: 120px;
+            height: 120px;
+            background-image: url("./img/earth.png");
+            background-size: 100%;
+            position: absolute;
+            top: 270px;
+            left: 240px;
+            -webkit-transform-origin: 60px 60px;
+            transform-origin: 60px 60px;
+        }
+
+        .moon {
+            position: absolute;
+            top: 140px;
+            right: 350px;
+            width: 70px;
+            height: 70px;
+
+            background-image: url("./img/moon.png");
+            background-size: 100%;
+            -webkit-transform-origin: 35px 35px;
+            transform-origin: 35px 35px;
+        }
+
+        .tu {
+            width: 200px;
+            height: 93px;
+            position: absolute;
+            top: 200px;
+            left: 200px;
+            background-image: url("./img/tu.png");
+            background-size: 100%;
+        }
+
+        .otherball {
+            -webkit-animation: otherball 50s linear infinite;
+
+            animation: otherball 50s linear infinite;
+
+        }
+
+        @-webkit-keyframes otherball {
+            0% {
+                -webkit-transform: rotate(0)
+            }
+            100% {
+                -webkit-transform: rotate(360deg)
+            }
+        }
+
+        @keyframes otherball {
+            0% {
+                -webkit-transform: rotate(0)
+            }
+            100% {
+                -webkit-transform: rotate(360deg)
+            }
+        }
+
+        .tuball {
+            -webkit-animation: tuball 10s linear infinite;
+            -webkit-transform-origin: 100px 47px;
+            animation: tuball 10s linear infinite;
+            transform-origin: 100px 47px
+        }
+
+        @-webkit-keyframes tuball {
+            0%, 100% {
+                -webkit-transform: rotate(0)
+            }
+            50% {
+                -webkit-transform: rotate(20deg)
+            }
+        }
+
+        @keyframes tuball {
+            0%, 100% {
+                -webkit-transform: rotate(0)
+            }
+            50% {
+                -webkit-transform: rotate(20deg)
+            }
+        }
+
+        .sate {
+            -webkit-animation: sate 10s linear infinite;
+            -webkit-transform-origin: 80px 80px;
+            animation: sate 10s linear infinite;
+            transform-origin: 80px 80px
+        }
+
+        @-webkit-keyframes sate {
+            0% {
+                -webkit-transform: rotate(0)
+            }
+            100% {
+                -webkit-transform: rotate(-360deg)
+            }
+        }
+
+        @keyframes sate {
+            0% {
+                -webkit-transform: rotate(0)
+            }
+            100% {
+                -webkit-transform: rotate(-360deg)
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div id="main"></div>
+
+<script src="./js/three.min.js"></script>
+<script src="./js/CSS3DRenderer.min.js"></script>
+<script>
+  window.onload = () => {
+    let main = document.querySelector('#main');
+    let scene = new THREE.Scene();
+    let camera = new THREE.PerspectiveCamera(100, window.innerWidth / window.innerHeight, 100, 1e3);
+
+    let lon = 270, lat = 0;
+    let phi = 0, theta = 0;
+    let target = new THREE.Vector3();
+
+    const generateCubeMap = (folderName, tileWidth) => {
+      let flipAngle = Math.PI;  //180 deg
+      let rightAngle = flipAngle / 2;  //90 deg
+      tileWidth = tileWidth || 512;
+
+      let sides = [{
+        url: folderName + "/0001.jpg",
+        bgc: "white",
+        position: [-tileWidth, 0, 0],
+        rotation: [0, rightAngle, 0]
+      }, {
+        url: folderName + "/0002.jpg",
+        bgc: "red",
+        position: [tileWidth, 0, 0],
+        rotation: [0, -rightAngle, 0]
+      }, {
+        url: folderName + "/0001.jpg",
+        bgc: "blue",
+        position: [0, tileWidth, 0],
+        rotation: [rightAngle, 0, flipAngle]
+      }, {
+        url: folderName + "/0002.jpg",
+        bgc: "gray",
+        position: [0, -tileWidth, 0],
+        rotation: [-rightAngle, 0, flipAngle]
+      }, {
+        url: folderName + "/0001.jpg",
+        bgc: "green",
+        position: [0, 0, tileWidth],
+        rotation: [0, flipAngle, 0]
+      }, {
+        url: folderName + "/0002.jpg",
+        bgc: "black",
+        position: [0, 0, -tileWidth],
+        rotation: [0, 0, 0]
+      }];
+
+      /**
+       * 根据六个面的信息，new出六个对象放入场景中
+       */
+      for (let i = 0; i < sides.length; i++) {
+        let side = sides[i];
+
+        let element = document.createElement("div");
+
+        element.style.width = 2 * tileWidth + 2 + "px";
+        element.style.height = 2 * tileWidth + 2 + "px";
+        element.style.backgroundImage = "url(" + side.url + ")";
+        element.style.backgroundSize = "cover";
+        element.id = "section_" + i;
+
+        let object = new THREE.CSS3DObject(element);
+        object.position.fromArray(side.position);
+        object.rotation.fromArray(side.rotation);
+        scene.add(object);
+      }
+    };
+
+
+    generateCubeMap('img',256);
+
+    let renderer = new THREE.CSS3DRenderer();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    main.appendChild(renderer.domElement);
+
+    animate();
+
+
+    setTimeout(() => {
+      document.querySelector('#section_1').innerHTML = '<div class="tu tuball"></div>';
+      document.querySelector('#section_5').innerHTML = '<div class="earth otherball"></div><div class="moon otherball"></div>';
+    }, 100);
+
+
+    document.addEventListener('mousedown', onDocumentMouseDown, false);
+    document.addEventListener('wheel', onDocumentMouseWheel, false);
+
+    document.addEventListener('touchstart', onDocumentTouchStart, false);
+    document.addEventListener('touchmove', onDocumentTouchMove, false);
+
+    window.addEventListener('resize', onWindowResize, false);
+
+    function onWindowResize() {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+
+    function onDocumentMouseDown(event) {
+      event.preventDefault();
+      document.addEventListener('mousemove', onDocumentMouseMove, false);
+      document.addEventListener('mouseup', onDocumentMouseUp, false);
+    }
+
+    function onDocumentMouseMove(event) {
+      let movementX = event.movementX || event.mozMovementX || event.webkitMovementX || 0;
+      let movementY = event.movementY || event.mozMovementY || event.webkitMovementY || 0;
+
+      lon -= movementX * 0.1;
+      lat += movementY * 0.1;
+    }
+
+    function onDocumentMouseUp(event) {
+      document.removeEventListener('mousemove', onDocumentMouseMove);
+      document.removeEventListener('mouseup', onDocumentMouseUp);
+    }
+
+    function onDocumentMouseWheel(event) {
+      camera.fov -= event.wheelDeltaY * 0.05;
+//      camera.fov += event.deltaY * 0.05;
+      camera.updateProjectionMatrix();
+    }
+
+    function onDocumentTouchStart(event) {
+      event.preventDefault();
+      let touch = event.touches[0];
+
+      touchX = touch.screenX;
+      touchY = touch.screenY;
+    }
+
+    function onDocumentTouchMove(event) {
+      event.preventDefault();
+
+      let touch = event.touches[0];
+
+      lon -= ( touch.screenX - touchX ) * 0.1;
+      lat += ( touch.screenY - touchY ) * 0.1;
+
+      touchX = touch.screenX;
+      touchY = touch.screenY;
+    }
+
+    function animate() {
+      requestAnimationFrame(animate);
+//       lat +=  0.1;
+
+      lat = Math.max(-85, Math.min(85, lat));
+      phi = THREE.Math.degToRad(90 - lat);
+      theta = THREE.Math.degToRad(lon);
+
+      target.x = Math.sin(phi) * Math.cos(theta);
+      target.y = Math.cos(phi);
+      target.z = Math.sin(phi) * Math.sin(theta);
+
+      camera.lookAt(target);
+      /**
+       * 通过传入的scene和camera
+       * 获取其中object在创建时候传入的element信息
+       * 以及后面定义的包括位置，角度等信息
+       * 根据场景中的obj创建dom元素
+       * 插入render本身自己创建的场景div中
+       * 达到渲染场景的效果
+       */
+      renderer.render(scene, camera);
+
+    }
+
+
+
+
+  }
+</script>
+</body>
+</html>

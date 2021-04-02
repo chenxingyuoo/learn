@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+
+<div class="server">服务端跨域</div>
+
+<script>
+
+    document.addEventListener('DOMContentLoaded', function (){
+        document.querySelector('.server').addEventListener('click', function () {
+            //http://127.0.0.1:8888
+            var xhr = new XMLHttpRequest();
+            xhr.onload = function(data){
+                var _data = JSON.parse(data.target.responseText)
+                for(key in _data){
+                    console.log('key: ' + key +' value: ' + _data[key]);
+                }
+            };
+            xhr.open('POST','http://127.0.0.1:8888/feXhr',true);  //向本地服务器发送请求
+            xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
+            xhr.send("url=http://127.0.0.1:3000/beXhr");    //以参数形式告知需要请求的后端接口
+        }, false);
+    }, false)
+
+</script>
+
+</body>
+</html>

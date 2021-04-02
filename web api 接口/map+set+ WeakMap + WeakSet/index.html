@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>map+set+ WeakMap + WeakSet</title>
+</head>
+
+<body>
+
+<script>
+    // Sets
+    var mySet = new Set();
+
+    mySet.add(1);
+    mySet.add(5);
+    mySet.add("some text");
+
+    mySet.has(1); // true
+    mySet.has(3); // false, 3还没有被添加到set中
+    mySet.has(5);              // true
+    mySet.has(Math.sqrt(25));  // true
+    mySet.has("Some Text".toLowerCase()); // true
+
+    mySet.size; // 4
+
+    mySet.delete(5); // 从set中移除5
+    mySet.has(5);    // false, 5已经被移除
+
+    mySet.size; // 3, 我们刚刚移除了一个值
+
+    // 迭代整个set
+
+    // 按顺序输出：1, "some text"
+    for (let item of mySet) console.log(item);
+
+    // 按顺序输出：1, "some text"
+    for (let item of mySet.keys()) console.log(item);
+
+    // 按顺序输出：1, "some text"
+    for (let item of mySet.values()) console.log(item);
+
+    // 按顺序输出：1, "some text"
+    //(键与值相等)
+    for (let [key, value] of mySet.entries()) console.log(key);
+
+    // 转换Set为Array (with Array comprehensions)
+    var myArr = [v for (v of mySet)]; // [1, "some text"]
+    // 替代方案(with Array.from)
+    var myArr = Array.from(mySet); // [1, "some text"]
+
+    // 如果在HTML文档中工作，也可以：
+    mySet.add(document.body);
+    mySet.has(document.querySelector("body")); // true
+
+    // Set和Array互换
+    mySet2 = new Set([1,2,3,4]);
+    mySet2.size; // 4
+    [...mySet2]; // [1,2,3,4]
+
+
+    // 用forEach迭代
+    mySet.forEach(function(value) {
+        console.log(value);
+    });
+
+    // 1
+    // 2
+    // 3
+    // 4
+
+
+    // Maps
+    var m = new Map();
+    var myMap = new Map();
+
+    var keyObj = {},
+            keyFunc = function () {},
+            keyString = "a string";
+
+    // 添加键
+    myMap.set(keyString, "和键'a string'关联的值");
+    myMap.set(keyObj, "和键keyObj关联的值");
+    myMap.set(keyFunc, "和键keyFunc关联的值");
+
+    myMap.size; // 3
+
+    // 读取值
+    myMap.get(keyString);    // "和键'a string'关联的值"
+    myMap.get(keyObj);      // "和键keyObj关联的值"
+    myMap.get(keyFunc);      // "和键keyFunc关联的值"
+
+    myMap.get("a string");  // "和键'a string'关联的值"
+                            // 因为keyString === 'a string'
+    myMap.get({});          // undefined, 因为keyObj !== {}
+    myMap.get(function() {}) // undefined, 因为keyFunc !== function () {}
+
+
+
+    // 迭代整个Maps
+    var myMap = new Map();
+    myMap.set(0, "zero");
+    myMap.set(1, "one");
+    for (var [key, value] of myMap) {
+        console.log(key + " = " + value);
+    }
+    // 将会显示两个logs。一个是"0 = zero"另一个是"1 = one"
+
+    for (var key of myMap.keys()) {
+        console.log(key);
+    }
+    // 将会显示两个logs。 一个是 "0" 另一个是 "1"
+
+    for (var value of myMap.values()) {
+        console.log(value);
+    }
+    // 将会显示两个logs。 一个是 "zero" 另一个是 "one"
+
+    for (var [key, value] of myMap.entries()) {
+        console.log(key + " = " + value);
+    }
+    // 将会显示两个logs。 一个是 "0 = zero" 另一个是 "1 = one"
+
+    myMap.forEach(function(value, key) {
+        console.log(key + " = " + value);
+    }, myMap)
+    // 将会显示两个logs。 一个是 "0 = zero" 另一个是 "1 = one"
+
+
+    // Weak Maps
+    var wm1 = new WeakMap(),
+            wm2 = new WeakMap(),
+            wm3 = new WeakMap();
+    var o1 = {},
+            o2 = function(){},
+            o3 = window;
+
+    wm1.set(o1, 37);
+    wm1.set(o2, "azerty");
+    wm2.set(o1, o2); // value可以是任意值,包括一个对象
+    wm2.set(o3, undefined);
+    wm2.set(wm1, wm2); // 键和值可以是任意对象,甚至另外一个WeakMap对象
+    wm1.get(o2); // "azerty"
+    wm2.get(o2); // undefined,wm2中没有o2这个键
+    wm2.get(o3); // undefined,值就是undefined
+
+    wm1.has(o2); // true
+    wm2.has(o2); // false
+    wm2.has(o3); // true (即使值是undefined)
+
+    wm3.set(o1, 37);
+    wm3.get(o1); // 37
+    wm3.clear();
+    wm3.get(o1); // undefined,wm3已被清空
+    wm1.has(o1);   // true
+    wm1.delete(o1);
+    wm1.has(o1);   // false
+
+
+    // Weak Sets
+    var ws = new WeakSet();
+    var obj = {};
+    var foo = {};
+
+    ws.add(window);
+    ws.add(obj);
+
+    ws.has(window); // true
+    ws.has(foo);    // false, foo has not been added to the set
+
+    ws.delete(window); // removes window from the set
+    ws.has(window);    // false, window has been removed
+
+</script>
+
+</body>
+</html>

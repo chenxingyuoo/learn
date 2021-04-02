@@ -1,0 +1,202 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  width: 100vw;
+  height: 100vh;
+  font-family: Trebuchet MS;
+  background: #191919;
+  user-select: none;
+}
+
+main {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  overflow: hidden;
+}
+
+article {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  perspective: 1250px;
+}
+article.pan { cursor: -webkit-grab; }
+article.rotate { cursor: url('http://www.leocad.org/trac/export/1598/tags/leocad-0.79.1/win/res/rotate.cur'), auto; }
+article.zoom { cursor: n-resize; }
+
+#perspective {
+  margin-top: 100px;
+  width: 0;
+  height: 0;
+  transform-style: preserve-3d;
+  transform: rotateX(-20deg) rotateY(-45deg);
+}
+#perspective.reset {
+  transition: transform 1s ease-in-out;
+}
+
+#grid {
+  margin: -500px;
+  width: 1000px;
+  height: 1000px;
+  opacity: 0.7;
+  transform: rotateX(90deg);
+}
+rect {
+  stroke: white;
+  stroke-width: 1px;
+  fill: transparent;
+}
+line {
+  stroke: white;
+  stroke-width: 1px;
+}
+
+#axis, #graph {
+  margin-top: -6px;
+  width: 0;
+  height: 0;
+  position: relative;
+  transform-style: preserve-3d;
+  transform: rotateX(90deg);
+}
+
+#axis { opacity: 0.4; }
+
+#X, #Y, #Z, #X div, #Y div, #Z div, .point, .point div {
+  width: 2px;
+  height: 2px;
+  position: absolute;
+}
+
+#X, #Y, #Z, .point {
+  top: -1px;
+  left: -1px;
+  transform-style: preserve-3d;
+}
+
+#X { transform: translateX(1px) rotateY( 90deg); }
+#Y { transform: translateY(1px) rotateX(-90deg); }
+#Z { transform: translateZ(1px); }
+
+#X div { background: #f56931; }
+#Y div { background: #27c26f; }
+#Z div { background: #31bdf5; }
+
+#X .front,  #Y .front,  #Z .front  { transform: translateZ(500px) rotateY(0deg); }
+#X .back,   #Y .back,   #Z .back   { transform: rotateY(180deg); }
+#X .left,   #Y .left,   #Z .left   { width:  500px; transform: translate3d(-250px, 0, 250px) rotateY(-90deg); }
+#X .right,  #Y .right,  #Z .right  { width:  500px; transform: translate3d(-248px, 0, 250px) rotateY( 90deg); }
+#X .top,    #Y .top,    #Z .top    { height: 500px; transform: translate3d(0, -250px, 250px) rotateX( 90deg); }
+#X .bottom, #Y .bottom, #Z .bottom { height: 500px; transform: translate3d(0, -248px, 250px) rotateX(-90deg); }
+
+.point div { background: tomato; }
+
+.point .front  { transform: translateZ( 1px) rotateY(  0deg); }
+.point .back   { transform: translateZ(-1px) rotateY(180deg); }
+.point .left   { transform: translateX(-1px) rotateY(-90deg); }
+.point .right  { transform: translateX( 1px) rotateY( 90deg); }
+.point .top    { transform: translateY(-1px) rotateX( 90deg); }
+.point .bottom { transform: translateY( 1px) rotateX(-90deg); }
+
+label {
+  position: absolute;
+  color: #999;
+}
+#info {
+  padding: 10px;
+  font-size: 50px;
+  cursor: pointer;
+}
+aside {
+  padding: 28px 10px;
+  position: absolute;
+  left: 60px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+#info:hover ~ aside {
+  opacity: 1;
+}
+p {
+  padding: 5px;
+  font-size: 16px;
+  color: #aaa;
+}
+p:first-child {
+  margin-bottom: 10px;
+  font-weight: bold;
+  font-size: 17px;
+}
+
+nav {
+  padding: 20px;
+  width: 300px;
+  height: 100vh;
+  position: absolute;
+  right: 0px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-content: flex-start;
+  overflow: auto;
+  background: #222;
+  box-sizing: border-box;
+  transform: translateX(267px);
+  transition: transform 0.2s ease-in-out;
+}
+nav:hover { transform: translateX(0px); }
+
+nav + label {
+  top: calc(50% - 0.7em);
+  right: -1px;
+  font-size: 90px;
+  pointer-events: none;
+  transition: transform 0.35s ease-out;
+}
+nav:hover + label {
+  transform: translate(-330px, 12px) rotate(180deg);
+}
+
+button {
+  margin: 10px 5px;
+  padding: 5px 10px;
+  border: solid 1px #999;
+  border-radius: 5px;
+  font: 18px Trebuchet MS;
+  color: #999;
+  background: transparent;
+  cursor: pointer;
+  outline: none;
+}
+button:hover {
+  border-color: #aaa;
+  color: #aaa;
+}
+button:active, button.selected {
+  color: #eee;
+}
+#menu {
+  margin: 15px;
+  margin-bottom: 10px;
+  padding: 20px;
+  width: 100%;
+  height: 500px;
+  text-align: center;
+  font: 18px Trebuchet MS;
+  color: #999;
+  background: #272727;
+}
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-thumb {
+  border-right: solid 5px #222;
+  background: #5f5f5f;
+}

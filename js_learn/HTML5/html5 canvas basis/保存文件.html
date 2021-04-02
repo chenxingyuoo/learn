@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>保存文件 </title>
+</head>
+
+<body>
+
+<!--
+canvas.toDataURL(MIME)
+
+在canvas中绘出的图片只是canvas标签而已，并非是真正的图片，是不能右键，另存为的，我们可以利用canvas.toDataURL()这个方法把canvas绘制的图形生成一幅图片，生成图片后，就能对图片进行相应的操作了。
+-->
+
+<canvas id="canvas" width="800" height="600"></canvas>
+
+<script>
+    document.body.onload = draw19('canvas');
+
+    function draw19(id) {
+        var canvas = document.getElementById(id);
+        if (canvas == null)
+            return false;
+        var context = canvas.getContext("2d");
+        context.fillStyle = "rgb(0,0,225)";
+        context.fillRect(0, 0, canvas.width, canvas.height);
+        context.fillStyle = "rgb(255,255,0)";
+        context.fillRect(10, 20, 50, 50);
+        //把图像保存到新的窗口
+        var w=window.open(canvas.toDataURL("image/jpeg"),"smallwin","width=400,height=350");
+    }
+
+
+</script>
+
+</body>
+</html>

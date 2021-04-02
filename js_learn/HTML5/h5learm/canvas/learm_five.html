@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+
+<body>
+
+
+
+<canvas id="myCanvas" width="270" height="135" style="border:1px solid #d3d3d3;">
+    您的浏览器不支持 HTML5 canvas 标签。</canvas>
+
+<script type="text/javascript">
+
+    window.onload = function (){
+
+       /* var c=document.getElementById("myCanvas");
+        var ctx=c.getContext("2d");
+        var imgData=ctx.createImageData(100,100);
+        alert("Width of imgData is: " + imgData.width);
+        for (var i=0;i<imgData.data.length;i+=4)
+        {
+            imgData.data[i+0]=255;
+            imgData.data[i+1]=0;
+            imgData.data[i+2]=0;
+            imgData.data[i+3]=255;
+        }
+        ctx.putImageData(imgData,10,10);
+
+
+        // globalAlpha  首先，绘制一个红色的矩形，然后将透明度 (globalAlpha) 设置为 0.5，然后再绘制一个蓝色和一个绿色的矩形：*/
+        var c=document.getElementById("myCanvas");
+        var ctx=c.getContext("2d");
+        ctx.fillStyle="red";
+        ctx.fillRect(20,20,75,50);
+// Turn transparency on
+        ctx.globalAlpha=0.2;
+        ctx.fillStyle="blue";
+        ctx.fillRect(50,50,75,50);
+        ctx.fillStyle="green";
+        ctx.fillRect(80,80,75,50);
+
+
+    }
+</script>
+</body>
+</html>

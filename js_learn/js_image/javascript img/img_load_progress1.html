@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<script>
+    var $root = document.querySelector('body')
+    //加载进度条
+    var imgs = [
+                "http://img0.imgtn.bdimg.com/it/u=1589392732,4111000716&fm=21&gp=0.jpg",
+                "http://img3.cache.netease.com/photo/0001/2015-03-16/AKQU47OJ00AP0001.jpg",
+                "http://img3.cache.netease.com/photo/0001/2015-03-16/AKQU482200AP0001.jpg",
+                "http://img6.cache.netease.com/photo/0001/2015-03-16/AKQU486800AP0001.jpg",
+                "http://img5.cache.netease.com/photo/0001/2015-03-16/AKQU48C000AP0001.jpg",
+                "http://img1.gtimg.com/12/1206/120657/12065709_1200x1000_0.jpg",
+                "http://img1.gtimg.com/12/1206/120657/12065712_1200x1000_0.jpg",
+                "http://img1.gtimg.com/12/1206/120657/12065713_1200x1000_0.jpg"
+            ],
+            img_len = imgs.length,
+            size = Math.floor(100 / img_len ),
+            completeNum = 0,
+            nums = 0;
+
+    for (var i = 0; i < img_len; i++) {
+        var img = new Image();
+        img.src = imgs[i];
+        load_progress(img, i)
+    }
+
+    //加载进度条
+    function load_progress(img, i) {
+        if (img.complete) {
+            completeNum++;
+            size = ((completeNum / img_len ).toFixed(2) * 100);
+            console.log(size)
+        } else {
+            //设置进度条的值
+            setProgressSize();
+            //递归
+            setTimeout(function () {
+                load_progress(img, i);
+            }, 50);
+        }
+
+        if (completeNum == img_len) {
+            //设置进度条的值
+            setProgressSize();
+
+        }
+
+        //设置进度条的值
+        function setProgressSize() {
+            if (nums < size && nums < 100) {
+                nums = nums + 1;
+                //进度完成
+                if (nums === 100) {
+
+                }
+                $root.innerHTML = nums + "%";
+                //递归设置进度条的值
+                setTimeout(function () {
+                    setProgressSize();
+                }, 50)
+            }
+        }
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+
+<body>
+
+<canvas id="myCanvas" width="1000" height="800" style="border:1px solid #d3d3d3;">
+    您的浏览器不支持 HTML5 canvas 标签。</canvas>
+
+<script type="text/javascript">
+
+    window.onload = function (){
+        var c=document.getElementById("myCanvas");
+        var ctx=c.getContext("2d");
+
+        ctx.strokeWidth = 3;
+        ctx.strokeStyle = 'red';
+        
+        for (var i = 0; i < 10; i++){
+            ctx.beginPath();
+            ctx.arc(50 + i*100,60 , 40 ,0 , 2*Math.PI*(i+1)/10);
+            ctx.closePath();
+
+            ctx.stroke();
+            
+        }
+
+
+        for (var j = 0; j < 10; j++){
+            ctx.beginPath();
+            ctx.arc(50 + j*100,180 , 40 ,0 , 2*Math.PI*(j+1)/10);
+
+            ctx.stroke();
+
+        }
+
+        for (var i = 0; i < 10; i++){
+            ctx.beginPath();
+            ctx.arc(50 + i*100,360 , 40 ,0 , 2*Math.PI*(i+1)/10 , true);
+            ctx.closePath();
+
+            ctx.stroke();
+
+        }
+
+        for (var i = 0; i < 10; i++){
+            ctx.beginPath();
+            ctx.arc(50 + i*100,460 , 40 ,0 , 2*Math.PI*(i+1)/10 , true);
+
+            ctx.stroke();
+
+        }
+
+        ctx.fillStyle = 'red';
+        for (var i = 0; i < 10; i++){
+            ctx.beginPath();
+            ctx.arc(50 + i*100,560 , 40 ,0 , 2*Math.PI*(i+1)/10);
+            ctx.closePath();
+
+            ctx.fill();
+
+        }
+
+        ctx.fillStyle = 'red';
+        for (var i = 0; i < 10; i++){
+            ctx.beginPath();
+            ctx.arc(50 + i*100,660 , 40 ,0 , 2*Math.PI*(i+1)/10);
+
+            ctx.fill();
+
+        }
+    }
+</script>
+
+</body>
+</html>

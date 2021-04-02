@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>demo</title>
+    <style>
+        table{
+            text-align: center;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<p>我的id：<?php echo $userid ?></p>
+<p>我的名字：<?php echo $name; ?></p>
+<h4>在线用户列表</h4>
+<table border="1" id="userlists">
+    <thead>
+    <tr>
+        <th width="80px">ID</th>
+        <th width="80px">用户名</th>
+        <th width="80px">选中</th>
+    </tr>
+    </thead>
+    <tbody id="tbody">
+    </tbody>
+</table>
+<p style="margin-top:10px">
+    信息:
+    <input type="text" style="width:338px" id="content">
+    <button id="send">发送</button>
+</p>
+<div id="msg"></div>
+<div id="unline"></div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+
+    function $id(id) {
+        return document.getElementById(id);
+    }
+
+    //属性
+    var property = function (key) {
+        return function (obj) {
+            return obj == null ? void 0 : obj[key];
+        };
+    };
+
+    var MAX_ARRAY_INDEX = Math.pow(2, 53) - 1;
+    var getLength = property('length');
+    //判断一个对象是否是数组 ， 类数组
+    var isArrayLike = function (collection) {
+        var length = getLength(collection); // 上面property 传的参数是 length ， 执行 property 返回的闭包 。传一个数组 ， 就返回一个length值
+        return typeof length == 'number' && length >= 0 && length <= MAX_ARRAY_INDEX;
+    };
+
+    //一个'each`实现，又名`forEach`。遍历一个队列 ， 执行方法 ， 传对应的 key ， value值
+    var foreach = function (obj, iteratee, context) {
+        //包装回调函数
+        var i, length;
+        if (isArrayLike(obj)) {
+            for (i = 0, length = obj.length; i < length; i++) {
+                iteratee(obj[i], i, obj);
+            }
+        } else {
+            //_.keys 调用了 Object.keys 。方法 ，读取自身的属性名 ， 返回自身的属性名数组 。 ECMAScript5的东西
+            var keys = Object.keys(obj);
+            for (i = 0, length = keys.length; i < length; i++) {
+                // obj[keys[i]] 得知自身属性名就可以从传进来的对象上获取对应的值
+                iteratee(obj[keys[i]], keys[i], obj);
+            }
+        }
+        return obj;
+    };
+
+    // socket 实例
+    var socket = io();
+
+    //上线，欢迎信息
+    socket.on('open',function(res){
+        console.log(res);
+    });
+
+    //无连接 , 下线通知
+    socket.on('disconnect',function(res){
+        console.log('not connect');
+    });
+
+    var msg = $id('msg');
+    //接收用户消息 , 渲染到页面
+    socket.on('receivenews',function(res){
+        var p = document.createElement('p');
+        p.innerHTML = '来自用户 (' +res.fromusername+ ') 的消息: ' +res.content ;
+        msg.appendChild(p)
+    });
+
+    var tbody = $id('tbody');
+    //接收系统消息 , 渲染用户列表
+    socket.on('system',function(res){
+        if(res.alluser){
+            var html='';
+            foreach(res.alluser,function(v,k){
+                html+='<tr userid="'+v.userid+'"><td>'+ Number(k + 1) +'<td>'+v.username+'</td>';
+                html+='<td><input type="checkbox" class="checkboxs" username="'+v.username+'" userid="'+v.userid+'"></td></tr>';
+
+            });
+            tbody.innerHTML = html;
+        }
+    });
+
+
+
+    //检测checkbox
+    function checkSelect(checkbox)
+    {
+        var result = [];
+        for(var i = 0, len = checkbox.length ; i < len ;i++)
+        {
+            if(checkbox[i].checked) result.push(checkbox[i]);
+        }
+
+        return result.length > 0 ? result : '';
+    }
+
+
+    var content = $id('content');
+    var sendBtn = $id('send');
+    var data={};
+    var userid = '10';
+
+    //发送消息
+    function sendMsg(e) {
+        if(content.value.replace(/\s/,'') == '') {
+            alert('发送内容不能为空');
+            return;
+        }
+
+        var checkbox = document.querySelectorAll('.checkboxs');
+        var result = checkSelect(checkbox);
+        if(result){
+            foreach(result , function (obj, k) {
+                data.fromuserid = userid;
+                data.touserid = obj.getAttribute('userid');
+                data.content = content.value;
+                //发送信息
+                socket.emit('sendnews',data);
+            });
+
+            content.value = '';
+        }else{
+            alert('请选择用户');
+        }
+    }
+    //发送按钮
+    sendBtn.addEventListener('click', sendMsg, false);
+</script>
+</body>
+</html>

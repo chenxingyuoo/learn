@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html><head>
+    <meta charset="utf-8">
+    <title>排序算法动画特效 | IT酷鱼网 | Yves个人作品网 -- 20140501版</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <style>
+        *{margin:0; padding:0;}
+        li{list-style:none;}
+        img{border:none;}
+        a{text-decoration:none;color:#444444;}
+        a:hover{color:#999999;}
+        input,textarea{outline:none; resize:none; border:none;}
+        body,html{ height:100%;background:#cccccc; font-family: Verdana,Arial,Helvetica,'微软雅黑',sans-serif;}
+        .bg{
+            width:1000px;
+            height:auto;
+            position:relative;
+            margin:80px auto;
+            overflow:hidden;
+            box-shadow:5px 5px 10px #333333;
+        }
+        .title{
+            text-align:center;
+            height:40px;
+            width:100%;
+            background:#333333;
+            color:#e5e5e5;
+            line-height:40px;
+            font-family: "微软雅黑";
+            position:absolute;
+            z-index:999;
+            top:0;
+        }
+        .desc{
+            width:100%;
+            height:50px;
+            line-height:50px;
+            text-align:center;
+            background:#333333;
+            color:#e5e5e5;
+        }
+        .box{
+            width:100%;
+            height:500px;
+            background:#444444;
+            position:relative;
+        }
+        .bar{
+            border:1px solid #cccccc;
+            background-color:#ffffff;
+            position:absolute;
+            bottom:0;
+        }
+        .btn{
+            margin-left:40px;
+            width:80px;
+            height:30px;
+        }
+        select{
+            width:280px;
+            height:30px;
+            padding:5px;
+
+        }
+        .pass{ background-color: #ff0000;}
+        .change{ background-color: #00ff33;}
+        .changeEnd{ background-color:#ffff00;}
+    </style>
+    <script src="/opus/J_05/js/jquery-1.7.2.js"></script>
+    <script>
+        $(function(){
+            var $speed = 1;
+            $('.btn').click(function(){
+                var timer = null;
+                var $Box = $('.box');
+                clearInterval(timer);
+                $Box.empty();/*清空容器*/
+                var sSelect = $("#algorithm").val();/*算法方式*/
+                var num = 100;/*元素个数*/
+                //子元素宽度;
+                var $width = (parseInt($Box.css('width')) - 200) / num;
+                var arr = getRandom(10, 500, num);/*获取一个随机数数组*/
+                var i = 0;
+                $(this).attr('disabled', true);
+                $(this).attr('value', '演算中');
+                timer = setInterval(function(){
+                    if(i >= arr.length-1){
+                        clearInterval(timer);
+                        selectAnimate(arr, sSelect);
+                    }
+                    var $child = $('<div class="bar"></div>');
+                    var height = arr[i] + 'px';
+                    var left = i * ($width + 2) + "px";
+                    $child.css({
+                        height:height,
+                        left:left,
+                        width:$width
+                    }).appendTo($Box);
+                    i++;
+                },10);
+            });
+
+
+            /*定义一个随机数数组*/
+            function getRandom(sMin, sMax, count){
+                var arrRand = [];
+                for(var i = 0; i < count; i++){
+                    var iRand = parseInt(Math.random() * (sMax - sMin + 1) + sMin);
+                    if(arrCC(arrRand,iRand)){
+                        i--;
+                    }else{
+                        arrRand.push(iRand);
+                    }
+                }
+                return arrRand;
+            }
+
+            /*数组查重*/
+            function arrCC(arrC,iObj){
+                for(var i = 0; i < arrC.length; i++){
+                    if(iObj == arrC[i]){
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            function selectAnimate(arr, val){
+                switch(val){
+                    case '1' ://冒泡算法
+                        bubbleSort(arr);
+                        break;
+                    case '2' ://插入算法
+                        insertSort(arr);
+                        break;
+                }
+            }
+
+            //冒泡
+            function bubbleSort(arr){
+                var i = arr.length;
+                var j = 0;
+                var temp;
+                var time1 = null;
+                var time2 = null;
+                var timedo = function(){
+                    time1 = setTimeout(function(){
+                        if(i > 0){
+                            j = 0;
+                            time2 = setInterval(function(){
+                                if(j < i - 1) {
+                                    changeBox(j, 'pass');
+                                    if (arr[j] > arr[j+1]){
+                                        temp = arr[j];
+                                        arr[j] = arr[j+1];
+                                        arr[j + 1] = temp;
+                                        //演示用容器;
+                                        changeBox(j, 'changeEnd', arr[j]);
+                                        changeBox(j + 1, 'change', temp);
+                                    }
+                                    j++;
+                                }else{
+                                    clearInterval(time2);
+                                    removeBoxColor();
+                                    i--;
+                                    timedo();
+                                }
+                            }, $speed);
+                        } else {
+                            //结束;
+                            doEnd(arr);
+                        }
+                    }, $speed);
+                };
+                timedo();
+            }
+
+            //插入
+            function insertSort(arr){
+                var i = arr.length;
+                var j = 1;
+                var key;
+                var temp;
+                var time1 = null;
+                var time2 = null;
+                var timedo = function(){
+                    time1 = setTimeout(function(){
+                        if(j < i){
+                            temp = arr[j];
+                            key = j - 1;
+                            time2 = setInterval(function(){
+                                changeBox(j, 'pass');
+                                if(key >= 0 && temp < arr[key]){
+                                    arr[key + 1] = arr[key];
+                                    changeBox(key + 1, 'change', arr[key]);
+                                    key--;
+                                }else{
+                                    if (key + 1 != j) {
+                                        arr[key + 1] = temp;
+                                        changeBox(key + 1, 'changeEnd', temp);
+                                    }
+                                    clearInterval(time2);
+                                    timedo();
+                                }
+                            },$speed);
+                            removeBoxColor();
+                        }else{
+                            doEnd(arr);
+                        }
+                        j++;
+                    }, $speed);
+                }
+                timedo();
+            }
+
+            //改变容器颜色及其高度;
+            function changeBox(index, className, height) {
+                if(arguments[2]){
+                    var $thisSpeed = 10 * $speed;
+                    $('.bar').eq(index).animate({height : height},$thisSpeed).addClass(className);
+                }else{
+                    $('.bar').eq(index).removeClass('change changeEnd').addClass(className);
+                }
+            }
+
+            //清除容器颜色
+            function removeBoxColor() {
+                $('.bar').removeClass('pass change changeEnd');
+            }
+
+            //结束动画
+            function doEnd(arr) {
+                removeBoxColor();
+                var i = 0;
+                var time = setInterval(function() {
+                    if(i >= arr.length){
+                        clearInterval(time);
+                    }
+                    $('.bar').eq(i).addClass('change').next().addClass('pass');
+                    i++;
+                }, 5);
+                $('.btn').attr('disabled', false);
+                $('.btn').attr('value', '再来一次');
+
+            }
+
+
+        });
+        /**************算法分析*****************/
+        /*
+         //冒泡
+         //	冒泡排序算法的运作如下：
+         //		比较相邻的元素。如果第一个比第二个大，就交换他们两个。
+         //		对每一对相邻元素作同样的工作，从开始第一对到结尾的最后一对。在这一点，最后的元素应该会是最大的数。
+         //		针对所有的元素重复以上的步骤，除了最后一个。
+         //		持续每次对越来越少的元素重复上面的步骤，直到没有任何一对数字需要比较。
+         function maopao(arr){
+         var i = arr.length;
+         var j = 0;
+         var temp;
+         while(i > 0){
+         for(j = 0; j < i - 1; j++) {
+         if(arr[j] > arr[j+1]) {
+         temp = arr[j];
+         arr[j] = arr[j+1];
+         arr[j + 1] = temp;
+         }
+         }
+         i--;
+         }
+         return arr;
+         }
+
+         //插入排序
+         //将一个数据插入到已经排好序的有序数据中，从而得到一个新的、个数加一的有序数据
+         function charu(arr){
+         var i = arr.length;
+         var j = 1;
+         var temp;
+         var key;
+         for(j = 1; j < i; j++){
+         temp = arr[j];
+         key = j - 1;
+         while(key >= 0 && temp < arr[key]){
+         arr[key+1] = arr[key];
+         key--;
+         }
+         if(key + 1 != j){
+         arr[key + 1] = temp;
+         }
+         }
+         return arr;
+         }
+
+         //选择排序
+         function selectionSort(arr){
+         for(var i=0;i<arr.length-1;i++){
+         for(var j=i+1;j<arr.length;j++){
+         if(arr[i]>arr[j]){
+         var temp=arr[i];
+         arr[i]=arr[j];
+         arr[j]=temp;
+         }
+         }
+         }
+         return arr;
+         }
+
+         */
+    </script>
+</head>
+
+<body cz-shortcut-listen="true">
+<div class="title">
+    jquery快速排序算法动画特效
+</div>
+<div class="bg">
+    <div class="desc">
+        算法:
+        <select id="algorithm">
+            <option value="1" selected="selected">冒泡算法</option>
+            <option value="2">插入算法</option>
+        </select>
+        <input type="button" value="开始" class="btn">
+    </div>
+    <div class="box"></div>
+</div>
+
+
+</body></html>

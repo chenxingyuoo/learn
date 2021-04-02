@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+
+<script>
+    var Flower = function () {
+    };
+
+    var xiaoming = {
+        sendFlower: function (target) {
+            var flower = new Flower();
+            target.receiveFlower(flower);
+        }
+    };
+
+    var B = {
+        receiveFlower: function (flower) {
+            A.receiveFlower(flower);
+        }
+    }
+
+
+    var A = {
+        receiveFlower: function (flower) {
+            console.log('收到花' + flower);
+        }
+    };
+
+    xiaoming.sendFlower(B);
+
+
+    var Flower = function () {
+    };
+    var xiaoming = {
+        sendFlower: function (target) {
+            var flower = new Flower();
+            target.receiveFlower(flower);
+        }
+    };
+
+    var B = {
+        receiveFlower: function (flower) {
+            A.listenGoodMood(function () {
+                A.receiveFlower(flower);
+            });
+        }
+    };
+
+    var A = {
+        receiveFlower: function (flower) {
+            console.log('收到花' + flower);
+        },
+        listenGoodMood: function (fn) {
+            setTimeout(function () {
+                fn();
+            }, 10000);
+        }
+    }
+
+    xiaoming.sendFlower(B);
+
+
+    //es6 代理函数实现
+
+    var xiaochen = {
+        //送花
+        sendFlower : function (){
+            return new Flower();
+        }
+    };
+
+    var xiaoxiang = {
+        //收花
+        receiveFlower : function (flower){
+            console.log('收到花' + flower);
+        }
+    };
+
+    //方法一 , 不通用
+
+    //代理的处理程序
+    var handler = {
+        apply: function (target, ctx, args) {
+            let flower = target();
+
+            xiaoxiang.receiveFlower(flower);
+        }
+    };
+
+    var proxy = new Proxy(xiaochen.sendFlower, handler);
+
+    proxy();
+
+
+    //方法二 , 通用
+
+    //代理的处理程序
+    var handler = {
+        apply: function (target, ctx, args) {
+            let flower = target();
+
+            let [fn] = args;
+
+            fn(flower);
+        }
+    };
+
+    var proxy = new Proxy(xiaochen.sendFlower, handler);
+
+    //直接调用Reflect.apply方法
+    Reflect.apply(proxy, null, [xiaoxiang.receiveFlower]);
+
+
+
+    //代理函数 construct 方法
+
+    var handler = {
+        construct (target, args, newTarget) {
+            console.log(args);
+            return new target(...args);
+        }
+    };
+
+    var Test = function (name, opts){
+        this.name = name;
+    }
+
+    var constructProxy = new Proxy(Test, handler);
+
+    new constructProxy('my name is ...', {age : '22'});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+
+<script>
+  function DoublyLinkedList() {
+    var Node = function (element) {
+      this.element = element;
+      this.next = null;
+      this.prev = null; //新增的
+    }
+    var length = 0;
+    var head = null;
+    var tail = null; //新增的
+
+    this.insert = function (position, element) {
+      //检查越界值
+      if (position >= 0 && position <= length) { //{1}
+        var node = new Node(element),
+          current = head,
+          previous,
+          index = 0;
+        if (position === 0) { //在第一个位置添加
+          if (!head) { //新增的 {1}
+            head = node;
+            tail = node;
+          } else {
+            node.next = current;
+            current.prev = node; //新增的 {2}
+            head = node;
+          }
+
+        } else if (position === length) {
+          current = tail; // {3}
+          current.next = node;
+          node.prev = current;
+          tail = node;
+        } else {
+          while (index++ < position){ //{4}
+            previous = current;
+            current = current.next;
+          }
+          node.next = current; //{5}
+          previous.next = node;
+          current.prev = node; //新增的
+          node.prev = previous; //新增的
+        }
+        length++; //更新列表的长度
+        return true;
+      } else {
+        return false; //{6}
+      }
+    };
+
+  }
+</script>
+
+</body>
+</html>

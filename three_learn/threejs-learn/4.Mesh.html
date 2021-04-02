@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+
+<script src="js/three.js"></script>
+<script>
+  function init () {
+    // 获取浏览器窗口的宽高，后续会用
+    var width = window.innerWidth
+    var height = window.innerHeight
+
+    // 创建一个场景
+    var scene = new THREE.Scene()
+
+    // 创建一个具有透视效果的摄像机
+    var camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 800)
+
+    // 设置摄像机位置，并将其朝向场景中心
+    camera.position.x = 20
+    camera.position.y = 10
+    camera.position.z = 30
+    camera.lookAt(scene.position)
+
+    // 创建一个 WebGL 渲染器，Three.js 还提供 <canvas>, <svg>, CSS3D 渲染器。
+    var renderer = new THREE.WebGLRenderer({
+      antialias: true // 开启抗齿锯效果
+    })
+
+    // 设置渲染器的清除颜色（即背景色）和尺寸
+    renderer.setClearColor(0xffffff)
+    renderer.setSize(width, height)
+
+    // 创建一个聚光灯，并将其设置恰当位置后添加到场景中
+    var spotLight = new THREE.SpotLight(0xffffff)
+    spotLight.position.set(10, 50, 20)
+    scene.add(spotLight)
+
+    // 创建一个长宽高为 4 的立方体
+    var cubeGeometry = new THREE.BoxGeometry(4, 4, 4)
+
+    // 创建点集（Points）材质
+    var cubePointMaterial = new THREE.PointsMaterial({
+      color: 0xff0000,
+      size: 0.4
+    })
+
+    // 创建线（Line）材质
+    var cubeLineMaterial = new THREE.LineBasicMaterial({
+      color: 0x00ff00
+    })
+
+    // 创建 Lambert 材质：会对场景中的光源作出反应，但表现为暗淡，而不光亮。
+    var cubePlaneMaterial = new THREE.MeshLambertMaterial({
+      color: 0x0000ff,
+    })
+
+    // 立方体的多种表现形式：点集、线、面
+    var pointCube = new THREE.Points(cubeGeometry, cubePointMaterial)
+    var lineCube = new THREE.Line(cubeGeometry, cubeLineMaterial)
+    var meshCube = new THREE.Mesh(new THREE.BoxGeometry(4, 4, 4), cubePlaneMaterial)
+
+    pointCube.position.set(-8, 0, 0)
+    meshCube.position.set(8, 0, 0)
+
+    // 一次性向场景添加三种表现形式
+    scene.add(pointCube, lineCube, meshCube)
+
+    // 将渲染器的输出（此处是 canvas 元素）插入到 body
+    document.body.appendChild(renderer.domElement)
+
+    // 渲染，即摄像机拍下此刻的场景
+    renderer.render(scene, camera)
+  }
+  init()
+</script>
+</body>
+</html>

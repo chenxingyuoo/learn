@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>模块化函数</title>
+</head>
+
+<body>
+<script>
+    //立即执行函数
+    //我向来不惮以最坏的恶意揣测程序员，你永远想不到你的 partner 会不会真的在其他地方修改了你的参数，也不知道自己是否会在不经意间修改了他的。我们必须在他下手之前——让自己的模块先执行掉，不给对方可趁之机。此时使用一种叫做立即执行函数的办法，可以避免暴露私有成员。
+
+    var loveThing = (function(){
+        var my = {};
+        var love = 'coding';
+        my.getLove = function(){
+            return love;
+        },
+        my.setLove = function(thing){
+            console.log(thing)
+        }
+        return my
+    })();
+
+    console.log(loveThing.getLove())//coding
+
+    loveThing.setLove('reading')  //reading
+
+    //我们试着获取里面的变量：
+    // console.log(loveThing.love);//>>> undefined
+
+
+    //放大模式
+    //当然，一个项目要用到模块化的时候，说明这个项目足够大足够复杂，一个模块可能需要继承另一个模块，或者扩充模块，这时候需要使用放大模式：
+
+    //继承另一个模块
+
+   // var a = {}
+
+    var loveThing = (function (o){
+        debugger
+        var love = 'love'
+        o.sayOK = function () {
+            console.log('OK');  // 'Ok'
+            return love ;  // 这里的love只能获取这个作用域的变量love
+        };
+        return o;
+    })(loveThing); //这里传进的形参是13行代码 立即执行函数的对象loveThing  ， 也可用一个对象 'a' 这样的方式
+
+    //此时loveThing有getLove() , setLove() , sayOK() 三个方法
+    console.log(loveThing.sayOK())  // 'love'
+
+
+    //宽放大模式
+    //可是，浏览器是一个不按常理出牌的环境，你永远不知道自己引用的模块是否已经加载。万一我之前的loveThing没有被加载，上面这段代码就会报错了（找不到对象）。解决方法就是所谓宽放大模式：
+    var loveThing = (function (o){
+        debugger
+        var listen = 'listen'
+        o.listenOK = function () {
+            console.log('listenOK');  // 'Ok'
+            return listen ;  // 这里的love只能获取这个作用域的变量love
+        };
+        return o;
+    })(loveThing || {});
+
+
+    //输入全局变量
+    //独立性是模块的重要特点，模块内部最好不与程序的其他部分直接交互。
+    //为了在模块内部调用全局变量，必须显式地将其他变量输入模块。
+    var loveThing = (function ($, YAHOO) {
+        //...
+    })(jQuery, YAHOO);
+
+    //上面的loveThing模块需要使用jQuery库和YUI库，就把这两个库（其实是两个模块）当作参数输入loveThing。这样做除了保证模块的独立性，还使得模块之间的依赖关系变得明显。这方面更多的讨论，参见Ben Cherry的著名文章《JavaScript Module Pattern: In-Depth》
+
+
+</script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

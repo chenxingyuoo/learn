@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+
+<script>
+    var reverseEach = function (arr, callback){
+        for ( var len = ary.length - 1; len >= 0; len-- ){
+            callback(len, arr[len]);
+        }
+    };
+
+    reverseEach( [ 0, 1, 2 ], function( i, n ){
+        console.log( n ); //      2, 1 ,0
+    });
+</script>
+
+</body>
+</html>

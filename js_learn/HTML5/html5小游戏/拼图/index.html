@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>拼图</title>
+    <style>
+        #pt-boz{
+            border: 1px solid #fff;
+            display: inline-block;
+        }
+        #pt-box{
+            width: 504px;
+            height: 504px;
+        }
+        .pt-pic {
+            float: left;
+        }
+        .bt-start{
+            cursor: pointer;
+        }
+        .pt-pix{
+            opacity: 0.2;
+            filter: alpha(opacity=20);
+        }
+    </style>
+</head>
+
+<body>
+
+<div id="pt-boz">
+<div id="pt-box"></div>
+</div>
+
+<div class="bt">
+    <input type="button" class="bt-again" value="再来一次">
+    <input type="button" class="bt-start" value="开始游戏">
+    <input type="file" accept="image/*">
+</div>
+
+<script src="js/jquery-2.2.1.js"></script>
+<script src="js/main.js"></script>
+<script>
+
+</script>
+</body>
+</html>

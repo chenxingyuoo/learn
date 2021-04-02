@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>arr_sort</title>
+</head>
+
+<body>
+<script>
+    var love = [{'name': 'xiaoming', 'age': 23, 'height': 167},{'name': 'xiaohua', 'age': 25, 'height': 165}];
+
+    //bi闭包方法 ,根据属性排序
+    function compareProperty(property){
+        return function (obj1, obj2) {
+            return obj1[property] - obj2[property];
+        }
+    }
+
+    love.sort(compareProperty('age'));
+    console.log(love,'年龄最小：' + love[0].name);
+
+   /* 身高最矮
+    love.sort(compareProperty('height'));
+    console.log(love,'身高最矮：' + love[0].name);*/
+</script>
+</body>
+</html>

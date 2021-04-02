@@ -1,0 +1,4 @@
+alive: consul.dc1 172.19.0.3:8302
+alive: consul.dc1 172.19.0.2:8302
+alive: consul.dc1 172.19.0.2:8302
+alive: consul.dc1 172.19.0.2:8302

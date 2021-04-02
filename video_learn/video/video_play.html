@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <title>video_play</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        .video-box{
+            position: relative;
+        }
+        .video-control{
+            display: -webkit-box;
+            -webkit-box-align: center;
+            position: absolute;
+            height: 40px;
+            bottom: 0;
+            padding: 0 2%;
+            width: 96%;
+        }
+        .video-control-mask{
+            width: 100%;
+            height: 96%;
+            background-color: #ccc;
+            opacity: 0.2;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        .video-control-left{
+            position: relative;
+            margin-right: 20px;
+        }
+        .iw-play{
+            color: #fff;
+        }
+        .vc-progress-wrap{
+            height: 5px;
+            width: 50%;
+            border-radius: 5px;
+            background-color: #bfc7d3;
+            position: relative;
+        }
+        .vc-progress{
+            height: 5px;
+            width: 0;
+            border-radius: 5px;
+            background-color: #fff;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 10;
+        }
+        .vc-progress-load{
+            height: 5px;
+            /*width: 60%;*/
+            border-radius: 5px;
+            background-color: #000;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+        }
+        .vc-progress-point{
+            position: absolute;
+            left: 0;
+            top: -2px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            z-index: 10;
+            background-color: #fff;
+        }
+        .vc-time,.vc-time span{
+            color: #fff;
+        }
+        .vc-time{
+            margin-left: 20px;
+        }
+        .video-icon{
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            line-height: 58px;
+            text-align: center;
+            border-radius: 50%;
+            border: 2px solid #fff;
+            left: 50%;
+            margin-left: -25px;
+            top: 50%;
+            margin-top: -25px;
+            opacity: 1;
+        }
+        .video-icon .wif{
+            font-size: 24px;
+        }
+        .vc-voice{
+            color: #fff;
+            margin-left: 10px;
+        }
+    </style>
+    <link rel="stylesheet" href="css.css">
+</head>
+<body>
+<div class="video-box">
+    <div class="video-icon">
+        <i class="wif iw-play"></i>
+    </div>
+    <video id="video" src="./VfE_html5.mp4"  width="100%" height="">
+        Your browser does not support the video tag.
+    </video>
+    <div class="video-control">
+        <div class="video-control-mask"></div>
+        <div class="video-control-left">
+            <div class="wif iw-play play-botton"></div>
+        </div>
+        <div class="vc-progress-wrap">
+            <div class="vc-progress"></div>
+            <div class="vc-progress-load"></div>
+            <div class="vc-progress-point"></div>
+        </div>
+        <div class="vc-time">
+            <span class="vc-time-current">00:00</span>
+            /
+            <span class="vc-time-all">00:00</span>
+        </div>
+        <!-- <i class="vc-voice wif iw-yinliangzhong"></i> -->
+    </div>
+</div>
+<div>
+    <span>倍速</div>
+    <select id="select">
+        <option value="0.5">0.5</option>
+        <option value="1" selected>1</option>
+        <option value="1.25">1.25</option>
+        <option value="1.5">1.5</option>
+        <option value="2">2</option>
+    </select>
+</div>
+<!--<script src="../jquery-2.2.1.js"></script>-->
+<script src="http://apps.bdimg.com/libs/zepto/1.1.4/zepto.js"></script>
+<script>
+    $(function () {
+        var myVideo = $("#video")[0],
+            time,blag = true,
+            $icon = $(".video-icon"),
+            $progress_wrap =  $('.vc-progress-wrap'),
+            $progress_point = $('.vc-progress-point'),
+            $progress_load =  $('.vc-progress-load')    ;
+
+        var playbackRate = 1
+
+        var schedule_by,
+            schedule_w;
+
+        schedule_by = document.querySelector('.vc-progress-wrap').offsetLeft
+        schedule_w = $progress_wrap.width()
+
+        console.log(schedule_by,schedule_w)
+
+        myVideo.load();
+
+        //自动播放
+        myVideo.autoplay = true;
+
+        myVideo.onplay = function () {
+            video_play();
+        }
+
+        myVideo.onpause = function () {
+            video_pause();
+        }
+
+        myVideo.onloadeddata = function () {
+             //获取分钟 ， 秒
+            var allMin = parseInt(myVideo.duration/60),
+                allSec = Math.round(myVideo.duration % 60)
+
+            if(allMin < 10) allMin = '0' + allMin;
+            if(allSec < 10) allSec = '0' + allSec;
+
+            $('.vc-time-all').html(allMin +':'+allSec )
+        }
+
+        $progress_wrap.on('click', function (e) {
+            //var w = Math.round((e.clientX - schedule_by) / schedule_w * 100) + '%';
+            //var time = Math.round((myVideo.duration * 1) * ((e.clientX - schedule_by) / schedule_w));
+            //改变当前播放进度和进度条
+            clearInterval(time)
+            myVideo.currentTime = cur_progress_time(e.clientX);
+            $progress_load.width(cur_progress_w(e.clientX));
+            $progress_point[0].style.left = cur_progress_w(e.clientX);
+
+            video_play()
+        })
+
+         //当前进度宽度
+         function cur_progress_w(clientX){
+             var w = Math.round((clientX - schedule_by) / schedule_w * 100) + '%'
+             return w
+         }
+
+        //当前进度宽度
+        function cur_progress_time(clientX){
+            var time = Math.round((myVideo.duration * 1 ) * (( clientX- schedule_by) / schedule_w));
+            return time
+        }
+
+
+        //点击播放暂停
+        $(document).on('click','.play-botton,#video', function () {
+            if(!blag){
+                myVideo.play();
+            }else{
+                video_pause()
+            }
+            blag = !blag;
+        });
+
+        $(document).on('touchstart','.vc-progress-point', function (e) {
+            // myVideo.pause();
+            // clearInterval(time)
+        });
+
+        //拖动滚动条
+        $(document).on('touchmove','.vc-progress-point', function (e) {
+            touchMove(e);
+        });
+
+        $('.vc-progress-point').on('mousedown', function () {
+            document.addEventListener('mousemove', touchMove);
+            document.addEventListener('mouseup', endFn);
+        })
+        
+
+        $(document).on('touchend','.vc-progress-point', function (e) {
+            touchEnd(e);
+        });
+
+        function endFn() {
+            document.removeEventListener('mousemove', touchMove);
+            document.removeEventListener('mouseup', endFn);
+        }
+
+        function touchMove(e){//滑动
+            // e.preventDefault();
+            var touch = e.touches ? e.touches[0] : e;
+
+            //改变当前播放进度和进度条
+            myVideo.currentTime = cur_progress_time(touch.pageX);
+            $progress_load.width(cur_progress_w(touch.pageX));
+            $progress_point[0].style.left = cur_progress_w(touch.pageX);
+
+        }
+
+        function touchEnd(e){//手指离开屏幕
+            e.preventDefault();
+            //播放
+            // myVideo.play();
+        }
+
+        $('#select').on('change', function(e) {
+            var index = e.currentTarget.selectedIndex
+            var value = Number(e.currentTarget[index].value)
+
+            playbackRate = value
+
+            video.playbackRate = value
+
+            clearInterval(time)
+            video_play()
+        });
+
+
+        function video_pause(){
+            myVideo.pause();
+            $icon.css("opacity",1);
+            $(".play-botton").removeClass("iw-zanting");
+            clearInterval(time)
+        }
+
+        video.playbackRate = playbackRate;
+
+        //正在播放的时候
+        function video_play(){
+            $(".play-botton").addClass("iw-zanting");
+            $icon.css("opacity",0);
+           function play() {
+                //分钟 = 当前时间 / 60
+                var curMin = parseInt(myVideo.currentTime/ 60),
+                //秒 = 当前时间 % 60 ，取前两位
+                        curSec = Math.round(myVideo.currentTime % 60),
+                //播放百分比 =  当前时间 / 视频长度  * 100%
+                        percent = (myVideo.currentTime / myVideo.duration) *100+"%";
+
+            console.log(curSec)
+
+                if (curSec === 60) {
+                    curSec = 0
+
+                    curMin = curMin + 1
+                }
+
+
+                if(curMin < 10) curMin = '0' + curMin;
+                if(curSec < 10) curSec = '0' + curSec;
+
+
+                $('.vc-time-current').html(curMin +':'+curSec);
+                //改变进度原点位置
+                $progress_point.css('left',percent),
+                //改变进度条宽度
+                $progress_load.css({'width':percent,'opacity':1});
+
+                if(percent === 100 + '%') video_pause();
+            }
+
+            play()
+
+            time = setInterval(play ,1000 / playbackRate)
+        }
+
+
+
+
+    })
+</script>
+</body>
+</html>

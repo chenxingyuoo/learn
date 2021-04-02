@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html class="edit" lang="en"><!--class="edit"-->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"
+          charset="utf-8">
+
+    <title>Title</title>
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <link rel="stylesheet" href="index.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-size: 1.4rem !important;
+        }
+
+        .slides {
+            width: 960px;
+            height: 700px;
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            margin: auto;
+            overflow: visible;
+            z-index: 1;
+            text-align: center;
+            -webkit-perspective: 600px;
+            perspective: 600px;
+            -webkit-perspective-origin: 50% 40%;
+            perspective-origin: 50% 40%;
+        }
+
+        .sl-block {
+            width: 800px;
+            /* left: 50%;
+             !*margin-left: -400px;*!
+             top: 270px;*/
+            left: 80px;
+            top: 190px;
+            height: auto;
+            cursor: pointer;
+            -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+            -webkit-transition: none;
+            transition: none;
+        }
+
+        .slides .sl-block {
+            display: block;
+            position: absolute;
+            z-index: auto;
+        }
+
+        .sl-block-content {
+            cursor: pointer;
+            display: block;
+            position: relative;
+            width: 100%;
+            height: 100%;
+            max-width: none;
+            max-height: none;
+            outline: 0;
+            word-wrap: break-word;
+        }
+
+        .slides-stack, .slides-item {
+            height: 700px;
+            font-weight: inherit;
+            padding: 0;
+            text-align: center;
+        }
+
+        .edit-box {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            padding-left: 240px;
+        }
+
+        html.edit body {
+            height: 100%;
+            min-width: 1220px;
+            overflow: hidden;
+            background: #fff;
+        }
+
+        html {
+            font-size: 62.5%;
+            /*10 ÷ 16 × 100% = 62.5%*/
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            position: relative;
+            line-height: 1;
+            background-color: #fff;
+            color: #000;
+
+        }
+
+        body > *:not(.reveal) {
+            font-family: "Open Sans", Helvetica, sans-serif;
+        }
+
+        .edit-wrap {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .edit-main {
+            width: 100%;
+            height: 100%;
+            background: white;
+        }
+
+        .edit-content {
+            position: relative;
+            z-index: 10;
+            color: black;
+            font-family: "Open Sans", sans-serif;
+            font-size: 30px;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            -ms-touch-action: none;
+            touch-action: none;
+        }
+
+        a {
+             width: 960px;
+             height: 700px;
+             left: 50%;
+             top: 50%;
+             margin-left: -480px;
+             margin-top: -350px;
+             bottom: auto;
+             right: auto;
+             transform: scale(0.550208);
+        }
+
+        .sl-block-grid {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            left: 0;
+            top: 0;
+            z-index: 0;
+        }
+
+        .sl-block-grid-inner {
+            position: absolute;
+        }
+    </style>
+</head>
+<body>
+
+
+
+
+
+<script>
+
+    /*(function (doc, win) {
+     var docEl = doc.documentElement,
+     resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',
+     recalc = function () {
+     var clientWidth = docEl.clientWidth;
+     if (!clientWidth) return;
+     docEl.style.fontSize = 20 * (clientWidth / 320) + 'px';
+     };
+
+     if (!doc.addEventListener) return;
+     win.addEventListener(resizeEvt, recalc, false);
+     doc.addEventListener('DOMContentLoaded', recalc, false);
+     })(document, window);
+
+     var win_h = document.body.clientHeight || document.documentElement.clientHeight;
+     console.log(win_h)
+     document.querySelector('.home-wrap').style.height = win_h + 'px';
+     document.querySelector('.home-main').style.height = win_h + 'px';*/
+
+
+</script>
+
+
+<!--手机端的显示格式-->
+<!--<div class="edit-wrap">
+    <div class="edit-main ">
+        <div class="edit-content reveal">
+        <div class="slides">
+            <div class="slides-stack">
+
+                &lt;!&ndash;1&ndash;&gt;
+                <section class="slides-item">
+                    <div class="sl-block" data-block-type="text">
+                        <div class="sl-block-content" data-placeholder-tag="h1"
+                             data-placeholder-text="Title Text"><h1>Title Text</h1></div>
+                    </div>
+
+                </section>
+
+                <section class="slides-item">
+                    <div class="sl-block" data-block-type="text">
+                        <div class="sl-block-content" data-placeholder-tag="h1"
+                             data-placeholder-text="Title Text"><h1>Title Text</h1></div>
+                    </div>
+
+                    <div class="sl-block" data-block-type="text" style="    top: 272px;">
+                        <div class="sl-block-content" data-placeholder-tag="h2"
+                             data-placeholder-text="Title Text"><h2>Title Text</h2></div>
+                    </div>
+
+                </section>
+
+                <section class="slides-item">
+                    <div class="sl-block" data-block-type="text">
+                        <div class="sl-block-content" data-placeholder-tag="h1"
+                             data-placeholder-text="Title Text"><h1>Title Text</h1></div>
+                    </div>
+
+                    <div class="sl-block" data-block-type="text" style="    top: 272px;">
+                        <div class="sl-block-content" data-placeholder-tag="h2"
+                             data-placeholder-text="Title Text">
+                            <ul><li>Bullet One</li><li>Bullet Two</li><li>Bullet Three</li></ul>
+                        </div>
+                    </div>
+
+                </section>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>-->
+
+<div class="edit-box">
+
+    <div class="edit-wrap">
+        <div class="edit-main ">
+            <div class="edit-content reveal">
+
+                <div class="slides">
+                    <div class="slides-stack">
+
+                        <!--1-->
+                        <section class="slides-item">
+                            <div class="sl-block" data-block-type="text">
+                                <div class="sl-block-content" data-placeholder-tag="h1"
+                                     data-placeholder-text="Title Text"><h1>Title Text</h1></div>
+                            </div>
+
+                        </section>
+
+                        <!--2-->
+                        <!--<section class="slides-item">
+                            <div class="sl-block" data-block-type="text">
+                                <div class="sl-block-content" data-placeholder-tag="h1"
+                                     data-placeholder-text="Title Text"><h1>Title Text</h1></div>
+                            </div>
+
+                            <div class="sl-block" data-block-type="text" style="    top: 272px;">
+                                <div class="sl-block-content" data-placeholder-tag="h2"
+                                     data-placeholder-text="Title Text"><h2>Title Text</h2></div>
+                            </div>
+
+                        </section>-->
+
+                        <!--3-->
+                        <!--<section class="slides-item">
+                            <div class="sl-block" data-block-type="text">
+                                <div class="sl-block-content" data-placeholder-tag="h1"
+                                     data-placeholder-text="Title Text"><h1>Title Text</h1></div>
+                            </div>
+
+                            <div class="sl-block" data-block-type="text" style="    top: 272px;">
+                                <div class="sl-block-content" data-placeholder-tag="h2"
+                                     data-placeholder-text="Title Text">
+                                    <ul><li>Bullet One</li><li>Bullet Two</li><li>Bullet Three</li></ul>
+                                </div>
+                            </div>
+
+                        </section>-->
+
+
+                        <!--4-->
+                        <!--<section class="slides-item" style="display: block;">
+                            <div class="sl-block" data-block-type="text"
+                                 style="width: 410px; left: 49px; top: 106px; height: auto;"
+                                 data-block-id="2a569e8ebd4b1c5148b887aeb601df9a">
+                                <div class="sl-block-content" data-placeholder-tag="h2" data-placeholder-text="Title Text"
+                                     style="text-align: left;"><h2>Title Text</h2></div>
+                            </div>
+
+                            <div class="sl-block" data-block-type="text"
+                                 style="width: 410px; left: 49px; top: 200px; height: auto;"
+                                 data-block-id="879cf3b72dc76b3a086dae5d9ab02760">
+                                <div class="sl-block-content" data-placeholder-tag="p"
+                                     data-placeholder-text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin urna odio, aliquam vulputate faucibus id, elementum lobortis felis. Mauris urna dolor, placerat ac sagittis quis."
+                                     style="text-align: left;"><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                                    Proin urna odio, aliquam vulputate faucibus id, elementum lobortis felis. Mauris urna
+                                    dolor, placerat ac sagittis quis.</p></div>
+                            </div>
+
+                            <div class="sl-block" data-block-type="text"
+                                 style="width: 410px; left: 499px; top: 106px; height: auto;"
+                                 data-block-id="f5d532caefa8d67d05ec8065de95177c">
+                                <div class="sl-block-content" data-placeholder-tag="h2" data-placeholder-text="Title Text"
+                                     style="text-align: left;"><h2>Title Text</h2></div>
+                            </div>
+
+                            <div class="sl-block" data-block-type="text"
+                                 style="width: 410px; left: 499px; top: 200px; height: auto;"
+                                 data-block-id="6d5042d8f45fe8c59af4a52f560873ab">
+                                <div class="sl-block-content" data-placeholder-tag="p"
+                                     data-placeholder-text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin urna odio, aliquam vulputate faucibus id, elementum lobortis felis. Mauris urna dolor, placerat ac sagittis quis."
+                                     style="text-align: left;"><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                                    Proin urna odio, aliquam vulputate faucibus id, elementum lobortis felis. Mauris urna
+                                    dolor, placerat ac sagittis quis.</p></div>
+                            </div>
+                        </section>-->
+
+                        <!--5-->
+                        <!-- <section class="slides-item">
+                             <div class="sl-block" data-block-type="text"
+                                  style="width: 900px; left: 30px; top: 58px; height: auto;"
+                                  data-block-id="a12b5d6cd4fb874080642061137cf524">
+                                 <div class="sl-block-content" data-placeholder-tag="h1"
+                                      style="font-size: 200%; text-align: left;" data-placeholder-text="Text">
+                                     <h1>One<br>Two<br>Three</h1>
+                                 </div>
+                             </div>
+                         </section>-->
+
+                        <!--6-->
+                        <!--<section class="slides-item">
+                                <div class="sl-block" data-block-type="text"
+                                     style="width: 800px; left: 79px; top: 50px; height: auto;"
+                                     data-block-id="05f062a89fa37c4da80aa5bdf14af28d">
+                                    <div class="sl-block-content" data-placeholder-tag="h2"
+                                         data-placeholder-text="Title Text"><h2>Title Text</h2></div>
+                                </div>
+                                <div class="sl-block" data-block-type="image"
+                                     style="width: 700px; height: 475px; left: 129px; top: 144px;"
+                                     data-block-id="99a3c5fb5cfe25907b0eadc56852bbdd">
+                                    <div class="sl-block-content"></div>
+                                    <div class="editing-ui sl-block-overlay sl-block-placeholder"
+                                         style="z-index: -1;"></div>
+                                </div>
+                        </section>-->
+
+                        <!--7-->
+                        <!--<section class="slides-item">
+                                <div class="sl-block" data-block-type="text"
+                                     style="width: 430px; left: 23px; top: 87px; height: auto;"
+                                     data-block-id="444daff663c332f2fddea905a4918672">
+                                    <div class="sl-block-content" data-placeholder-tag="h2"
+                                         data-placeholder-text="Title Text" style="text-align: left;"><h2>Title
+                                        Text</h2></div>
+                                </div>
+                                <div class="sl-block" data-block-type="text"
+                                     style="width: 430px; left: 23px; top: 161px; height: auto;"
+                                     data-block-id="6c657928dd5fb9574cb385be4d1bf977">
+                                    <div class="sl-block-content" data-placeholder-tag="p"
+                                         data-placeholder-text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi nec metus justo. Aliquam erat volutpat."
+                                         style="z-index: 13; text-align: left;"><p>Lorem ipsum dolor sit amet,
+                                        consectetur adipiscing elit. Morbi nec metus justo. Aliquam erat volutpat.</p>
+                                    </div>
+                                </div>
+                                <div class="sl-block" data-block-type="image"
+                                     style="width: 454px; height: 641px; left: 479px; top: 29px;"
+                                     data-block-id="0aa528f6d22d6700c753c9eb02801513">
+                                    <div class="sl-block-content"></div>
+                                    <div class="editing-ui sl-block-overlay sl-block-placeholder"
+                                         style="z-index: -1;"></div>
+                                </div>
+                        </section>-->
+
+                        <!--8-->
+                        <!--<section class="slides-item">
+                                <div class="sl-block" data-block-type="image"
+                                     style="width: 700px; height: 475px; left: 130px; top: 65px;"
+                                     data-block-id="8ce265276fe5913604f721cefd664d39">
+                                    <div class="sl-block-content"></div>
+                                    <div class="editing-ui sl-block-overlay sl-block-placeholder"
+                                         style="z-index: -1;"></div>
+                                </div>
+                                <div class="sl-block" data-block-type="text"
+                                     style="width: 800px; left: 80px; top: 575px; height: auto;"
+                                     data-block-id="ff4164ebe04eaa0f9b7f3c63b80900e6">
+                                    <div class="sl-block-content" data-placeholder-tag="h2"
+                                         data-placeholder-text="Title Text"><h2>Title Text</h2></div>
+                                </div>
+                        </section>-->
+
+                    </div>
+
+                </div>
+
+                <div class="sl-block-grid">
+                    <canvas id="sl-block-canvas" class="sl-block-grid-inner" width="960" height="700"
+                            style="left: 83px; top: 0px; width: 960px; height: 700px;"></canvas>
+                </div>
+
+                <div class="backgrounds">
+                    <div class="slide-background present template-item-thumb-background"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<div class="sl-templates" data-pages-total="2" data-alignment="b">
+    <div class="sl-templates-inner">
+        <div class="sl-templates-header">
+            <div class="page-tab selected" data-page-id="default">Default</div>
+            <div class="page-tab" data-page-id="user">Yours</div>
+        </div>
+        <div class="sl-templates-body">
+            <div class="page present" data-page-id="default">
+                <div class="action-list">
+                    <div class="template-item">
+                        <div class="template-item-thumb themed                   theme-font-montserrat theme-color-white-blue">
+                            <div class="template-item-thumb-content reveal reveal-thumbnail">
+                                <div class="slides"></div>
+                                <div class="backgrounds">
+                                    <div class="slide-background present template-item-thumb-background"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <span class="template-item-label">Blank</span></div>
+                    <div class="template-item">
+                        <div class="template-item-thumb themed theme-font-montserrat theme-color-white-blue">
+                            <div class="template-item-thumb-content reveal reveal-thumbnail">
+                                <div class="slides">
+                                    <section class="">
+                                        <div class="sl-block" data-block-type="image"
+                                             style="width: 700px; height: 475px; left: 130px; top: 65px;">
+                                            <div class="sl-block-content"><img style="visibility: hidden;"
+                                                                               src="https://s3.amazonaws.com/media-p.slid.es/uploads/556352/images/2936358/result3_content.jpg">
+                                            </div>
+                                        </div>
+                                        <div class="sl-block" data-block-type="text"
+                                             style="width: 800px; left: 80px; top: 575px; height: auto;">
+                                            <div class="sl-block-content" data-placeholder-tag="h2"
+                                                 data-placeholder-text="Title Text"><h2>Title Text</h2></div>
+                                        </div>
+                                    </section>
+                                </div>
+                                <div class="backgrounds">
+                                    <div class="slide-background present template-item-thumb-background"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <span class="template-item-label">Duplicate</span></div>
+                </div>
+                <div>
+                    <div class="template-item">
+                        <div class="template-item-thumb themed                   theme-font-montserrat theme-color-white-blue">
+                            <div class="template-item-thumb-content reveal reveal-thumbnail">
+                                <div class="slides">
+                                    <section>
+                                        <div class="sl-block" data-block-type="text"
+                                             style="width: 800px; left: 80px; top: 270px;">
+                                            <div class="sl-block-content" data-placeholder-tag="h1"
+                                                 data-placeholder-text="Title Text"><h1>Title Text</h1></div>
+                                        </div>
+                                    </section>
+                                </div>
+                                <div class="backgrounds">
+                                    <div class="slide-background present template-item-thumb-background"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="template-item">
+                        <div class="template-item-thumb themed                   theme-font-montserrat theme-color-white-blue">
+                            <div class="template-item-thumb-content reveal reveal-thumbnail">
+                                <div class="slides">
+                                    <section>
+                                        <div class="sl-block" data-block-type="text"
+                                             style="width: 800px; left: 80px; top: 190px;">
+                                            <div class="sl-block-content" data-placeholder-tag="h1"
+                                                 data-placeholder-text="Title Text"><h1>Title Text</h1></div>
+                                        </div>
+                                        <div class="sl-block" data-block-type="text"
+                                             style="width: 800px; left: 80px; top: 287px;"
+                                             data-layout-method="belowPreviousBlock">
+                                            <div class="sl-block-content" data-placeholder-tag="h2"
+                                                 data-placeholder-text="Subtitle"><h2>Subtitle</h2></div>
+                                        </div>
+                                    </section>
+                                </div>
+                                <div class="backgrounds">
+                                    <div class="slide-background present template-item-thumb-background"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="template-item">
+                        <div class="template-item-thumb themed                   theme-font-montserrat theme-color-white-blue">
+                            <div class="template-item-thumb-content reveal reveal-thumbnail">
+                                <div class="slides">
+                                    <section>
+                                        <div class="sl-block" data-block-type="text"
+                                             style="width: 800px; left: 80px; top: 190px;">
+                                            <div class="sl-block-content" data-placeholder-tag="h2"
+                                                 data-placeholder-text="Title Text"><h2>Title Text</h2></div>
+                                        </div>
+                                        <div class="sl-block" data-block-type="text"
+                                             style="width: 800px; left: 80px; top: 264px;"
+                                             data-layout-method="belowPreviousBlock">
+                                            <div class="sl-block-content">
+                                                <ul>
+                                                    <li>Bullet One</li>
+                                                    <li>Bullet Two</li>
+                                                    <li>Bullet Three</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </section>
+                                </div>
+                                <div class="backgrounds">
+                                    <div class="slide-background present template-item-thumb-background"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="template-item">
+                        <div class="template-item-thumb themed                   theme-font-montserrat theme-color-white-blue">
+                            <div class="template-item-thumb-content reveal reveal-thumbnail">
+                                <div class="slides">
+                                    <section>
+                                        <div class="sl-block" data-block-type="text"
+                                             style="width: 410px; left: 49px; top: 106px; height: auto;">
+                                            <div class="sl-block-content" data-placeholder-tag="h2"
+                                                 data-placeholder-text="Title Text" style="text-align: left;"><h2>Title
+                                                Text</h2></div>
+                                        </div>
+                                        <div class="sl-block" data-block-type="text"
+                                             style="width: 410px; left: 49px; top: 200px; height: auto;">
+                                            <div class="sl-block-content" data-placeholder-tag="p"
+                                                 data-placeholder-text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin urna odio, aliquam vulputate faucibus id, elementum lobortis felis. Mauris urna dolor, placerat ac sagittis quis."
+                                                 style="text-align: left;"><p>Lorem ipsum dolor sit amet, consectetur
+                                                adipiscing elit. Proin urna odio, aliquam vulputate faucibus id,
+                                                elementum lobortis felis. Mauris urna dolor, placerat ac sagittis
+                                                quis.</p></div>
+                                        </div>
+                                        <div class="sl-block" data-block-type="text"
+                                             style="width: 410px; left: 499px; top: 106px; height: auto;">
+                                            <div class="sl-block-content" data-placeholder-tag="h2"
+                                                 data-placeholder-text="Title Text" style="text-align: left;"><h2>Title
+                                                Text</h2></div>
+                                        </div>
+                                        <div class="sl-block" data-block-type="text"
+                                             style="width: 410px; left: 499px; top: 200px; height: auto;">
+                                            <div class="sl-block-content" data-placeholder-tag="p"
+                                                 data-placeholder-text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin urna odio, aliquam vulputate faucibus id, elementum lobortis felis. Mauris urna dolor, placerat ac sagittis quis."
+                                                 style="text-align: left;"><p>Lorem ipsum dolor sit amet, consectetur
+                                                adipiscing elit. Proin urna odio, aliquam vulputate faucibus id,
+                                                elementum lobortis felis. Mauris urna dolor, placerat ac sagittis
+                                                quis.</p></div>
+                                        </div>
+                                    </section>
+                                </div>
+                                <div class="backgrounds">
+                                    <div class="slide-background present template-item-thumb-background"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="template-item">
+                        <div class="template-item-thumb themed                   theme-font-montserrat theme-color-white-blue">
+                            <div class="template-item-thumb-content reveal reveal-thumbnail">
+                                <div class="slides">
+                                    <section>
+                                        <div class="sl-block" data-block-type="text"
+                                             style="width: 900px; left: 30px; top: 58px; height: auto;">
+                                            <div class="sl-block-content" data-placeholder-tag="h1"
+                                                 style="font-size: 200%; text-align: left;"><h1>One<br>Two<br>Three</h1>
+                                            </div>
+                                        </div>
+                                    </section>
+                                </div>
+                                <div class="backgrounds">
+                                    <div class="slide-background present template-item-thumb-background"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="template-item">
+                        <div class="template-item-thumb themed                   theme-font-montserrat theme-color-white-blue">
+                            <div class="template-item-thumb-content reveal reveal-thumbnail">
+                                <div class="slides">
+                                    <section>
+                                        <div class="sl-block" data-block-type="text"
+                                             style="width: 800px; left: 79px; top: 50px;">
+                                            <div class="sl-block-content" data-placeholder-tag="h2"
+                                                 data-placeholder-text="Title Text"><h2>Title Text</h2></div>
+                                        </div>
+                                        <div class="sl-block" data-block-type="image"
+                                             style="width: 700px; height: 475px; left: 129px; top: 144px;">
+                                            <div class="sl-block-content">
+                                                <div class="editing-ui sl-block-overlay sl-block-placeholder"></div>
+                                            </div>
+                                        </div>
+                                    </section>
+                                </div>
+                                <div class="backgrounds">
+                                    <div class="slide-background present template-item-thumb-background"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="template-item">
+                        <div class="template-item-thumb themed                   theme-font-montserrat theme-color-white-blue">
+                            <div class="template-item-thumb-content reveal reveal-thumbnail">
+                                <div class="slides">
+                                    <section>
+                                        <div class="sl-block" data-block-type="text"
+                                             style="width: 430px; left: 23px; top: 87px;">
+                                            <div class="sl-block-content" data-placeholder-tag="h2"
+                                                 data-placeholder-text="Title Text" style="text-align: left;"><h2>Title
+                                                Text</h2></div>
+                                        </div>
+                                        <div class="sl-block" data-block-type="text"
+                                             style="width: 430px; left: 23px; top: 161px;"
+                                             data-layout-method="belowPreviousBlock">
+                                            <div class="sl-block-content" data-placeholder-tag="p"
+                                                 data-placeholder-text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi nec metus justo. Aliquam erat volutpat."
+                                                 style="z-index: 13; text-align: left;"><p>Lorem ipsum dolor sit amet,
+                                                consectetur adipiscing elit. Morbi nec metus justo. Aliquam erat
+                                                volutpat.</p></div>
+                                        </div>
+                                        <div class="sl-block" data-block-type="image"
+                                             style="width: 454px; height: 641px; left: 479px; top: 29px;">
+                                            <div class="sl-block-content">
+                                                <div class="editing-ui sl-block-overlay sl-block-placeholder"></div>
+                                            </div>
+                                        </div>
+                                    </section>
+                                </div>
+                                <div class="backgrounds">
+                                    <div class="slide-background present template-item-thumb-background"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="template-item">
+                        <div class="template-item-thumb themed                   theme-font-montserrat theme-color-white-blue">
+                            <div class="template-item-thumb-content reveal reveal-thumbnail">
+                                <div class="slides">
+                                    <section>
+                                        <div class="sl-block" data-block-type="image"
+                                             style="width: 700px; height: 475px; left: 130px; top: 65px;">
+                                            <div class="sl-block-content">
+                                                <div class="editing-ui sl-block-overlay sl-block-placeholder"></div>
+                                            </div>
+                                        </div>
+                                        <div class="sl-block" data-block-type="text"
+                                             style="width: 800px; left: 80px; top: 575px;">
+                                            <div class="sl-block-content" data-placeholder-tag="h2"
+                                                 data-placeholder-text="Title Text"><h2>Title Text</h2></div>
+                                        </div>
+                                    </section>
+                                </div>
+                                <div class="backgrounds">
+                                    <div class="slide-background present template-item-thumb-background"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="page future" data-page-id="user">
+                <div class="action-list"></div>
+                <div>
+                    <div class="template-item">
+                        <div class="template-item-thumb themed                   theme-font-montserrat theme-color-white-blue">
+                            <div class="template-item-thumb-content reveal reveal-thumbnail">
+                                <div class="slides">
+                                    <section class="">
+                                        <div class="sl-block" data-block-type="text"
+                                             style="width: 800px; left: 80px; top: 190px; height: auto;">
+                                            <div class="sl-block-content" data-placeholder-tag="h1"
+                                                 data-placeholder-text="Title Text"><h1>Title Text</h1></div>
+                                        </div>
+                                        <div class="sl-block" data-block-type="text"
+                                             style="width: 800px; left: 80px; top: 287px; height: auto;">
+                                            <div class="sl-block-content" data-placeholder-tag="h2"
+                                                 data-placeholder-text="Subtitle"><h2>Subtitle</h2></div>
+                                        </div>
+                                    </section>
+                                </div>
+                                <div class="backgrounds">
+                                    <div class="slide-background present template-item-thumb-background"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="template-item-options">
+                            <div class="option" data-tooltip="Delete this template"><span
+                                    class="icon i-trash-stroke"></span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="sl-templates-footer">
+            <div class="add-new-template ladda-button" data-style="zoom-out" data-spinner-color="#222"
+                 data-spinner-size="32"><span class="ladda-label"><span class="icon i-plus"></span><span>Save current slide</span></span><span
+                    class="ladda-spinner"></span></div>
+        </div>
+    </div>
+</div>
+
+
+<script src="../../jquery1.9.1.js"></script>
+<script>
+
+    /*(function (doc, win) {
+     var docEl = doc.documentElement,
+     resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',
+     recalc = function () {
+     var clientWidth = docEl.clientWidth;
+     if (!clientWidth) return;
+     docEl.style.fontSize = 20 * (clientWidth / 320) + 'px';
+     };
+
+     if (!doc.addEventListener) return;
+     win.addEventListener(resizeEvt, recalc, false);
+     doc.addEventListener('DOMContentLoaded', recalc, false);
+     })(document, window);
+
+     var win_h = document.body.clientHeight || document.documentElement.clientHeight;
+     console.log(win_h)
+     document.querySelector('.home-wrap').style.height = win_h + 'px';
+     document.querySelector('.home-main').style.height = win_h + 'px';*/
+
+    window.onload = function () {
+
+
+        var slCanvas = document.getElementById('sl-block-canvas'),
+                context = slCanvas.getContext("2d");
+        var canWidth = slCanvas.width,
+                canHeight = slCanvas.height;
+
+
+        function LineObj() {
+            this.rootx = [];
+
+            this.init()
+        }
+
+        LineObj.prototype.num = 13;
+
+        //线条初始化
+        LineObj.prototype.init = function () {
+            for (var i = 0; i < this.num; i++) {
+                this.rootx[i] = i * 80;  //海葵绘制的x坐标
+//            this.headx[i] = this.rootx[i];
+//            this.heady[i] = canHeight - 250 + Math.random() * 50 ;
+//            this.amp[i] = Math.random() * 50 + 50;
+            }
+
+            this.draw();
+            this.draw('x');
+        };
+
+        //线条绘制
+        LineObj.prototype.draw = function (isX) {
+//        this.alpha += deltaTime * 0.0008;
+//        var l = Math.sin(this.alpha);  //[-1 , 1]
+
+            context.save();  //保存当前环境的状态
+//        context.globalAlpha = 0.6;  //透明度
+            context.lineWidth = 1;  //设置或返回当前的线条宽度
+            context.lineCap = "square";  //设置或返回线条的结束端点样式
+            context.strokeStyle = '#ddd'; //设置或返回用于笔触的颜色、渐变或模式
+            for (var i = 0; i < this.num; i++) {
+                context.beginPath();  //起始一条路径，或重置当前路径
+
+                if (isX) {
+                    context.moveTo(0, this.rootx[i]);  //把路径移动到画布中的指定点，不创建线条
+                    context.lineTo(canWidth, this.rootx[i]);
+                } else {
+                    context.moveTo(this.rootx[i], 0);  //把路径移动到画布中的指定点，不创建线条
+                    context.lineTo(this.rootx[i], canHeight);
+                }
+
+
+//            this.headx[i] = this.rootx[i] + l * this.amp[i];  //这样重新赋值 ， 果实生长的位置就可以访问到这个 headx 坐标。
+
+//            context.quadraticCurveTo(this.rootx[i] , canHeight - 100 , this.headx[i] , this.heady[i] );
+
+                context.stroke();  //绘制已定义的路径
+            }
+            context.restore(); //返回之前保存过的路径状态和属性
+        };
+
+        //实例化
+        var  lineObj =  new LineObj();
+
+
+
+        var slides = $('.slides')[0] ;
+        var $sl_block_canvas = $('.sl-block-grid-inner');
+        //根据 slides 的偏移值 ， 改变canvas的定位位置
+        $sl_block_canvas.css({
+            top : slides.offsetTop,
+            left : slides.offsetLeft,
+        });
+        //移动窗口大小 ， 改变canvas的定位位置
+        $(window).on('resize',function (){
+            $sl_block_canvas.css({
+                top : slides.offsetTop,
+                left : slides.offsetLeft,
+            });
+        });
+
+    }
+</script>
+
+<script>
+    $(function (){
+        var $doc = $(document);
+
+        //点击默认模版头部切换样式
+        $doc.on('click','.sl-templates-header .page-tab',function (){
+            var $that = $(this);
+            var index = $that.index();
+            var $page = $('.sl-templates-body').find('.page');
+            if(!$that.hasClass('selected')){
+                $that.addClass('selected').siblings().removeClass('selected');
+
+                if(index == 0){
+                    $page.eq(0).removeClass('past').addClass('present');
+                    $page.eq(1).removeClass('present').addClass('future');
+                }else{
+                    $page.eq(0).removeClass('present').addClass('past');
+                    $page.eq(1).removeClass('future').addClass('present');
+                }
+
+            }
+        });
+
+
+
+
+    })
+</script>
+</body>
+</html>

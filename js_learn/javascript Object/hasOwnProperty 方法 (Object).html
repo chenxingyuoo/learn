@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>hasOwnProperty 方法 (Object)</title>
+</head>
+
+<body>
+<script>
+    //确定某个对象是否具有带指定名称的属性。
+
+    //如果 object 具有带指定名称的属性，则 hasOwnProperty 方法返回 true，否则返回 false。此方法不会检查对象原型链中的属性；该属性必须是对象本身的一个成员。
+    var s = new String("Sample");
+    document.write(s.hasOwnProperty("split"));
+    document.write("<br/>");
+    document.write(String.prototype.hasOwnProperty("split"));
+
+    // Output:
+    // false
+    // true
+</script>
+</body>
+</html>

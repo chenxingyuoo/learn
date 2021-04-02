@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>socket</title>
+</head>
+
+<body>
+
+
+<script src="js/jquery-2.2.1.js"></script>
+<script src="js/socket.js"></script>
+<script>
+    //利用封装好的 jquery.websocket 建立websocket对象，建立与服务器的长连接
+    var ws = $.websocket({
+        // 服务器的连接的url
+        path: 'autoexam/websocket/chat?tag='+window.axTag,
+        onReceive: function (data, time) {
+            /**
+             * data : 服务器来的数据
+             * time : 接受数据的时间戳
+             */
+        },
+        onClose: function () {}
+    });
+</script>
+</body>
+</html>

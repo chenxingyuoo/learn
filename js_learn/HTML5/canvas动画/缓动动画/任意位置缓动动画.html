@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>任意位置缓动动画</title>
+</head>
+<body>
+
+<canvas id="canvas" width="500" height="500" style="background-color: #000;">
+</canvas>
+<script type="text/javascript" src="../js/utils.js"></script>
+<script type="text/javascript" src="../js/ball.js"></script>
+<script type="text/javascript">
+
+    window.onload = function () {
+        var canvas = document.getElementById('canvas'),
+                context = canvas.getContext('2d');
+
+        var ball = new Ball(20, "red"),
+                easing = 0.05,  //设置缓动参数
+                targetX = canvas.width / 2, //设定目标位置
+                targetY = canvas.height / 1.5; //设定目标位置
+        ball.y = canvas.height / 2;
+
+        (function drawFrame() {
+
+            var stopAni = window.requestAnimationFrame(drawFrame, canvas);
+            var dx = targetX - ball.x;
+            var dy = targetY - ball.y;
+
+            context.clearRect(0, 0, canvas.width, canvas.height);
+
+            //到了目标距离就停止执行动画
+            if (Math.abs(dx) < 1) {
+                ball.x = targetX;
+                //停止动画
+                window.cancelAnimationFrame(stopAni);
+            } else {
+                //速度计算
+                //随着ball.x的增大， (targetX - ball.x)的值不断减小， 导致vx不打断减小
+                var vx = dx * easing;
+                var vy = dy * easing;
+                ball.x += vx;
+                ball.y += vy;
+            }
+
+            ball.draw(context);
+        }())
+    }
+
+</script>
+
+</body>
+</html>

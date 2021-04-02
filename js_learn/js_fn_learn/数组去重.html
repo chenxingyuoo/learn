@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<script>
+    //indexOf去重
+    Array.prototype.unique1 = function () {
+        var arr = [];
+        for (var i = 0, length = this.length; i < length; i++) {
+            var item = this[i];
+            if (arr.indexOf(item) === -1) {
+                arr.push(item);
+            }
+        }
+        return arr;
+    };
+
+    [1, 2, 3, '4', 3, 4, 3, 1, '34', 2].unique1(); //[1, 2, 3, "4", 4, "34"]
+
+    //ES6
+    Array.prototype.unique1 = function() {
+        return this.filter((item, index, arr) => arr.indexOf(item) === index);
+    }
+
+    console.log([1, 2, 3, '4', 3, 4, 3, 1, '34', 2].unique1())
+    //[1, 2, 3, "4", 4, "34"]
+
+
+    //indexOf
+    var indexOf = [].indexOf
+            ? function (arr, item) {
+                return arr.indexOf(item);
+            } : function indexOf(arr, item) {
+                  for (var i = 0, length = arr.length; i < length; i++) {
+                      if (arr[i] === item) {
+                          return i;
+                      }
+                  }
+                  return -1;
+            };
+
+    Array.prototype.unique2 = function() {
+        var arr = [];
+        for (var i = 0, len = this.length; i < len; i++) {
+            var item = this[i];
+            if (arr.indexOf(item) === -1) {
+                arr.push(item);
+            }
+        }
+        return arr;
+    };
+
+    console.log([1,2,3,'4',3,4,3,1,'34',2].unique2())
+             //[1, 2, 3, "4", 4, "34"]
+
+    Array.prototype.unique3 = function(){
+        var arr = [this[0]];
+        for(var i = 1; i < this.length; i++){
+            if (this.indexOf(this[i]) == i){
+                arr.push(this[i]);
+            }
+        }
+        return arr;
+    };
+            [1,2,3,'4',3,4,3,1,'34',2].unique3(); //[1, 2, 3, "4", 4, "34"]
+
+
+    //hash去重
+    Array.prototype.unique4 = function() {
+        var arr = [];
+        var hash = {};
+        for (var i = 0; i < this.length; i++) {
+            var item = this[i];
+            var key = typeof(item) + item;
+            if (hash[key] !== 1) {
+                arr.push(item);
+                hash[key] = 1;
+            }
+        }
+        return arr;
+    };
+
+    [1,2,3,'4',3,4,3,1,'34',2].unique4(); //[1, 2, 3, "4", 4, "34"]
+
+    //那如果你想要'4' 和 4 被认为是相同的话（其他方法同理）
+    Array.prototype.unique5 = function() {
+        var arr=[];
+        var hash={};
+        for(var i=0,len=this.length;i<len;i++){
+            if(!hash[this[i]]){
+                arr.push(this[i]);
+                hash[this[i]]=true;
+            }
+            
+        }
+        return arr;
+    };
+    [1,2,3,'4',3,4,3,1,'34',2].unique5(); //[1, 2, 3, "4", 4, "34"]
+
+
+    //排序后去重
+    Array.prototype.unique6 = function(){
+        this.sort();
+        var arr = [this[0]];
+        for(var i = 1; i < this.length; i++){
+            if( this[i] !== arr[arr.length-1]){
+                arr.push(this[i]);
+            }
+        }
+        return arr;
+    };
+
+    [1,2,3,'4',3,4,3,1,'34',2].unique6(); //[1, 2, 3, "34", "4", 4]
+    //先把数组排序，然后比较相邻的两个值，排序的时候用的JS原生的sort方法，所以非常快。
+    // 而这个方法的缺陷只有一点，比较字符时按照字符编码的顺序进行排序。所以会看到10排在2前面这种情况。
+    // 不过在去重中不影响。不过，解决sort的这个问题，是sort方法接受一个参数，这个参数是一个方法：
+
+    function compare(value1,value2) {
+        if (value1 < value2) {
+            return -1;
+        } else if (value1 > value2) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+
+    [1,2,5,2,10,3,20].sort(compare);  //[1, 2, 2, 3, 5, 10, 20]
+
+    //Set去重
+    //ES6提供了新的数据结构Set。它类似于数组，但是成员的值都是唯一的，没有重复的值。
+    // 现在浏览器正在全面支持，服务端的node也已经支持。
+    Array.prototype.unique7 = function(){
+        return Array.from(new Set(this));
+    };
+    [1,2,3,'4',3,4,3,1,'34',2].unique7(); //[1, 2, 3, "4", 4, "34"]
+
+    // 将类数组对象（arguments）转换成数组
+    (function () {
+        return  Array.from(arguments);
+    })(1, 2, 3);
+
+
+    //测试时间
+    console.time("test");
+    [1,2,3,'4',3,4,3,1,'34',2].unique7();
+    console.timeEnd("test");
+
+    var arr = [];
+    var num = 0;
+    for(var i = 0; i < 1000000; i++){
+        num = Math.floor(Math.random()*100);
+        arr.push(num);
+    }
+    console.time("test");
+    arr.unique7();
+    console.timeEnd("test");
+</script>
+
+</body>
+</html>

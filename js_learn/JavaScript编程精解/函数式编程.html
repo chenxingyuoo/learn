@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>函数式编程</title>
+</head>
+
+<body>
+<script>
+
+    // 1. 要更为抽象 ?
+
+
+    //2.高阶函数
+    function foreach(array, action){
+        for (var i = 0; i < array.length; i++) {
+            //action 可以是声明函数 ， 也可以是匿名函数 ， 括号里面就是传的实参
+            action(array[i]);
+        }
+    }
+
+    var number = [0,1,2,3,4,5]
+    function sum(number){
+        var total = 0;
+        foreach(number, function (num) {
+            total += num
+        })
+        return total;
+    }
+
+    console.log(sum(number))  //15
+
+    //negate返回的函数将传进的参数传入原始的fun ， 然后将其结果取反
+    function negate(fun){
+        return function (x) {
+            return !fun(x)
+        }
+    }
+
+    var isNotNaN = negate(isNaN);
+    ////console.log(isNotNaN(isNaN));  //false
+
+    //想要反转的参数多于1个的情况 ， 利用arguments
+    function negates(fun){
+        return function () {
+            return !fun.apply(null, arguments)
+        }
+    }
+
+    //3. 归纳函数
+    function reduces(combine, base, array){
+        foreach(array, function (element) {
+            base = combine(base, element);
+        });
+        return base;
+    }
+
+    function add(a, b){
+        return a + b;
+    }
+
+    function sums(number){
+        return reduces(add, 0, number)
+    }
+
+    //console.log(sums(number));  //15
+
+    //另一个使用 reduces 的实例
+    function countZeroes(array){
+        function counter(total, element){
+            return total + ( element === 0 ? 1 : element);
+        }
+        return reduces(counter, 0, array);
+    }
+
+    console.log(countZeroes(number)) // 16
+
+
+    //另一种
+    function count(test, array){
+        var counted = 0
+        foreach(array, function (element) {
+            if(test(element)) counted++
+        })
+        return counted;
+    }
+
+    function countZeroe(array){
+        // 传element进来每次返回 0 会影响到 counted？
+        function isZeroe(x){ return x === 0 };
+        return count(isZeroe, array)
+    }
+
+    console.log(countZeroe(number));  // 1
+
+
+    //4.映射数组
+    function map(func, array){
+        var result = [];
+        foreach(array, function (element) {
+            debugger
+            result.push(func(element));
+        });
+        return result;
+    }
+
+    console.log(map(Math.round, [0.2, 8.9, 5, Math.PI])); //[0, 9, 5, 3]
+
+
+</script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+{
+  "name": "@chenxingyu_o/node-ts",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watch-node": "NODE_ENV=local nodemon dist/server.js",
+    "build-ts": "tsc",
+    "watch-ts": "tsc -w"
+  },
+  "keywords": [],
+  "author": "chenxingyu <2731173104@qq.com> (https://github.com/chenxingyuoo)",
+  "license": "MIT",
+  "dependencies": {
+    "koa": "^2.7.0",
+    "koa-bodyparser": "^4.2.1",
+    "koa-router": "^7.4.0",
+    "koa-static": "^5.0.0",
+    "reflect-metadata": "^0.1.13",
+    "routing-controllers": "^0.7.7"
+  },
+  "devDependencies": {
+    "@types/koa": "^2.0.48",
+    "@types/koa-bodyparser": "^5.0.1",
+    "@types/koa-router": "^7.0.40",
+    "@types/koa-static": "^4.0.1"
+  }
+}

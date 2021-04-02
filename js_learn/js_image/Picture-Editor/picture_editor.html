@@ -1,0 +1,139 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>图片编辑器</title>
+    <style>
+
+    </style>
+</head>
+
+<body>
+<div class="wrapper">
+    <h1>Image Editor</h1>
+
+    <!--Form for collecting image URL -->
+    <form id="urlBox" class = "center">
+        <input class="url-box" type="url" id="imgUrl" placeholder="Paste any image link and hit enter to start playing.">
+    </form>
+
+    <!--Controls for CSS filters via range input-->
+    <div class="sliders">
+        <form id="imageEditor">
+            <p>
+                <label for="gs">Grayscale</label>
+                <input id="gs" name="gs" type="range" min=0 max=100 value=0>
+            </p>
+
+            <p>
+                <label for="blur">Blur</label>
+                <input id="blur" name="blur" type="range" min=0 max=10 value=0>
+            </p>
+
+            <p>
+                <label for="br">Brightness</label>
+                <input id="br" name="br" type="range" min=0 max=200 value=100>
+            </p>
+
+            <p>
+                <label for="ct">Contrast</label>
+                <input id="ct" name="ct" type="range" min=0 max=200 value=100>
+            </p>
+
+            <p>
+                <label for="huer">Hue Rotate</label>
+                <input id="huer" name="huer" type="range" min=0 max=360 value=0>
+            </p>
+
+            <p>
+                <label for="opacity">Opacity</label>
+                <input id="opacity" name="opacity" type="range" min=0 max=100 value=100>
+            </p>
+
+            <p>
+                <label for="invert">Invert</label>
+                <input id="invert" name="invert" type="range" min=0 max=100 value=0>
+            </p>
+
+            <p>
+                <label for="saturate">Saturate</label>
+                <input id="saturate" name="saturate" type="range" min=0 max=500 value=100>
+            </p>
+
+            <p>
+                <label for="sepia">Sepia</label>
+                <input id="sepia" name="sepia" type="range" min=0 max=100 value=0>
+            </p>
+
+            <input type="reset" form="imageEditor" id="reset" value="Reset" />
+
+        </form>
+    </div>
+
+    <!--container where image will be loaded-->
+    <div id="imageContainer" class="center">
+        <img src="../../images/1.jpg"/>
+    </div>
+</div>
+
+<script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.js"></script>
+<script type="text/javascript">
+    function addImage(e) {
+        var imgUrl = $("#imgUrl").val();
+        if (imgUrl.length) {
+            $("#imageContainer img").attr("src", imgUrl);
+        }
+        e.preventDefault();
+    }
+
+    $("#urlBox").submit(addImage);
+
+
+
+    $("input[type=range]").mousemove(editImage).change(editImage);
+
+
+
+    //重置表单
+    //$('#imageEditor')[0].reset(); 这种方式非常迟钝
+    $('#imageEditor').on('reset', function () {
+            editImage();
+    });
+
+    //上面我们将input[type=range]的mousemove和change事件交给了editImage函数处理，所以，我们来编写一下editImage的函数代码：
+    function editImage() {
+        var gs = $("#gs").val(); // grayscale
+        var blur = $("#blur").val(); // blur
+        var br = $("#br").val(); // brightness
+        var ct = $("#ct").val(); // contrast
+        var huer = $("#huer").val(); //hue-rotate
+        var opacity = $("#opacity").val(); //opacity
+        var invert = $("#invert").val(); //invert
+        var saturate = $("#saturate").val(); //saturate
+        var sepia = $("#sepia").val(); //sepia
+
+        $("#imageContainer img").css("filter", 'grayscale(' + gs+
+                '%) blur(' + blur +
+                'px) brightness(' + br +
+                '%) contrast(' + ct +
+                '%) hue-rotate(' + huer +
+                'deg) opacity(' + opacity +
+                '%) invert(' + invert +
+                '%) saturate(' + saturate +
+                '%) sepia(' + sepia + '%)');
+
+        $("#imageContainer img").css("-webkit-filter", 'grayscale(' + gs+
+                '%) blur(' + blur +
+                'px) brightness(' + br +
+                '%) contrast(' + ct +
+                '%) hue-rotate(' + huer +
+                'deg) opacity(' + opacity +
+                '%) invert(' + invert +
+                '%) saturate(' + saturate +
+                '%) sepia(' + sepia + '%)');
+
+    }
+</script>
+
+</body>
+</html>

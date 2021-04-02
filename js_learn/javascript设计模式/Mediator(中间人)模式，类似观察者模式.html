@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Mediator（中间人）模式</title>
+</head>
+
+<body>
+
+<p>
+    讲modiator之前，我们先来举个例子，机场飞行控制系统，也就是传说中的塔台，具有绝对的权利，他可以控制任何一架飞机的起飞和降落时间以及地方，而飞机和飞机之前不允许通信，也就是说塔台是机场的核心，mediator就相当于这个塔台。
+</p>
+
+<p>
+    //mediator就是用在程序里有多个模块，而你又不想让各个模块有依赖的话，那通过mediator模式可以达到集中控制的目的。实际场景中也是，mediator封装了很多不想干的模块，让他们通过mediator联系在一起，同时也松耦合他们，使得他们之间必须通过mediator才能通信。
+</p>
+
+<p>
+    //那mediator模式的优点是什么？那就是解耦，如果你之前对观察者模式比较了解的话，那理解下面的mediator图就相对简单多了，下图是一个high level的mediator模式图：
+</p>
+<img src="mediator.png" alt="">
+
+<p>
+    想想一下，各模块是发布者，mediator既是发布者又是订阅者。
+</p>
+
+<p style="text-indent: 50px;">
+    Module 1向Mediator广播一个实际，说需要做某事
+</p>
+
+<p style="text-indent: 50px;">
+    Mediator捕获消息以后，立即启动处理该消息需要使用的Module 2，Module 2处理结束以后返回信息给Mediator
+</p>
+
+<p style="text-indent: 50px;">
+    与此同时，Mediator也启动了Module 3，当接受Module 2 返回消息的时候自动记录日志到Module 3里
+</p>
+
+<p>
+    可以看到，各模块之间并没有通信，另外Mediator也可以实现监控各模块状态的功能，例如如果Module 3出错了，Mediator可以暂时只想其它模块，然后重启Module 3，然后继续执行。
+</p>
+
+<p>
+    回顾一下，可以看到，Mediator的优点是：松耦合的模块由同一的Mediator来控制，模块只需要广播和监听事件就可以了，而模块之间不需要直接联系，另外，一次信息的处理可以使用多个模块，也方便我们以后统一的添加新的模块到现有的控制逻辑里。
+</p>
+
+<p>
+    确定是：由于所有的模块直接都不能直接通信，所有相对来说，性能方面可能会有少许下降，但是我认为这是值得的。
+</p>
+
+<p>
+    我们根据上面的讲解来一个简单的Demo：
+</p>
+
+<div class="cnblogs_code">
+    <div class="cnblogs_code_toolbar" style="display: none;"><span class="cnblogs_code_copy"><a
+            href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img
+            src="http://common.cnblogs.com/images/copycode.gif" alt="复制代码"></a></span></div>
+    <pre>    <span style="color: #0000ff;">var</span> mediator = (<span style="color: #0000ff;">function</span>(){<br>        <span
+            style="color: #0000ff;">var</span> subscribe = <span
+            style="color: #0000ff;">function</span>(channel, fn){<br>            <span style="color: #0000ff;">if</span> (!mediator.channels[channel]) mediator.channels[channel] = [];<br>            mediator.channels[channel].push({ context: <span
+            style="color: #0000ff;">this</span>, callback: fn });<br>            <span
+            style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span>;<br>        },<br>     <br>        publish = <span
+            style="color: #0000ff;">function</span>(channel){<br>            <span style="color: #0000ff;">if</span> (!mediator.channels[channel]) <span
+            style="color: #0000ff;">return</span> <span style="color: #0000ff;">false</span>;<br>            <span
+            style="color: #0000ff;">var</span> args = Array.prototype.slice.call(arguments, 1);<br>            <span
+            style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> i = 0, l = mediator.channels[channel].length; i &lt; l; i++) {<br>                <span
+            style="color: #0000ff;">var</span> subscription = mediator.channels[channel][i];<br>                subscription.callback.apply(subscription.context, args);<br>            }<br>            <span
+            style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span>;<br>        };<br>     <br>        <span
+            style="color: #0000ff;">return</span> {<br>            channels: {},<br>            publish: publish,<br>            subscribe: subscribe,<br>            installTo: <span
+            style="color: #0000ff;">function</span>(obj){<br>                obj.subscribe = subscribe;<br>                obj.publish = publish;<br>            }<br>        };<br>     <br>    }());</pre>
+    <div class="cnblogs_code_toolbar" style="display: none;"><span class="cnblogs_code_copy"><a
+            href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img
+            src="http://common.cnblogs.com/images/copycode.gif" alt="复制代码"></a></span></div>
+</div>
+
+<p>
+    然后有2个模块分别调用：
+</p>
+
+
+<div class="cnblogs_code">
+    <div class="cnblogs_code_toolbar" style="display: none;"><span class="cnblogs_code_copy"><a
+            href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img
+            src="http://common.cnblogs.com/images/copycode.gif" alt="复制代码"></a></span></div>
+    <pre>    <span style="color: #008000;">//</span><span
+            style="color: #008000;">Pub/sub on a centralized mediator</span><span style="color: #008000;"><br></span>     <br>    mediator.name = "tim";<br>    mediator.subscribe('nameChange', <span
+            style="color: #0000ff;">function</span>(arg){<br>            console.log(<span
+            style="color: #0000ff;">this</span>.name);<br>            <span style="color: #0000ff;">this</span>.name = arg;<br>            console.log(<span
+            style="color: #0000ff;">this</span>.name);<br>    });<br>     <br>    mediator.publish('nameChange', 'david'); <span
+            style="color: #008000;">//</span><span style="color: #008000;">tim, david</span><span
+            style="color: #008000;"><br></span>     <br>     <br>    <span style="color: #008000;">//</span><span
+            style="color: #008000;">Pub/sub via third party mediator</span><span style="color: #008000;"><br></span>     <br>    <span
+            style="color: #0000ff;">var</span> obj = { name: 'sam' };<br>    mediator.installTo(obj);<br>    obj.subscribe('nameChange', <span
+            style="color: #0000ff;">function</span>(arg){<br>            console.log(<span
+            style="color: #0000ff;">this</span>.name);<br>            <span style="color: #0000ff;">this</span>.name = arg;<br>            console.log(<span
+            style="color: #0000ff;">this</span>.name);<br>    });<br>     <br>    obj.publish('nameChange', 'john'); <span
+            style="color: #008000;">//</span><span style="color: #008000;">sam, john</span></pre>
+    <div class="cnblogs_code_toolbar" style="display: none;"><span class="cnblogs_code_copy"><a
+            href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img
+            src="http://common.cnblogs.com/images/copycode.gif" alt="复制代码"></a></span></div>
+</div>
+
+
+<h2>应用Facade: 应用程序核心的抽象</h2>
+<p style="text-indent: 2em">一个facade是作为应用程序核心的一个抽象来工作的，在mediator和模块之间负责通信，各个模块只能通过这个facade来和程序核心进行通信。作为抽象的职责是确保任何时候都能为这些模块提供一个始终如一的接口（consistent interface），和sendbox controller的角色比较类似。所有的模块组件通过它和mediator通信，所以facade需要是可靠的，可信赖的，同时作为为模块提供接口的功能，facade还需要扮演另外一个角色，那就是安全控制，也就是决定程序的哪个部分可以被一个模块访问，模块组件只能调用他们自己的方法，并且不能访问任何未授权的内容。例如，一个模块可能广播dataValidationCompletedWriteToDB，这里的安全检查需要确保该模块拥有数据库的写权限。
+</p>
+
+
+<p style="text-indent: 2em">总之，mediator只有在facade授权检测以后才能进行信息处理。</p>
+
+
+<h2>应用Mediator：应用程序的核心</h2>
+<p style="text-indent: 2em">Mediator是作为应用程序核心的角色来工作的，我们简单地来说一下他的职责。最核心的工作就是管理模块的生命周期（lifecycle），当这个核心扑捉到任何信息进来的时候，他需要判断程序如何来处理——也就是说决定启动或停止哪一个或者一些模块。当一个模块开始启动的时候，它应该能否自动执行，而不需要应用程序核心来决定是否该执行（比如，是否要在DOM ready的时候才能执行），所以说需要模块自身需要去判定。
+</p>
+
+<p style="text-indent: 2em">你可能还有问题，就是一个模块在什么情况下才会停止。当程序探测到一个模块失败了，或者是出错了，程序需要做决定来防止继续执行该模块里的方法，以便这个组件可以重新启动，目的主要是提高用户体验。
+</p>
+
+<p style="text-indent: 2em">另外，该核心应该可以动态添加或者删除模块，而不影响其他任何功能。常见的例子是，一个模块在页面加载初期是不可用，但是用户操作以后，需要动态加载这个模块然后执行，就像Gmail里的chat聊天功能一样，从性能优化的目的来看，应该是很好理解的吧。
+</p>
+
+<p style="text-indent: 2em">异常错误处理，也是由应用程序核心来处理的，另外各模块在广播信息的时候，也广播任何错误到该核心里，以便程序核心可以根据情况去停止/重启这些模块。这也是松耦合架构一个很重要的部分，我们不需要手工改变任何模块，通过mediator使用发布/订阅就可以来做到这个。
+</p>
+<script>
+    var mediator = (function () {
+        var subscribe = function (channel, fn) {
+                    debugger
+                    if (!mediator.channels[channel]) mediator.channels[channel] = [];
+                    mediator.channels[channel].push({context: this, callback: fn});
+                    return this;
+                },
+
+                publish = function (channel) {
+                    debugger
+                    if (!mediator.channels[channel]) return false;
+                    var args = Array.prototype.slice.call(arguments, 1);
+                    for (var i = 0, l = mediator.channels[channel].length; i < l; i++) {
+                        var subscription = mediator.channels[channel][i];
+                        subscription.callback.apply(subscription.context, args);
+                    }
+                    return this;
+                };
+
+        return {
+            channels: {},
+            publish: publish,
+            subscribe: subscribe,
+            installTo: function (obj) {
+                debugger
+                obj.subscribe = subscribe;
+                obj.publish = publish;
+            }
+        };
+    }());
+
+
+
+    //然后有2个模块分别调用：
+
+    //在一个集中的调用//发布/订阅
+
+    mediator.name = "tim";
+    debugger
+    //console.log(mediator)
+    // subscribe 并没有执行callback 方法 ，  publish才执行对应名字模块的 callback 方法
+    mediator.subscribe('nameChange', function(arg){
+        debugger
+        console.log(this.name);
+        this.name = arg;
+        console.log(this.name);
+    });
+
+    mediator.publish('nameChange', 'david'); //tim, david
+
+
+    //通过第三方调用
+    var obj = { name: 'sam' };
+    mediator.installTo(obj);
+    obj.subscribe('nameChange', function(arg){
+        debugger
+        console.log(this.name);
+        this.name = arg;
+        console.log(this.name);
+    });
+
+    obj.publish('nameChange', 'john'); //sam, john
+
+
+</script>
+</body>
+</html>

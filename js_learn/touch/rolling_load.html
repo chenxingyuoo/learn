@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1 user-scalable=0"/>
+    <title>Rolling load</title>
+    <style>
+        html, body {
+            height: 100%;
+            width: 100%;
+            background: yellowgreen;
+        }
+
+        .box {
+            height: 300px;
+            width: 100%;
+            overflow: auto;
+        }
+    </style>
+</head>
+<body>
+
+<div class="box"></div>
+
+<script src="../jquery-2.2.1.js"></script>
+<script>
+
+
+    //构造函数
+    function DomScrollEnd(ele, cb) {
+        this.ele = ele || document.body;
+        this.fn = cb || function () {};
+        this.init();
+    }
+
+    DomScrollEnd.prototype.init = function () {
+        var self = this;
+        this.ele.addEventListener('scroll', function (e) {
+            if (self.getScrollTop() + self.getClientHeight() == self.getScrollHeight()) {
+                alert('end');
+                //到达底部
+                self.fn ? self.fn() : '';  //存在回调函数，执行回调函数
+            }
+        }, false);
+    };
+
+    DomScrollEnd.prototype.getScrollTop = function () {
+        return this.ele.scrollTop;
+    };
+
+    DomScrollEnd.prototype.getClientHeight = function () {
+        return this.ele.clientHeight;
+    };
+
+    DomScrollEnd.prototype.getScrollHeight = function () {
+        return this.ele.scrollHeight;
+    };
+
+
+    var box = document.querySelector('.box');
+
+    //回调函数
+    function add() {
+        for (var i = 0, len = 100; i < len; i++) {
+            var newnode = document.createElement("a");
+            newnode.setAttribute("href", "#");
+            newnode.innerHTML = "new item";
+            box.appendChild(newnode);
+            var newline = document.createElement("br");
+            box.appendChild(newline);
+        }
+    }
+
+    var domScrollEnd = new DomScrollEnd(box, add);
+
+
+    /*//获取滚动条当前的位置
+     function getScrollTop() {
+     var scrollTop = 0;
+     if (document.documentElement && document.documentElement.scrollTop) {
+     scrollTop = document.documentElement.scrollTop;
+     }
+     else if (document.body) {
+     scrollTop = document.body.scrollTop;
+     }
+     return scrollTop;
+     }
+
+     //获取当前可是范围的高度
+     function getClientHeight() {
+     var clientHeight = 0;
+     if (document.body.clientHeight && document.documentElement.clientHeight) {
+     clientHeight = Math.min(document.body.clientHeight, document.documentElement.clientHeight);
+     }
+     else {
+     clientHeight = Math.max(document.body.clientHeight, document.documentElement.clientHeight);
+     }
+     return clientHeight;
+     }
+
+     //获取文档完整的高度
+     function getScrollHeight() {
+     return Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
+     }*/
+
+    for (var i = 0, len = 100; i < len; i++) {
+        var newnode = document.createElement("a");
+        newnode.setAttribute("href", "#");
+        newnode.innerHTML = "new item";
+        box.appendChild(newnode);
+        var newline = document.createElement("br");
+        box.appendChild(newline);
+    }
+
+
+    /*$(document).on({
+     touchstart: function(e){
+     /!*timeOutEvent = setTimeout("longPress()",500);
+     e.preventDefault();*!/
+     },
+     touchmove: function(e){
+     console.log(e)
+     if (getScrollTop() + getClientHeight() == getScrollHeight()) {
+     alert("到达底部");
+     for (var i=0,len = 100 ; i<len;i++){
+     var newnode = document.createElement("a");
+     newnode.setAttribute("href", "#");
+     newnode.innerHTML = "new item";
+     document.body.appendChild(newnode);
+     var newline = document.createElement("br");
+     document.body.appendChild(newline);
+     }
+
+     }
+     /!*clearTimeout(timeOutEvent);
+     timeOutEvent = 0;*!/
+     },
+     touchend: function(){
+     /!* clearTimeout(timeOutEvent);
+     if(timeOutEvent!=0){
+     alert("你这是点击，不是长按");
+     }
+     return false;*!/
+     }
+     })*/
+    /*window.onscroll = function () {
+     if (getScrollTop() + getClientHeight() == getScrollHeight()) {
+     alert("到达底部");
+     for (var i=0,len = 100 ; i<len;i++){
+     var newnode = document.createElement("a");
+     newnode.setAttribute("href", "#");
+     newnode.innerHTML = "new item";
+     document.body.appendChild(newnode);
+     var newline = document.createElement("br");
+     document.body.appendChild(newline);
+     }
+
+     }
+     }*/
+</script>
+</body>
+</html>

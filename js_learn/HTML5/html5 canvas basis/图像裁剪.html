@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>图像裁剪</title>
+</head>
+
+<body>
+
+<canvas id="canvas" width="640" height="600"></canvas>
+
+<!--context.clip()
+
+context.clip()只绘制封闭路径区域内的图像，不绘制路径外部图像，用的时候
+
+先创建裁剪区域
+
+再绘制图像（之后绘制的图形都会采用这个裁剪区域，要取消这个裁剪区域就需要用到保存恢复状态，下面有讲）
+
+给出圆形和星形的裁剪代码-->
+
+<script>
+    document.body.onload = draw15();
+    //图像裁剪
+
+
+
+    function draw15(id) {
+
+        var canvas = document.getElementById('canvas');
+        var context = canvas.getContext("2d");
+
+
+        if (canvas == null)
+            return false;
+
+//        context.fillStyle = "black";
+//        context.fillRect(0, 0, 400, 300);
+        image = new Image();
+        image.onload = function () {
+            drawImg(context,image);
+        }
+        image.src = "1.jpg"
+
+    }
+
+    function drawImg(context, image) {
+        //圆形裁剪区
+        //createCircleClip(context)
+        //星形裁剪区
+//        create5StarClip(context);
+        create4(context);
+
+        context.drawImage(image, -77, -77 , 500, 500);
+    }
+
+    function createCircleClip(context) {
+        context.beginPath();
+        context.arc(200, 150, 100, 0, Math.PI * 2, true);
+        context.closePath();
+        context.clip();
+    }
+
+    function create5StarClip(context) {
+        var n = 0;
+        var dx = 200;
+        var dy = 135;
+        var s = 150;
+        context.beginPath();
+        var x = Math.sin(0);
+        var y = Math.cos(0);
+        var dig = Math.PI / 5 * 4;
+        for (var i = 0; i < 5; i++) {
+            var x = Math.sin(i * dig);
+            var y = Math.cos(i * dig);
+            context.lineTo(dx + x * s, dy + y * s);
+        }
+        context.closePath();
+        context.clip();
+    }
+
+
+    function create4(context){
+        context.strokeStyle = "rgb(250,0,0)";
+        context.fillStyle = "rgb(250,0,0)";
+        context.beginPath();
+
+        context.moveTo(30, 30);
+        context.lineTo(0, 250);
+        context.lineTo(200,250);
+        context.lineTo(230,30);
+        context.lineTo(30,30);
+
+        context.stroke();
+
+        context.clip();
+
+    }
+</script>
+</body>
+</html>

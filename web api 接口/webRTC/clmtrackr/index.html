@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+
+<video id="inputVideo" width="400" height="300" autoplay loop>
+  <!--<source src="./media/somevideo.ogv" type="video/ogg"/>-->
+</video>
+
+<canvas id="drawCanvas" width="400" height="300"></canvas>
+
+
+<script src="js/clmtrackr.js"></script>
+<script type="text/javascript">
+  window.onload = function (){
+    var videoInput = document.getElementById('inputVideo');
+
+    var ctracker = new clm.tracker();
+    ctracker.init();
+    ctracker.start(videoInput);
+  }
+</script>
+
+<!--<script type="text/javascript">-->
+  <!--var canvasInput = document.getElementById('drawCanvas');-->
+  <!--var cc = canvasInput.getContext('2d');-->
+  <!--function drawLoop() {-->
+    <!--requestAnimationFrame(drawLoop);-->
+    <!--cc.clearRect(0, 0, canvasInput.width, canvasInput.height);-->
+    <!--var ctracker = new clm.tracker();-->
+    <!--ctracker.draw(canvasInput);-->
+  <!--}-->
+  <!--drawLoop();-->
+<!--</script>-->
+
+</body>
+</html>

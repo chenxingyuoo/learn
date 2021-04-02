@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+    <meta charset="utf-8" />
+    <title>flex-flow_CSS参考手册_web前端开发参考手册系列</title>
+    <style>
+        h1{font:bold 20px/1.5 georgia,simsun,sans-serif;}
+        .box{
+            display:-webkit-flex;
+            display:flex;
+            width:220px;margin:0;padding:10px;list-style:none;background-color:#eee;}
+        .box li{width:100px;height:100px;border:1px solid #aaa;text-align:center;}
+        #box{
+            -webkit-flex-flow:row nowrap;
+            flex-flow:row nowrap;
+        }
+        #box2{
+            -webkit-flex-flow:row wrap-reverse;
+            flex-flow:row wrap-reverse;
+        }
+        #box3{
+            height:220px;
+            -webkit-flex-flow:column wrap-reverse;
+            flex-flow:column wrap-reverse;
+        }
+
+        #box2 li{
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+<h1>flex-flow示例：</h1>
+<h2>flex-flow:row nowrap</h2>
+<ul id="box" class="box">
+    <li>a</li>
+    <li>b</li>
+    <li>c</li>
+</ul>
+<h2>flex-flow:row wrap-reverse</h2>
+<ul id="box2" class="box">
+    <li style="
+    margin-right: 15px;
+    margin-bottom: 15px;
+    width: calc(50% - 10px);
+">a</li>
+    <li style="
+    width: calc(50% - 10px);
+">b</li>
+    <li style="
+    margin-right: 15px;
+    margin-bottom: 15px;
+">c</li>
+    <li>c</li></ul>
+<h2>flex-flow:column wrap-reverse;</h2>
+<ul id="box3" class="box">
+    <li>a</li>
+    <li>b</li>
+    <li>c</li>
+</ul>
+</body>
+</html>
+			

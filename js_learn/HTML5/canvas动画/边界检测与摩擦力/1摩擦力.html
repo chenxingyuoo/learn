@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>1摩擦力</title>
+</head>
+<body>
+
+关于摩擦力的两种使用方法，其实都大同小异。现在我们来介绍第一种方法，况且叫它正规的方法。摩擦力的作用是减小物体的运动速度，那么就意味着你需要定义一个变量f(代表摩擦力)，让速度在每一帧都减去它，直至为零。假设现在我们有一个物体，它的速度分量分别为vx,和vy。那么我们首先要做的是计算物体运动的角度(angle),其次是物体运动的总的速度(speed)，通过前面章节学习，我们很容易的就可以计算出来：
+
+<canvas id="canvas" width="500" height="500" style="background:#000;">
+    your browser not support canvas!
+</canvas>
+<script src="../js/utils.js"></script>
+<script src="../js/ball.js"></script>
+<script>
+    window.onload = function(){
+        var canvas = document.getElementById("canvas");
+        var context = canvas.getContext('2d');
+
+        var ball = new Ball(20, "red");
+        ball.x = canvas.width/4;
+        ball.y = canvas.height/4;
+
+        var f = 0.05, speed = 0, angle = 0;//设定摩擦力
+
+        var vx = Math.random()*10 -5;
+        var vy = Math.random()*10 -5;
+
+        (function drawFrame(){
+            window.requestAnimationFrame(drawFrame, canvas);
+            context.clearRect(0, 0, canvas.width, canvas.height);
+
+            speed = Math.sqrt(vx*vx + vy*vy);
+            angle = Math.atan2(vy, vx);
+
+            if(speed > f){
+                speed -= f; //通过摩擦力减小速度
+            }else{
+                speed = 0;
+            }
+
+            vx = Math.cos(angle) * speed;
+            vy = Math.sin(angle) * speed;
+
+            ball.x += vx;
+            ball.y += vy;
+
+            ball.draw(context);
+        }());
+    }
+</script>
+
+</body>
+</html>

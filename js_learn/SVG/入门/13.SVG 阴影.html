@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+
+<!-- <defs> 和 <filter> -->
+<!-- 所有互联网的SVG滤镜定义在<defs>元素中。<defs>元素定义短并含有特殊元素（如滤镜）定义。
+<filter>标签用来定义SVG滤镜。<filter>标签使用必需的id属性来定义向图形应用哪个滤镜？ -->
+
+
+<!-- SVG <feOffset> -->
+
+<!-- <feOffset>元素是用于创建阴影效果。我们的想法是采取一个SVG图形（图像或元素）并移动它在xy平面上一点儿。
+第一个例子偏移一个矩形（带<feOffset>），然后混合偏移图像顶部（含<feBlend>）： -->
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1">
+    <defs>
+        <filter id="f1" x="0" y="0" width="200%" height="200%">
+            <feOffset result="offOut" in="SourceGraphic" dx="20" dy="20" />
+            <feBlend in="SourceGraphic" in2="offOut" mode="normal" />
+        </filter>
+    </defs>
+    <rect width="90" height="90" stroke="green" stroke-width="3"
+          fill="yellow" filter="url(#f1)" />
+</svg>
+
+
+<!-- 现在，偏移图像可以变的模糊（含 <feGaussianBlur>）: -->
+
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1">
+    <defs>
+        <filter id="f1" x="0" y="0" width="200%" height="200%">
+            <feOffset result="offOut" in="SourceGraphic" dx="20" dy="20" />
+            <feGaussianBlur result="blurOut" in="offOut" stdDeviation="10" />
+            <feBlend in="SourceGraphic" in2="blurOut" mode="normal" />
+        </filter>
+    </defs>
+    <rect width="90" height="90" stroke="green" stroke-width="3"
+          fill="yellow" filter="url(#f1)" />
+</svg>
+
+<!-- <feGaussianBlur>元素的stdDeviation属性定义了模糊量 -->
+
+<!-- 制作一个黑色的阴影： 主要是 in="SourceAlpha" -->
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1">
+    <defs>
+        <filter id="f1" x="0" y="0" width="200%" height="200%">
+            <feOffset result="offOut" in="SourceAlpha" dx="20" dy="20" />
+            <feGaussianBlur result="blurOut" in="offOut" stdDeviation="10" />
+            <feBlend in="SourceGraphic" in2="blurOut" mode="normal" />
+        </filter>
+    </defs>
+    <rect width="90" height="90" stroke="green" stroke-width="3"
+          fill="yellow" filter="url(#f1)" />
+</svg>
+
+<!-- 为阴影涂上一层颜色： -->
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1">
+    <defs>
+        <filter id="f1" x="0" y="0" width="200%" height="200%">
+            <feOffset result="offOut" in="SourceGraphic" dx="20" dy="20" />
+            <feColorMatrix result="matrixOut" in="offOut" type="matrix"
+                           values="0.2 0 0 0 0 0 0.2 0 0 0 0 0 0.2 0 0 0 0 0 1 0" />
+            <feGaussianBlur result="blurOut" in="matrixOut" stdDeviation="10" />
+            <feBlend in="SourceGraphic" in2="blurOut" mode="normal" />
+        </filter>
+    </defs>
+    <rect width="90" height="90" stroke="green" stroke-width="3"
+          fill="yellow" filter="url(#f1)" />
+</svg>
+
+<!-- <feColorMatrix>过滤器是用来转换偏移的图像使之更接近黑色的颜色。 '0.2'矩阵的三个值都获取乘以红色，绿色和蓝色通道。降低其值带来的颜色至黑色（黑色为0） -->
+
+
+</body>
+</html>

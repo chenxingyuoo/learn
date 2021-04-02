@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>js分页效果</title>
+  <style>
+    .market-paging{
+      overflow: hidden;
+      display: inline-block;
+      padding-left: 1px;
+    }
+    .market-paging .num {
+      position: relative;
+      float: left;
+      padding: 8px 15px;
+      line-height: 1.42857143;
+      text-decoration: none;
+      border: 1px solid #ddd;
+      margin-left: -1px;
+      cursor: pointer;
+      list-style-type: none;
+    }
+    .market-paging .num.active {
+      background-color: #0287fe;
+      color: #fff;
+      border-color: #0287fe;
+    }
+  </style>
+</head>
+
+<body>
+
+<ul class="market-paging" id="setpage">
+  <li class="prev num">&lt; 上一页</li>
+  <li class="num active">1</li>
+  <li class="num">2</li>
+  <li class="num">3</li>
+  <li class="num">10</li>
+  <li class="next num" number="11">下一页 &gt;</li>
+</ul>
+
+<script src="../jquery-2.2.1.js"></script>
+<script>
+
+  /*//初始化
+   function gotoPage(target) {
+   curPage = target;        //把页面计数定位到第几页
+   setPage();
+   //reloadpage(target);    //调用显示页面函数显示第几页,这个功能是用在页面内容用ajax载入的情况
+   }
+
+   function setPage(){
+
+   var outStr = "";
+   //总页数小于等于十页
+   if(totalPage <= 10){
+   for (count = 1; i <= totalPage; count++) {
+   if(count != curPage){
+   outStr += '<li class="num" number="'+count+'">'+count+'</li>';
+   }else{
+   outStr += '<li class="num active" number="'+count+'">'+count+'</li>';
+   }
+   }
+   }
+
+   //总页数大于十页
+   if(totalPage > 10){
+
+   if (parseInt((curPage - 1) / 10) == 0) {
+
+   for (count = 1; count <= 10; count++) {
+
+   if(count != curPage){
+   outStr += '<li class="num" number="'+count+'">'+count+'</li>';
+   }else{
+   outStr += '<li class="num active" number="'+count+'">'+count+'</li>';
+   }
+   }
+
+   outStr += '<li class="next num" number="'+count+'">下一页 &gt;</li>';
+
+   }else if(parseInt((curPage - 1) / 10) == parseInt(totalPage / 10)){
+   outStr  += '<li class="prev num" number="'+parseInt((curPage - 1) / 10) * 10+'">&lt; 上一页</li>';
+   for (count = parseInt(totalPage / 10) * 10 + 1; count <= totalPage; count++) {
+
+   if(count != curPage){
+   outStr += '<li class="num" number="'+count+'">'+count+'</li>';
+   }else{
+   outStr += '<li class="num active" number="'+count+'">'+count+'</li>';
+   }
+
+   }
+
+   }else{
+   outStr  += '<li class="prev num" number="'+parseInt((curPage - 1) / 10) * 10+'">&lt; 上一页</li>';
+   for (count = parseInt((curPage - 1) / 10) * 10 + 1; count <= parseInt((curPage - 1) / 10) * 10 + 10; count++) {
+
+   if(count != curPage){
+   outStr += '<li class="num" number="'+count+'">'+count+'</li>';
+   }else{
+   outStr += '<li class="num active" number="'+count+'">'+count+'</li>';
+   }
+
+   }
+   outStr += '<li class="next num" number="'+count+'">下一页 &gt;</li>'
+
+   }
+   }
+
+   $('#setpage').html(outStr);
+   //document.getElementById("setpage").innerHTML = outStr;
+
+   }
+
+
+
+
+   //。事件对象
+   function nornalizeEvent(event){
+   if(!event.stopPropagation){
+   event.stopPropagation = function () {
+   this.cancelBubble = true;
+   }
+   event.preventDefault = function(){
+   this.returnValue = false;
+   }
+   }
+   if(!event.stop){
+   event.stop = function () {
+   this.stopPropagation();
+   this.preventDefault();
+   }
+   }
+
+   if(event.srcElement && !event.target){
+   event.target = event.srcElement
+   }
+
+   if((event.toElement || event.fromElement) && !event.relatedTarget){
+   event.relatedTarget = event.toElement || event.fromElement;
+   }
+
+   if(event.clientX != undefined && event.pageX == undefined){
+   event.pageX = event.clientX + document.body.scrollLeft;
+   event.pageY = event.clientY + document.body.scrollTop;
+   }
+
+   if(event.type == 'keypress'){
+   event.character = String.fromCharCode( event.charCode || event.keyCode);
+   }
+   return event;
+   }
+
+
+
+   //注册事件
+   function registerEventHandler(node , event, handler){
+   if(typeof node.addEventListener  == 'function'){
+   node.addEventListener(event,handler, false);
+   }else{
+   node.attachEvent('on' + event , handler);
+   }
+   }
+
+   //删除事件
+   function unregisterEventHandler(node , event, handler){
+   if(typeof node.removeEventListener == 'function'){
+   node.removeEventListener(event,handler, false);
+   }else{
+   node.detachEvent('on' + event , handler);
+   }
+   }
+
+
+   function addHandler(node , type ,handler){
+   function wrapHanlder(event){
+   handler(nornalizeEvent(event || window.event));
+   }
+
+   registerEventHandler(node , type ,wrapHanlder);
+   return {node : node , type : type , handler : wrapHanlder};
+   }
+
+
+   function removeHandler(obj){
+   unregisterEventHandler(obj.node, obj.type, obj.handler);
+   }
+
+   var totalPage = 56,
+   pageSize = 10,
+   curPage = 1,
+   count,
+   curCount;
+
+
+   gotoPage(1);
+
+   $(document).on('click','.num',function(){
+   var $this = $(this);
+
+   debugger
+   gotoPage($this.attr('number'));
+   });*/
+
+  /*var pagItem = document.querySelectorAll('.num');
+   for (var i = 0; i < pagItem.length; i++) {
+   addHandler(pagItem[i], 'click',function(e){
+   //console.log(e,this)
+   var target = e.target || e.srcElement;
+   gotoPage(1);
+   });
+   }*/
+
+
+  function Pag(pagId,totalPage,curPage,pageSize){
+    this.pagId = document.getElementById(pagId) || document.body;
+    this.totalPage =  totalPage || 1;
+    this.pageSize = pageSize || 10;
+    this.curPage = curPage || 1;
+  }
+
+  //设置页码
+  Pag.prototype.gotoPage = function(target){
+    this.curPage = target;
+    this.setPage();
+  };
+
+
+  //渲染dom结构
+  Pag.prototype.setPage = function(){
+    var self = this,
+        outStr = "";
+
+    function setPagDom(countInit,totalPage){
+      for (var count = countInit; count <= totalPage; count++) {
+        if(count != self.curPage){
+          outStr += '<li class="num" number="'+count+'">'+count+'</li>';
+        }else{
+          outStr += '<li class="num active" number="'+count+'">'+count+'</li>';
+        }
+      }
+        return count;
+    }
+
+      function extractPrev(count){
+          return '<li class="prev num" number="'+count+'">&lt; 上一页</li>'
+      }
+
+      function extractNext(count){
+          return '<li class="next num" number="'+count+'">下一页 &gt;</li>'
+      }
+
+
+
+    //总页数小于等于十页
+    if(this.totalPage <= this.pageSize){
+      setPagDom(1,this.totalPage);
+    }
+
+    var count;
+
+    //总页数大于页面显示多少页的数
+    if(this.totalPage > this.pageSize){
+
+      debugger;
+
+        //当前页 - 页面显示多少页的数 == 0
+      if (parseInt((this.curPage - 1) / this.pageSize) == 0) {
+
+        count = setPagDom(1,this.pageSize);
+
+        outStr += extractNext(count);
+
+          //当前页 / 页面显示多少页的数 == 总页数 / 页面显示多少页的数
+      }else if(parseInt((this.curPage - 1 ) / this.pageSize) == parseInt(this.totalPage / this.pageSize)){
+        outStr  += extractPrev(parseInt((this.curPage - 1) / this.pageSize) * this.pageSize);
+
+//        setPagDom(parseInt(this.curPage), this.totalPage);
+       setPagDom(parseInt(this.totalPage / this.pageSize) * this.pageSize + 1 , this.totalPage);
+
+      }else{
+
+
+        outStr  += extractPrev(parseInt((this.curPage - 1) / this.pageSize) * this.pageSize);
+
+        count = setPagDom(parseInt((this.curPage - 1) / this.pageSize) * this.pageSize + 1, parseInt((this.curPage - 1) / this.pageSize) * this.pageSize + this.pageSize);
+
+
+        if(count < this.totalPage){
+          outStr += extractNext(count);
+        }
+
+      }
+    }
+
+    this.pagId.innerHTML = outStr;
+  };
+
+  var pag = new Pag('setpage',50,1);
+//  pag.gotoPage(1);
+
+  $(document).on('click','.num',function(){
+    var $this = $(this);
+      if($this.hasClass('prev') || $this.hasClass('next')){
+          pag.gotoPage($this.attr('number'));
+      }else{
+          $this.siblings().removeClass('active');
+          $this.addClass('active');
+      }
+
+  });
+
+
+
+
+</script>
+</body>
+</html>

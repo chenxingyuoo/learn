@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+    <meta charset="utf-8"/>
+    <title>transition_CSS参考手册_web前端开发参考手册系列</title>
+    <style>
+        h1 {
+            font-size: 16px;
+        }
+
+        .test {
+            overflow: hidden;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .test li {
+            float: left;
+            width: 100px;
+            height: 100px;
+            margin: 0 5px;
+            border: 1px solid #ddd;
+            background-color: #eee;
+            text-align: center;
+            -webkit-transition: all .5s ease-in;
+            -moz-transition: all .5s ease-in;
+            transition: all .5s ease-in;
+        }
+
+        .test li:nth-child(1):hover {
+            background-color: #bbb;
+        }
+
+        .test li:nth-child(2):hover {
+            background-color: #999;
+        }
+
+        .test li:nth-child(3):hover {
+            background-color: #630;
+        }
+
+        .test li:nth-child(4):hover {
+            background-color: #090;
+        }
+
+        .test li:nth-child(5):hover {
+            background-color: #f00;
+        }
+    </style>
+</head>
+<body>
+
+<p>
+    <' transition-property '>：
+    检索或设置对象中的参与过渡的属性
+    <' transition-duration '>：
+    检索或设置对象过渡的持续时间
+    <' transition-timing-function '>：
+    检索或设置对象中过渡的动画类型
+    <' transition-delay '>：
+    检索或设置对象延迟过渡的时间
+</p>
+
+<h1>请将鼠标移动到下面的矩形上：</h1>
+<ul class="test">
+    <li>背景色过渡</li>
+    <li>背景色过渡</li>
+    <li>背景色过渡</li>
+    <li>背景色过渡</li>
+    <li>背景色过渡</li>
+</ul>
+</body>
+</html>
+			

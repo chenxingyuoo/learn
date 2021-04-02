@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+
+<body>
+<ul id="container"></ul>
+
+<script>
+    //从零开始构建一个promise模式的框架
+    var Promise = function () {
+        /* initialize promise */
+    };
+    //接下来，定义then方法，接受两个参数用于处理完成和拒绝状态。
+    Promise.prototype.then = function (onResolved, onRejected) {
+        var obj = {
+            results : ['a' , 'b' , 'c']
+        };
+        if(onResolved){
+            onResolved(obj)
+        }else{
+            onRejected();
+        }
+
+        /* invoke handlers based upon state transition */
+    };
+
+    //同时还需要两个方法来执行理从未完成到已完成和从未完成到拒绝的状态转变。
+    Promise.prototype.resolve = function (value) {
+        debugger
+        /* move from unfulfilled to resolved */
+    };
+
+    Promise.prototype.reject = function (error) {
+        debugger
+        /* move from unfulfilled to rejected */
+    };
+
+
+    function searchTwitter(term) {
+debugger
+        var url, xhr, results, promise;
+        url = 'http://search.twitter.com/search.json?rpp=100&q=' + term;
+        promise = new Promise();
+        xhr = new XMLHttpRequest();
+        xhr.open('GET', url, true);
+
+        xhr.onload = function (e) {
+            debugger
+            if (this.status === 200) {
+                results = JSON.parse(this.responseText);
+                promise.resolve(results);
+            }
+        };
+
+        xhr.onerror = function (e) {
+            promise.reject(e);
+        };
+
+
+        xhr.send();
+        return promise;
+    }
+
+    function handleError(error) {
+        debugger
+        /* handle the error */
+    }
+
+    function concatResults() {
+        /* order tweets by date */
+    }
+
+    function loadTweets() {
+        var container = document.getElementById('container');
+        searchTwitter('IE10').then(function (data) {
+            data.results.forEach(function (tweet) {
+                var el = document.createElement('li');
+                el.innerText = tweet;
+                container.appendChild(el);
+            });
+        }, handleError);
+    }
+
+    loadTweets();
+</script>
+</body>
+</html>

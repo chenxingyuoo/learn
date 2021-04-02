@@ -1,0 +1,42 @@
+<% include layout/header.html %>
+
+<div class="pl-20 pr-20">
+    <div class="jumbotron pl-20 pr-20">
+        <h1>欢迎 <% if( session.user  && session.success === '登录成功' ){ %><%= session.user.name %><% } %> 来到 Microblog</h1>
+        <p>Microblog 是一个基于 Node.js 的微博系统。</p>
+
+        <% if( !session.user && session.success !== '登录成功' ){ %>
+            <p>
+                <a href="/login" class="login">登录</a>
+                <a href="/reg" class="register">立即注册</a>
+            </p>
+
+        <% } else { %>
+
+            <form action="/post" method='post'>
+                <!--<input type="text"  >-->
+                <textarea class="article" name='article' id='article' placeholder='说出你此刻的想法...' style="margin-bottom: 15px;min-height: 100px"></textarea>
+                <div>
+                    <input type="submit" name='submit' value='发表' class="btn btn-success">
+                </div>
+            </form>
+
+        <% } %>
+    </div>
+</div>
+
+
+<section class="show pl-20 pr-20">
+
+    <% posts.forEach(function(v, k){ %>
+    <article class="col">
+        <div class="col-box">
+            <h3 class="author"><%= v.user %> : </h3>
+            <p class="talk-about"><%= v.post %></p>
+        </div>
+    </article>
+    <% }) %>
+
+</section>
+
+<% include layout/footer.html %>

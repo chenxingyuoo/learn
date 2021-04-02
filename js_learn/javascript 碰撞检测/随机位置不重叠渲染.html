@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body>
+
+<script>
+  //函数：求函数随机数
+  function getRandom(min, max) {
+    var random = Math.random() * (max - min) + min;
+    random = Math.floor(random);
+    return random;
+  }
+
+  //矩形碰撞检测
+  var intersects = function(rectA, rectB){
+    return !(rectA.x + rectA.width <= rectB.x ||
+      rectB.x + rectB.width <= rectA.x ||
+      rectA.y + rectA.height <= rectB.y ||
+      rectB.y + rectB.height <= rectA.y);
+  };
+
+
+  var w = 100;
+  var h = 100;
+  var minOffset = 50;   //最小间距
+  var offsetLen = minOffset * 2;
+  var arr1 = [];
+  for (var i = 0, len = 10; i < len; i++) {
+    var newx = getRandom(offsetLen, window.innerWidth - w);
+    var newy = getRandom(offsetLen, window.innerHeight - w);
+    var isRange = false;
+
+    let newRect = {
+      x : newx - minOffset ,
+      y : newy - minOffset ,
+      width : w + offsetLen,
+      height : h + offsetLen
+    };
+
+    for (var j = 0, leng = arr1.length; j < leng; j++) {
+      let obj = arr1[j];
+
+      isRange = intersects(newRect, obj);
+
+      if (isRange) {
+        break;
+      }
+    }
+
+    if (isRange) {
+      i--;
+    } else {
+      arr1.push({
+        x: newx,
+        y: newy,
+        width : w,
+        height : h
+      });
+    }
+  }
+
+  for (let i = 0, len = arr1.length; i < len; i++) {
+    let obj = arr1[i];
+    var imgObj = document.createElement("div");
+    //添加节点属性
+
+    imgObj.style.width = '100px';
+    imgObj.style.height = '100px';
+    imgObj.style.backgroundColor = '#000';
+
+    imgObj.style.position = 'absolute';
+    imgObj.style.left = `${obj.x}px`;
+    imgObj.style.top = `${obj.y}px`;
+    document.body.appendChild(imgObj);
+  }
+
+
+</script>
+
+</body>
+</html>

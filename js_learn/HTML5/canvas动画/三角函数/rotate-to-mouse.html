@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>rotate-to-mouse</title>
+
+</head>
+<body>
+
+<canvas id="canvas" width="500" height="500" style="background-color: #000;">
+</canvas>
+
+<script src="../js/arrow.js"></script>
+<script src="../js/utils.js"></script>
+<script>
+
+    window.onload = function(){
+        var canvas = document.getElementById('canvas');
+        var context = canvas.getContext('2d');
+        var centerX = canvas.width/2;
+        var centerY = canvas.height/2;
+
+        //传入canvas,获取鼠标在canvas上移动是的坐标
+        var mouse = utils.captureMouse(canvas);
+
+        //新建一个arrow对象
+        var arrow = new Arrow();
+
+        //将arrow的坐标设置为canvas的中心
+        arrow.x = centerX;
+        arrow.y = centerY;
+
+        //动画循环函数
+        (function drawFrame(){
+            window.requestAnimationFrame(drawFrame,canvas);
+            context.clearRect(0, 0, canvas.width, canvas.height);  //	在给定的矩形内清除指定的像素
+
+            //获取dy,dx值
+            var dx = mouse.x - arrow.x,
+                    dy = mouse.y - arrow.y;
+
+            //设置旋转角度
+            arrow.rotation = Math.atan2(dy, dx);
+
+            //调用draw方法画出
+            arrow.draw(context);
+
+        })();
+    }
+
+</script>
+</body>
+</html>

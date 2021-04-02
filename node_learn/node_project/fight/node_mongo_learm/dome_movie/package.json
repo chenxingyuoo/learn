@@ -1,0 +1,24 @@
+{
+  "name": "dome_movie",
+  "version": "1.0.1",
+  "description": "dome_movie movie",
+  "main": "app.js",
+  "dependencies": {
+    "body-parser": "^1.14.2",
+    "express": "^4.13.3",
+    "jade": "^1.11.0",
+    "moment": "^2.11.0",
+    "mongoose": "^4.3.4",
+    "npm": "^2.14.12",
+    "underscore": "^1.8.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "dome_movie"
+  ],
+  "author": "cxy 2731173104@qq.com",
+  "license": "ISC"
+}

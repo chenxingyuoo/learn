@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+
+<script>
+
+    //this
+
+
+    //this的指向
+    // 作为对象的方法调用。
+    // 作为普通函数调用。
+    // 构造器调用。
+    // Function.prototype.call 或 Function.prototype.apply 调用
+
+
+    //1. 作为对象的方法调用 当函数作为对象的方法被调用时，this 指向该对象:
+    var obj = { a: 1,
+        getA: function(){
+            console.log ( this === obj ); // 输出:true console.log ( this.a ); // 输出: 1
+        } };
+    obj.getA();
+
+    //2. 作为普通函数调用
+    //当函数不作为对象的属性被调用时，也就是我们常说的普通函数方式，此时的 this 总是指
+    //向全局对象。在浏览器的 JavaScript 里，这个全局对象是 window 对象。
+
+    window.name = 'globalName';
+    var myObject = { name: 'sven',
+        getName: function(){
+            return this.name;
+        }
+    };
+
+    var getName = myObject.getName;
+    console.log( getName() ); // globalName
+
+    //在 ECMAScript 5 的 strict 模式下，这种情况下的 this 已经被规定为不会指向全局对象，而 是 undefined:
+
+    //3. 构造器调用
+    // 除了宿主提供的一些内置函数，大部分 JavaScript 函数都可以当作构造器使用。构造器的外 表跟普通函数一模一样，
+    // 它们的区别在于被调用的方式。当用 new 运算符调用函数时，该函数总 会返回一个对象，通常情况下，
+    // 构造器里的 this 就指向返回的这个对象，见如下代码:
+
+    var MyClass = function(){
+        this.name = 'sven';
+    };
+    var obj = new MyClass();
+    console.log ( obj.name ); // 输出:sven
+
+    //4. Function.prototype.call 或 Function.prototype.apply 调用
+    //跟普通的函数调用相比，用 Function.prototype.call 或 Function.prototype.apply 可以动态地 改变传入函数的 this:
+    var obj1 = { name: 'sven',
+        getName: function(){
+            return this.name;
+        }
+    };
+    var obj2 = { name: 'anne'}
+
+    console.log( obj1.getName() );   // 输出: sven
+    console.log( obj1.getName.call( obj2 ) ); // 输出:anne
+
+
+    //用途
+    //1. 改变 this 指向
+
+    window.name = 'window';
+    var obj1 = {
+        name: 'sven'
+    };
+
+    var getName = function(){
+        console.log ( this.name );
+    };
+
+    console.log( getName() ); //window
+    console.log( getName.apply(obj1)); //sven
+
+    //2. Function.prototype.bind
+
+    Function.prototype.bind = function () {
+        var self = this, // 保存原函数
+                context = [].shift.call(arguments),
+                args = [].slice.call(arguments);
+        return function () { // 返回一个新的函数
+            // 需要绑定的 this 上下文 // 剩余的参数转成数组
+            return self.apply(context, [].concat.call(args, [].slice.call(arguments))); // 执行新的函数的时候，会把之前传入的 context 当作新函数体内的 this
+            // 并且组合两次分别传入的参数，作为新函数的参数
+        }
+    };
+    var obj = {
+        name: 'sven'
+    };
+    var func = function (a, b, c, d) {
+        console.log(this.name); // 输出:sven
+        console.log([a, b, c, d]) // 输出:[ 1, 2, 3, 4 ]
+    }.bind(obj, 1, 2);
+    func(3, 4);
+
+
+    //3. 借用其他对象的方法
+    var A = function( name ){
+        this.name = name;
+    };
+
+    A.prototype.methoda = function (){
+        console.log('methoda');
+    }
+
+    var B = function (){
+        A.apply(this, arguments);
+    }
+
+    B.prototype.getName = function (){
+        console.log(this.name);
+    };
+
+    var b = new B('chen');
+    console.log(b.getName());
+
+    //往 arguments 中添加一个新的元素，通常会借用 Array.prototype.push:
+    (function(){
+        Array.prototype.push.call( arguments, 3 , 4);
+        console.log ( arguments ); // 输出[1,2,3]
+    })( 1, 2 );
+
+
+    //想把 arguments 转成真正的数组的时候，可以借用 Array.prototype.slice 方法;
+    // 想截去 arguments 列表中的头一个元素时，又可以借用 Array.prototype.shift 方法。
+    // 那么这种机制的内 10 部实现原理是什么呢?我们不妨翻开 V8 的引擎源码，以 Array.prototype.push 为例，
+    // 看看 V8 引 擎中的具体实现:
+    //    function ArrayPush() {
+    //        var n = TO_UINT32( this.length );  // 被 push 的对象的 length
+    //        var m = %_ArgumentsLength();       // push 的参数个数
+    //        for (var i = 0; i < m; i++) {
+    //            this[ i + n ] = %_Arguments( i ); // 复制元素 (1)
+    //        }
+    //
+    //        this.length = n + m; //修正length属性的值 (2)
+    //        return this.length;
+    //    }
+
+
+    //由此可以推断，我们可以把“任意”对象传入 Array.prototype.push:
+    var a = {};
+    Array.prototype.push.call( a, 'first' );
+
+    //前面我们之所以把“任意”两字加了双引号，是因为可以借用 Array.prototype.push 方法的对
+    //象还要满足以下两个条件，从 ArrayPush 函数的(1)处和(2)处也可以猜到，这个对象至少还要满足:
+
+    //1.对象本身要可以存取属性;
+    //2.对象的 length 属性可读写。
+
+    var a = 1;
+    Array.prototype.push.call( a, 'first' );
+    console.log ( a.length ); // 输出:undefined
+    console.log ( a[ 0 ] ); // 输出:undefined
+
+    //对于第二个条件，函数的 length 属性就是一个只读的属性，表示形参的个数，我们尝试把 一个函数当作 this 传入 Array.prototype.push:
+
+    var func = function(){};
+    Array.prototype.push.call( func, 'first' );
+    console.log ( func.length );
+    // 报错:cannot assign to read only property ‘length’ of function(){}
+
+</script>
+
+</body>
+</html>

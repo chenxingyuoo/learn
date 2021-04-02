@@ -1,0 +1,646 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>我是积分大咖，来感受下我的豪华日程！</title>
+    <meta name="Keywords" content="zhongxin">
+    <meta name="Description" content="zhongxin">
+
+    <!-- 移动设备支持 -->
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+    <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+    <meta content="no-cache,must-revalidate" http-equiv="Cache-Control">
+    <meta content="no-cache" http-equiv="pragma">
+    <meta content="0" http-equiv="expires">
+    <meta content="telephone=no, address=no" name="format-detection">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <link href="./source/modules/weishidaqrc/h5_zhongxin/css/reset.css" rel="stylesheet" type="text/css">
+    <link href="./source/modules/weishidaqrc/h5_zhongxin/css/mod.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="./source/modules/weishidaqrc/h5_zhongxin/js/jquery-1.8.2.min.js"></script>
+    <!-- <script type="text/javascript" src="js/wxsharejs.js"></script> -->
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=2&amp;ak=Xbq3g4meudxD5Q0MB9osTLpg"></script>
+    <script type="text/javascript" src="./source/modules/weishidaqrc/h5_zhongxin/js/jquery.cookie.js"></script>
+    <script type="text/javascript" src="./source/modules/weishidaqrc/h5_zhongxin/js/resLoader.js"></script>
+    <script type="text/javascript" src="./source/modules/weishidaqrc/h5_zhongxin/js/jszip.min.js"></script>
+    <script type="text/javascript" src="./source/modules/weishidaqrc/h5_zhongxin/js/jszip-utils.js"></script>
+    <script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+
+    <style>
+        footer {display:block; position:fixed;bottom:0; width:100%; line-height:2.5;  color:#fff; font-size:12px; text-align:center; background-color:#333; z-index:100; opacity:0.6}
+        footer a { color:white; }
+    </style>
+</head>
+<body>
+<img src="./source/modules/weishidaqrc/h5_zhongxin/image/wxshare.jpg" style="position: absolute;z-index: -10;">
+<div id="bg"></div>
+<div class="firstpage">
+    <img src="./source/modules/weishidaqrc/h5_zhongxin/image/loading.png">
+    <img class="man" src="./source/modules/weishidaqrc/h5_zhongxin/image/man.png" >
+    <img class="human"  src="./source/modules/weishidaqrc/h5_zhongxin/image/human.png" style="display: none;">
+    <span>0%</span>
+</div>
+
+<div class="p-index main" id="con">
+    <!--上下滚动 start-->
+    <section class="m-page " >
+        <div class="m-img" >
+            <img src="./source/modules/weishidaqrc/h5_zhongxin/image/image1.png">
+        </div>
+        <img class="image1-1" src="./source/modules/weishidaqrc/h5_zhongxin/image/image1-1.png">
+        <img class="image1-2" src="./source/modules/weishidaqrc/h5_zhongxin/image/image1-2.png">
+        <img class="image1-3" src="./source/modules/weishidaqrc/h5_zhongxin/image/nextpage.png">
+    </section>
+
+    <section class="m-page hide" id="day">
+        <div class="m-img" >
+            <img src="./source/modules/weishidaqrc/h5_zhongxin/image/image2.png">
+        </div>
+        <!--<img class="rotate" id="rotate-1"  src="./source/modules/weishidaqrc/h5_zhongxin/image/image2-3.png">-->
+        <!--<img class="rotate" id="rotate-2"  src="./source/modules/weishidaqrc/h5_zhongxin/image/image2-3.png">-->
+        <!--<img class="rotate" id="rotate-3"  src="./source/modules/weishidaqrc/h5_zhongxin/image/image2-3.png">-->
+        <!--<img class="rotate" id="rotate-4"  src="./source/modules/weishidaqrc/h5_zhongxin/image/image2-3.png">-->
+        <!--<img class="rotate" id="rotate-5"  src="./source/modules/weishidaqrc/h5_zhongxin/image/image2-3.png">-->
+        <!--<button id="bt1" onclick="scollTo(this,'time-8')"></button>-->
+        <!--<button id="bt2" onclick="scollTo(this,'time-10')"></button>-->
+        <!--<button id="bt3" onclick="scollTo(this,'time-15')"></button>-->
+        <!--<button id="bt4" onclick="scollTo(this,'time-20')"></button>-->
+        <!--<button id="bt5" onclick="scollTo(this,'time-21')"></button>-->
+        <button><img class="image2-1" src="./source/modules/weishidaqrc/h5_zhongxin/image/image2-1.png"></button>
+        <button><img class="image2-2" src="./source/modules/weishidaqrc/h5_zhongxin/image/image2-2.png"></button>
+    </section>
+
+    <section class="m-page hide" id="time-8">
+        <div class="m-img" ><img src="./source/modules/weishidaqrc/h5_zhongxin/image/image3.png"></div>
+        <img class="image3-1" src="./source/modules/weishidaqrc/h5_zhongxin/image/image3-1.png">
+        <img class="image3-2" src="./source/modules/weishidaqrc/h5_zhongxin/image/image3-2.png">
+        <img id="free-fly" onclick="jump('image12.png','block')" src="./source/modules/weishidaqrc/h5_zhongxin/image/image3-3.png">
+        <img class="ruturnday" onclick="scollTo(this,'day')" src="./source/modules/weishidaqrc/h5_zhongxin/image/return.png">
+    </section>
+
+    <section class="m-page hide" id="time-10">
+        <div class="m-img" ><img src="./source/modules/weishidaqrc/h5_zhongxin/image/image4.png"></div>
+        <img class="image4-1" src="./source/modules/weishidaqrc/h5_zhongxin/image/image4-1.png">
+        <img id="pay1" onclick="jump('image13.png','block')" src="./source/modules/weishidaqrc/h5_zhongxin/image/image4-2.png">
+        <img id="pay2" onclick="jumpa('https://creditcard.ecitic.com/BusinessCityWeb/jfshop.do?func=index&userlevel=&mobid=&islogout')" src="./source/modules/weishidaqrc/h5_zhongxin/image/image4-3.png">
+        <img class="image4-4" src="./source/modules/weishidaqrc/h5_zhongxin/image/image4-4.png">
+        <img class="ruturnday" onclick="scollTo(this,'day')" src="./source/modules/weishidaqrc/h5_zhongxin/image/return.png">
+    </section>
+
+    <section class="m-page hide" id="time-15">
+        <div class="m-img" ><img src="./source/modules/weishidaqrc/h5_zhongxin/image/image5.png"></div>
+        <img class="image5-1" src="./source/modules/weishidaqrc/h5_zhongxin/image/image5-1.png">
+        <img class="image5-2" src="./source/modules/weishidaqrc/h5_zhongxin/image/image5-2.png">
+        <img id="share" onclick="jumpa('http://activity7.e-pointchina.com/etitic_9fen/index.html?from=groupmessage&isappinstalled=0')" src="./source/modules/weishidaqrc/h5_zhongxin/image/image5-3.png">
+        <img class="ruturnday" onclick="scollTo(this,'day')" src="./source/modules/weishidaqrc/h5_zhongxin/image/return.png">
+    </section>
+
+    <section class="m-page hide" id="time-20">
+        <div class="m-img" ><img src="./source/modules/weishidaqrc/h5_zhongxin/image/image6.png"></div>
+        <img class="image6-1" src="./source/modules/weishidaqrc/h5_zhongxin/image/image6-1.png">
+        <img class="image6-2" src="./source/modules/weishidaqrc/h5_zhongxin/image/image6-2.png">
+        <img id="charity" onclick="jumpa('https://creditcard.ecitic.com/citiccard/wap/lovedonate/index.html?isFirst=0&mobid=wx')" src="./source/modules/weishidaqrc/h5_zhongxin/image/image6-3.png">
+        <img class="ruturnday" onclick="scollTo(this,'day')" src="./source/modules/weishidaqrc/h5_zhongxin/image/return.png">
+    </section>
+
+    <section class="m-page hide" id="time-21">
+        <div class="m-img" ><img src="./source/modules/weishidaqrc/h5_zhongxin/image/image7.png"></div>
+        <img class="image7-1" src="./source/modules/weishidaqrc/h5_zhongxin/image/image7-1.png">
+        <img class="image7-2" src="./source/modules/weishidaqrc/h5_zhongxin/image/image7-2.png">
+        <img id="lottery" onclick="jumpa('https://creditcard.ecitic.com/BusinessCityWeb/jfshop.do?func=queryGoodsList&class_id=LB3501&parent_id=LB0035')" src="./source/modules/weishidaqrc/h5_zhongxin/image/image7-3.png">
+        <img class="ruturnday" onclick="scollTo(this,'day')" src="./source/modules/weishidaqrc/h5_zhongxin/image/return.png">
+    </section>
+
+    <section class="m-page hide" >
+        <div class="m-img" ><img src="./source/modules/weishidaqrc/h5_zhongxin/image/image8.png"></div>
+        <img class="image8-1" src="./source/modules/weishidaqrc/h5_zhongxin/image/image8-1.png">
+        <img class="image8-2" src="./source/modules/weishidaqrc/h5_zhongxin/image/image8-2.png">
+        <img class="image8-3" src="./source/modules/weishidaqrc/h5_zhongxin/image/image8-3.png">
+        <img id="special" onclick="jump('image16.jpg','block')" src="./source/modules/weishidaqrc/h5_zhongxin/image/image8-4.png">
+    </section>
+
+    <section class="m-page hide" >
+        <div class="m-img" ><img src="./source/modules/weishidaqrc/h5_zhongxin/image/image9.png"></div>
+        <img class="image9-1" src="./source/modules/weishidaqrc/h5_zhongxin/image/image9-1.png">
+        <img class="image9-2" src="./source/modules/weishidaqrc/h5_zhongxin/image/image9-2.png">
+        <img id="interflow" onclick="jumpa('http://creditcard.ecitic.com/m/ysg/index.html#rd')" src="./source/modules/weishidaqrc/h5_zhongxin/image/image9-4.png">
+        <img id="know" onclick="jumpa('http://creditcard.ecitic.com/h5/youhui/jifenhutong/index.html')" src="./source/modules/weishidaqrc/h5_zhongxin/image/image9-3.png">
+    </section>
+
+    <section class="m-page hide" >
+        <div class="m-img" ><img src="./source/modules/weishidaqrc/h5_zhongxin/image/image10.png"></div>
+        <img class="image10-1" src="./source/modules/weishidaqrc/h5_zhongxin/image/image10-1.png">
+        <img class="image10-2" src="./source/modules/weishidaqrc/h5_zhongxin/image/image10-2.png">
+        <img class="image10-3" src="./source/modules/weishidaqrc/h5_zhongxin/image/image10-3.png">
+        <img class="image10-4" src="./source/modules/weishidaqrc/h5_zhongxin/image/image10-4.png">
+        <img class="image10-5" src="./source/modules/weishidaqrc/h5_zhongxin/image/image10-5.png">
+        <img class="image10-6" src="./source/modules/weishidaqrc/h5_zhongxin/image/image10-6.png">
+        <img id="make" onclick="jumpa('http://creditcard.ecitic.com/h5/shenqing/list.html?foot_s=0&sid=SJJFSC')" src="./source/modules/weishidaqrc/h5_zhongxin/image/image10-7.png">
+        <img id="how" onclick="jumpa('https://creditcard.ecitic.com/BusinessCityWeb/jfshop.do?func=initMymall')" src="./source/modules/weishidaqrc/h5_zhongxin/image/image10-8.png">
+        <img id="more" onclick="sharemore('block')" src="./source/modules/weishidaqrc/h5_zhongxin/image/image10-9.png">
+        <img class="image10-10" src="./source/modules/weishidaqrc/h5_zhongxin/image/image10-10.png">
+        <img id="gif" src="./source/modules/weishidaqrc/h5_zhongxin/image/share.gif" onclick="sharemore('none')">
+    </section>
+    <!-- 跳转至图片页面 -->
+    <div class="model">
+        <img src="">
+        <div style="    position: fixed;    width: 12%;    height: 7%;    top: 3%; right: 3%;"><button class="mclose" onclick="displaynone(this)"></button></div>
+    </div>
+    <section class='u-arrow'><img src="./source/modules/weishidaqrc/h5_zhongxin/image/btn01_arrow.png" /></section>
+    <!--上下滚动代码 end-->
+</div>
+<!-- 查询页面店铺 -->
+<div id="showMsg" >
+    <div class="header">
+        <div style="position: fixed;  width: 12%; height: 7%; top: 3%; right: 3%;"><button class="mclose" onclick="distroytable()"></button></div>
+        <img src="./source/modules/weishidaqrc/h5_zhongxin/image/image13-1.png" alt="">
+    </div>
+
+    <div class="geo">
+        &nbsp&nbsp地区：<select id="se-city" onchange="changecity()"></select>
+        &nbsp品牌：<select id="se-goods" onchange="changegoods()"></select>
+        <br/>
+    </div>
+    <div class="content">
+        <table id="myTable">
+            <thead>
+            <th class="tab-name">门店</th>
+            <th class="tab-endline">截止日期</th>
+            <th class="tab-address">地址</th>
+            <th class="tab-contend">兑换内容</th>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+
+    var width = $(window).width();
+    var height = $(window).height();
+
+    $('.human').css({"top":height*0.251993,"left":width*151/414,"width":width*145/414});
+    $('.man').css({"top":height*0.251993,"left":width*151/414,"width":width*145/414});
+    $('.firstpage span').css({"top":height*230/736,"left":width*200/414});
+
+    window.onload=function(){
+
+
+        var width = $(window).width();
+        var height = $(window).height();
+        $('.m-img').each(function() {
+            $(this).css('width',width);
+            $(this).css('height',height);
+        });
+        $('.model').css('width',width);
+        $('.model').css('height',height);
+    }
+
+    function scollTo(obj,id){
+        $(obj).parents("section").removeClass("m-page show").addClass("m-page hide");
+        $("#"+id).removeClass("m-page hide").addClass("m-page show");
+        page_n=$("#"+id).index()+1;
+    }
+
+    function jump(img,symble){
+        $('.model').css('display',symble);
+        $('.model img').attr('src','./source/modules/weishidaqrc/h5_zhongxin/image/'+img);
+        $('.model img').attr('style','width:96%;padding:2%;position:absolute');
+        if (symble=='block') {
+            $('.u-arrow').css('display','none');
+        }
+        <!-- 店面积分兑换 -->
+        if (img=='image13.png') {
+            var points="<button class='morepoint' onclick='getMypos()'></button> ";
+            $(".model").append(points);
+            // var w=$(".model img")[0].offsetWidth;
+            $(".model img")[0].addEventListener('load',function(){
+                console.log("加载图片"+$(window).height()+" img 高： "+$(".model img")[0].offsetHeight*0.95);
+                var h=$(window).height()-$(".model img")[0].offsetHeight*0.95;
+                var set_h=parseInt(h);
+                $('.morepoint').css('bottom',set_h+'px');
+            })
+
+        }
+    }
+
+    $('#bg').css({'width':$(window).width()+'px','height':$(window).height()+'px','z-index':-9,'background-color':'white','position':'absolute'});
+
+
+    function displaynone(obj){
+        $(obj).parents(".model").css('display','none');
+        $('.u-arrow').css('display','block');
+        if ($('.morepoint')) {
+            $('.morepoint').remove();
+        }
+    }
+    function distroytable() {
+        $("#showMsg").css('display','none');
+        $("tbody").html("");
+        $("#se-city").empty();
+        $("#se-goods").empty();
+    }
+    function jumpa(str){
+        window.location.href=str;
+        //记录历史纪录页面--需要使用http记录历史纪录
+        $.cookie('hispage',page_n);
+
+    }
+</script>
+<!-- 百度定位获取信息 -->
+<script type="text/javascript">
+    var renderReverse=function(response){
+        if(response.status == 0){
+            var addr=response.result.formatted_address;
+            var city = response.result.addressComponent.city;
+            var province = response.result.addressComponent.province;
+            global.city=city.substring(0,city.length-1);
+            global.province=province.substring(0,city.length-1);
+            if ($.inArray(global.city,global.cityArray)>-1) {
+                $('#se-city').val(global.city);
+                changecity();
+            }else if ($.inArray(global.province,global.cityArray)>-1) {
+                $('#se-city').val(global.city);
+                changecity();
+            }
+        }
+    };
+    var baidu_map_ak='Xbq3g4meudxD5Q0MB9osTLpg';
+    var global={};
+
+    global.cityArray=new Array();
+    function getMypos(){
+        // 初始化对象
+        var cityArray=new Array();
+        $.each(global.anObject,function(name,value) {
+            $.each(value,function (name,value) {
+                if (name=="city") {
+                    if ($.inArray(value,cityArray)==-1) {
+                        cityArray.push(value);
+                        global.cityArray.push(value);
+                    }
+                }
+            });
+        });
+        getjson();
+        $("#showMsg").css('display','block');
+        var geolocation=new BMap.Geolocation();
+        geolocation.getCurrentPosition(function(pos){
+            var url="http://api.map.baidu.com/geocoder/v2/?ak="+baidu_map_ak+"&callback=renderReverse&location="+pos.point.lat+","+pos.point.lng+"&output=json&pois=0";
+            var script=document.createElement('script');
+            script.type='text/javascript';
+            script.src=url;
+            document.body.appendChild(script);
+        })
+    }
+    function getjson()
+    {
+        var city=$('#se-city');
+        var goods=$('#se-goods');
+        var cityArray=new Array();
+        var citystr="<option>全国</option>";
+        var brandArray=new Array();
+        var brandstr="";
+        var cityid=0;
+        var brandid=0;
+        var contentid=0;
+        var contentstr="";
+        $.each(global.anObject,function(name,value) {
+            $.each(value,function (name,value) {
+                if (name=="city") {
+                    if ($.inArray(value,cityArray)==-1) {
+                        cityArray.push(value);
+                        citystr+="<option>"+value+"</option>";
+                    }
+                    //              添加全国品牌
+                    if (name=="brand"&&city.val()=="全国"&&$.inArray(value,brandArray)==-1&&$.trim(value)!="万达影城") {
+                        brandArray.push(value);
+                        brandstr+="<option>"+value+"</option>";
+                    }
+                }
+            });
+            cityid++;
+        }) ;
+        $('#se-city').append(citystr);
+
+        $.each(global.anObject,function(name,value) {
+            $.each(value,function (name,value) {
+                if (name=="brand"&&city.val()==$.trim(global.anObject[brandid].city)&&$.inArray(value,brandArray)==-1&&$.trim(value)!="万达影城") {
+                    brandArray.push(value);
+                    brandstr+="<option>"+value+"</option>";
+                }
+            });
+            brandid++;
+        }) ;
+        $('#se-goods').append(brandstr);
+
+        $.each(global.anObject,function(name,value){
+            if (city.val()==$.trim(global.anObject[contentid].city)&&goods.val()==$.trim(global.anObject[contentid].brand))
+            {
+                contentstr+="<tr>";
+            }else if (city.val()=="全国"&&goods.val()==$.trim(global.anObject[contentid].brand)){
+                contentstr+="<tr>";//全国内容
+            }
+            $.each(value,function (name,value) {
+
+                if (name=="store"&&city.val()==$.trim(global.anObject[contentid].city)&&goods.val()==$.trim(global.anObject[contentid].brand) ) {
+                    contentstr+="<td>"+value+"</td>";
+                }
+                if (name=="deadline"&&city.val()==$.trim(global.anObject[contentid].city)&&goods.val()==$.trim(global.anObject[contentid].brand)) {
+                    contentstr+="<td>"+value+"</td>";
+                }
+                if (name=="address"&&city.val()==$.trim(global.anObject[contentid].city)&&goods.val()==$.trim(global.anObject[contentid].brand)) {
+                    contentstr+="<td>"+value+"</td>";
+                }
+                if (name=="exchange"&&city.val()==$.trim(global.anObject[contentid].city)&&goods.val()==$.trim(global.anObject[contentid].brand) ){
+                    contentstr+="<td>"+value+"</td>";
+                }
+                //全国内容
+                if (name=="store"&&city.val()=="全国"&&goods.val()==$.trim(global.anObject[contentid].brand) ) {
+                    contentstr+="<td>"+value+"</td>";
+                }
+                if (name=="deadline"&&city.val()=="全国"&&goods.val()==$.trim(global.anObject[contentid].brand)) {
+                    contentstr+="<td>"+value+"</td>";
+                }
+                if (name=="address"&&city.val()=="全国"&&goods.val()==$.trim(global.anObject[contentid].brand)) {
+                    contentstr+="<td>"+value+"</td>";
+                }
+                if (name=="exchange"&&city.val()=="全国"&&goods.val()==$.trim(global.anObject[contentid].brand) ){
+                    contentstr+="<td>"+value+"</td>";
+                }
+
+            });
+            if (city.val()==$.trim(global.anObject[contentid].city)&&goods.val()==$.trim(global.anObject[contentid].brand))
+            {
+                contentstr+="</tr>";
+            }else if (city.val()=="全国"&&goods.val()==$.trim(global.anObject[contentid].brand)){
+                contentstr+="</tr>";
+            }
+            contentid++;
+        }) ;
+        $('tbody').append(contentstr);
+    }
+    function changecity() {
+        $('#se-city').val($('#se-city').val());
+        $("tbody").html("");
+        $("#se-goods").empty();
+        var city=$('#se-city');
+        var goods=$('#se-goods');
+        var cityArray=new Array();
+        var brandArray=new Array();
+        var brandstr="";
+        var brandid=0;
+        var contentid=0;
+        var contentstr="";
+        $.each(global.anObject,function(name,value) {
+            $.each(value,function (name,value) {
+                if (name=="brand"&&city.val()==$.trim(global.anObject[brandid].city)&&$.inArray(value,brandArray)==-1&&$.trim(value)!="万达影城") {
+                    brandArray.push(value);
+                    brandstr+="<option>"+value+"</option>";
+                }
+                //              添加全国品牌
+                if (name=="brand"&&city.val()=="全国"&&$.inArray(value,brandArray)==-1&&$.trim(value)!="万达影城") {
+                    brandArray.push(value);
+                    brandstr+="<option>"+value+"</option>";
+                }
+            });
+            brandid++;
+        }) ;
+        $('#se-goods').append(brandstr);
+        $.each(global.anObject,function(name,value){
+            if (city.val()==$.trim(global.anObject[contentid].city)&&goods.val()==$.trim(global.anObject[contentid].brand))
+            {
+                contentstr+="<tr>";
+            }else if (city.val()=="全国"&&goods.val()==$.trim(global.anObject[contentid].brand)){
+                contentstr+="<tr>";//全国内容
+            }
+            $.each(value,function (name,value) {
+                if (name=="store"&&city.val()==$.trim(global.anObject[contentid].city)&&goods.val()==$.trim(global.anObject[contentid].brand) ) {
+                    contentstr+="<td>"+value+"</td>";
+                }
+                if (name=="deadline"&&city.val()==$.trim(global.anObject[contentid].city)&&goods.val()==$.trim(global.anObject[contentid].brand)) {
+                    contentstr+="<td>"+value+"</td>";
+                }
+                if (name=="address"&&city.val()==$.trim(global.anObject[contentid].city)&&goods.val()==$.trim(global.anObject[contentid].brand)) {
+                    contentstr+="<td>"+value+"</td>";
+                }
+                if (name=="exchange"&&city.val()==$.trim(global.anObject[contentid].city)&&goods.val()==$.trim(global.anObject[contentid].brand) ){
+                    contentstr+="<td>"+value+"</td>";
+                }
+                //全国内容
+                if (name=="store"&&city.val()=="全国"&&goods.val()==$.trim(global.anObject[contentid].brand) ) {
+                    contentstr+="<td>"+value+"</td>";
+                }
+                if (name=="deadline"&&city.val()=="全国"&&goods.val()==$.trim(global.anObject[contentid].brand)) {
+                    contentstr+="<td>"+value+"</td>";
+                }
+                if (name=="address"&&city.val()=="全国"&&goods.val()==$.trim(global.anObject[contentid].brand)) {
+                    contentstr+="<td>"+value+"</td>";
+                }
+                if (name=="exchange"&&city.val()=="全国"&&goods.val()==$.trim(global.anObject[contentid].brand) ){
+                    contentstr+="<td>"+value+"</td>";
+                }
+            });
+            if (city.val()==$.trim(global.anObject[contentid].city)&&goods.val()==$.trim(global.anObject[contentid].brand))
+            {
+                contentstr+="</tr>";
+            }else if (city.val()=="全国"&&goods.val()==$.trim(global.anObject[contentid].brand)){
+                contentstr+="</tr>";//全国内容
+            }
+            contentid++;
+        }) ;
+
+        $('tbody').append(contentstr);
+
+    }
+    function changegoods() {
+        $('#se-goods').val($('#se-goods').val());
+        $("tbody").html("");
+        var city=$('#se-city');
+        var goods=$('#se-goods');
+        var brandstr="";
+        var brandid=0;
+        var contentid=0;
+        var contentstr="";
+        $.each(global.anObject,function(name,value){
+            if (city.val()==$.trim(global.anObject[contentid].city)&&goods.val()==$.trim(global.anObject[contentid].brand))
+            {
+                contentstr+="<tr>";
+            }else if (city.val()=="全国"&&goods.val()==$.trim(global.anObject[contentid].brand)){
+                contentstr+="<tr>";//全国内容
+            }
+            $.each(value,function (name,value) {
+                if (name=="store"&&city.val()==$.trim(global.anObject[contentid].city)&&goods.val()==$.trim(global.anObject[contentid].brand) ) {
+                    contentstr+="<td>"+value+"</td>";
+                }
+                if (name=="deadline"&&city.val()==$.trim(global.anObject[contentid].city)&&goods.val()==$.trim(global.anObject[contentid].brand)) {
+                    contentstr+="<td>"+value+"</td>";
+                }
+                if (name=="address"&&city.val()==$.trim(global.anObject[contentid].city)&&goods.val()==$.trim(global.anObject[contentid].brand)) {
+                    contentstr+="<td>"+value+"</td>";
+                }
+                if (name=="exchange"&&city.val()==$.trim(global.anObject[contentid].city)&&goods.val()==$.trim(global.anObject[contentid].brand) ){
+                    contentstr+="<td>"+value+"</td>";
+                }
+                //全国内容
+                if (name=="store"&&city.val()=="全国"&&goods.val()==$.trim(global.anObject[contentid].brand) ) {
+                    contentstr+="<td>"+value+"</td>";
+                }
+                if (name=="deadline"&&city.val()=="全国"&&goods.val()==$.trim(global.anObject[contentid].brand)) {
+                    contentstr+="<td>"+value+"</td>";
+                }
+                if (name=="address"&&city.val()=="全国"&&goods.val()==$.trim(global.anObject[contentid].brand)) {
+                    contentstr+="<td>"+value+"</td>";
+                }
+                if (name=="exchange"&&city.val()=="全国"&&goods.val()==$.trim(global.anObject[contentid].brand) ){
+                    contentstr+="<td>"+value+"</td>";
+                }
+            });
+            if (city.val()==$.trim(global.anObject[contentid].city)&&goods.val()==$.trim(global.anObject[contentid].brand))
+            {
+                contentstr+="<tr>";
+            }else if (city.val()=="全国"&&goods.val()==$.trim(global.anObject[contentid].brand)){
+                contentstr+="</tr>";//全国内容
+            }
+            contentid++;
+        }) ;
+        $('tbody').append(contentstr);
+    }
+    var imgsArr = [
+        './source/modules/weishidaqrc/h5_zhongxin/image/image1.png',
+        './source/modules/weishidaqrc/h5_zhongxin/image/image2.png',
+        './source/modules/weishidaqrc/h5_zhongxin/image/image3.png',
+        './source/modules/weishidaqrc/h5_zhongxin/image/image4.png',
+        './source/modules/weishidaqrc/h5_zhongxin/image/image5.png',
+        './source/modules/weishidaqrc/h5_zhongxin/image/image6.png',
+        './source/modules/weishidaqrc/h5_zhongxin/image/image7.png',
+        './source/modules/weishidaqrc/h5_zhongxin/image/image8.png',
+        './source/modules/weishidaqrc/h5_zhongxin/image/image9.png',
+        './source/modules/weishidaqrc/h5_zhongxin/image/image10.png',
+        './source/modules/weishidaqrc/h5_zhongxin/image/image12.png',
+        './source/modules/weishidaqrc/h5_zhongxin/image/image13.png',
+        './source/modules/weishidaqrc/h5_zhongxin/image/image16.jpg'
+    ];
+
+    var loader = new resLoader({
+        resources : [
+            './source/modules/weishidaqrc/h5_zhongxin/image/image1.png',
+            './source/modules/weishidaqrc/h5_zhongxin/image/image2.png',
+            './source/modules/weishidaqrc/h5_zhongxin/image/image3.png',
+            './source/modules/weishidaqrc/h5_zhongxin/image/image4.png',
+            './source/modules/weishidaqrc/h5_zhongxin/image/image5.png',
+            './source/modules/weishidaqrc/h5_zhongxin/image/image6.png',
+            './source/modules/weishidaqrc/h5_zhongxin/image/image7.png',
+            './source/modules/weishidaqrc/h5_zhongxin/image/image8.png',
+            './source/modules/weishidaqrc/h5_zhongxin/image/image9.png',
+            './source/modules/weishidaqrc/h5_zhongxin/image/image10.png',
+            './source/modules/weishidaqrc/h5_zhongxin/image/image12.png',
+            './source/modules/weishidaqrc/h5_zhongxin/image/image13.png',
+            './source/modules/weishidaqrc/h5_zhongxin/image/image16.jpg'
+        ],
+        onStart : function(total){
+        },
+        onProgress : function(current, total){
+            $('.human').css('display','');
+            var percent = parseInt(current/total*100);
+            $('.firstpage span').html(percent+"%")
+            var top = $(window).height()*175/736*(100-percent)/100;
+            $('.human').css('clip','rect('+top+'px,'+'auto,'+'auto,'+0+'px)' );
+        },
+        onComplete : function(total){
+            $('.firstpage').css('display','none');
+        }
+    });
+    loader.start();
+    function sharemore(style) {
+        $('#gif').css('display',style);
+    }
+
+    function toString(input) {
+        var result = "", i, len, isArray = (typeof input !== "string");
+        if (isArray) {
+            input = new Uint8Array(input);
+        }
+        for(i = 0, len = input.length; i < len ; i++) {
+            result += String.fromCharCode(
+                    (isArray ? input[i] : input.charCodeAt(i)) % 0xFF
+            );
+        }
+        return result;
+    }
+
+    // loading a zip file
+    JSZipUtils.getBinaryContent("./source/modules/weishidaqrc/h5_zhongxin/ref/zhongxin.zip", function (err, data) {
+        if(err) {
+            throw err; // or handle the error
+        }
+        var zip = new JSZip(data);
+        global.anObject=$.parseJSON( zip.file("zhongxinh5.json").asText());
+    });
+
+
+    //    分享
+    // jssdk config 对象
+    jssdkconfig = {"appId":"wxdb707695819324dd","nonceStr":"ZMN5TcvzVrgbRWHf","timestamp":"1463383703","signature":"e5f7c7d213e8fc2e4bca87edd87b14f6a062a8d9","url":"http:\/\/wx.exuniq.com\/mobile.php?act=module&name=weishidaqrc&do=zhongxin&weid=2&from=message&isappinstalled=0","string1":null,"name":"\u9896\u5361"} || { jsApiList:[] };
+
+
+    // 是否启用调试
+    //     jssdkconfig.debug = true;
+
+    // 已经注册了 jssdk 文档中所有的接口
+    jssdkconfig.jsApiList = [
+        'checkJsApi',
+        'onMenuShareTimeline',
+        'onMenuShareAppMessage',
+        'onMenuShareQQ',
+        'onMenuShareWeibo',
+        'showOptionMenu',
+    ];
+
+    wx.config(jssdkconfig);
+
+    var sharedata = {
+        title : "我是积分大咖，来感受下我的豪华日程！",
+        link : '',
+        desc : "积分兑什么最划算？独家《积分秘笈》，手把手教你赚积分用积分!",
+        imgUrl :"http://wx.exuniq.com/source/modules/weishidaqrc/h5_zhongxin/image/wxshare.png"
+    };
+    // 分享的回调
+    var wxCallbacks = {
+        // 分享被用户自动取消
+        cancel : function(res) {
+            alert("亲，这么好的东西怎么能不分享给好朋友呢！");
+        },
+        // 分享失败了
+        fail : function(res) {
+            alert("分享失败，可能是网络问题，一会儿再试试？");
+        },
+        // 分享成功
+        success : function(res) {
+            window.location.href='';
+        },
+    };
+
+    wx.ready(function () {
+        wx.showOptionMenu();
+        wx.onMenuShareAppMessage(sharedata, wxCallbacks);
+        wx.onMenuShareTimeline(sharedata, wxCallbacks);
+        wx.onMenuShareQQ(sharedata, wxCallbacks);
+        wx.onMenuShareWeibo(sharedata, wxCallbacks);
+    });
+
+
+    $(document).ready(function(){
+//        $(".loading").css('display','none');
+    });
+</script>
+
+
+<script type="text/javascript" src="./source/modules/weishidaqrc/h5_zhongxin/js/jquery.easing.1.3.js"></script>
+<script type="text/javascript" src="./source/modules/weishidaqrc/h5_zhongxin/js/page_scroll_bx.js?v=1.3"></script>
+
+</body>
+</html>
+
+

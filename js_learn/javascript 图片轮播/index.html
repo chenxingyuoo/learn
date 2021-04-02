@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>图片轮播</title>
+    <style>
+        *{
+            padding: 0;
+            margin: 0;
+        }
+        body{
+            padding: 50px 150px;
+        }
+
+        #wrap{
+            /*width: 354px;*/
+        }
+        #container{
+            border: 2px solid gray;
+            position: relative;
+            width: 800px;
+            height: 400px;
+            overflow: hidden;
+
+        }
+        #list_box{
+            position: absolute;
+            width: 2450px;
+            transition:all .5s ease-in-out 0s;
+        }
+        #list_box img{
+            width: 100%;
+            height: 100%;
+            float: left;
+        }
+        #buttons{
+            height: 25px;
+            line-height: 25px;
+            text-align: center;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+        }
+        #buttons span{
+            background: #AAAAAA;
+            padding: 0 5px;
+            border-radius: 75%;
+            cursor: pointer;
+        }
+        #buttons .on{
+            background:#FFE4B5 ;
+        }
+        .arrow{
+            background: RGBA(0,0,0,.3);
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            font-size: 20px;
+            color: #ffffff;
+            width: 15px;
+            height: 20px;
+            line-height: 25px;
+            z-index: 3;
+            cursor: pointer;
+        }
+        #next_btn{
+            left: inherit;
+            right: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div id="wrap">
+    <div id="container">
+        <div id="list_box" style="left: -350px;">
+            <a href=""><img class="img_item" src="../images/1.jpg" alt="1"/></a>
+            <a href=""><img class="img_item" src="../images/1.jpg" alt="1"/></a>
+            <a href=""><img class="img_item" src="../images/2.jpg" alt="2"/></a>
+            <a href=""><img class="img_item" src="../images/3.jpg" alt="3"/></a>
+            <a href=""><img class="img_item" src="../images/4.jpg" alt="4"/></a>
+            <a href=""><img class="img_item" src="../images/5.jpg" alt="5"/></a>
+            <a href=""><img class="img_item" src="../images/5.jpg" alt="5"/></a>
+        </div>
+        <a id="prev_btn" class="arrow">&lt;</a>
+        <a id="next_btn" class="arrow">&gt;</a>
+
+        <div id="buttons">
+            <span class="btn_item on" >1</span>
+            <span class="btn_item" >2</span>
+            <span class="btn_item" >3</span>
+            <span class="btn_item" >4</span>
+            <span class="btn_item" >5</span>
+        </div>
+
+    </div>
+
+</div>
+
+<script src="../jquery-2.2.1.js"></script>
+<script>
+    /*function $(id){
+        return document.getElementById(id);
+    }
+
+    function queryselector(id){
+        return document.querySelector(id)
+    }
+
+    function querySelectorAll(id){
+        return document.querySelectorAll(id)
+    }*/
+
+
+
+    function ImageCarousel(wrap,obj){
+        this.wrap = wrap || document.body;
+        this.container = obj.container || $('#container');
+        this.listBox = obj.listBox || $('#list_box');
+        this.pic = obj.pic || $('.img_item');
+        this.picWidth  = obj.width || this.container[0].clientWidth ;
+        this.picHeight  = obj.height || this.container[0].clientHeight ;
+        this.button = obj.botton || $('.btn_item');
+        this.nextBtn = obj.nextBtn || $('#next_btn');
+        this.prevBtn = obj.prevBtn || $('#prev_btn');
+        this.speed = obj.speed || 3000;
+        this.autoPlay = obj.autoPlay || true;
+        this.index = obj.index > this.pic.length - 2 ? 1 : obj.index || 1;
+        this.is_click = true;  //锁定
+        this.init();
+
+    }
+
+    ImageCarousel.prototype.init = function(){
+        this.wrap.css({
+            width : this.picWidth
+        });
+
+        this.listBox.css({
+            width : this.pic.length * this.picWidth,
+            height : this.picHeight,
+            left : - this.picWidth * this.index
+        });
+
+        this.container.css({
+            height : this.picHeight,
+            width : this.picWidth
+        });
+        this.pic.css({
+            width : this.picWidth,
+            height : this.picHeight
+        });
+
+
+        //按钮高亮初始化
+        this.buttonInit();
+
+        //点击切换下一张
+        this.prev();
+
+        //点击切换下一张
+        this.next();
+
+        //点击数字切换
+        this.numSwitching();
+
+        //根据用用户传的参数来判断是否自动播放
+        if(this.autoPlay){
+            //自动播放
+            this.play();
+
+            this.timeStart();
+
+            this.timeOut();
+        }
+
+    };
+
+    //点击切换下一张
+    ImageCarousel.prototype.next = function(){
+        var self = this;
+        this.nextBtn.on('click',function(e){
+            if(self.is_click){
+                self.is_click = false;  //相当于锁定 ， 执行完一次才可以执行下一次
+                //检测按钮高亮是否大于button.length ，大于button.length就等于 1
+                self.buttonRight();
+                //图片左右切换动画 ， 这里是下一张 ， 所以第二个参数传个负值
+                switchingAnimate(self, -(self.picWidth));
+           }
+        });
+    };
+
+    //按钮高亮初始化
+    ImageCarousel.prototype.buttonInit = function(){
+        this.button.eq(this.index - 1).addClass('on').siblings().removeClass('on');
+    };
+
+    //检测按钮高亮是否大于button.length ，大于button.length就等于 1
+    ImageCarousel.prototype.buttonRight = function(){
+        this.index == this.pic.length - 2 ? this.index = 1 : this.index += 1;
+        this.button.eq(this.index - 1).addClass('on').siblings().removeClass('on');
+    };
+
+    //检测按钮高亮是否小于1 ， 小于1就等于 button.length
+    ImageCarousel.prototype.buttonLeft = function(){
+        this.index == 1 ? this.index = this.pic.length - 2 : this.index -=  1;
+        this.button.eq(this.index - 1).addClass('on').siblings().removeClass('on');
+    };
+
+    //图片左右切换动画
+    function switchingAnimate(self,picWidth){
+        var leftLen = parseInt(self.listBox.css('left')) + picWidth;
+
+        //图片切换
+        self.listBox.css({
+            left :  leftLen + 'px'
+        });
+
+        //多出两张图片的宽度 ， 做无限轮播
+        if(leftLen < - (self.pic.length - 2) * self.picWidth){
+            self.listBox.css({
+                left : - self.picWidth
+            });
+        }
+
+        //大于初始图片宽度的时候
+        if(leftLen > - self.picWidth){
+            self.listBox.css({
+                left : - (self.pic.length - 2) * self.picWidth
+            });
+        }
+
+        setTimeout(function(){
+            self.is_click = true;
+        },500);  //动画执行完的速度是500毫秒
+    }
+
+    //点击切换上一张
+    ImageCarousel.prototype.prev = function(){
+        var self = this;
+        this.prevBtn.on('click',function(e){
+            if(self.is_click) {
+                self.is_click = false;
+                //检测按钮高亮是否小于1 ， 小于1就等于 button.length
+                self.buttonLeft();
+                //图片左右切换动画 ， 这里是上一张 ， 所以第二个参数传个正值
+                switchingAnimate(self, self.picWidth);
+
+            }
+        });
+    };
+
+
+    //自动播放定时器
+    ImageCarousel.prototype.play = function(){
+        var self = this;
+        clearInterval(this.timer);
+        this.timer = setInterval(function(){
+            //检测按钮高亮是否大于button.length ，大于button.length就等于 1
+            self.buttonRight();
+             //图片左右切换动画 ， 这里自动播放图片是向左， 所以第二个参数传个负值
+            switchingAnimate(self, -(self.picWidth));
+        },this.speed);
+    };
+
+    ImageCarousel.prototype.numSwitching = function(){
+        var self = this;
+        this.button.on('click',function(e){
+            var $that = $(this);
+            var myIndex = parseInt($that.index() + 1);
+            var offset = - self.picWidth * ( myIndex - self.index);
+
+            //图片左右切换动画
+            switchingAnimate(self,offset);
+
+            self.index = myIndex;
+
+            //给当前点击的 123按钮 高亮显示 ， 兄弟元素去掉高亮
+            $that.addClass('on').siblings().removeClass('on');
+        });
+    };
+
+    //根据是否开启自动播放来判断鼠标移过暂停定时器
+    ImageCarousel.prototype.timeOut = function(){
+        var self = this;
+        this.wrap.on('mouseenter',function(){
+            //根据是否开启自动播放来判断鼠标移过暂停定时器
+            clearInterval(self.timer);
+        });
+    };
+
+    //根据是否开启自动播放来判断鼠标移开 开启定时器
+    ImageCarousel.prototype.timeStart = function(){
+        var self = this;
+        this.wrap.on('mouseleave',function(){
+            self.play();
+        });
+    };
+
+
+    //实例化图片轮播
+    var imageCarousel = new ImageCarousel($('#wrap'),{
+//        index : 4
+       /* width : 800,
+        height : 400*/
+    });
+
+</script>
+
+</body>
+</html>

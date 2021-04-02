@@ -1,0 +1,1 @@
+$(function(){$(".del").click(function(a){var b=$(a.target),c=b.data("id"),d=$(".item-id-"+c);$.ajax({type:"delete",url:"/admin/movie/list?id="+c}).done(function(a){1===a.success&&d.length>0&&d.remove()})})});

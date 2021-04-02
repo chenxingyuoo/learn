@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Object.prototype.watch()</title>
+</head>
+<body>
+<script>
+    // watch()方法手表属性被分配一个值，当出现运行的函数。
+    //目前只是 Firefox  有这个方法
+
+    //obj.watch(prop, handler)
+
+    //使用的监视和取消监视
+    var o = { p: 1 };
+
+    debugger
+    o.watch('p', function (id, oldval, newval) {
+        console.log('o.' + id + ' changed from ' + oldval + ' to ' + newval);
+        return newval;
+    });
+
+    o.p = 2;
+    o.p = 3;
+    delete o.p;
+    o.p = 4;
+
+    o.unwatch('p');
+    o.p = 5;
+
+    //o.p changed from 1 to 2
+    //o.p changed from 2 to 3
+    //o.p changed from undefined to 4
+
+    Person = function(name, age) {
+        this.watch('age', Person.prototype._isValidAssignment);
+        this.watch('name', Person.prototype._isValidAssignment);
+        this.name = name;
+        this.age = age;
+    };
+
+    Person.prototype.toString = function() {
+        return this.name + ', ' + this.age;
+    };
+
+    Person.prototype._isValidAssignment = function(id, oldval, newval) {
+        if (id === 'name' && (!newval || newval.length > 30)) {
+            throw new RangeError('invalid name for ' + this);
+        }
+        if (id === 'age'  && (newval < 0 || newval > 200)) {
+            throw new RangeError('invalid age for ' + this);
+        }
+        return newval;
+    }
+
+    will = new Person('Will', 29);
+    console.log(will);   // Will, 29
+
+    try {
+        will.name = '';
+    } catch (e) {
+        console.log(e);
+    }
+
+    try {
+        will.age = -4;
+    } catch (e) {
+        console.log(e);
+    }
+</script>
+</body>
+</html>

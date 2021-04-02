@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script type="text/javascript">
+        var tamgram = [
+            {p:[{x:0,y:0},{x:800,y:0},{x:400,y:400}],color:"#caff67"},
+            {p:[{x:0,y:0},{x:400,y:400},{x:0,y:800}],color:"#67becf"},
+            {p:[{x:800,y:0},{x:800,y:400},{x:600,y:600},{x:600,y:200}],color:"#ef3d61"},
+            {p:[{x:600,y:200},{x:600,y:600},{x:400,y:400}],color:"#f6ca29"},
+            {p:[{x:400,y:400},{x:600,y:600},{x:400,y:800},{x:200,y:600}],color:"#a594c0"},
+            {p:[{x:200,y:600},{x:400,y:800},{x:0,y:800}],color:"#fa8ecc"},
+            {p:[{x:800,y:400},{x:800,y:800},{x:400,y:800}],color:"#f6ca29"},
+        ];
+
+         window.onload = function (){
+             var canvas = document.getElementById('canvas');  //获取ID
+
+             canvas.width = 800;
+             canvas.height = 800;
+
+             var context = canvas.getContext('2d');  //绘图必须定义的
+             
+             for (var i = 0; i < tamgram.length; i++){  //循环tamgram的每个对象
+                 draw( tamgram[i] , context);
+             }
+
+             function draw (piece , cxt){  //接收tamgram的每个对象 ， context绘图对象
+
+                 cxt.beginPath();   //beginPath() 方法在一个画布中开始子路径的一个新的集合。
+
+                 //moveTo() 方法可把窗口的左上角移动到一个指定的坐标。x y
+                 cxt.moveTo( piece.p[0].x , piece.p[0].y);
+
+                 for (var i = 0; i < piece.p.length; i++){
+                     //lineTo开始一条路径，移动到位置 0,0。  基于x y 坐标。
+                     cxt.lineTo(piece.p[i].x , piece.p[i].y);
+                 }
+                 cxt.closePath();   //closePath() 方法关闭一条打开的子路径。结束子路径的一个新的集合。
+
+                 cxt.fillStyle = piece.color;  //内容填充颜色
+                 cxt.fill();    //内容填充调用方法
+
+                 cxt.strokeStyle = "block";  //线条填充颜色
+                 cxt.strokeWidth = 3;   //线条填充大小
+                 cxt.stroke();    //线条填充方法
+             }
+         }
+
+    </script>
+</head>
+
+<body>
+
+<canvas id="canvas" style="border: 1px solid #ddd;display: block;margin: 50px"></canvas>
+
+</body>
+</html>

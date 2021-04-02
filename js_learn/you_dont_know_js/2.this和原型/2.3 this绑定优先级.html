@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+
+<script>
+
+    //    现在我们已经了解了函数调用中 this 绑定的四条规则，你需要做的就是找到函数的调用位 置并判断应当应用哪条规则。
+    // 但是，如果某个调用位置可以应用多条规则该怎么办?为了 解决这个问题就必须给这些规则设定优先级，这就是我们接下来要介绍的内容。
+
+    //    毫无疑问，默认绑定的优先级是四条规则中最低的，所以我们可以先不考虑它。
+    //    隐式绑定和显式绑定哪个优先级更高?我们来测试一下:
+
+    function foo() {
+        console.log(this.a);
+    }
+    var obj1 = {
+        a: 2,
+        foo: foo
+    };
+    var obj2 = {
+        a: 3,
+        foo: foo
+    };
+
+    obj1.foo(); // 2
+    obj2.foo(); // 3
+
+    obj1.foo.call(obj2); // 3
+    obj2.foo.call(obj1); // 2
+
+    //    可以看到，显式绑定优先级更高，也就是说在判断时应当先考虑是否可以应用显式绑定。
+
+
+    //    现在我们需要搞清楚 new 绑定和隐式绑定的优先级谁高谁低:
+    function foos(something) {
+        this.a = something;
+    }
+    var obj1s = {
+        foos: foos
+    };
+    var obj2s = {};
+
+    obj1s.foos(2);
+    console.log(obj1.a); // 2
+
+    obj1s.foos.call(obj2s, 3);
+    console.log(obj2s.a);
+
+    var bar = new obj1s.foos(4);
+    console.log(obj1s.a); // 2
+    console.log(bar.a); // 4
+
+    //可以看到 new 绑定比隐式绑定优先级高。但是 new 绑定和显式绑定谁的优先级更高呢?
+
+    //new 和 call/apply 无法一起使用，因此无法通过 new foo.call(obj1) 来直接 进行测试。但是我们可以使用硬绑定来测试它俩的优先级。
+
+    // 在看代码之前先回忆一下硬绑定是如何工作的。Function.prototype.bind(..) 会创建一个 新的包装函数，
+    // 这个函数会忽略它当前的 this 绑定(无论绑定的对象是什么)，并把我们 提供的对象绑定到 this 上。
+
+    //这样看起来硬绑定(也是显式绑定的一种)似乎比 new 绑定的优先级更高，无法使用 new 来控制 this 绑定。
+    function foo(something) {
+        this.a = something;
+    }
+    var obj1 = {};
+    var bar = foo.bind(obj1);
+    bar(2);
+    console.log(obj1.a); // 2
+    var baz = new bar(3);
+    console.log(obj1.a); // 2
+    console.log(baz.a); // 3
+
+    // 出乎意料! bar 被硬绑定到 obj1 上，但是 new bar(3) 并没有像我们预计那样修改 obj1.a 为3
+    // 修改为 3。相反，new 修改了硬绑定(到 obj1 的)调用 bar(..) 中的 this。因为使用了 new 绑定，我们得到了一个名字为 baz 的新对象，并且 baz.a 的值是 3。
+
+    //    再来看看我们之前介绍的“裸”辅助函数 bind:
+    function bind(fn, obj) {
+        return function () {
+            fn.apply(obj, arguments);
+        };
+    }
+
+    //非常令人惊讶，因为看起来在辅助函数中 new 操作符的调用无法修改 this 绑定，但是在刚
+    //    才的代码中 new 确实修改了 this 绑定。
+
+    //    实际上，ES5 中内置的 Function.prototype.bind(..) 更加复杂。下面是 MDN 提供的一种
+    //    bind(..) 实现，为了方便阅读我们对代码进行了排版:
+
+    if (!Function.prototype.bind) {
+        Function.prototype.bind = function (oThis) {
+            debugger;
+            if (typeof this !== "function") { // 与 ECMAScript 5 最接近的 // 内部 IsCallable 函数
+                throw new TypeError(
+                        "Function.prototype.bind - what is trying " +
+                        "to be bound is not callable"
+                );
+            }
+            var aArgs = Array.prototype.slice.call(arguments, 1);
+            var fToBind = this;
+            var fNOP = function () {
+            };
+            var fBound = function () {
+                debugger;
+                return fToBind.apply((
+                                this instanceof fNOP &&
+                                oThis ? this : oThis ),
+                        aArgs.concat(
+                                Array.prototype.slice.call(arguments)
+                        ));
+            };
+            fNOP.prototype = this.prototype;
+            fBound.prototype = new fNOP();
+            return fBound;
+        };
+    }
+
+
+    // 这种 bind(..) 是一种 polyfill 代码(polyfill 就是我们常说的刮墙用的腻 子，polyfill 代码主要用于旧浏览器的兼容，
+    // 比如说在旧的浏览器中并没 有内置 bind 函数，因此可以使用 polyfill 代码在旧浏览器中实现新的功 能)，对于 new 使用的硬绑定函数来说，
+    // 这段 polyfill 代码和 ES5 内置的 bind(..) 函数并不完全相同(后面会介绍为什么要在 new 中使用硬绑定函 数)。
+    // 由于 polyfill 并不是内置函数，所以无法创建一个不包含 .prototype 的函数，因此会具有一些副作用。
+    // 如果你要在 new 中使用硬绑定函数并且依 赖 polyfill 代码的话，一定要非常小心。
+
+
+    //    下面是 new 修改 this 的相关代码:
+
+    //    this instanceof fNOP &&
+    //    oThis ? this : oThis
+    // ... 以及:
+    //    fNOP.prototype = this.prototype; fBound.prototype = new fNOP();
+
+    //这段代码会判断硬绑定函数是否是被 new 调用，如果是的话就会使用新创建 的 this 替换硬绑定的 this。
+
+    //那么，为什么要在 new 中使用硬绑定函数呢?直接使用普通函数不是更简单吗?
+
+    // 之所以要在 new 中使用硬绑定函数，主要目的是预先设置函数的一些参数，这样在使用 new 进行初始化时就可以只传入其余的参数。
+    // bind(..) 的功能之一就是可以把除了第一个 参数(第一个参数用于绑定 this)之外的其他参数都传给下层的函数(这种技术称为“部 分应用”，是“柯里化”的一种)。举例来说:
+
+    function foo(p1, p2) {
+        this.val = p1 + p2;
+    }
+
+    // 之所以使用 null 是因为在本例中我们并不关心硬绑定的 this 是什么
+    // 反正使用 new 时 this 会被修改
+    var bar = foo.bind(null, "p1");
+
+    var baz = new bar("p2");
+
+    console.log(baz.val);  //p1p2
+
+
+    //判断this
+
+    //    现在我们可以根据优先级来判断函数在某个调用位置应用的是哪条规则。可以按照下面的
+    //    顺序来进行判断:
+    //    1. 函数是否在new中调用(new绑定)?如果是的话this绑定的是新创建的对象。
+    //    var bar = new foo()
+    //    2. 函数是否通过call、apply(显式绑定)或者硬绑定调用?如果是的话，this绑定的是 指定的对象。
+    //    var bar = foo.call(obj2)
+    //    3. 函数是否在某个上下文对象中调用(隐式绑定)?如果是的话，this绑定的是那个上 下文对象。
+    //    var bar = obj1.foo()
+    //    4. 如果都不是的话，使用默认绑定。如果在严格模式下，就绑定到undefined，否则绑定到 全局对象。
+    //    var bar = foo()
+    //    就是这样。对于正常的函数调用来说，理解了这些知识你就可以明白 this 的绑定原理了。
+    //    不过......凡事总有例外。
+
+</script>
+
+</body>
+</html>

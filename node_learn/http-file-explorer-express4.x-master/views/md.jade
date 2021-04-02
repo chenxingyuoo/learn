@@ -1,0 +1,24 @@
+//
+   Created by Yc on 2016/6/9.
+extends layout
+
+block content
+    script(src="http://cdn.bootcss.com/marked/0.3.5/marked.min.js")
+    script(src="http://cdn.bootcss.com/highlight.js/8.0/highlight.min.js")
+    div.container-fluid
+        h1=title
+        include btns
+        div.row
+            div.col-lg-6.visible-lg
+                h2 解析前
+                div.markdown-body
+                    pre
+                        code(id='markdown-raw')=content
+            div.col-lg-6
+                h2 解析后
+                div.markdown-body(id='markdown-show')
+        script(src="/javascripts/md.js")
+        script document.getElementById('markdown-show').innerHTML = marked(document.getElementById('markdown-raw').innerText,{renderer:renderer});
+
+        footer
+            p.text-center.text-info Running on node with Express, Jade. By Moyu.

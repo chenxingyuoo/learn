@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        .panel-heading {
+            text-align:center;
+        }
+        #author {
+            text-align:right;
+        }
+        #eq {
+            margin-top:5px;
+            margin-bottom:5px;
+        }
+    </style>
+</head>
+<body>
+
+
+<div class="container">
+    <div class="panel panel-default">
+        <div class="panel-heading">表达式运算</div>
+        <div class="panel-body">
+            <div class="expression">
+                <label for='exp'>输入表达式：</label> <span class="label label-info">加+ 减- 乘* 除/ 乘方^ 求余%</span>
+
+                <input id="exp" class="form-control" style="max-width:100%" rows="1" placeholder="输入表达式，如：1+3*4-2^3" value="1+3*4/2-2^3+5%2">
+            </div>
+            <div class="btn-group">
+                <button class="btn btn-default btn-sm" id="eq">
+                    =
+                </button>
+            </div>
+            <div class="output" style="margin=5">
+                <div class="well well-sm" id="result"></div>
+            </div>
+        </div>
+        <div class="panel-footer">
+            <div id="author">Author: <a href="http://wuzhiwei.net/about/" target="_blank">Tim Wu</a>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="../jquery-2.2.1.js"></script>
+<script>
+    $("#exp").on('keydown', function (event) {
+        if (event.keyCode == 13) {
+            $('#result').html(calInfixExpression($("#exp").val()));
+        }
+    });
+
+    $("#eq").click( function() {
+        $('#result').html(calInfixExpression($("#exp").val()));
+    })
+
+    var prioty = {
+        "+": 1,
+        "-": 1,
+        "%": 2,
+        "*": 2,
+        "/": 2,
+        "^": 3,
+        "(": 0,
+        ")": 0,
+        "`": -1,
+    };
+
+    function doop(op, opn1, opn2) {
+        switch (op) {
+            case "+":
+                return opn1 + opn2;
+            case "-":
+                return opn1 - opn2;
+            case "*":
+                return opn1 * opn2;
+            case "/":
+                return opn1 / opn2;
+            case "%":
+                return opn1 % opn2;
+            case "^":
+                return Math.pow(opn1, opn2);
+            default:
+                return 0;
+        }
+    }
+
+    function opcomp(a, b) {
+        return prioty[a] - prioty[b];
+    }
+
+    function calInfixExpression(exp) {
+        var cs = [];
+        var ns = [];
+        var exp = exp.replace(/\s/g, "");
+
+        exp += '`';
+        if (exp[0] === '-') {
+            exp = "0" + exp;
+        }
+        var c;
+        var op;
+        var opn1;
+        var opn2;
+        for (var i = 0; i < exp.length; ++i) {
+
+            c = exp[i];
+            if (c in prioty) {
+                //op
+                while (c != '(' && cs.length && opcomp(cs[cs.length - 1], c) >= 0) {
+                    debugger
+                    op = cs.pop();
+                    if (op != '(' && op != ')') {
+                        opn2 = ns.pop();
+                        opn1 = ns.pop();
+                        ns.push(doop(op, opn1, opn2));
+                    }
+                }
+                if (c != ')') cs.push(c);
+            } else {
+                while (!(exp[i] in prioty)) {
+                    i++;
+                    c += exp[i];
+                }
+                ns.push(parseFloat(c));
+                i--;
+            }
+        }
+        return ns.length ? ns[0] : NaN;
+    }
+
+    $('#result').html(calInfixExpression($("#exp").val()));
+</script>
+</body>
+</html>

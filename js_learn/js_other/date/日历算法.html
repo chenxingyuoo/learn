@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+
+<script>
+    //是否为闰年
+    var isLeapYear = function (year) {
+        return (year % 4 == 0) && (year % 100 != 0 || year % 400 == 0);
+    };
+
+
+    //获取当年公厉的天数
+    var getYearDays = function (year){
+        return (isLeapYear(year)) ? 366 : 365;
+    };
+
+    //获取当月公厉的天数
+    var getSolarDays = function (){
+        // 公历每个月份的天数普通表
+        var solarMonth =  [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+
+        return function (year, month){
+            if (month == 1) {
+                return (isLeapYear(year)) ? 29 : 28;
+            } else {
+                return solarMonth[month];
+            }
+        }
+    }();
+
+    //获取当前date
+    var getCurDate = function (){
+        var date = new Date();
+        var year = date.getFullYear();
+        var month = date.getMonth() + 1;
+        var day = date.getDate();
+
+        return {
+            year : year,
+            month : month,
+            day : day
+        }
+    };
+
+    //获取指定月份的第一天星期几
+    var getCurMonthFirstDay = function (year, month){
+        var date = new Date(year, month, 1); //指定月第一天Date资讯
+        return date.getDay();        //指定月第一天星期几
+    };
+
+
+    var num = 14;
+
+
+    var curDate = getCurDate();
+
+    var len = getYearDays(curDate.year) / num;
+</script>
+
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>微信红包</title>
+    <style>
+        #blur-div{
+            width: 800px;
+            height: 600px;
+            margin: 0 auto;
+            position: relative;
+        }
+        #imgs{
+            display: block;
+            width: 800px;
+            height: 600px;
+            margin: 0 auto;
+
+            filter : blur(20px);
+            -webkit-filter : blur(20px);
+
+            position: absolute;
+            left: 0px;
+            top: 0px;
+            z-index: 0;
+        }
+        #canvas{
+            display: block;
+            margin: 0 auto;
+            position: absolute;
+            left: 0px;
+            top: 0px;
+            z-index: 99;
+         }
+    </style>
+</head>
+
+<body>
+<div id="blur-div">
+    <img id="imgs" src="../images/2.jpg" alt="">
+    <canvas id="canvas"></canvas>
+</div>
+<script src="../jquery-2.2.1.js"></script>
+<script>
+    var canvasWidth = 800,
+        canvasHeight = 600;
+
+    var canvas = document.getElementById('canvas'),
+        context = canvas.getContext('2d')
+
+    canvas.width = canvasWidth;
+    canvas.height = canvasHeight
+
+    var image = new Image()
+    image.src = '../images/0a8ee7319336f90832f945fa32a0e0d9.jpg'
+    image.onload = function(){
+        initCanvas()
+    }
+
+    function initCanvas(){
+        draw(image)
+    }
+
+    function draw(image){
+        context.clearRect(0,0,canvas.width,canvas.height);
+        context.save();
+        context.drawImage(image , 0 , 0)
+        context.restore()
+    }
+
+</script>
+</body>
+</html>

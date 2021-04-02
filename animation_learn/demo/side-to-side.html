@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>Offsets</title>
+  <style>
+  html, body {
+    overflow: hidden;
+    padding: 5px;
+    background: #fcfcfc;
+    font-family: Helvetica, Arial, sans-serif;
+  }
+
+  .offsetable {
+    background: #FFF;
+    color: #333;
+    height: 50px;
+    margin: 0 auto 10px auto;
+    width: 250px;
+    line-height: 50px;
+    text-align: center;
+    position: relative;
+    border-radius: 3px;
+    -webkit-backface-visibility: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+
+    -webkit-transition: -webkit-transform 500ms cubic-bezier(0.190, 1.000, 0.220, 1.000);
+    -moz-transition: -moz-transform 500ms cubic-bezier(0.190, 1.000, 0.220, 1.000);
+    -ms-transition: -ms-transform 500ms cubic-bezier(0.190, 1.000, 0.220, 1.000);
+    -o-transition: -o-transform 500ms cubic-bezier(0.190, 1.000, 0.220, 1.000);
+    transition: transform 500ms cubic-bezier(0.190, 1.000, 0.220, 1.000);
+
+    -webkit-transform: translateX(-570px);
+    -moz-transform: translateX(-570px);
+    -ms-transform: translateX(-570px);
+    -o-transform: translateX(-570px);
+    transform: translateX(-570px);
+  }
+
+  .offsetable span {
+
+    -webkit-transition: -webkit-transform 500ms cubic-bezier(0.190, 1.000, 0.220, 1.000),
+    opacity 500ms cubic-bezier(0.190, 1.000, 0.220, 1.000);
+    -moz-transition: -moz-transform 500ms cubic-bezier(0.190, 1.000, 0.220, 1.000),
+    opacity 500ms cubic-bezier(0.190, 1.000, 0.220, 1.000);
+    -ms-transition: -ms-transform 500ms cubic-bezier(0.190, 1.000, 0.220, 1.000),
+    opacity 500ms cubic-bezier(0.190, 1.000, 0.220, 1.000);
+    -o-transition: -o-transform 500ms cubic-bezier(0.190, 1.000, 0.220, 1.000),
+    opacity 500ms cubic-bezier(0.190, 1.000, 0.220, 1.000);
+    transition: transform 500ms cubic-bezier(0.190, 1.000, 0.220, 1.000),
+    opacity 500ms cubic-bezier(0.190, 1.000, 0.220, 1.000);
+
+  }
+
+  .offsetable:nth-child(2n) {
+    -webkit-transform: translateX(570px);
+    -moz-transform: translateX(570px);
+    -ms-transform: translateX(570px);
+    -o-transform: translateX(570px);
+    transform: translateX(570px);
+  }
+
+  .offsetable:nth-child(2n+1) {
+    -webkit-transform: translateX(-570px);
+    -moz-transform: translateX(-570px);
+    -ms-transform: translateX(-570px);
+    -o-transform: translateX(-570px);
+    transform: translateX(-570px);
+  }
+
+  #container.collapsed .offsetable {
+    -webkit-transform: translateX(0);
+    -moz-transform: translateX(0);
+    -ms-transform: translateX(0);
+    -o-transform: translateX(0);
+    transform: translateX(0);
+  }
+
+  .livedemo {
+    width: 100px;
+    background: #333;
+    color: #FFF !important;
+    font-size: 14px;
+    padding: 7px 10px;
+    border-radius: 4px;
+    border: none;
+    transition: background 0.3s ease-out;
+
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    margin-left: -50px;
+  }
+
+  .livedemo:hover {
+    background: #50C0FB;
+  }
+
+  </style>
+
+</head>
+<body>
+
+  <div id="container">
+    <div class="offsetable"><span>Item 1</span></div>
+    <div class="offsetable"><span>Item 2</span></div>
+    <div class="offsetable"><span>Item 3</span></div>
+    <div class="offsetable"><span>Item 4</span></div>
+    <div class="offsetable"><span>Item 5</span></div>
+  </div>
+
+  <button id="animate" class="livedemo">Animate</button>
+
+  <script>
+
+    var offsetable;
+    var offsetables = document.querySelectorAll('.offsetable');
+    var goButton = document.getElementById("animate");
+    var container = document.getElementById("container");
+
+    for (var i = 0; i < offsetables.length; i++) {
+      offsetable = offsetables[i];
+      setStyleWithPrefix(offsetable, 'TransitionDelay', (i * 20) + 'ms');
+      setStyle(offsetable, 'transitionDelay', (i * 20) + 'ms');
+    }
+
+    function setStyleWithPrefix(element, property, value) {
+      var prefixes = [
+        'webkit', 'moz', 'ms', 'o'
+      ];
+
+      for (var p = 0; p < prefixes.length; p++) {
+        element.style[prefixes[p] + property] = value;
+      }
+    }
+
+    function setStyle(element, property, value) {
+      element.style[property] = value;
+    }
+
+    goButton.addEventListener('click', function() {
+      container.classList.toggle('collapsed');
+    });
+  </script>
+</body>
+</html>

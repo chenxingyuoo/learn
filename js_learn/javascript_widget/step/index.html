@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+
+<script src="js/step.js"></script>
+<script>
+    var step = new Step({
+        onEnd : function onEnd(){
+            console.log('onEnd');
+        },
+        onStart : function onStart(){
+            console.log('onStart');
+        }
+    });
+
+    step.add(function alerts(arg1,arg2){
+        alert('add');
+        step.next(arg1,arg2);
+    });
+
+    step.add(function log(arg1,arg2){
+        console.log('add');
+    });
+
+    step.run('arg1','arg2')
+</script>
+</body>
+</html>

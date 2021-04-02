@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>index</title>
+	<meta charset = 'utf-8'/>
+</head>
+
+<body>
+
+<script type="text/javascript">
+
+    //reduce1
+	 function product(arr) {
+	 	return arr.reduce(function(x,y){
+	 	        return x * y
+	 	    });
+     }
+
+	 // 测试:
+	 if (product([1, 2, 3, 4]) === 24 && product([0, 1, 2]) === 0 && product([99, 88, 77, 66]) === 44274384) {
+	     alert('测试通过!');
+	 }
+	 else {
+	     alert('测试失败!');
+	 }
+
+
+
+	//reduce2
+	var s = '12345';
+	 function string2int(s) {
+         var s1 = s.split("");
+         //将每个字符串 - ’0‘ ， 数字自动转换成 数字 整形 ？
+         var s1_map = s1.map(function(x){
+             return x - '0';
+         });
+         return s1_map.reduce(function(x,y){
+            console.log(x,y);
+         	return x * 10 + y
+         })
+
+	 }
+	 if (string2int('12345') === 12345) {
+	 	alert('测试通过')
+	 };
+
+
+	//map 
+	 function normalize(arr) {
+	     return arr.map(function(x){
+             //第一个字符换转换成大写 ， 后面的全部转为小写
+	         return x[0].toUpperCase() + x.slice(1).toLowerCase();
+	     });
+
+	 }
+
+	 // 测试:
+	 if (normalize(['adam', 'LISA', 'barT']).toString() === ['Adam', 'Lisa', 'Bart'].toString()) {
+	     alert('测试通过!');
+	 }
+	 else {
+	     alert('测试失败!');
+	 }
+
+
+    //    filter1
+
+	 var arr = ['A', '', 'B', null, undefined, 'C', '  '];
+
+	 var r = arr.filter(function (ss) {
+	     return ss && ss.trim(); // 注意：IE9以下的版本没有trim()方法
+	 });
+	 console.log(r);  // ['A','B','C']
+
+
+
+	// filter2
+	 function get_primes(arr) {
+
+     return arr.filter(function(x){
+     if (x===1){
+         return false;
+      }
+
+     for (var i = 2;i<x;i++){
+         if (x % i === 0){
+             return false;
+         }
+     }
+     return true
+     });
+
+     }
+
+	 // 测试:
+	 var
+	     x,
+	     r,
+	     arr = [];
+	 for (x = 1; x < 100; x++) {
+	     arr.push(x);
+	 }
+	 r = get_primes(arr);
+	 if (r.toString() === [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97].toString()) {
+	     alert('测试通过!');
+	 } else {
+	     alert('测试失败: ' + r.toString());
+	 }
+
+
+	//闭包1
+     function sum(arr) {
+     return arr.reduce(function (x, y) {
+         return x + y;
+     });
+     }
+
+     if(sum([1, 2, 3, 4, 5]) == 15){
+         console.log('true')
+     }
+
+
+    //闭包2
+     function lazy_sum(arr) {
+     var sum = function () {
+         return arr.reduce(function (x, y) {
+             return x + y;
+         });
+     }
+     return sum;
+     }
+
+     var fn1 = lazy_sum([1, 2, 3, 4, 5]);
+     var fn2 = lazy_sum([1, 2, 3, 4, 5]);
+    console.log(fn1 == fn2); // false
+
+     if (fn1() == 15) {
+         console.log('true')
+     };
+
+
+    // 闭包3  返回闭包时牢记的一点就是：返回函数不要引用任何循环变量，或者后续会发生变化的变量。
+    //如果一定要引用循环变量怎么办？方法是再创建一个函数，用该函数的参数绑定循环变量当前的值，无论该循环变量后续如何更改，已绑定到函数参数的值不变： 
+     function count() {
+     var arr = [];
+
+     for (var i=1; i<=3; i++) {
+         arr.push((function (n) {
+             return function(){
+             	return n * n;
+             }
+         })(i));
+     }
+     return arr;
+     }
+
+     var results = count();  // 返回的是一个有三个匿名函数的数组
+     var fn1 = results[0];
+     var fn2 = results[1];
+     var fn3 = results[2];
+    console.log(fn1());  // 1
+    console.log(fn2());  // 4
+    console.log(fn3());   // 9
+
+
+    //闭包4
+     function createTime(inits){
+     	var num = inits || 0;
+     	return {
+     		inc : function(){
+     			num += 1
+     			return num
+     		}
+     	}
+     }
+
+     var c1 = createTime();
+     console.log(c1.inc());  //1
+    console.log(c1.inc());   //2
+    console.log(c1.inc());   //3
+
+     var c1 = createTime(10);
+    console.log(c1.inc());  //11
+    console.log(c1.inc());   //12
+    console.log(c1.inc());  //13
+
+
+    //闭包5
+     function make_pow(n){
+     	return function(x){
+             return Math.pow(x,n);
+     	}
+     }
+
+     var pow2 = make_pow(2);
+     var pow3 = make_pow(3);
+    console.log(pow2(5));
+    console.log(pow3(2));
+
+
+
+    //闭包计算 定义数字1:
+     var one = function (f) {
+         return function (x) {
+             return f(x);
+         }
+     };
+
+     // 定义加法:
+	 function add(n, m) {
+	     return function (f) {
+	         return function (x) {
+	             return m(f)(n(f)(x));
+	         }
+	     }
+	 }
+
+	 var two = add(one, one);
+console.log(two())
+	 var three = add(one , two)
+console.log(three())
+	 (three(function () {
+        console.log('print 3 times');
+     }))();
+
+
+   //箭头函数
+    var fn = (x, y) => x * x + y * y;
+    alert(fn(2,3)) //13
+   //等价于
+//    var fn = function(x,y){
+//    	  return x * x + y * y;
+//    }
+//
+//    var f = () => 3.14
+//    alert(f())  //3.14
+//
+//   // 可变参数:
+//	 (x, y, ...rest) => {
+//	 	debugger
+//	     var i, sum = x + y;
+//	     for (i=0; i<rest.length; i++) {
+//	         sum += rest[i];
+//	     }
+//	     return sum;
+//	 }
+//
+//	 var fn = x => ({ foo: x })
+//	 alert(fn.foo)
+
+
+
+ 	/*function fib(max) {
+ 		debugger
+     var
+         t,
+         a = 0,
+         b = 1,
+         arr = [0, 1];
+     while (arr.length < max) {
+         t = a + b;
+         a = b;
+         b = t;
+         arr.push(t);
+     }
+     return arr;
+ }
+   fib(10)
+
+
+
+	 function fib(max) {
+	     var
+	         t,
+	         a = 0,
+	         b = 1,
+	         n = 1;
+	     while (n < max) {
+	         yield a;
+	         t = a + b;
+	         a = b;
+	         b = t;
+	         n ++;
+	     }
+	     return a;
+	 }
+
+	 for (var x of fib(5)) {
+	     console.log(x); // 依次输出0, 1, 1, 2, 3
+	 }*/
+
+
+	//
+
+   
+
+	 var fib = {
+     a: 0,
+     b: 1,
+     n: 0,
+     max: 5,
+     next: function () {
+         var
+             r = this.a,
+             t = this.a + this.b;
+         this.a = this.b;
+         this.b = t;
+         if (this.n < this.max) {
+             this.n ++;
+             return r;
+         } else {
+             return undefined;
+         }
+     }
+     };
+
+    console.log(fib.next())
+	
+
+</script>
+</body>
+</html>

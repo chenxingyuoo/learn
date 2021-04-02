@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body style="height: 3000px;background: #62daf2">
+
+<script>
+    // 简单的防抖动函数
+    /*function debounce(func, wait, immediate) {
+        // 定时器变量
+        var timeout;
+        return function() {
+            // 每次触发 scroll handler 时先清除定时器
+            clearTimeout(timeout);
+            // 指定 xx ms 后触发真正想进行的操作 handler
+            timeout = setTimeout(func, wait);
+        };
+    };
+
+    // 实际想绑定在 scroll 事件上的 handler
+    function realFunc(){
+        console.log("Success");
+    }
+
+    // 采用了防抖动
+    window.addEventListener('scroll',debounce(realFunc,10));*/
+    // 没采用防抖动
+   /* window.addEventListener('scroll',realFunc);*/
+
+
+    // 防抖动函数
+    /*function debounce(func, wait, immediate) {
+        var timeout;
+        return function() {
+            var context = this, args = arguments;
+            var later = function() {
+                timeout = null;
+                if (!immediate) func.apply(context, args);
+            };
+            var callNow = immediate && !timeout;
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+            if (callNow) func.apply(context, args);
+        };
+    };
+
+    var myEfficientFn = debounce(function() {
+        // 滚动中的真正的操作
+        console.log('success')
+    }, 250);
+
+    // 绑定监听
+    window.addEventListener('scroll', myEfficientFn);
+    window.addEventListener('resize', myEfficientFn);*/
+
+
+    //节流（Throttling）
+    // 简单的节流函数
+    /*function throttle(func, wait, mustRun) {
+        var timeout,
+                startTime = new Date();
+
+        return function() {
+            var context = this,
+                    args = arguments,
+                    curTime = new Date();
+
+            clearTimeout(timeout);
+            // 如果达到了规定的触发时间间隔，触发 handler
+            if(curTime - startTime >= mustRun){
+                func.apply(context,args);
+                startTime = curTime;
+                // 没达到触发间隔，重新设定定时器
+            }else{
+                timeout = setTimeout(func, wait);
+            }
+        };
+    };
+    // 实际想绑定在 scroll 事件上的 handler
+    function realFunc(){
+        console.log("Success");
+    }
+    // 采用了节流函数
+    window.addEventListener('scroll',throttle(realFunc,500,1000));*/
+
+
+    //使用 rAF（requestAnimationFrame）触发滚动事件
+    //简单的示例如下：
+
+    var ticking = false; // rAF 触发锁
+
+    function onScroll(e){
+        console.log(e)
+        if(!ticking) {
+            requestAnimationFrame(realFunc);
+            ticking = true;
+        }
+    }
+
+    function realFunc(){
+        // do something...
+        console.log("Success");
+        ticking = false;
+    }
+    // 滚动事件监听
+    window.addEventListener('scroll', onScroll, false);
+
+    //上面简单的使用 rAF 的例子可以拿到浏览器下试一下，大概功能就是在滚动的过程中，保持以 16.7ms 的频率触发事件 handler。
+
+    //使用 requestAnimationFrame 优缺点并存，首先我们不得不考虑它的兼容问题，其次因为它只能实现以 16.7ms 的频率来触发，代表它的可调节性十分差。但是相比 throttle(func, xx, 16.7) ，用于更复杂的场景时，rAF 可能效果更佳，性能更好。
+
+</script>
+</body>
+</html>

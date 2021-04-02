@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+
+<div class="jsonp">发送jsonp请求</div>
+
+<script src="../public/js/jquery-2.2.1.js"></script>
+<script>
+
+//回调处理函数 _callback
+            var _callback = function (obj) {
+                for (var key in obj) {
+                    console.log('key: ' + key + ' value: ' + obj[key]);
+                }
+            }
+
+    document.addEventListener('DOMContentLoaded', function (){
+         
+        document.querySelector('.jsonp').addEventListener('click', function () {
+
+
+            var script = document.createElement('script');
+            script.src = 'http://127.0.0.1:3000/jsonpHandler?callback=_callback';
+            document.body.appendChild(script);      //插入script标签
+           
+        }, false);
+
+//        $('.jsonp').on('click',function (){
+//            var _callback = function (obj) {
+//                for (var key in obj) {
+//                    console.log('key: ' + key + ' value: ' + obj[key]);
+//                }
+//            }
+//
+//            $.ajax({
+//                url : 'http://127.0.0.1:3000/jsonpHandler',
+//                type : 'get',
+//                dataType: 'jsonp',
+//                jsonp: 'callback',
+//                success : function (res){
+//                    debugger;
+//                }
+//            });
+//        });
+    }, false)
+
+</script>
+
+</body>
+</html>

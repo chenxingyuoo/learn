@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+
+<script>
+
+  
+
+  let data = [
+    {
+      id: 3,
+      name: 'bbbb',
+      pid: 1
+    },
+    {
+      id: 2,
+      name: 'aaaaa',
+      pid: 2
+    },
+    {
+      id: 4,
+      name: 'ccccc',
+      pid: 1
+    },
+    {
+      id: 5,
+      name: 'ddddd',
+      pid: 4
+    },
+    {
+      id: 6,
+      name: 'eeeee',
+      pid: 4
+    },
+    {
+      id: 7,
+      name: 'ffff',
+      pid: 6
+    },
+    {
+      id: 8,
+      name: 'ggggg',
+      pid: 3
+    },
+    {
+      id: 9,
+      name: 'hhhhh',
+      pid: 5
+    },
+    {
+      id: 10,
+      name: 'jjjj',
+      pid: 6
+    },
+    {
+      id: 11,
+      name: 'jjjj',
+      pid: 10
+    },
+    {
+      id: 12,
+      name: 'jjjj',
+      pid: 11
+    },
+    {
+      id: 13,
+      name: 'jjjj',
+      pid: 12
+    },
+    {
+      id: 14,
+      name: 'jjjj',
+      pid: 13
+    }
+  ];
+
+  for (let i = 0, len = 1000; i < len; i++) {
+    data.push({
+      id: 14,
+      name: 'jjjj',
+      pid: 13
+    })
+  }
+
+  
+
+  const deepCopy = (to , fromO) => {
+    to = to || {};
+    for (let i in fromO) {
+      if (typeof fromO[i] === 'object') {
+        to[i] = (Array.isArray(fromO[i])) ? [] : {};
+        deepCopy(to[i], fromO[i]);
+      } else {
+        to[i] = fromO[i];
+      }
+    }
+    return to;
+  };
+
+
+
+  const toTree1 = (obj = {}) => {
+    let list = obj.data || []
+
+    let idProp = obj.idProp || 'id'
+    let pidProp = obj.pidProp || 'pid'
+    let childrenProp = obj.childrenProp || 'children'
+
+    function exists(list, parentId) {
+      for (let i = 0; i < list.length; i++) {
+        if (list[i][idProp] === parentId) {
+          return true
+        }
+      }
+      return false
+    }
+
+    let nodes = []
+    list.forEach((item, index) => {
+      if (!exists(list, item[pidProp])) {
+        nodes.push(item);
+      }
+    })
+
+
+    const pushToChildren = (data) => {
+      data.forEach((item) => {
+
+        let parentId = item[idProp]
+
+        for (let i = 0; i < list.length; i++) {
+          if (list[i][pidProp] === parentId) {
+              if (!item[childrenProp]) {
+                item[childrenProp] = [list[i]]
+              } else {
+                item[childrenProp].push(list[i])
+              }
+          }
+        }
+
+        if (!item[childrenProp] || item[childrenProp].length === 0) {
+          return
+        }
+        pushToChildren(item[childrenProp])
+      })
+    }
+
+    pushToChildren(nodes)
+
+
+    console.log('nodes', nodes);
+  }
+
+
+  const downSortByAttr = (arr, attr) => {
+    arr.sort((obj1, obj2) => {
+      return obj2[attr] - obj1[attr];
+    });
+  };
+
+  const toTree2 = (obj = {}) => {
+    let list = deepCopy([],  obj.data || [])
+    let idProp = obj.idProp || 'id'
+    let pidProp = obj.pidProp || 'pid'
+    let childrenProp = obj.childrenProp || 'children'
+
+
+    function exists(list, parentId) {
+      let i = list.length
+      while (i--){
+        if (list[i][idProp] === parentId) {
+          return true
+        }
+      }
+      return false
+    }
+
+    let nodes = []
+
+    // list.forEach((item, index) => {
+    //   if (!exists(list, item[pidProp])) {
+    //     debugger;
+    //     let current = (list.splice(index, 1))[0]
+    //     nodes.push(current);
+    //   }
+    // })
+    //
+    // console.log('mylog', nodes);
+
+
+    let i = list.length
+    while (i--){
+      let item = list[i]
+      if (!exists(list, item[pidProp])) {
+        let current = (list.splice(i, 1))[0]
+        nodes.push(current);
+      }
+    }
+
+    const pushToChildren = (parentData) => {
+      parentData.forEach((item) => {
+
+        let parentId = item[idProp]
+
+        let i = list.length
+
+        while (i--){
+          if (list[i][pidProp] === parentId) {
+            let current = (list.splice(i, 1))[0]
+
+            if (!item[childrenProp]) {
+              item[childrenProp] = [current]
+            } else {
+              item[childrenProp].push(current)
+            }
+          }
+        }
+
+        if (!item[childrenProp] || item[childrenProp].length === 0) {
+          return
+        }
+        pushToChildren(item[childrenProp])
+      })
+    }
+
+    pushToChildren(nodes)
+
+    console.log('nodes', nodes);
+  }
+
+
+  function listToTree(obj = {}) {
+    let data = obj.data || []
+    let idProp = obj.idProp || 'id'
+    let pIdProp = obj.pIdProp || 'pid'
+    let childrenProp = obj.childrenProp || 'children'
+
+
+    function exists(list, parentId) {
+      for (let i = 0; i < list.length; i++) {
+        if (list[i][idProp] === parentId) {
+          return true;
+        }
+      }
+      return false;
+    }
+
+    let nodes = [];
+    for (let i = 0; i < data.length; i++) {
+      let row = data[i];
+      if (isFunction(obj.eachCallback)) {
+        obj.eachCallback(row, i);
+      }
+
+      if (!exists(data, row[pIdProp])) {
+        nodes.push(row);
+      }
+    }
+
+    let toDo = [];
+    for (let i = 0; i < nodes.length; i++) {
+      toDo.push(nodes[i]);
+    }
+
+    while (toDo.length) {
+      let node = toDo.shift(); // the parent node
+      // get the children nodes
+      for (let i = 0; i < data.length; i++) {
+        let row = data[i];
+        if (row[pIdProp] === node[idProp]) {
+          if (node[childrenProp]) {
+            node[childrenProp].push(row)
+          } else {
+            node[childrenProp] = [row]
+          }
+          toDo.push(row)
+        }
+      }
+    }
+    return nodes
+  }
+
+
+  // console.time()
+  // listToTree({
+  //   data : data
+  // })
+  // console.log('listToTree time')
+  // console.timeEnd()
+
+
+  console.time()
+  toTree2({
+    data : data
+  })
+  console.log('toTree2 time');
+  console.timeEnd()
+
+
+  // console.time()
+  // toTree1({
+  //   data : data
+  // })
+  //
+  // console.log('toTree1 time');
+  // console.timeEnd()
+
+
+
+
+</script>
+
+</body>
+</html>

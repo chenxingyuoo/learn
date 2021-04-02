@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+
+<script src="js/three.js"></script>
+<script>
+  let camera, scene, renderer;
+
+  function init() {
+    scene = new THREE.Scene();
+    camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 1000);
+    camera.position.z = 1000;
+    scene.add(camera);
+    renderer = new THREE.WebGLRenderer({antialias: true});
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setClearColor(0xffffff);
+    document.body.appendChild(renderer.domElement);
+  }
+
+  function render(){
+//    requestAnimationFrame(render);
+    renderer.render(scene,camera);
+  }
+
+  function run(){
+    init();
+    createShapes();
+    render();
+  }
+
+  run();
+
+  function createShapes() {
+    let dataString = getSvgData();  //获取svg数据
+    let shape = transformToShapePath(dataString); //转换成ShapePath表示
+    let geometry = new THREE.ShapeGeometry(shape);
+    let material = new THREE.LineBasicMaterial({color: 0xff0000});
+    let mesh = new THREE.Line(geometry, material);
+    scene.add(mesh);
+    camera.lookAt(mesh.position);
+  }
+
+
+  //获取svg数据，数据来自w3cschool
+  function getSvgData() {
+    let svgData = "M153 334 C153 334 151 334 151 334 C151 339 153 344 156 344 C164 344 171 339 171 334 C171 322 164 314 156 314 C142 314 131 322 131 334 C131 350 142 364 156 364 C175 364 191 350 191 334 C191 311 175 294 156 294 C131 294 111 311 111 334 C111 361 131 384 156 384 C186 384 211 361 211 334 C211 300 186 274 156 274";
+    return svgData;
+  }
+
+  //转换成ShapePath表示
+  function transformToShapePath(dataString) {
+    let path = new THREE.ShapePath();
+    let dataArr = dataString.split(" ");
+    var currIndex = 0;
+    while (currIndex < dataArr.length) {
+      let command = dataArr[currIndex][0];
+      switch (command) {
+        case 'M' : {
+          let inc = moveParse(currIndex, dataArr, path);
+          currIndex += inc;
+          break;
+        }
+        case 'C' : {
+          let inc = curveParse(currIndex, dataArr, path);
+          currIndex += inc;
+          break;
+        }
+        default: {
+          //出错处理
+          currIndex++;
+        }
+      }
+    }
+    return path.toShapes()[0];
+  }
+
+
+  /**************下面是各种命令的转换器****************/
+  //moveTo命令转换器
+  function moveParse(currIndex, dataArr, path) {
+    let paramsLength = 2; //需要的参数个数
+    let data = [dataArr[currIndex].substring(1), dataArr[currIndex + 1]];
+    toThreejsCoor(data);
+    path.moveTo(data[0], data[1]);
+    return paramsLength;
+  }
+
+  //Curve命令转换器
+  function curveParse(currIndex, dataArr, path) {
+    let paramsLength = 6; //需要的参数个数
+    let data = [
+      dataArr[currIndex].substring(1),
+      dataArr[currIndex + 1],
+      dataArr[currIndex + 2],
+      dataArr[currIndex + 3],
+      dataArr[currIndex + 4],
+      dataArr[currIndex + 5]
+    ];
+    toThreejsCoor(data);
+    path.bezierCurveTo(data[0], data[1], data[2], data[3], data[4], data[5]);
+    return paramsLength;
+  }
+
+  //屏幕坐标转threejs坐标
+  function toThreejsCoor(data) {
+    for (let i = 0; i < data.length; i += 2) {
+      data[i] = data[i] - window.innerWidth / 2;
+      data[i + 1] = window.innerHeight / 2 - data[i + 1];
+    }
+  }
+</script>
+
+</body>
+</html>

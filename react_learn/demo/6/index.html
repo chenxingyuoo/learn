@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>demo6</title>
+    <script src="../../build/react.js"></script>
+    <script src="../../build/react-dom.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.24/browser.min.js"></script>
+</head>
+
+<body>
+<div id="example"></div>
+<div id="container"></div>
+<script type="text/babel">
+    //组件类的PropTypes属性，就是用来验证组件实例的属性是否符合要求
+    var data = 'chen';
+    var MyTitle = React.createClass({
+        propTypes : {
+            // Mytitle组件有一个title属性。PropTypes 告诉 React，这个 title 属性是必须的，
+            // 而且它的值必须是字符串。现在，我们设置 title 属性的值是一个数值。
+            title : React.PropTypes.string.isRequired,
+        },
+        render : function () {
+            return <h1>hello {this.props.title}</h1>
+        }
+    });
+    ReactDOM.render(
+            <MyTitle title = {data} />,
+            document.getElementById('example')
+    );
+
+
+    //此外，getDefaultProps 方法可以用来设置组件属性的默认值。
+    var MyTitles = React.createClass({
+        getDefaultProps : function () {
+            return {
+                title : 'Hello World'
+            };
+        },
+
+        render: function() {
+            return <h2> {this.props.title} </h2>;
+        }
+    });
+
+    ReactDOM.render(
+            <MyTitles />,
+            document.getElementById('container')
+    );
+</script>
+</body>
+</html>

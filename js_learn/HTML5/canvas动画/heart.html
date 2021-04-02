@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>HTML5</title>
+    <style>
+        *{padding:0;margin:0;}
+        canvas {
+            display: block;
+            background: #000;
+            cursor: crosshair;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<script>
+    window.requestAnimFrame =
+            window.requestAnimationFrame ||
+            window.webkitRequestAnimationFrame ||
+            window.mozRequestAnimationFrame ||
+            window.oRequestAnimationFrame ||
+            window.msRequestAnimationFrame ||
+            function (callback) {
+                window.setTimeout(callback, 1000 / 60);
+            };
+    var windW  = document.documentElement.clientWidth || document.body.clientWidth,
+            windH  = document.documentElement.clientHeight ||document.body.clientHeight;
+
+    canvas = document.getElementById('c');
+    context = canvas.getContext('2d');
+
+    canvas.width = windW;
+    canvas.height = windH;
+
+    originX = windW/2;
+    originY = windH;
+
+
+    var firesBox = firesBoxTmp = [],
+            line = 20;
+
+    var Fireworks = function(px,sx,line,fire,dely){
+
+        this.fire = fire;
+        this.dely = dely;
+        this.endX = px.x;
+        this.endY = px.y;
+
+        this.startX = sx.x;
+        this.startY = sx.y;
+
+        this.p1 = {
+            x:sx.x,
+            y:sx.y
+        };
+        var totallong = Math.sqrt((this.endX-this.p1.x) * (this.endX-this.p1.x) +(this.endY-this.p1.y) * (this.endY-this.p1.y));
+
+        this.p2 = {
+            x:(line*(this.endX-this.p1.x))/totallong+this.p1.x,
+            y:(line*(this.endY-this.p1.y))/totallong+this.p1.y
+        }
+
+        this.color = {
+            r:Math.round(Math.random()*255),
+            g:Math.round(Math.random()*255),
+            b:Math.round(Math.random()*255),
+            a:Math.random()
+        }
+    }
+
+    Fireworks.prototype.draw = function(){
+        context.beginPath();
+        context.moveTo(this.p1.x, this.p1.y);
+        context.lineTo(this.p2.x, this.p2.y);
+        //  context.strokeStyle =  'hsla(' + this.color.r + ', '+this.color.g+'%, ' + this.color.b + '%, ' + this.color.a + ')';
+        context.strokeStyle =  'rgba(' + this.color.r + ', '+this.color.g+', ' + this.color.b + ', ' + this.color.a + ')';
+        context.stroke();
+        context.closePath();
+    }
+
+    Fireworks.prototype.update = function(){
+        if(
+                (this.endX<this.startX&&this.p1.x<this.endX)||
+                (this.endX>=this.startX&&this.p1.x>=this.endX)
+        ){
+            if(!this.fire) firesBoxTmp.push(this);
+            return ;
+        }
+        var dely  = this.dely;
+        this.p1.x += (this.endX-this.startX)*dely;
+        this.p1.y += (this.endY-this.startY)*dely;
+        this.p2.x += (this.endX-this.startX)*dely;
+        this.p2.y += (this.endY-this.startY)*dely;
+
+        this.color.r+=5;
+
+        if(
+                (this.endX<this.startX&&this.p1.x>=this.endX)||
+                (this.endX>=this.startX&&this.p1.x<=this.endX)
+        ){
+            firesBoxTmp.push(this);
+        }else{
+            firesBoxTmp.push(this);
+            if(!this.fire){
+                firesBoxTmp.push(this);
+                return ;
+            }
+            var startP = {},endP={};
+
+            startP.x = this.endX;
+            startP.y = this.endY;
+
+            for (var i=1;i<10;i++) {
+                if(i!=5){
+                    r = Math.random()*10;
+                    endP.x = startP.x + Math.sin(2 * Math.PI * i * 36 / 360) * r;
+                    endP.y = startP.y - Math.cos(2 * Math.PI * i * 36 / 360) * r;
+                    fire = new Fireworks(endP,startP,Math.random()*line*.5,false,.013);
+                    firesBoxTmp.push(fire);
+                }
+
+            }
+        }
+    }
+    function update(){
+        requestAnimFrame(update);
+        requestAnimFrame(heartShape)
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        var i = firesBox.length;
+        if (i <= 0) return;
+        while (i--) {
+            firesBox[i].draw();
+            firesBox[i].update();
+        }
+        firesBox = firesBoxTmp;
+        firesBoxTmp = [];
+
+    }
+
+    var heartindex = -1.56;
+    function heartShape(){
+        if(heartindex>=4.8){
+            clearTimeout(heart);
+        }
+        var endP ={} ,startP = {},r=90,dx=windW/2,dy=windH/3;
+
+        startP.x = originX;
+        startP.y = originY;
+
+        var m,n,x,y,i= heartindex;
+
+        m = i;
+        n = -r * (((Math.sin(i) * Math.sqrt(Math.abs(Math.cos(i)))) / (Math.sin(i) + 1.4)) - 2 * Math.sin(i) + 2);
+        endP.x = n * Math.cos(m) + dx;
+        endP.y = n * Math.sin(m) + dy;
+        fire = new Fireworks(endP,startP,line,true,0.016);
+        firesBox.push(fire);
+        heartindex+=.04;
+
+    }
+
+
+    window.onload = update;
+    heartShape();
+</script>
+</body>
+</html>

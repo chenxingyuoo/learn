@@ -1,0 +1,32 @@
+extends ../layout
+
+block content
+    .container
+        .row
+            table.table.table-hover.table-bordered
+                thead
+                    tr
+                        th 名字
+                        th 时间
+                        th 更新
+                        th 删除
+                tbody
+                    each item in users
+                        tr(class="item-id-#{item._id}")
+                            td #{item.name}
+                            td #{moment(item.meta, updateAt).format('MM/DD/YYYY')}
+                            td: a(target="_blank",href="/admin/user/update/#{item._id}") 修改
+                            td
+                                button.btn.btn-danger.del(type="button", data-id="#{item._id}" data-toggle="modal", data-target="#delModal") 删除
+
+    //bootstrap确认弹框
+    #delModal.modal.fade
+        .modal-dialog
+            .modal-content
+                .modal-header 删除电影
+                .modal-body
+                    .form-group
+                        label(for="userDel") 您确定要删除该用户吗?
+                .modal-footer
+                    button.btn.btn-default(type="button", data-dismiss="modal") 关闭
+                    button.btn.btn-success.user-del-btn(type="button", data-dismiss="modal") 确定

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+
+<body>
+
+<canvas id="canvas" width="1000" height="1000" style="border: 1px solid #ddd;display: block;margin: 50px">
+    您的浏览器不支持 HTML5 canvas 标签。
+</canvas>
+
+
+<img id="MyImg" src="../canvas.jpg" style="display: block" width="300" height="300"/>
+<canvas id="MyCanvas" width="1000" height="1000" style="border: 1px solid #ddd;display: block;margin: 50px">
+    您的浏览器不支持 HTML5 canvas 标签。
+</canvas>
+
+
+<script type="text/javascript">
+    window.onload = function (){
+        //textAlign 属性 在位置 150 创建一条红线。位置 150 是下面实例中定义的所有文本的锚点。请研究每种 textAlign 属性值的效果：
+        var c=document.getElementById("canvas");
+        var ctx=c.getContext("2d");
+
+// Create a red line in position 150
+        ctx.strokeStyle="red";
+        ctx.moveTo(150,20);
+        ctx.lineTo(150,170);
+        ctx.stroke();
+
+        ctx.font="15px Arial";
+        ctx.textAlign="start";
+        ctx.fillText("textAlign=start",150,60);
+        ctx.textAlign="end";
+        ctx.fillText("textAlign=end",150,80);
+        ctx.textAlign="left";
+        ctx.fillText("textAlign=left",150,100);
+        ctx.textAlign="center";
+        ctx.fillText("textAlign=center",150,120);
+        ctx.textAlign="right";
+        ctx.fillText("textAlign=right",150,140);
+
+
+        // fillText()方法  使用 fillText()，在画布上写文本 "Hello world!" 和 "Big smile!"：
+        var c=document.getElementById("canvas");
+        var ctx=c.getContext("2d");
+
+        ctx.font="20px Georgia";
+        ctx.fillText("Hello World!",300,250);
+
+        ctx.font="30px Verdana";
+// Create gradient
+        var gradient=ctx.createLinearGradient(0,0,c.width,0);
+        gradient.addColorStop("0","magenta");
+        gradient.addColorStop("0.5","blue");
+        gradient.addColorStop("1.0","red");
+// Fill with gradient
+        ctx.fillStyle=gradient;
+        ctx.fillText("Big smile!",300,300);
+
+
+        // strokeText()方法  使用 fillText()，在画布上写文本 "Hello world!" 和 "Big smile!"：
+        var c=document.getElementById("canvas");
+        var ctx=c.getContext("2d");
+
+        ctx.font="20px Georgia";
+        ctx.strokeText("Hello World!",500,250);
+
+        ctx.font="30px Verdana";
+// Create gradient
+        var gradient=ctx.createLinearGradient(0,0,c.width,0);
+        gradient.addColorStop("0","magenta");
+        gradient.addColorStop("0.5","blue");
+        gradient.addColorStop("1.0","red");
+// Fill with gradient
+        ctx.strokeStyle=gradient;
+        ctx.strokeText("Big smile!",500,300);
+
+
+        //measureText() 方法 在画布上输出文本之前，检查字体的宽度：
+        var c=document.getElementById("canvas");
+        var ctx=c.getContext("2d");
+        ctx.font="30px Arial";
+        var txt="Hello World.I am here!"
+        ctx.fillText("width:" + ctx.measureText(txt).width,500,400)
+        ctx.fillText(txt,500,450);
+
+
+        //drawImage() 方法 向画布上面绘制图片
+        var cc=document.getElementById("MyCanvas");
+        var ctxs=cc.getContext("2d");
+        var img=document.getElementById("MyImg");
+        ctxs.drawImage(img,10,10);
+
+    }
+</script>
+</body>
+</html>

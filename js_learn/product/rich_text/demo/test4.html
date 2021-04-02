@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+
+<div id="drag"
+     style="position:absolute;left:12px;top:24px;width:100px;height:150px;border:1px solid #000000;z-index:1;background:#eeeeee">
+    drag me
+</div>
+
+
+<script type="text/javascript">
+    window.onload = function () {
+        var objDiv = document.getElementById('drag');
+        drag(objDiv);
+    };
+    function drag(dv) {
+        dv.onmousedown = function (e) {
+            var d = document;
+            e = e || window.event;
+            var x = e.layerX || e.offsetX;
+            var y = e.layerY || e.offsetY;
+            //设置捕获范围
+            if (dv.setCapture) {
+                dv.setCapture();
+            } else if (window.captureEvents) {
+                window.captureEvents(Event.MOUSEMOVE | Event.MOUSEUP);
+            }
+            d.onmousemove = function (e) {
+                e = e || window.event;
+                if (!e.pageX)e.pageX = e.clientX;
+                if (!e.pageY)e.pageY = e.clientY;
+                var tx = e.pageX - x;
+                var ty = e.pageY - y;
+                dv.style.left = tx + 'px';
+                dv.style.top = ty + 'px';
+            };
+            d.onmouseup = function () {
+                 //取消捕获范围
+                if (dv.releaseCapture) {
+                    dv.releaseCapture();
+                } else if (window.captureEvents) {
+                    window.captureEvents(Event.MOUSEMOVE | Event.MOUSEUP);
+                }
+                //清除事件
+                d.onmousemove = null;
+                d.onmouseup = null;
+            };
+        };
+    }
+
+
+</script>
+</body>
+</html>

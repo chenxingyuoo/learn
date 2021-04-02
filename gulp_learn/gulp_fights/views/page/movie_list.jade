@@ -1,0 +1,39 @@
+extends ../layout
+block content
+    .container
+        .row
+            table.table.table-hover.table-bordered
+                thead
+                    tr
+                        th 电影名字
+                        th 导演
+                        th 国家
+                        th 上映年份
+                        th 录入时间
+                        th 查看
+                        th 更新
+                        th 删除
+                tbody
+                    each item in movie
+                        tr(class="item-id-#{item._id}")
+                            td #{item.title}
+                            td #{item.doctor}
+                            td #{item.country}
+                            td #{item.year}
+                            td #{moment(item.meta, updateAt).format('MM/DD/YYYY')}
+                            td: a(target="_blank",href="/admin/movie/detail/#{item._id}") 查看
+                            td: a(target="_blank",href="/admin/movie/update/#{item._id}") 修改
+                            td
+                                button.btn.btn-danger.del(type="button", data-id="#{item._id}" data-toggle="modal", data-target="#delModal") 删除
+
+    //bootstrap确认弹框
+    #delModal.modal.fade
+        .modal-dialog
+            .modal-content
+                .modal-header 删除电影
+                .modal-body
+                    .form-group
+                        label(for="movieDel") 您确定要删除该电影吗?
+                .modal-footer
+                    button.btn.btn-default(type="button", data-dismiss="modal") 关闭
+                    button.btn.btn-success.movie-del-btn(type="button", data-dismiss="modal") 确定

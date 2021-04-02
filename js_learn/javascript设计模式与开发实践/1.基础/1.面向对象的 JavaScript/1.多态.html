@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+
+<script>
+
+    //一段“多态”的JavaScript代码
+    var makeSound = function (animal) {
+        if (animal instanceof Duck) {
+            console.log('嘎嘎嘎');
+        } else if (animal instanceof Chicken) {
+            console.log('咯咯咯');
+        } else if (animal instanceof Dog ) {
+            console.log( '汪汪汪' );
+        }
+    };
+
+    var Duck = function(){};
+    var Chicken = function(){};
+    var Dog = function(){}
+
+    makeSound( new Duck() );   //嘎嘎嘎
+    makeSound( new Chicken() ); //咯咯咯
+    makeSound( new Dog() ); //汪汪汪
+
+
+    // 多态背后的思想是将“做什么”和“谁去做以及怎样去做”分离开来，也就是将“不变的事 物”与 “可能改变的事物”分离开来。
+    // 在这个故事中，动物都会叫，这是不变的，但是不同类 型的动物具体怎么叫是可变的。
+    // 把不变的部分隔离出来，把可变的部分封装起来，这给予了我们 扩展程序的能力，程序看起来是可生长的，
+    // 也是符合开放—封闭原则的，相对于修改代码来说， 仅仅增加代码就能完成同样的功能，这显然优雅和安全得多。
+
+
+    //下面是改写后的代码，首先我们把不变的部分隔离出来，那就是所有的动物都会发出叫声:
+    var makeSound = function( animal ){
+        animal.sound();
+    };
+
+    var Duck = function(){};
+    Duck.prototype.sound = function(){
+        console.log( '嘎嘎嘎' );
+    };
+
+
+    var Chicken = function(){};
+    Chicken.prototype.sound = function(){
+        console.log( '咯咯咯' );
+    };
+
+    var Dog = function(){}
+    Dog.prototype.sound = function(){
+        console.log( '汪汪汪' );
+    };
+
+    makeSound(new Duck())     //嘎嘎嘎
+    makeSound(new Chicken())  //咯咯咯
+    makeSound(new Dog())      //汪汪汪
+
+
+    //多态在面向对象程序设计中的作用
+
+    var googleMap = {
+        show: function(){
+           console.log( '开始渲染谷歌地图' );
+        }
+    };
+
+    var renderMap = googleMap.show;
+
+    renderMap();
+
+    // 后来因为某些原因，要把谷歌地图换成百度地图，为了让 renderMap 函数保持一定的弹性，
+    // 我们用一些条件分支来让 renderMap 函数同时支持谷歌地图和百度地图
+
+    var baiduMap = {
+        show: function(){
+            console.log( '开始渲染百度地图' );
+        }
+    }
+
+    var renderMap1 = function (type){
+        if (type === 'google') {
+            googleMap.show();
+        } else if (type === 'baidu') {
+            baiduMap.show();
+        }
+    };
+
+    renderMap1( 'google' ); // 输出:开始渲染谷歌地图
+    renderMap1( 'baidu' ); // 输出:开始渲染百度地图
+
+    //可以看到，虽然 renderMap 函数目前保持了一定的弹性，但这种弹性是很脆弱的，
+    // 一旦需要 替换成搜搜地图，那无疑必须得改动 renderMap 函数，继续往里面堆砌条件分支语句。
+
+    //们还是先把程序中相同的部分抽象出来，那就是显示某个地图:
+    var renderMap2 = function (map){
+        if (map.show instanceof Function) {
+            map.show();
+        }
+    }
+
+    renderMap2( googleMap ); // 输出:开始渲染谷歌地图
+    renderMap2( baiduMap ); // 输出:开始渲染百度地图
+
+    // 现在来找找这段代码中的多态性。当我们向谷歌地图对象和百度地图对象分别发出“展示地 图”的消息时，
+    // 会分别调用它们的 show 方法，就会产生各自不同的执行结果。对象的多态性提 示我们，“做什么”和“怎么去做”是可以分开的，
+    // 即使以后增加了搜搜地图，renderMap 函数仍 然不需要做任何改变，如下所示:
+
+    var sosoMap = {
+        show : function (){
+            console.log( '开始渲染soso地图' );
+        }
+    }
+
+    renderMap2( sosoMap ); // 输出:开始渲染soso地图
+
+    //在这个例子中，我们假设每个地图 API 提供展示地图的方法名都是 show，在实际开发中也许 不会如此顺利，这时候可以借助适配器模式来解决问题
+
+</script>
+
+</body>
+</html>

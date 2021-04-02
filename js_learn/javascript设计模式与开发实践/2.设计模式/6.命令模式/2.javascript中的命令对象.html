@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+
+<script>
+
+    var setCommand = function (button, func) {
+        button.onclick = function () {
+            func();
+        }
+    };
+
+    var MenuBar = {
+        refresh: function () {
+            console.log('      ');
+        }
+    };
+
+    var RefreshMenuBarCommand = function (receiver) {
+        return function () {
+            receiver.refresh();
+        }
+    };
+
+    var refreshMenuBarCommand = RefreshMenuBarCommand(MenuBar);
+
+    setCommand(button1, refreshMenuBarCommand);
+
+    //当然，如果想更明确的表达当前正在使用命令模式 ， 或者除了执行命令之外，将来有可能还提供撤销命令等操作，
+    //那么我们最好把函数改为调用 execute 方法
+
+    var RefreshMenuBarCommand = function (receiver) {
+        return {
+            execute: function () {
+                receiver.refresh();
+            }
+        }
+    };
+
+    var setCommand = function (button, command) {
+        button.onclick = function () {
+            command.execute();
+        }
+    };
+
+
+    var refreshMenuBarCommand = RefreshMenuBarCommand(MenuBar);
+
+    setCommand(button1, refreshMenuBarCommand);
+
+</script>
+
+</body>
+</html>

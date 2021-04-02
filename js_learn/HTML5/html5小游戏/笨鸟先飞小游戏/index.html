@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>html5 笨鸟先飞</title>
+
+</head>
+<body>
+<div id="game"></div>
+
+
+<script src="js/phaser.js"></script>
+<script>
+    var game = new Phaser.Game(400, 490, Phaser.AUTO, 'game'); //实例化一个Phaser的游戏实例
+
+    //state可以是一个自定义对象
+    /*var state1 = {
+     preload : function(){ },
+     create : function(){ },
+     update : function(){ }
+     }
+
+     //state也可以是一个构造函数
+     var state2 = function(){
+     this.preload = function(){ };
+     this.create = function(){ };
+     this.update = function(){ };
+     }
+
+     //只要存在preload、create、update三个方法中的一个就可以了
+     var state3 = function(){
+     this.update = function(){  };
+     }
+
+     //当然state里也可以存在其他属性或方法
+     var state4 = function(){
+     this.create = function(){ };
+     this.aaa = function(){ }; //其他方法
+     this.bbb = 'hello'; //其他属性
+     }*/
+
+    game.States = {}; //创建一个对象来存放要用到的state
+
+    game.States.boot = function () {
+
+        this.preload = function () {
+
+            game.load.image('loading', 'assets/loading.gif');
+        };
+        this.create = function () {
+            game.state.start('preload'); //加载完成后，调用preload场景
+        };
+    }
+
+    //prelaod场景，用来显示资源加载进度
+    game.States.preload = function () {
+        this.preload = function () {
+            //Sprite对象，也就是游戏开发中俗称的精灵
+            var preloadSprite = game.add.sprite(50, game.height / 2, 'loading'); //创建显示loading进度的sprite
+            game.load.setPreloadSprite(preloadSprite);  //用setPreloadSprite方法来实现动态进度条的效果
+
+
+            //以下为要加载的资源
+            game.load.image('bg', 'assets/bg.png');  //游戏背景图
+            game.load.image('ground', 'assets/ground.png');  //游戏
+            game.load.image('title', 'assets/title.png');  //游戏标题
+            game.load.image('button_play', 'assets/button_play.png');  //游戏开始按钮
+            game.load.image('play_tip', 'assets/play_tip.png');  //点击屏幕效果
+            game.load.image('menu', 'assets/menu.png'); //游戏菜单
+            game.load.image('ready', 'assets/ready.png');  //准备
+            game.load.image('birds', 'assets/birds.png');  //鸟
+            game.load.image('pipe', 'assets/pipe.png');  //管道
+            game.load.audio('jump', 'assets/jump.wav');  //飞翔的音乐
+            game.load.audio('dead', 'assets/dead.wav');   //gameover的音乐
+            game.load.image('gameover', 'assets/gameover.png');  //游戏结束
+        };
+
+        this.create = function () {
+            game.state.start('menu'); //当以上所有资源都加载完成后就可以进入menu游戏菜单场景了
+        }
+    };
+
+
+
+
+    //menu场景，游戏菜单
+    game.States.menu = function () {
+        this.create = function () {
+            //背景动起来 ， 地面动起来
+            var bg = game.add.tileSprite(0, 0, game.width, game.height, 'bg'); //当作背景的tileSprite
+            var ground = game.add.tileSprite(0, 0/*game.height-112*/, game.width, game.height, 'ground')/*.autoScroll(-100,0)*/; //当作地面的tileSprite
+            //bg.autoScroll(-10,0); //让背景动起来
+            //ground.autoScroll(-100,0); //让地面动起来
+
+
+            //小鸟飞起来 ， 标题动起来
+            var titleGroup = game.add.group(); //创建存放标题的组
+            titleGroup.create(0, 0, 'title'); //通过组的create方法创建标题图片并添加到组里
+            var bird = titleGroup.create(190, 10, 'birds'); //创建bird对象并添加到组里
+            game.add.sprite(bird, 34, 24);
+            bird.animations.add('fly'); //给鸟添加动画
+            bird.animations.play('fly', 12, true); //播放动画
+            titleGroup.x = 35; //调整组的水平位置
+            titleGroup.y = 100; //调整组的垂直位置
+            game.add.tween(titleGroup).to({y: 120}, 1000, null, true, 0, Number.MAX_VALUE, true); //对这个组添加一个tween动画，让它不停的上下移动
+
+
+            //游戏开始按钮
+            var button_play = game.add.button(game.width / 2, game.height / 2, 'button_play', function () {//添加一个按钮
+                game.state.start('play'); //点击按钮时跳转到play场景
+            });
+            button_play.anchor.setTo(0.5, 0.5); //设置按钮的中心点
+            //Phaser中很多对象都有一个anchor属性，它表示这个物体的中心点，物体的位置平移、旋转的轴，都是以这个中心点为参照的。所以上面代码中我们要使按钮水平垂直居中，除了要把按钮的x,y属性分别设为游戏的宽高的一半外，还要把按钮的中心点设为按钮的中心。
+
+
+        }
+    };
+
+
+    //play场景，正式的游戏部分
+    game.States.play = function () {
+
+
+        this.create = function () {
+
+            this.soundFly = game.add.sound('jump');
+            this.scoreText = 0;
+
+            this.bg = game.add.tileSprite(0,0,game.width,game.height,'bg');//背景图
+            this.pipeGroup = game.add.group();
+            this.pipeGroup.enableBody = true;
+            this.ground = game.add.tileSprite(0,game.height-112,game.width,112,'ground'); //地板
+            this.bird = game.add.sprite(50,150,'birds'); //鸟
+            this.bird.animations.add('fly');
+            this.bird.animations.play('fly',12,true);
+            this.bird.anchor.setTo(0.5, 0.5);
+            game.physics.enable(this.bird,Phaser.Physics.ARCADE); //开启鸟的物理系统
+            this.bird.body.gravity.y = 0; //鸟的重力,未开始游戏，先先让他不动
+            game.physics.enable(this.ground,Phaser.Physics.ARCADE);//地面
+            this.ground.body.immovable = true; //固定不动
+
+            /*this.scoreText = game.add.bitmapText(game.world.centerX-20, 30, 'flappy_font', '0', 36);*/
+            this.scoreText = 0;
+
+            this.readyText = game.add.image(game.width/2, 40, 'ready_text'); //get ready 文字
+            this.playTip = game.add.image(game.width/2,300,'play_tip'); //提示点击
+            this.readyText.anchor.setTo(0.5, 0);
+            this.playTip.anchor.setTo(0.5, 0);
+
+            this.hasStarted = false; //游戏是否已开始
+            game.time.events.loop(900, this.generatePipes, this);
+            game.time.events.stop(false);
+            game.input.onDown.addOnce(this.statrGame, this);
+        };
+
+        //当点击屏幕后，就可以正式开始游戏了，我们来看看点击屏幕事件绑定的 this.startGame 函数做了什么。
+        this.statrGame = function () {
+            this.gameSpeed = 200; //游戏速度
+            this.gameIsOver = false; //游戏是否已结束的标志
+            this.hasHitGround = false; //是否已碰撞到地面的标志
+            this.hasStarted = true; //游戏是否已经开始的标志
+            this.score = 0; //初始得分
+            this.bg.autoScroll(-(this.gameSpeed / 10), 0); //让背景开始移动
+            this.ground.autoScroll(-this.gameSpeed, 0); //让地面开始移动
+            this.bird.body.gravity.y = 1150; //给鸟设一个重力
+            this.readyText.destroy(); //去除 'get ready' 图片
+            this.playTip.destroy(); //去除 '玩法提示 图片
+            game.input.onDown.add(this.fly, this); //给鼠标按下事件绑定鸟的飞翔动作
+            game.time.events.start(); //启动时钟事件，开始制造管道
+        };
+
+        //我们再来看下鸟的飞翔动作，它由 this.fly 函数来实现
+        this.fly = function(){
+            this.bird.body.velocity.y = -350; //飞翔，实质上就是给鸟设一个向上的速度
+            game.add.tween(this.bird).to({angle:-30}, 100, null, true, 0, 0, false);                       //上升时头朝上的动画
+            this.soundFly.play(); //播放飞翔的音效
+        };
+
+
+
+        //管道的生成
+        this.resetPipe = function(topPipeY,bottomPipeY){//重置出了边界的管道，做到回收利用
+            var i = 0;
+            this.pipeGroup.forEachDead(function(pipe){ //对组调用forEachDead方法来获取那些已经出了边界，也就是“死亡”了的对象
+                if(pipe.y<=0){ //是上方的管道
+                    pipe.reset(game.width, topPipeY); //重置到初始位置
+                    pipe.hasScored = false; //重置为未得分
+                }else{//是下方的管道
+                    pipe.reset(game.width, bottomPipeY); //重置到初始位置
+                }
+                pipe.body.velocity.x = -this.gameSpeed; //设置管道速度
+                i++;
+            }, this);
+            return i == 2; //如果 i==2 代表有一组管道已经出了边界，可以回收这组管道了
+        };
+
+        //如果有出了边界的管道，则重置他们，不再制造新的管道了,达到循环利用的目的
+        this.generatePipes = function (gap) { //制造一组上下的管道
+            gap = gap || 100; //上下管道之间的间隙宽度
+            var position = (505 - 320 - gap) + Math.floor((505 - 112 - 30 - gap - 505 + 320 + gap) * Math.random());//计算出一个上下管道之间的间隙的随机位置
+            var topPipeY = position - 360; //上方管道的位置
+            var bottomPipeY = position + gap; //下方管道的位置
+
+            if (this.resetPipe(topPipeY, bottomPipeY)) return; //如果有出了边界的管道，则重置他们，不再制造新的管道了,达到循环利用的目的
+
+            var topPipe = game.add.sprite(game.width, topPipeY, 'pipe', 0, this.pipeGroup); //上方的管道
+            var bottomPipe = game.add.sprite(game.width, bottomPipeY, 'pipe', 1, this.pipeGroup); //下方的管道
+            this.pipeGroup.setAll('checkWorldBounds', true); //边界检测
+            this.pipeGroup.setAll('outOfBoundsKill', true); //出边界后自动kill
+            this.pipeGroup.setAll('body.velocity.x', -this.gameSpeed); //设置管道运动的速度
+        },
+
+        //碰撞检测
+        this.update = function(){ //每一帧中都要执行的代码可以写在update方法中
+            if(!this.hasStarted) return; //游戏未开始,先不执行任何东西
+            game.physics.arcade.collide(this.bird,this.ground, this.hitGround, null, this); //检测与地面的碰撞
+            game.physics.arcade.overlap(this.bird, this.pipeGroup, this.hitPipe, null, this); //检测与管道的碰撞
+            if(this.bird.angle < 90) this.bird.angle += 2.5; //下降时鸟的头朝下的动画
+            this.pipeGroup.forEachExists(this.checkScore,this); //分数检测和更新
+        };
+
+        //分数管理
+        //当鸟飞过一组管道后，就得1分。飞过一组管道，是指这组管道已经在鸟的左边的，所以可以通过管道的x坐标来判断是否已经得分。
+        this.checkScore = function(pipe){//负责分数的检测和更新,pipe表示待检测的管道
+            //pipe.hasScored 属性用来标识该管道是否已经得过分
+            //pipe.y<0是指一组管道中的上面那个管道，一组管道中我们只需要检测一个就行了
+            //当管道的x坐标 加上管道的宽度小于鸟的x坐标的时候，就表示已经飞过了管道，可以得分了
+            if(!pipe.hasScored && pipe.y<=0 && pipe.x<=this.bird.x-17-54){
+                pipe.hasScored = true; //标识为已经得过分
+                this.scoreText.text = ++this.score; //更新分数的显示
+                this.soundFly.play(); //得分的音效
+                return true;
+            }
+            return false;
+        };
+
+
+
+    };
+
+    //把定义好的场景添加到游戏中
+    game.state.add('boot', game.States.boot);
+    game.state.add('preload', game.States.preload);
+    game.state.add('menu', game.States.menu);
+    game.state.add('play', game.States.play);
+
+    //调用boot场景来启动游戏
+    game.state.start('boot');
+
+</script>
+</body>
+</html>

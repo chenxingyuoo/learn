@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>demo</title>
+
+    <link href="css/bootstrap.min.css" rel="stylesheet"/>
+    <!--[if lt IE 9]>
+    <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style>
+        #container-txt .col-md-4{
+            text-align: center;
+        }
+        .feature{
+            padding: 30px 0;
+        }
+        .feature-heading{
+            font-size: 50px;
+            color: #269abc;
+            margin-top: 46px;
+        }
+        .text-muted{
+            font-size: 28px;
+            color: #aaa;
+        }
+    </style>
+
+</head>
+
+<body style="padding-top: 50px;padding-bottom: 50px;">
+
+<nav class="navbar navbar-default navbar-fixed-top navbar-inverse">
+    <div class="container">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#demo-navbar" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">Brand</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="demo-navbar">
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="#">Link <span class="sr-only">(current)</span></a></li>
+                <li><a href="#">Link</a></li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"  role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#home">Action</a></li>
+                        <li><a href="#profile1">Another action</a></li>
+                        <li><a href="#profile2">Something else here</a></li>
+                        <li role="separator" class="divider"><a></a></li>
+                        <li><a href="#profile3">Separated link</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="#profile4">One more separated link</a></li>
+                    </ul>
+                </li>
+                <li><a href="#" data-toggle="modal" data-target="#about">About</a></li>
+            </ul>
+
+
+        </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+</nav>
+
+<!--banner-->
+<div id="carousel-example-generic" class="carousel slide" data-ride="carousel" style="margin-bottom: 20px;">
+    <!-- Indicators -->
+    <ol class="carousel-indicators">
+        <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
+        <li data-target="#carousel-example-generic" data-slide-to="1"></li>
+        <li data-target="#carousel-example-generic" data-slide-to="2"></li>
+    </ol>
+
+    <!-- Wrapper for slides -->
+    <div class="carousel-inner" role="listbox">
+        <div class="item active">
+            <img src="img/1.png" alt="..." style="height: 500px;width: 100%;">
+            <div class="carousel-caption">
+                我是龙猫1
+            </div>
+        </div>
+        <div class="item">
+            <img src="img/2.jpg" alt="..." style="height: 500px;width: 100%;">
+            <div class="carousel-caption">
+                我是龙猫2
+            </div>
+        </div>
+        <div class="item">
+            <img src="img/3.jpg" alt="..." style="height: 500px;width: 100%;">
+            <div class="carousel-caption">
+                我是龙猫3
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Controls -->
+    <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
+        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+    </a>
+    <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
+        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+    </a>
+</div>
+
+<div class="container" id="container-txt">
+    <div class="row">
+        <div class="col-md-4">
+            <img src="img/1.png" style="width: 100%;height: 250px;"/>
+            <h2>大龙猫1</h2>
+            <p style="line-height: 1.8;font-size: 20px;">《龙猫》是日本漫画家宫崎骏的漫画改编来的一部动画电影。虽然电影只是平和地讲述了一个温馨、天真的故事，却让我感受到什么叫真正的童话。</p>
+            <p>
+                <a href="#" type="button" class="btn btn-default btn-sm">（小按钮）Small button</a>
+            </p>
+        </div>
+        <div class="col-md-4">
+            <img src="img/2.jpg" style="width: 100%;height: 250px;"/>
+            <h2>大龙猫2</h2>
+            <p style="line-height: 1.8;font-size: 20px;">这一切一切也许只是小孩子心底纯真的梦，亦真亦幻，却倒映出美好的心声。这一切一切也许只是小孩子心底纯真的梦，亦真亦幻，却倒映出美好的心声。</p>
+            <p>
+                <a href="#" type="button" class="btn btn-default btn-sm">（小按钮）Small button</a>
+            </p>
+        </div>
+        <div class="col-md-4">
+            <img src="img/3.jpg" style="width: 100%;height: 250px;"/>
+            <h2>大龙猫3</h2>
+            <p style="line-height: 1.8;font-size: 20px;">在神秘高耸的老橡树洞中偶遇龙猫，它像小山似的、胖胖的，十分可爱，姐妹俩就和龙猫交了朋友。龙猫带她们在田间飞翔、跑到树梢上吹笛子、光着脚打着伞在雨中听雨......
+            </p>
+            <p>
+                <a href="#" type="button" class="btn btn-default btn-sm">（小按钮）Small button</a>
+            </p>
+        </div>
+    </div>
+
+    <hr class="divider" style="margin: 40px 0;"/>
+
+    <!--tabs-->
+    <ul class="nav nav-tabs" id="tab-list">
+        <li role="home" class="active"><a href="#home" data-toggle="tab">大龙猫一</a></li>
+        <li role="profile1"><a href="#profile1" data-toggle="tab">大龙猫二</a></li>
+        <li role="profile2"><a href="#profile2" data-toggle="tab">大龙猫三</a></li>
+        <li role="profile3"><a href="#profile3" data-toggle="tab">大龙猫四</a></li>
+        <li role="profile4"><a href="#profile4" data-toggle="tab">大龙猫五</a></li>
+    </ul>
+
+    <div class="tab-content">
+        <div class="tab-pane active" id="home">
+            <div class="row feature">
+                <div class="col-md-5">
+                    <img src="img/1.png" style="width: 100%;height: 250px;"/>
+                </div>
+                <div class="col-md-7">
+                    <h2 class="feature-heading">大龙猫1</h2><span class="text-muted">小龙猫1</span>
+                    <p style="line-height: 1.8;font-size: 20px;">《龙猫》是日本漫画家宫崎骏的漫画改编来的一部动画电影。虽然电影只是平和地讲述了一个温馨、天真的故事，却让我感受到什么叫真正的童话。</p>
+                    <p>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane" id="profile1">
+            <div class="row feature">
+                <div class="col-md-7">
+                    <img src="img/2.jpg" style="width: 100%;height: 250px;"/>
+                </div>
+                <div class="col-md-5">
+                    <h2 class="feature-heading">大龙猫2</h2><span class="text-muted">小龙猫2</span>
+                    <p style="line-height: 1.8;font-size: 20px;">《龙猫》是日本漫画家宫崎骏的漫画改编来的一部动画电影。虽然电影只是平和地讲述了一个温馨、天真的故事，却让我感受到什么叫真正的童话。</p>
+
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane" id="profile2">
+            <div class="row feature">
+                <div class="col-md-5">
+                   <img src="img/3.jpg" style="width: 100%;height: 250px;"/>
+                </div>
+                <div class="col-md-7">
+                    <h2 class="feature-heading">大龙猫3</h2><span class="text-muted">小龙猫3</span>
+                    <p style="line-height: 1.8;font-size: 20px;">在神秘高耸的老橡树洞中偶遇龙猫，它像小山似的、胖胖的，十分可爱，姐妹俩就和龙猫交了朋友。龙猫带她们在田间飞翔、跑到树梢上吹笛子、光着脚打着伞在雨中听雨......
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane" id="profile3">
+            <div class="row feature">
+                <div class="col-md-7">
+                    <img src="img/4.jpg" style="width: 100%;height: 250px;"/>
+                </div>
+                <div class="cl-md-5">
+                    <h2 class="feature-heading">大龙猫4</h2><span class="text-muted">小龙猫4</span>
+                    <p style="line-height: 1.8;font-size: 20px;">在神秘高耸的老橡树洞中偶遇龙猫，它像小山似的、胖胖的，十分可爱，姐妹俩就和龙猫交了朋友。龙猫带她们在田间飞翔、跑到树梢上吹笛子、光着脚打着伞在雨中听雨......
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane" id="profile4">
+            <div class="row feature">
+                <div class="col-md-7">
+                    <img src="img/5.jpg" style="width: 100%;height: 250px;"/>
+                </div>
+                <div class="col-md-5">
+                    <h2 class="feature-heading">大龙猫5</h2><span class="text-muted">小龙猫5</span>
+                    <p style="line-height: 1.8;font-size: 20px;">在神秘高耸的老橡树洞中偶遇龙猫，它像小山似的、胖胖的，十分可爱，姐妹俩就和龙猫交了朋友。龙猫带她们在田间飞翔、跑到树梢上吹笛子、光着脚打着伞在雨中听雨......
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr class="divider">
+
+    <footer>
+        <p class="pull-right"><a href="#top">回到顶部</a></p>
+        <p>@2015lc</p>
+    </footer>
+</div>
+
+<!--弹出框-->
+<div class="modal fade" id="about">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">hello</h4>
+            </div>
+            <div class="modal-body">
+                <p>One fine body&hellip;</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">确定</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+<script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+<script src="http://apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+    $(function(){
+       $('#demo-navbar .dropdown-menu a').click(function(){
+           var href = $(this).attr('href');
+
+           $('#tab-list a[href="'+href+'"]').tab("show");
+       })
+    });
+</script>
+</body>
+</html>

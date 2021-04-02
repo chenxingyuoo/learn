@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=640, user-scalable=no">
+    <title>Title</title>
+    <style>
+        *{
+            padding: 0;
+            margin: 0;
+        }
+        html,body{
+            height: 100%;
+            overflow: hidden;
+
+        }
+        body{
+            font-size: 12px;
+            font-family: Helvetica,"微软雅黑";
+            background: #6be1d1;
+        }
+        #wraper{
+            width: 640px;
+            height: 100%;
+            margin: 0 auto;
+        }
+        #game{
+            height: 100%;
+        }
+
+        .pop {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            left: 0;
+            top: 0;
+            background: rgba(0,0,0,.65);
+            z-index: 5000;
+        }
+        #pop-rule .bd {
+            position: absolute;
+            width: 496px;
+            height: 764px;
+            left: 50%;
+            top: 60px;
+            margin-left: -248px;
+        }
+        #pop-rule .bd .close {
+            position: absolute;
+            width: 131px;
+            height: 57px;
+            left: 187px;
+            bottom: 40px;
+        }
+
+        #pop-prize .bd {
+            position: absolute;
+            width: 496px;
+            height: 665px;
+            left: 50%;
+            top: 100px;
+            margin-left: -248px;
+        }
+        #pop-prize .bd .close {
+            position: absolute;
+            width: 131px;
+            height: 57px;
+            left: 187px;
+            bottom: 40px;
+        }
+        .hide {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+
+<div id="wraper">
+   <div id="game"></div>
+</div>
+
+<div class="pop hide" id="pop-rule">
+    <div class="bd">
+        <img src="img/index/rule.png">
+        <span class="close"></span>
+    </div>
+</div>
+
+<div class="pop hide" id="pop-prize">
+    <div class="bd">
+        <img src="img/index/prize.png">
+        <span class="close"></span>
+    </div>
+</div>
+
+<script src="./phaser.js"></script>
+<script src="./data.js"></script>
+<script>
+    //实例化game
+    var game = new Phaser.Game(640,1138,Phaser.CANVAS,'game', function (g){
+
+    });
+
+
+    var popRule = document.querySelector('#pop-rule');
+    var popPrize = document.querySelector('#pop-prize');
+
+    game.States = {}; //存放state对象
+
+    //启动
+    game.States.boot = function (e){
+        this.preload = function (){
+            game.load.crossOrigin = "anonymous";
+            game.load.spritesheet("loading", "./img/game/loading.png", 275, 354)
+        };
+
+        this.create = function() {
+            //启动资源预加载
+            game.state.start('preload');
+        }
+    };
+
+    //预加载资源
+    game.States.preload = function(e){
+        var textObj;
+        this.init = function() {
+            var a = e.add.sprite(e.width / 2, 100, "loading");
+            a.anchor.set(.5, 0);
+            a.animations.add("run");
+            a.animations.play("run", 8, !false);
+            textObj = e.add.text(e.width / 2, 420, "加载中...0%");
+            textObj.anchor.set(.5, 0)
+        };
+        this.preload = function(){
+
+            var defaultObj = {
+                cdnPath : ""
+            }
+            //以下为要加载的资源
+            game.load.crossOrigin = 'anonymous';
+            game.load.onFileComplete.add(function(e) {
+                textObj.text = "加载中..." + e + "%"
+            });
+//            game.load.image("index_bg", "img/index/bg.png");
+            game.load.image("index_bg", "img/index/bg.png");
+            game.load.spritesheet("index_run", "img/index/run.png", 640, 848);
+            game.load.image("index_logo", "img/index/logo.png");
+            game.load.image("index_title", "img/index/title.png");
+            game.load.image("index_start_btn", "img/index/start_btn.png");
+            game.load.image("game_bg", "img/game/bg.png");
+            game.load.image("game_logo", "img/game/logo.png");
+            game.load.spritesheet("game_guy", "img/game/guy.png", 176, 377);
+            game.load.spritesheet("game_control", "img/game/control.png", 233, 102);
+            game.load.spritesheet("game_road", "img/game/road.png", 640, 780);
+            game.load.atlasJSONHash("game_spots", "img/game/spots.png", "", data.gameSpotsJson);
+            game.load.atlasJSONHash("game_spots_name", "img/game/spots_name.png", "", data.gameSpotsNameJson);
+            game.load.atlasJSONHash("game_ad", "img/game/aadd.png", "", data.adJson);
+            game.load.image("game_time", "img/game/time.png");
+            game.load.image("game_mile", "img/game/mile.png");
+            game.load.image("game_progress1", "img/game/progress1.png");
+            game.load.image("game_progress2", "img/game/progress2.png");
+            game.load.image("game_finish", "img/game/finish.png");
+            game.load.spritesheet("game_finger", "img/game/finger.png", 300, 254);
+//            game.load.audioSprite("sound_run", "img/sound/run.mp3", "", defaultObj)
+        };
+
+        this.create = function() {
+            //启动首页
+            game.state.start('index');
+        }
+    };
+
+    //首页
+    game.States.index = function (e){
+        this.create = function() {
+            //添加背景
+            e.add.image(0, 0, "index_bg");
+            //跑男雪碧图
+            var indexRun = e.add.sprite(0, 0, "index_run");
+            indexRun.y = e.height - indexRun.height;
+            indexRun.animations.add("run");
+            indexRun.animations.play("run", 5, !0);
+            //添加logo
+            e.add.image(10, 23, "index_logo");
+            //添加标题
+            var indexTitle = e.add.image(e.width / 2, 77, "index_title");
+            //设置margin
+            indexTitle.anchor.set(.5, 0);
+
+            //查看规则与奖品
+            var checkRuleAndPrize = function (pointer){
+                var x = pointer.x;
+                var y = pointer.y;
+
+                //在该区域内 ， 显示规则
+                if (x >= 62 && x <= 168 && y >= e.height - 232 && y <= e.height - 101) {
+                    popRule.style.display = 'block';
+                }
+                //在该区域内 ， 显示奖品
+                if (x >= 494 && x <= 613 && y > e.height - 251 && y <= e.height - 139) {
+                    popPrize.style.display = 'block';
+                }
+            };
+
+            var indexStartBtn = e.add.button(e.width / 2, e.height - 72, 'index_start_btn', function() {
+                //移除事件
+                e.input.onUp.remove(checkRuleAndPrize);
+                e.state.start("game")
+            });
+            //居中
+            indexStartBtn.anchor.set(.5, 1);
+
+            //添加事件
+            e.input.onUp.add(checkRuleAndPrize);
+
+            //点击规则的关闭按钮
+            popRule.querySelector('.close').addEventListener('click', function (){
+                //隐藏规则
+                popRule.style.display = 'none';
+            },false);
+
+            //点击奖品的关闭按钮
+            popPrize.querySelector('.close').addEventListener('click', function (){
+                //隐藏规则
+                popPrize.style.display = 'none';
+            },false);
+
+        }
+    };
+
+    game.States.game = function (e){
+        var time = 3
+            , a = time;
+        var y = 0;
+        this.create = function() {
+            var gameAdTween;
+            function gameAdShow(game){
+                var gameAd = game.add.image(game.width / 2, gameRoad.y + 50, "game_ad", y);
+                gameAd.anchor.set(.5, 0);
+                gameAd.scale.set(.9);
+                gameAd.alpha = 0;
+
+                var adTween = game.add.tween(gameAd);
+
+                return adTween.to({
+                    alpha: 1
+                }, 500, "Linear", !0);
+                ++y >= 3 && (y = 0),gameAd;
+            }
+
+            function gameAdHide(game, gameAd) {
+                debugger;
+//                var newGameAd = game.add.tween(gameAd);
+                gameAd.to({
+                    alpha: 0
+                }, 500, "Linear", !0);
+
+//                newGameAd.onComplete.add(function() {
+//                    gameAd.destroy()
+//                })
+            }
+
+
+            game.add.image(0, 0, "game_bg");
+            var gameRoad = e.add.sprite(0, 211, "game_road", 2);
+            //设置y坐标
+            game.height > 990 && (gameRoad.y = game.height - gameRoad.height);
+
+            var gameGuy = game.add.sprite(game.width / 2, 100, "game_guy");
+            gameGuy.anchor.set(.5, 0);
+            gameGuy.y = game.height - 550;
+
+            var gameTime = game.add.image(32, 26, "game_time");
+            var gameMile = game.add.image(32, 117, "game_mile");
+            var gameProgress1 = game.add.image(32, 117, "game_progress1");
+            var gameProgress2 = game.add.image(32, 117, "game_progress2");
+            //保存进度条的宽高
+            var progress2Width = gameProgress2.width;
+            var progress2Height = gameProgress2.height;
+
+            //进度盒子添加进度条
+            gameMile.addChild(gameProgress1);
+            gameMile.addChild(gameProgress2);
+
+            //进度条2裁剪
+            gameProgress2.cropRect = {
+                x: 0,
+                y: 0,
+                width: 0,
+                height: progress2Height
+            };
+            //更新裁剪
+            gameProgress2.updateCrop();
+
+            var gameLogo = game.add.image(300, 36, "game_logo");
+            gameLogo.x = game.width - gameLogo.width - 62;
+
+
+            var gameRoadMove = gameRoad.animations.add("gameRoadMove");
+            gameRoad.animations.play("gameRoadMove", time, !0);
+
+            var gameGuyMove = gameGuy.animations.add("gameGuyMove");
+            gameGuy.animations.play("gameGuyMove", 2 * time, !0);
+
+            console.log(gameRoadMove);
+            gameRoadMove.onLoop.add(function() {
+                var loopCount = gameRoadMove.loopCount;
+                console.log(gameRoadMove);
+
+                if (loopCount == 1 ) {
+                    gameAdTween = gameAdShow(game)
+                } else if (loopCount == 2) {
+                    gameAdHide(game, gameAdTween);
+                } else if (loopCount == 3) {
+
+                }
+
+                gameProgress2.cropRect = {
+                    x: 0,
+                    y: 0,
+                    width: Math.floor(loopCount / 133 * progress2Width),
+                    height: progress2Height
+                },
+                    gameProgress2.updateCrop()
+
+            })
+
+        }
+    };
+
+    //添加state到游戏
+    game.state.add('boot', game.States.boot);
+    game.state.add('preload',game.States.preload);
+    game.state.add('index',game.States.index);
+    game.state.add('game',game.States.game);
+    game.state.start('boot'); //启动游戏
+
+
+
+    console.log(game);
+</script>
+</body>
+</html>

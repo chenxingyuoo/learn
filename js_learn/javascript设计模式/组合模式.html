@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>组合模式</title>
+</head>
+
+<body>
+<script>
+    //组合（Composite）模式：将对象组合成树形结构以表示“部分-整体”的层次结构。它使得客户对单个对象和复合对象的使用具有一致性。
+
+    //组合模式是一种专为创建Web上的动态用户界面而量身定制的模式。使用这种模式，可以用一条命令在多个对象上激发复杂的或递归的行为。组合模式擅长于对大批对象进行操作。
+
+    //组合模式的好处：1.程序员可以用同样的方法处理对象的集合与其中的特定子对象；2.它可以用来把一批子对象组织成树形结构，并且使整棵树都可被便利。
+
+    //组合模式适用范围：1.存在一批组织成某处层次体系的对象（具体结构可能在开发期间无法知道）；2.希望对这批对象或其中的一部分对象实话一个操作。
+
+    //其实组合模式就是将一系列相似或相近的对象组合在一个大的对象，由这个大对象提供一些常用的接口来对这些小对象进行操作，代码可重用，对外操作简单。例如：对form内的元素，不考虑页面设计的情况下，一般就剩下input了，对于这些input都有name和value的属性，因此可以将这些input元素作为form对象的成员组合起来，form对象提供对外的接口，便可以实现一些简单的操作，比如设置某个input的value，添加/删除某个input等等。
+    //先创建组合对象类
+
+    // DynamicGallery Class
+    var DynamicGallery = function (id) { // 实现Composite，GalleryItem组合对象类
+        this.children = [];
+        this.element = document.createElement('div');
+        this.element.id = id;
+        this.element.className = 'dynamic-gallery';
+    };
+    DynamicGallery.prototype = {
+        // 实现Composite组合对象接口
+        add: function (child) {
+            //子元素放在数组操作
+            this.children.push(child);
+            this.element.appendChild(child.getElement());
+        },
+        remove: function (child) {
+            for (var node, i = 0; node = this.getChild(i); i++) {
+                if (node == child) {
+                    this.children.splice(i, 1);
+                    break;
+                }
+            }
+            this.element.removeChild(child.getElement());
+        },
+        getChild: function (i) {
+            //获取子元素
+            return this.children[i];
+        },
+        // 实现DynamicGallery组合对象接口
+        hide: function () {
+            //父元素进行隐藏
+            this.element.style.display = 'none';
+            //子元素进行隐藏
+            for (var node, i = 0; node = this.getChild(i); i++) {
+                node.hide();
+            }
+
+        },
+        show: function () {
+            //父元素进行显示
+            this.element.style.display = 'block';
+            //子元素进行显示
+            for (var node, i = 0; node = this.getChild(i); i++) {
+                node.show();
+            }
+        },
+        // 帮助方法
+        getElement: function () {
+            return this.element;
+        },
+
+        insert : function(where){
+            (where || document.body).appendChild(this.element);
+        }
+    }
+
+
+    //再创建叶对象类
+
+    var GalleryImage = function (src) { // 实现Composite和GalleryItem组合对象中所定义的方法
+        this.element = document.createElement('img');
+        this.element.className = 'gallery-image';
+        this.element.src = src;
+    };
+    GalleryImage.prototype = {
+        // 实现Composite接口
+        // 这些是叶结点，所以我们不用实现这些方法，我们只需要定义即可
+        add: function () {
+        },
+        remove: function () {
+        },
+        getChild: function () {
+        },
+        // 实现GalleryItem接口
+        hide: function () {
+            this.element.style.display = 'none';
+        },
+        show: function () {
+            this.element.style.display = '';
+        },
+        // 帮助方法
+        getElement: function () {
+            return this.element;
+        }
+    }
+
+
+    //现在我们可以使用这两个类来管理图片：
+
+    var topGallery = new DynamicGallery('top-gallery');
+    topGallery.add(new GalleryImage('../images/1.jpg'));
+    topGallery.add(new GalleryImage('../images/2.jpg'));
+    topGallery.add(new GalleryImage('../images/3.jpg'));
+    topGallery.insert();
+
+
+
+    var vacationPhotos = new DynamicGallery('vacation-photos');
+    for (var i = 1; i < 9; i++) {
+        vacationPhotos.add(new GalleryImage('../images/' + i + '.jpg'));
+    }
+    vacationPhotos.insert();
+
+    topGallery.add(vacationPhotos);  //运行到这里的时候 。 把 id='vacation-photos' 的 div 整个插进  id="top-gallery" 的div。
+
+    topGallery.show();
+    //vacationPhotos.hide();
+
+</script>
+</body>
+</html>

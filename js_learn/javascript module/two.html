@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+
+<body>
+<script>
+    //1.2 模块的使用
+
+
+
+    //存的部分搞好了，我们来看看怎么取。现在来了一个商家，卖木器的，他需要从一个卖钉子的那边进货，卖钉子的已经来注册过了，现在要让这个木器厂能买到钉子。现在的问题是，两个商家处于不同的作用域，也就是说，它们互相不可见，那通过什么方式，我们才能让他们产生调用关系呢？
+
+    //个人解决不了的问题还是得靠政府，有困难要坚决克服，没有困难就制造困难来克服。现在困难有了，该克服了。商家说，我能不能给你我的进货名单，你帮我查一下它们在哪家店，然后告诉我？这么简单的要求当然一口答应下来，但是采用什么方式传递给你呢？这可犯难了。
+
+    //我们参考AngularJS框架，写了一个类似的代码：
+
+
+    /*thin.define("A", [], function() {
+     //module A
+     });
+
+     thin.define("B", ["A"], function(A) {
+     //module B
+     var a = new A();
+     });*/
+
+    //看这段代码特别在哪里呢？模块A的定义，毫无特别之处，主要看模块B。它在依赖关系里写了一个字符串的A，然后在工厂方法的形参写了一个真真切切的A类型。嗯？这个有些奇怪啊，你的A类型要怎么传递过来呢？其实是很简单的，因为我们声明了依赖项的数组，所以可以从依赖项，挨个得到对应的工厂方法，然后创建实例，传进来。
+
+
+    (function() {
+        var moduleMap = {};
+
+        var noop = function () {
+        };
+
+
+        window.thin = {
+            define: function(name, dependencies, factory) {
+
+                //注册模块 ， 如果 moduleMap 里面没有的话。
+                if(!moduleMap[name]){
+                    var module = {
+                        name: name,
+                        dependencies: dependencies,
+                        factory: factory
+                    }
+
+                    moduleMap[name] = module;
+                }
+
+                return moduleMap[name];
+            },
+
+
+            use: function(name) {
+
+                var module = moduleMap[name];
+
+                if (!module.entity) {
+                    var args = [];
+                    //遍历依赖项
+                    for (var i=0; i<module.dependencies.length; i++) {
+                        if (moduleMap[module.dependencies[i]].entity) {
+                            args.push(moduleMap[module.dependencies[i]].entity);
+                        }
+                        else {
+                            //递归获取依赖项 ，然后当作参数，用这个模块的工厂方法来实例化了一下
+                            //递归完之后 ， 将返回的结过push 进 args
+                            args.push(this.use(module.dependencies[i]));
+                        }
+                    }
+
+                    //使用每个依赖项递归此函数，执行的时候， 因为依赖项本身是没有其他依赖项（也就是工厂方法），所有就会在 module.entity 中保存起来此依赖项（工厂方法 或者说 模块）
+                    module.entity = module.factory.apply(null, args);
+                }
+
+                return module.entity;
+            }
+        };
+
+    })();
+
+    //我们可以看到，这里面递归获取了依赖项，然后当作参数，用这个模块的工厂方法来实例化了一下。这里我们多做了一个判断，如果模块工厂已经执行过，就缓存在entity属性上，不需要每次都创建。以此类推，假如一个模块有多个依赖项，也可以用类似的方式写，毫无压力：
+
+    //创建模块B ， 他的依赖项 A ,B C  //可以从依赖项，挨个得到对应的工厂方法，然后创建实例，传进来。
+    /*thin.define("D", ["A", "B", "C"], function(A, B, C) {
+     //module D
+     var a = new A();
+     var b = new B();
+     var c = new C();
+     });*/
+
+
+    //注意了，D模块的工厂，实参的名称未必就要是跟依赖项一致，比如，以后我们代码较多，可以给依赖项和模块名称加命名空间，可能变成这样：
+    /*thin.define("foo.D", ["foo.A", "foo.B", "foo.C"], function(A, B, C) {
+     //module D
+     var a = new A();
+     var b = new B();
+     var c = new C();
+     });*/
+
+
+    //这段代码仍然可以正常运行。我们来做另外一个测试，改变形参的顺序：
+
+    thin.define("A", [], function() {
+        return "a";
+    });
+
+    thin.define("B", [], function() {
+        return "b";
+    });
+
+    thin.define("C", [], function() {
+        return "c";
+    });
+
+    thin.define("D", ["A", "B", "C"], function(B, A, C) {
+        return B + A + C;
+    });
+
+    var D = thin.use("D");
+    console.log(D) // abc
+
+    //试试看，我们的D打出什么结果呢？结果是"abc"，所以说，模块工厂的实参只跟依赖项的定义有关，跟形参的顺序无关。我们看到，在AngularJS里面，并非如此，实参的顺序是跟形参一致的，这是怎么做到的呢？
+</script>
+</body>
+</html>
