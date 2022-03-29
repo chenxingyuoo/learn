@@ -10,6 +10,12 @@
     "start": "cross-env NODE_ENV=production node server/index.js",
     "generate": "nuxt generate"
   },
+  "config": {
+    "nuxt": {
+      "host": "0.0.0.0",
+      "post": 3001
+    }
+  },
   "dependencies": {
     "cross-env": "^5.2.0",
     "nuxt": "^2.0.0",

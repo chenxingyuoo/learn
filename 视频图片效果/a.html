@@ -1,0 +1,33 @@
+<!--
+ * @Description: 这是***页面
+ * @Date: 2021-04-27 11:12:06
+ * @Author: chenxingyu
+ * @LastEditors: chenxingyu
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    #video1{
+      width: 1280px;
+      height: 720px;
+    }
+  </style>
+</head>
+<body>
+  <video id="video1" src="./转场动画/1.mp4" controls="true"></video>
+
+  <script>
+    window.onload = () => {
+      const video1 = document.querySelector('#video1')
+      video1.playbackRate = 10
+
+      video1.currentTime = 3
+    }
+  </script>
+</body>
+</html>

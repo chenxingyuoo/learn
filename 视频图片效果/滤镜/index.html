@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+  <meta charset="UTF-8" />
+  <title></title>
+  <style>
+    body {
+      margin: 0;
+      position: relative;
+      background-color: wheat;
+    }
+
+    div {
+      width: 600px;
+      height: 300px;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+    }
+
+    .span {
+      display: inline-block;
+      width: 100px;
+      height: 80px;
+      background: url(./sy.png) no-repeat;
+    }
+
+    #video1 {
+      /* display: none; */
+      width: 320px;
+      height: 180px;
+    }
+
+    #video2 {
+      /* display: none; */
+      width: 320px;
+      height: 180px;
+    }
+
+    #btn {
+      display: flex;
+      width: 200px;
+      justify-content: space-around;
+      align-items: center;
+    }
+
+    #play,
+    #pause {
+      width: 50px;
+      height: 25px;
+      display: block;
+      color: #fff;
+      font-weight: bold;
+      text-align: center;
+      background-color: #73d373;
+    }
+  </style>
+</head>
+
+<body>
+  <h3>canvas</h3>
+  <canvas id="canvas"></canvas>
+
+  <video id="video1" src="./1.mp4?t=1602482812" controls="true">
+  </video>
+
+  <canvas id="canvas2"></canvas>
+
+  <div id="btn">
+    <span id="play">播放</span>
+    <span id="pause">停止</span>
+  </div>
+</body>
+
+</html>
+<script src="./filter.js"></script>
+<script>
+  let canvas = document.getElementById('canvas');
+  let canvas2 = document.getElementById('canvas2');
+  let video1 = document.getElementById('video1');
+  let play = document.getElementById('play');
+  let pause = document.getElementById('pause');
+  let ctx = canvas.getContext("2d");
+  let ctx2 = canvas2.getContext("2d");
+  canvas.width = 640;
+  canvas.height = 360;
+  canvas2.width = 640;
+  canvas2.height = 360;
+  let timer1 = null;
+  let timer2 = null;
+
+  function blurImage() 
+		{
+			// var canvas = document.getElementById("target");
+			// var len = canvas.width * canvas.height * 4;
+			var canvasData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+	        
+      // Processing all the pixels
+      gfilter.blurProcess(ctx, canvasData);
+
+      // Copying back canvas data to canvas
+      ctx.putImageData(canvasData, 0, 0);
+		}
+
+  // 模糊
+function blur_fn(context_a, context_b, canvas_w, canvas_h) {
+    var img_data = context_a.getImageData(0, 0, canvas_w, canvas_h)
+    var px_data = img_data.data
+
+    var img_data2 = context_a.getImageData(0, 0, canvas_w, canvas_h)
+    var px_data2 = img_data2.data
+
+    var size = 20
+
+    for (var i = 0; i < canvas_w; i++) {
+        for (var j = 0; j < canvas_h; j++) {
+
+            var r_sum = 0
+            var g_sum = 0
+            var b_sum = 0
+            var ci = 0
+            for (var dx = 0; dx < size; dx++) {
+                for (var dy = 0; dy < size; dy++) {
+                    var x = i + dx
+                    var y = j + dy
+                    if (x >= canvas_w || y >= canvas_h) {
+
+                    } else {
+                        ci++
+                        var px_index = y * canvas_w + x
+                        r_sum += px_data[px_index * 4 + 0]
+                        g_sum += px_data[px_index * 4 + 1]
+                        b_sum += px_data[px_index * 4 + 2]
+                    }
+
+                }
+            }
+            var r_avg = r_sum / ci
+            var g_avg = g_sum / ci
+            var b_avg = b_sum / ci
+
+            var cur_px_index = j * canvas_w + i
+
+            px_data2[cur_px_index * 4 + 0] = r_avg
+            px_data2[cur_px_index * 4 + 1] = g_avg
+            px_data2[cur_px_index * 4 + 2] = b_avg
+        }
+    }
+
+    context_b.putImageData(img_data2, 0, 0, 0, 0, canvas_w, canvas_h)
+}
+  
+
+
+
+  let i = 0.5; //0-1
+  let gap = 10
+  video1.addEventListener("play", function () {
+    timer1 = setInterval(function () {
+      ctx.drawImage(video1, 0, 0, 1920 * i, 1080 * i, 0, 0, 640 * i, 360 * i); // top-left
+      // ctx.drawImage(video1, 0, 1080 * i, 1920 * i, 1080 * i, 0, 360 * i  + gap, 640 * i, 360 * i); // top-right
+      
+      // ctx.drawImage(video1, 1920 * i, 0, 1920 * i, 1080 * i, 640 * i + gap, 0, 640 * i, 360 * i); // bottom-left
+      // ctx.drawImage(video1, 1920 * i, 1080 * i, 1920 * i, 1080 * i, 640 * i  + gap, 360 * i + gap, 640 * i, 360 * i); // bottom-right
+
+      // blurImage()
+      blur_fn(ctx, ctx2, 640, 360)
+    }, 25)
+
+    
+  });
+  video1.addEventListener("pause", function () {
+    clearTimeout(timer1);
+    // console.log('停止');
+  });
+
+
+  let timer = null;
+  play.addEventListener("click", function () {
+    video1.play()
+  });
+  pause.addEventListener("click", function () {
+    clearInterval(timer)
+    video1.pause()
+  });
+</script>

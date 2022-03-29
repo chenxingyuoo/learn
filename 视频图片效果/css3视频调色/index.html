@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+  <style>
+    * { box-sizing:border-box; }
+
+    body { display:box; box-orient:horizontal; background:#333; }
+    aside { width:360px; }
+    aside div { 
+      padding:10px; 
+      border-bottom:1px solid #888; 
+      border-top:1px solid #bbb;
+      transition:background 0.3s ease;
+      background:#aaa;
+    }
+    aside div:first-child { padding-top:20px; }
+    aside div:last-child { border-radius:0 0 4px 0; }
+    aside div:hover { background:#bbb; }
+
+    label { display:block; font:13px "Helvetica", sans-serif; color:#222; }
+    strong { font-weight:bold; padding:0 3px; user-select:none; }
+    code { display:inline-block; font:12px "Courier new"; float:right; color:#444; }
+
+    input { appearance:none!important; background:#777;  width:100%; border-radius:3px; height:20px; }
+    input::-webkit-slider-thumb {
+      appearance:none!important; width:32px; height:20px;  background:#111; border-radius:3px;
+    }
+
+    #wrap {  padding:20px; background:#333; display: flex;}
+
+    video { width:640px; height:auto; background:#ccc; margin-left: 20px; }
+
+    .twitter { display:block; font:italic 15px "Helvetica" italic; text-align:center; padding:20px 0 40px; color:#777; text-decoration:none; border-top:1px solid #111;  }
+    .twitter:hover { color:#4099FF; }
+
+    #canvas{
+      width: 480px;
+      height: 270px;
+    }
+  </style>
+</head>
+<body>
+  
+  <div id="wrap">
+
+    <div style="width: 300px;background: #ddd;    flex: none;    padding: 10px;">
+
+      <div>
+        <label><strong>Brightness 亮度</strong><code>-webkit-filter:brightness(<span id="brightness-val">0</span>);</code></label>
+        <input id="brightness" type="range" min="-100" max="100" step="1" value="0" />
+      </div>
+      
+      <div>
+        <label><strong>Saturation 饱和度</strong><code>-webkit-filter:saturate(<span id="saturate-val">0</span>);</code></label>
+        <input id="saturate" type="range" min="-100" max="100" step="1" value="0"/>
+      </div>
+
+      <div>
+        <label><strong>Contrast 对比度</strong><code>-webkit-filter:contrast(<span id="contrast-val">0</span>);</code></label>
+        <input id="contrast" type="range" min="-100" max="100" step="1" value="0" />
+      </div>
+
+      <div>
+        <label><strong>Hue 色调</strong><code>-webkit-filter:hue-rotate(<span id="hue-val">0</span>deg);</code></label>
+        <input id="hue" type="range" min="-100" max="100" step="1" value="0" />
+      </div>
+
+      <div style="display: none;">
+        <div>
+          <label>
+            <strong>Blur</strong><code>-webkit-filter:blur(<span id="blur-val">0</span>px);</code>
+          </label>
+          <input id="blur" type="range" min="0" max="20" step="1" value="0" />
+        </div>
+        <div>
+          <label><strong>Invert</strong><code>-webkit-filter:invert(<span id="invert-val">0</span>);</code></label>
+          <input id="invert" type="range" min="0" max="1" step="0.05" value="0" />
+        </div>
+        <div>
+          <label><strong>Sepia</strong><code>-webkit-filter:sepia(<span id="sepia-val">0</span>);</code></label>
+          <input id="sepia" type="range" min="0" max="1" step="0.05" value="0" />
+        </div>
+      </div>
+      
+    </div>
+    
+    <div>
+      <div style="color:#fff;">原视频</div>
+      <video id="video" width="640" height="480" src="http://img.kuaizi.co/video/8/7936203/499/1920x1080_5000_96/36f504be125fa3820f7a1fef7475ab86.mp4" preload="auto" controls  autoplay>
+        Your not cool and I won't let you watch this awesome video of cows.
+      </video>
+    </div>
+
+    <div>
+      <div style="color:#fff;">调色后</div>
+      <canvas id="canvas" width="480" height="270"></canvas>
+    </div>
+  </div>
+
+  <script>
+    // Feel free to fork and improve on this if you'd like
+    window.onload = () => {
+      var video = document.querySelector('#video')
+      var canvas = document.querySelector('#canvas')
+      var ctx = canvas.getContext('2d')
+
+      var width = 1920 / 4;
+      var height = 1080 / 4;
+
+      video.currentTime = 0.00001
+
+      function draw () {
+        canvas.width = width
+        canvas.height = height
+        ctx.drawImage(video, 0, 0, width, height)
+
+        requestAnimationFrame(draw)
+      }
+
+      video.onloadeddata = () => {
+        draw()
+      }
+
+      video.onplay = () => {
+        draw()
+      }
+
+
+      $("input").on('change',function () {
+        var blur = Number($("#blur").val());
+        var saturate = Number($("#saturate").val());
+        var hue = Number($("#hue").val());
+        var brightness = Number($("#brightness").val());
+        var contrast = Number($("#contrast").val());
+        var invert = Number($("#invert").val());
+        var sepia = Number($("#sepia").val());
+
+        var newBrightness = brightness < 0 ? brightness / 100 : brightness / 20
+        var newSaturate = saturate < 0 ? saturate / 100 : saturate / 20
+        var newContrast = contrast < 0 ? contrast / 100 : contrast / 20
+
+        
+        var filters = "hue-rotate(" + hue + "deg) brightness(" + (newBrightness + 1) + ") saturate(" + (newSaturate + 1) + ")  contrast(" + (newContrast + 1) + ")";
+        
+        // $("#video").css('-webkit-filter', filters);
+
+        // video.style['-webkit-filter'] = filters
+        canvas.style['-webkit-filter'] = filters
+        
+        $("#blur-val").text(blur);
+        $("#saturate-val").text(saturate);
+        $("#hue-val").text(hue);
+        $("#brightness-val").text(brightness);
+        $("#contrast-val").text(contrast);
+        $("#invert-val").text(invert);
+        $("#sepia-val").text(sepia);
+      });
+    }
+
+  </script>
+</body>
+</html>

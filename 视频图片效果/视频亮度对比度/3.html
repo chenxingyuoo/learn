@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+</head>
+<body>
+<button onclick="play()">播放</button>
+<div style="display: flex;">
+  <div style="margin-right: 20px;">
+    <!--
+    设置范围:
+     色度： 		0 ~ 255
+     饱和度： 	0 ~ 127
+     亮度： 		0 ~ 255
+     对比度：	  0 ~ 127
+    为了方便计算 delta，这里用百分比
+   -->
+    <p>
+      <b>Hue（色度）： </b>
+      <input type="range" min="-100" max="100" value="0" step="1" onchange="showHueVal(this.value)"/>
+    </p>
+    <p>
+      <b>Saturation（饱和度）：</b>
+      <input type="range" min="-100" max="100" value="0" step="1" onchange="showSatVal(this.value)"/>
+    </p>
+    <p>
+      <b>Lightness（亮度）： </b>
+      <input type="range" min="-100" max="100" value="0" step="1" onchange="showLightVal(this.value)"/>
+    </p>
+    <p>
+      <b>对比度： </b>
+      <input type="range" min="-100" max="100" value="0" step="1" onchange="showContrastVal(this.value)"/>
+    </p>
+  </div>
+  
+  <div>
+    <div>信息</div>
+    <div id="info"></div>
+  </div>
+</div>
+
+<canvas id="canvas" width="1920" height="1080"></canvas>
+<script >
+
+var processor ={};
+processor.hue = 0;
+processor.saturation = 0;
+processor.lightness = 0;
+processor.contrast = 0;
+
+
+processor.load =function ()  {
+    this.videoWidth = 1920;
+    this.videoHeight = 1080;
+    this.canvas = document.getElementById("canvas");
+    this.memoryCanvas = document.createElement("canvas");
+    this.memoryCanvas.width = 1920;
+    this.memoryCanvas.height = 1080;
+    this.context = this.canvas.getContext("2d");
+    this.memoryContext = this.memoryCanvas.getContext("2d");
+    this.targetBitmap = this.memoryContext.createImageData(this.videoWidth, this.videoHeight);
+
+
+    /**
+     * @type {HTMLVideoElement}
+     */
+     this.video = document.createElement("video");
+     this.video.autoplay = true;
+     this.video.src = "1.mp4";
+
+     processor.render()
+}
+
+processor.render = function() {
+  // context.drawImage(video, 0, 0);
+
+  this.memoryContext.drawImage(this.video, 0, 0);
+  var sourceImageData = this.memoryContext.getImageData(0, 0, this.videoWidth, this.videoHeight);
+  // console.log('sourceImageData', sourceImageData)
+
+  for (var i = 0; i < sourceImageData.data.length; i += 4) {
+      var r = sourceImageData.data[i];
+      var g = sourceImageData.data[i + 1];
+      var b = sourceImageData.data[i + 2];
+
+      this.targetBitmap.data[i] = r
+      this.targetBitmap.data[i + 1] = g;
+      this.targetBitmap.data[i + 2] = b;
+      this.targetBitmap.data[i + 3] = 255;
+
+      // var c = (r + g + b) / 3;
+      // var c = (r * 0.3 + g* 0.3 + b* 0.3);
+
+      // targetBitmap.data[i] = c;
+      // targetBitmap.data[i + 1] = c;
+      // targetBitmap.data[i + 2] = c;
+      // targetBitmap.data[i + 3] = 255;
+
+      //  处理亮度
+      if (processor.lightness) {
+        this.targetBitmap.data[i] = r + processor.lightness * 2.55
+        this.targetBitmap.data[i + 1] = g + processor.lightness * 2.55
+        this.targetBitmap.data[i + 2] = b + processor.lightness * 2.55
+        this.targetBitmap.data[i + 3] = 255;
+      }
+  }
+
+
+  this.context.putImageData(this.targetBitmap, 0, 0);
+
+  requestAnimationFrame(processor.render.bind(this))
+}
+
+function play() {
+  processor.load()
+  updateInfo()
+}
+
+function showHueVal(value){
+  processor.hue = parseFloat(value);
+  console.log("# 用户改变了 色度=" + processor.hue);
+  updateInfo()
+}
+
+function showSatVal(value){
+  console.log("# 用户改变了 饱和度="+value);
+  processor.saturation = parseFloat(value);
+  updateInfo()
+}
+
+function showLightVal(value){
+  console.log("# 用户改变了 亮度="+value);
+  processor.lightness = parseFloat(value);
+  updateInfo()
+}
+
+function showContrastVal(value){
+  console.log("# 用户改变了 对比度="+value);
+  processor.contrast = parseFloat(value);
+  updateInfo()
+}
+
+function postMsg(msg){
+  $("#output").html("<b>"+msg+"</b>");
+}
+
+function updateInfo() {
+  $('#info').html(`
+  色度：${processor.hue}</br>
+  饱和度：${processor.saturation}</br>
+  亮度：${processor.lightness}</br>
+  对比度：${processor.contrast}</br>
+  `);
+}
+
+
+</script>
+</body>
+</html>

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+  <meta charset="UTF-8" />
+  <title></title>
+  <style>
+    body {
+      margin: 0;
+      position: relative;
+      background-color: wheat;
+    }
+
+    div {
+      width: 600px;
+      height: 300px;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+    }
+
+    .span {
+      display: inline-block;
+      width: 100px;
+      height: 80px;
+      background: url(./sy.png) no-repeat;
+    }
+
+    #video1 {
+      /* display: none; */
+      width: 320px;
+      height: 180px;
+    }
+
+    #video2 {
+      /* display: none; */
+      width: 320px;
+      height: 180px;
+    }
+
+    #btn {
+      display: flex;
+      width: 200px;
+      justify-content: space-around;
+      align-items: center;
+    }
+
+    #play,
+    #pause {
+      width: 50px;
+      height: 25px;
+      display: block;
+      color: #fff;
+      font-weight: bold;
+      text-align: center;
+      background-color: #73d373;
+    }
+  </style>
+</head>
+
+<body>
+  <h3>canvas</h3>
+  <canvas id="canvas"></canvas>
+  <video id="video1" src="http://img.kuaizi.co/video/8/7936203/499/1920x1080_5000_96/36f504be125fa3820f7a1fef7475ab86.mp4?t=1602482812" controls="true">
+  </video>
+  <video id="video2" src="http://img.kuaizi.co/video/8/7936203/499/1920x1080_5000_96/4a88051d75782e55e290de26be34bd2e.mp4?t=1602482832" controls="true"></video>
+  <div id="btn">
+
+    <span id="play">播放</span>
+    <span id="pause">停止</span>
+  </div>
+</body>
+
+</html>
+<script>
+  let canvas = document.getElementById('canvas');
+  let video1 = document.getElementById('video1');
+  let video2 = document.getElementById('video2');
+  let play = document.getElementById('play');
+  let pause = document.getElementById('pause');
+  let ctx = canvas.getContext("2d");
+  canvas.width = 640;
+  canvas.height = 360;
+  let timer1 = null;
+  let timer2 = null;
+  // ctx.rect(320, 0, 320, 360);
+
+  let i = 0; //0-1
+  video1.addEventListener("play", function () {
+    timer1 = setInterval(function () {
+
+    //   ctx.rect(320, 0, 320, 360);
+    //   ctx.beginPath();
+    //   ctx.moveTo(0, 0);
+    //   ctx.lineTo(320, 0);
+    //   ctx.lineTo(320, 360);
+    //   ctx.lineTo(0, 360);
+    //   ctx.closePath(); // draws last line of the triangle
+    //   ctx.stroke();
+    //   ctx.clip();
+    //   ctx.save();          //1920 1080  //640  360
+
+      ctx.drawImage(video1, 0, 0, 1920 * i, 1080, 0, 0, 640 * i, 360);
+
+      ctx.beginPath();
+      ctx.moveTo(640 * i - 10, 0);
+      ctx.lineTo(640 * i, 0);
+      ctx.lineTo(640 * i, 360);
+      ctx.lineTo(640 * i - 10, 360);
+      let my_gradient = ctx.createLinearGradient(640 * i - 10, 0, 640 * i, 0);
+      my_gradient.addColorStop(0, "rgba(178,178,178,0)");
+      my_gradient.addColorStop(1, "rgba(178,178,178,1)");
+      ctx.fillStyle = my_gradient;
+      // ctx.fillStyle = "rgba(178,178,178,0.5)";
+      ctx.closePath(); // draws last line of the triangle
+      ctx.fill();
+      // console.log('开始画')
+    }, 25)
+  });
+  video1.addEventListener("pause", function () {
+    clearTimeout(timer1);
+    // console.log('停止');
+  });
+
+
+
+  video2.addEventListener("play", function () {
+    timer2 = setInterval(function () {
+      ctx.drawImage(video2, 1920 * i, 0, 1920 * (1 - i), 1080, 640 * i, 0, 640 * (1 - i), 360);
+    //   ctx.beginPath();
+    //   ctx.moveTo(640 * i, 0);
+    //   ctx.lineTo(640 * i + 10, 0);
+    //   ctx.lineTo(640 * i + 10, 360);
+    //   ctx.lineTo(640 * i, 360);
+    //   let my_gradient = ctx.createLinearGradient(640 * i, 0, 640 * i + 10, 0);
+    //   my_gradient.addColorStop(0, "rgba(178,178,178,1)");
+    //   my_gradient.addColorStop(1, "rgba(178,178,178,0)");
+    //   ctx.fillStyle = my_gradient;
+    //   ctx.fillStyle = "rgba(178,178,178,0.5)";
+    //   ctx.closePath(); // draws last line of the triangle
+    //   ctx.fill();
+      // console.log('开始画')
+    }, 25)
+  });
+  video2.addEventListener("pause", function () {
+    clearTimeout(timer2);
+    // console.log('停止');
+  });
+
+
+
+  let timer = null;
+  play.addEventListener("click", function () {
+    timer = setInterval(() => {
+      i = i + 0.002
+      if (i == 1) {
+        clearInterval(timer)
+      }
+    }, 20)
+    video1.play()
+    video2.play()
+  });
+  pause.addEventListener("click", function () {
+    clearInterval(timer)
+    video1.pause()
+    video2.pause()
+  });
+</script>

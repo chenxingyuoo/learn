@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+  <meta charset="UTF-8" />
+  <title></title>
+  <style>
+    body {
+      margin: 0;
+      position: relative;
+      background-color: wheat;
+    }
+
+    div {
+      width: 600px;
+      height: 300px;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+    }
+
+    .span {
+      display: inline-block;
+      width: 100px;
+      height: 80px;
+      background: url(./sy.png) no-repeat;
+    }
+
+    #video1 {
+      /* display: none; */
+      width: 320px;
+      height: 180px;
+    }
+
+    #video2 {
+      /* display: none; */
+      width: 640px;
+      height: 360px;
+    }
+
+    #btn {
+      display: flex;
+      width: 200px;
+      justify-content: space-around;
+      align-items: center;
+    }
+
+    #play,
+    #pause {
+      width: 50px;
+      height: 25px;
+      display: block;
+      color: #fff;
+      font-weight: bold;
+      text-align: center;
+      background-color: #73d373;
+    }
+  </style>
+</head>
+
+<body>
+  <h3>canvas</h3>
+  <video id="video2" src="../assets/hecheng22.webm" controls="true"  ></video>
+  <canvas id="canvas"></canvas>
+  <video id="video1" src="./1.mp4" controls="true">
+  </video>
+  <div id="btn">
+
+    <span id="play">播放</span>
+    <span id="pause">停止</span>
+  </div>
+</body>
+
+</html>
+<!-- <script src="../assets/js/gif.js"></script> -->
+<!-- <script src="../assets/js/gif.worker.js"></script> -->
+<script>
+  let canvas = document.getElementById('canvas');
+  let video1 = document.getElementById('video1');
+  let play = document.getElementById('play');
+  let pause = document.getElementById('pause');
+  let ctx = canvas.getContext("2d");
+  canvas.width = 640;
+  canvas.height = 360;
+  let timer1 = null;
+  let timer2 = null;
+
+
+  let i = 0.5; //0-1
+  let gap = 10
+  video1.addEventListener("play", function () {
+    timer1 = setInterval(function () {
+      ctx.drawImage(document.getElementById('video2'), 0, 0, 1920 , 1080 , 0, 0, 640 , 360 ); // top-left
+
+      // ctx.drawImage(video1, 0, 0, 1920 * i, 1080 * i, 0, 0, 640 * i, 360 * i); // top-left
+      // ctx.drawImage(video1, 0, 1080 * i, 1920 * i, 1080 * i, 0, 360 * i  + gap, 640 * i, 360 * i); // top-right
+      
+      // ctx.drawImage(video1, 1920 * i, 0, 1920 * i, 1080 * i, 640 * i + gap, 0, 640 * i, 360 * i); // bottom-left
+      // ctx.drawImage(video1, 1920 * i, 1080 * i, 1920 * i, 1080 * i, 640 * i  + gap, 360 * i + gap, 640 * i, 360 * i); // bottom-right
+     
+    }, 25)
+  });
+  video1.addEventListener("pause", function () {
+    clearTimeout(timer1);
+    // console.log('停止');
+  });
+
+
+  let timer = null;
+  play.addEventListener("click", function () {
+    video1.play()
+    document.getElementById('video2').play()
+    
+  });
+  pause.addEventListener("click", function () {
+    clearInterval(timer)
+    video1.pause()
+
+  });
+</script>
