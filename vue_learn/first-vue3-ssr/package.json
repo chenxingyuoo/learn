@@ -1,0 +1,21 @@
+{
+  "name": "first-vue3-ssr",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.1",
+    "koa": "^2.13.4",
+    "vue": "^3.2.38"
+  },
+  "devDependencies": {
+    "@types/koa": "^2.13.5"
+  }
+}

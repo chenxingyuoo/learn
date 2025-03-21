@@ -1,0 +1,67 @@
+<!--
+ * @Description: 这是***页面
+ * @Date: 2022-09-06 02:28:31
+ * @Author: chenxingyu
+ * @LastEditors: chenxingyu
+-->
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>media-recorder</title>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <div>
+      <video class="video" width="600px" controls></video>
+    </div>
+    <div>
+      <button class="record-btn">录制</button>
+    </div>
+    <script>
+      const btn = document.querySelector('.record-btn');
+      btn.addEventListener('click', async function () {
+        const stream = await navigator.mediaDevices.getDisplayMedia({
+          video: true,
+        });
+
+        // 浏览器对webm的支持情况
+        const mime = MediaRecorder.isTypeSupported('video/webm; codecs=vp9')
+          ? 'video/webm; codecs=vp9'
+          : 'video/webm';
+
+        // 实例一个媒体录制对象录制
+        const mediaRecorder = new MediaRecorder(stream, {
+          mimeType: mime,
+        });
+
+        // blob parts
+        const chunks = [];
+
+        mediaRecorder.ondataavailable = function (e) {
+          chunks.push(e.data);
+        };
+
+        mediaRecorder.onstop = function () {
+          const blob = new Blob(chunks, {
+            type: chunks[0].type,
+          });
+          const url = URL.createObjectURL(blob);
+
+          const video = document.querySelector('video');
+          video.src = url;
+
+          // 视频下载
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'video.webm';
+          a.click();
+
+          URL.revokeObjectURL(blob);
+        };
+
+        // 开始记录
+        mediaRecorder.start();
+      });
+    </script>
+  </body>
+</html>

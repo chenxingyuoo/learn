@@ -1,10 +1,71 @@
 
 const path = require('path');
+const fs = require('fs');
 const router = require('koa-router')()
 const xlsx = require('node-xlsx');
 const nodeExcel = require('excel-export');
+const http = require('http')
+const Excel = require('exceljs');
+const { accMultiply, accAdd } = require('../common/math')
+const dayjs = require('dayjs')
+// 引入相关的库
+const PizZip = require('pizzip');
+const Docxtemplater = require('docxtemplater');
+
+// 创建目录
+const mkdirPath = (targetPath) => {
+  // 检查目录是否存在
+  fs.access(targetPath, (err) => {
+    if (err) {
+      // 创建目录
+      fs.mkdir(targetPath, {
+        // 指定创建父文件夹
+        recursive: true
+      }, (err)=>{
+        if(err){
+          logger.error(err)
+        }
+      })
+    }
+  });
+}
+
+const todayStr = dayjs().format('YYYY-MM-DD');  
+  
 
 router.get('/', async (ctx, next) => {
+  await ctx.render('index', {
+    title: 'hello world'
+  });
+})
+
+router.get('/getjs', async (ctx, next) => {
+  const  request = async (url) => { 
+    return new Promise((resolve,reject)=>{
+      const req = http.request(url, function (res) {
+        let postbody = [];
+        res.on("data", chunk => {
+            postbody.push(chunk);
+        })
+        res.on("end", () => {
+            let postbodyBuffer = Buffer.concat(postbody);
+            resolve(postbodyBuffer)
+        })
+      })
+      req.end()
+    })
+   }
+
+  const res = await request('http://localhost:3000/javascripts/a.js')
+  const res2 = await request('http://localhost:3000/javascripts/b.js')
+  debugger
+
+  // console.log('res', res)
+
+  ctx.body = Buffer.concat([res, res2])
+})
+
+router.get('/getxls', async (ctx, next) => {
   const target = path.join(__dirname, '../public/10.xls');
 
   let parseDta = xlsx.parse(target);
@@ -85,6 +146,8 @@ router.get('/', async (ctx, next) => {
 
   ctx.body = newData
 })
+
+
 
 router.get('/string', async (ctx, next) => {
   ctx.body = 'koa2 string'

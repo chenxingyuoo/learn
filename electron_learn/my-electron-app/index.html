@@ -1,0 +1,137 @@
+<!--
+ * @Description: 文件描述
+ * @Date: 2024-01-15 22:10:56
+ * @Author: chenxingyu
+ * @LastEditors: chenxingyu
+ * @FilePath: /my-electron-app/index.html
+-->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Hello World!</title>
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
+</head>
+<body>
+    <h1>Hello World!</h1>
+    <p>
+        We are using Node.js <span id="node-version"></span>,
+        Chromium <span id="chrome-version"></span>,
+        and Electron <span id="electron-version"></span>.
+    </p>
+    Title: <input id="title"/>
+    <button id="btn" type="button">Set</button>
+
+    <button type="button" id="file-btn">Open a File</button>
+    File path: <strong id="filePath"></strong>
+
+    <div>
+        Current value: <strong id="counter">0</strong>
+    </div>
+
+    <div>
+        <h1>Web Bluetooth API</h1>
+
+        <button id="clickme">Test Bluetooth</button>
+        <button id="cancel">Cancel Bluetooth Request</button>
+
+        <p>Currently selected bluetooth device: <strong id="device-name""></strong></p>
+    </div>
+
+    <div>
+        <h1>WebUSB API</h1>
+
+        <button id="clickme2">Test WebUSB</button>
+
+        <h3>USB devices automatically granted access via <i>setDevicePermissionHandler</i></h3>
+        <div id="granted-devices"></div>
+
+        <h3>USB devices automatically granted access via <i>select-usb-device</i></h3>
+        <div id="granted-devices2"></div>
+    </div>
+
+    <div>
+        <p>Hit any key with this window focused to see it captured here.</p>
+        <div><span>Last Key Pressed: </span><span id="last-keypress"></span></div>
+    </div>
+
+    <div>
+        <h1>App Default Protocol Demo</h1>
+
+        <p>The protocol API allows us to register a custom protocol and intercept existing protocol requests.</p>
+        <p>These methods allow you to set and unset the protocols your app should be the default app for. Similar to when a
+            browser asks to be your default for viewing web pages.</p>
+
+        <p>Open the <a href="https://www.electronjs.org/docs/latest/api/protocol">full protocol API documentation</a> in your
+            browser.</p>
+
+        -----
+
+        <h3>Demo</h3>
+        <p>
+            First: Launch current page in browser
+            <button id="open-in-browser" class="js-container-target demo-toggle-button">
+                Click to Launch Browser
+            </button>
+        </p>
+
+        <p>
+            Then: Launch the app from a web link!
+            <a href="electron-fiddle://open">Click here to launch the app</a>
+        </p>
+
+        ----
+
+        <p>You can set your app as the default app to open for a specific protocol. For instance, in this demo we set this app
+            as the default for <code>electron-fiddle://</code>. The demo button above will launch a page in your default
+            browser with a link. Click that link and it will re-launch this app.</p>
+
+
+        <h3>Packaging</h3>
+        <p>This feature will only work on macOS when your app is packaged. It will not work when you're launching it in
+            development from the command-line. When you package your app you'll need to make sure the macOS <code>plist</code>
+            for the app is updated to include the new protocol handler. If you're using <code>@electron/packager</code> then you
+            can add the flag <code>--extend-info</code> with a path to the <code>plist</code> you've created. The one for this
+            app is below:</p>
+
+        <p>
+        <h5>macOS plist</h5>
+        <pre><code>
+            &lt;?xml version="1.0" encoding="UTF-8"?&gt;
+            &lt;!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd"&gt;
+                    &lt;plist version="1.0"&gt;
+                        &lt;dict&gt;
+                            &lt;key&gt;CFBundleURLTypes&lt;/key&gt;
+                            &lt;array&gt;
+                                &lt;dict&gt;
+                                    &lt;key&gt;CFBundleURLSchemes&lt;/key&gt;
+                                    &lt;array&gt;
+                                        &lt;string&gt;electron-api-demos&lt;/string&gt;
+                                    &lt;/array&gt;
+                                    &lt;key&gt;CFBundleURLName&lt;/key&gt;
+                                    &lt;string&gt;Electron API Demos Protocol&lt;/string&gt;
+                                &lt;/dict&gt;
+                            &lt;/array&gt;
+                            &lt;key&gt;ElectronTeamID&lt;/key&gt;
+                            &lt;string&gt;VEKTX9H2N7&lt;/string&gt;
+                        &lt;/dict&gt;
+                    &lt;/plist&gt;
+                </code>
+            </pre>
+        <p>
+
+    </div>
+
+
+    <div style="border:2px solid black;border-radius:3px;padding:5px;display:inline-block" draggable="true" id="drag">拖动我</div>
+
+
+    <div>
+        <p>After launching this application, you should see the system notification.</p>
+    <p id="output">Click it to see the effect in this interface.</p>
+    </div>
+
+    <script src="./renderer.js"></script>
+
+</body>
+</html>

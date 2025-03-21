@@ -1,0 +1,305 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		95FDFB9E2B484E4800600605 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 95FDFB9D2B484E4800600605 /* main.cpp */; };
+		95FDFBA72B484F7A00600605 /* workerManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 95FDFBA62B484F7A00600605 /* workerManager.cpp */; };
+		95FDFBB52B4856C000600605 /* employee.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 95FDFBB42B4856C000600605 /* employee.cpp */; };
+		95FDFBC22B48598000600605 /* manager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 95FDFBC12B48598000600605 /* manager.cpp */; };
+		95FDFBC72B485A1500600605 /* boss.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 95FDFBC62B485A1500600605 /* boss.cpp */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		95FDFB982B484E4800600605 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		95FDFB9A2B484E4800600605 /* 基于多态的职工管理系统 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "基于多态的职工管理系统"; sourceTree = BUILT_PRODUCTS_DIR; };
+		95FDFB9D2B484E4800600605 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		95FDFBA52B484F6B00600605 /* workerManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = workerManager.h; sourceTree = "<group>"; };
+		95FDFBA62B484F7A00600605 /* workerManager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = workerManager.cpp; sourceTree = "<group>"; };
+		95FDFBA92B48550F00600605 /* worker.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = worker.h; sourceTree = "<group>"; };
+		95FDFBAD2B4855DC00600605 /* employee.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = employee.h; sourceTree = "<group>"; };
+		95FDFBB42B4856C000600605 /* employee.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = employee.cpp; sourceTree = "<group>"; };
+		95FDFBC02B48597300600605 /* manager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = manager.h; sourceTree = "<group>"; };
+		95FDFBC12B48598000600605 /* manager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = manager.cpp; sourceTree = "<group>"; };
+		95FDFBC52B485A0700600605 /* boss.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = boss.h; sourceTree = "<group>"; };
+		95FDFBC62B485A1500600605 /* boss.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = boss.cpp; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		95FDFB972B484E4800600605 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		95FDFB912B484E4800600605 = {
+			isa = PBXGroup;
+			children = (
+				95FDFB9C2B484E4800600605 /* 基于多态的职工管理系统 */,
+				95FDFB9B2B484E4800600605 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		95FDFB9B2B484E4800600605 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				95FDFB9A2B484E4800600605 /* 基于多态的职工管理系统 */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		95FDFB9C2B484E4800600605 /* 基于多态的职工管理系统 */ = {
+			isa = PBXGroup;
+			children = (
+				95FDFB9D2B484E4800600605 /* main.cpp */,
+				95FDFBA52B484F6B00600605 /* workerManager.h */,
+				95FDFBA62B484F7A00600605 /* workerManager.cpp */,
+				95FDFBA92B48550F00600605 /* worker.h */,
+				95FDFBAD2B4855DC00600605 /* employee.h */,
+				95FDFBB42B4856C000600605 /* employee.cpp */,
+				95FDFBC02B48597300600605 /* manager.h */,
+				95FDFBC12B48598000600605 /* manager.cpp */,
+				95FDFBC52B485A0700600605 /* boss.h */,
+				95FDFBC62B485A1500600605 /* boss.cpp */,
+			);
+			path = "基于多态的职工管理系统";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		95FDFB992B484E4800600605 /* 基于多态的职工管理系统 */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 95FDFBA12B484E4800600605 /* Build configuration list for PBXNativeTarget "基于多态的职工管理系统" */;
+			buildPhases = (
+				95FDFB962B484E4800600605 /* Sources */,
+				95FDFB972B484E4800600605 /* Frameworks */,
+				95FDFB982B484E4800600605 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "基于多态的职工管理系统";
+			productName = "基于多态的职工管理系统";
+			productReference = 95FDFB9A2B484E4800600605 /* 基于多态的职工管理系统 */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		95FDFB922B484E4800600605 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 1220;
+				TargetAttributes = {
+					95FDFB992B484E4800600605 = {
+						CreatedOnToolsVersion = 12.2;
+					};
+				};
+			};
+			buildConfigurationList = 95FDFB952B484E4800600605 /* Build configuration list for PBXProject "基于多态的职工管理系统" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 95FDFB912B484E4800600605;
+			productRefGroup = 95FDFB9B2B484E4800600605 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				95FDFB992B484E4800600605 /* 基于多态的职工管理系统 */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		95FDFB962B484E4800600605 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				95FDFB9E2B484E4800600605 /* main.cpp in Sources */,
+				95FDFBB52B4856C000600605 /* employee.cpp in Sources */,
+				95FDFBA72B484F7A00600605 /* workerManager.cpp in Sources */,
+				95FDFBC72B485A1500600605 /* boss.cpp in Sources */,
+				95FDFBC22B48598000600605 /* manager.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		95FDFB9F2B484E4800600605 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		95FDFBA02B484E4800600605 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		95FDFBA22B484E4800600605 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		95FDFBA32B484E4800600605 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		95FDFB952B484E4800600605 /* Build configuration list for PBXProject "基于多态的职工管理系统" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				95FDFB9F2B484E4800600605 /* Debug */,
+				95FDFBA02B484E4800600605 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		95FDFBA12B484E4800600605 /* Build configuration list for PBXNativeTarget "基于多态的职工管理系统" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				95FDFBA22B484E4800600605 /* Debug */,
+				95FDFBA32B484E4800600605 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 95FDFB922B484E4800600605 /* Project object */;
+}

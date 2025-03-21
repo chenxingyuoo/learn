@@ -12,5 +12,11 @@ class UserController extends Controller {
 
     ctx.body = 'hello';
   }
+
+  async getjs() {
+    const { ctx } = this;
+
+    ctx.body = 'alert(1)';
+  }
 }
 module.exports = UserController;
