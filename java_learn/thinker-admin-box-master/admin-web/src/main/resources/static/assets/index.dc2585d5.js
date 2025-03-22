@@ -1,0 +1,1 @@
+const e={mounted(e,n){if("function"!=typeof n.value)throw"callback must be a function";e.__handleClick__=function(t){e.contains(t.target)?n.value(!1):n.value(!0)},document.addEventListener("click",e.__handleClick__)},beforeUnmount(e){document.removeEventListener("click",e.__handleClick__)}};export{e as default};

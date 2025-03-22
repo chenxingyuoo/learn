@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+<!--    <bean id="dept" class="com.atguigu.spring6.iocxml.ditest.Dept">-->
+<!--        <property name="bname" value="安保部"></property>-->
+<!--    </bean>-->
+<!--    <bean id="emp" class="com.atguigu.spring6.iocxml.ditest.Emp">-->
+<!--        <property name="ename" value="luck"></property>-->
+<!--        <property name="age" value="20"></property>-->
+<!--        <property name="dept" ref="dept"></property>-->
+<!--    </bean>-->
+
+
+<!--    <bean id="emp2" class="com.atguigu.spring6.iocxml.ditest.Emp">-->
+<!--        <property name="ename" value="mary"></property>-->
+<!--        <property name="age" value="20"></property>-->
+<!--        <property name="dept">-->
+<!--            <bean id="dept2" class="com.atguigu.spring6.iocxml.ditest.Dept">-->
+<!--                <property name="bname" value="AI部"></property>-->
+<!--            </bean>-->
+<!--        </property>-->
+<!--    </bean>-->
+
+    <bean id="dept3" class="com.atguigu.spring6.iocxml.ditest.Dept">
+        <property name="bname" value="设计部"></property>
+    </bean>
+    <bean id="emp3" class="com.atguigu.spring6.iocxml.ditest.Emp">
+        <property name="ename" value="tom"></property>
+        <property name="age" value="30"></property>
+        <property name="dept" ref="dept3"></property>
+        <property name="dept.bname" value="测试部门"></property>
+    </bean>
+</beans>

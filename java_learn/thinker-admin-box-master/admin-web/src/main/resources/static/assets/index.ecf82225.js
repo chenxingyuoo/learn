@@ -1,0 +1,1 @@
+const e={mounted(e,n){if("function"!=typeof n.value)return;let t=null;e.__handleClick__=function(e){t&&clearInterval(t),t=setTimeout((()=>{n.value()}),200)},e.addEventListener("click",e.__handleClick__)},beforeUnmount(e){e.removeEventListener("click",e.__handleClick__)}};export{e as default};
