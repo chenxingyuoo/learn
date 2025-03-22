@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--
+    mapper：核心根标签
+    namespace属性：名称空间
+-->
+<mapper namespace="StudentMapper">
+    <!--
+    select：查询功能的标签
+    id属性：唯一标识
+    resultType属性：指定结果映射对象类型
+    parameterType属性：指定参数映射对象类型
+    -->
+    <select id="selectAll" resultType="com.example.demoJava8.bean.Student">
+        SELECT * FROM student
+    </select>
+</mapper>

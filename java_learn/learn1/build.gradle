@@ -1,0 +1,55 @@
+plugins {
+	id 'java'
+	id 'pmd'
+	id 'org.springframework.boot' version '3.0.3'
+	id 'io.spring.dependency-management' version '1.1.0'
+	id "com.diffplug.spotless" version "6.12.0"
+}
+
+group = 'com.springBoot'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '17'
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+spotless {
+	java {
+		//googleJavaFormat()
+		palantirJavaFormat()//格式化形式
+		removeUnusedImports()//移除无用Import
+		importOrder()//导入顺序
+		formatAnnotations()//注解格式化
+	}
+}
+
+pmd {
+	consoleOutput = true //结果输出到控制台
+	toolVersion = "6.39.0" //工具版本
+	rulesMinimumPriority = 5 //规则优先级
+	ruleSets = ["category/java/bestpractices.xml"] //规则集合
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	//	MySQL数据库需要
+	implementation 'mysql:mysql-connector-java:8.0.14'
+	//	spring mybatis
+	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.0.0'
+	compileOnly 'org.projectlombok:lombok'
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
